@@ -15,18 +15,18 @@ export function Disclosure({
 }) {
   return (
     <details
-      className={`disclosure rounded-lg border ${
+      className={`disclosure rounded-[8px] border ${
         dark ? 'border-graphite bg-carbon' : 'border-border bg-porcelain'
       }`}
     >
       <summary
-        className={`flex min-h-[52px] items-center justify-between gap-4 rounded-lg px-4 py-3 text-[15px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 ${
+        className={`flex min-h-[52px] items-center justify-between gap-4 rounded-[8px] px-4 py-3 text-[15px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 ${
           dark ? 'text-porcelain focus-visible:outline-lime' : 'text-ink focus-visible:outline-signal-deep'
         }`}
       >
         {title}
         <span
-          className={`disclosure-icon flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-base leading-none ${
+          className={`disclosure-icon flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border text-base leading-none ${
             dark ? 'border-graphite text-lime' : 'border-border text-signal-deep'
           }`}
           aria-hidden="true"

@@ -8,7 +8,7 @@ import { Reveal } from '@/components/reveal'
  */
 export function HowItWorks() {
   return (
-    <section id="how-it-works" aria-labelledby="how-heading" className="scroll-mt-20 border-b border-border bg-porcelain">
+    <section id="how-it-works" aria-labelledby="how-heading" className="scroll-mt-24 border-b border-border bg-porcelain">
       <div className="mx-auto max-w-[1320px] px-5 py-11 md:px-8 md:py-14">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
           <div>

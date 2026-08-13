@@ -8,7 +8,7 @@ import { Reveal } from '@/components/reveal'
  */
 export function IndustryGap() {
   return (
-    <section aria-labelledby="industry-gap-heading" className="border-b border-border">
+    <section aria-labelledby="industry-gap-heading" className="border-b border-border bg-alloy">
       <div className="mx-auto max-w-[1320px] px-5 py-14 md:px-8 md:py-20">
         <div className="max-w-2xl">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">

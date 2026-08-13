@@ -199,24 +199,25 @@ function StackSlab({
 
   const surface =
     tone === 'ink'
-      ? 'border-2 border-lime bg-ink text-porcelain shadow-[8px_8px_0_0_var(--lime)]'
+      ? 'border-2 border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]'
       : tone === 'lime'
-        ? 'border-2 border-action bg-lime text-ink shadow-[8px_8px_0_0_var(--action)]'
-        : 'border-2 border-ink bg-action text-ink shadow-[8px_8px_0_0_var(--ink)]'
+        ? 'border-2 border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]'
+        : 'border-2 border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--lime)]'
 
-  const focus =
-    tone === 'ink' ? 'focus-visible:outline-lime' : 'focus-visible:outline-ink'
+  const focus = tone === 'ink' ? 'focus-visible:outline-lime' : 'focus-visible:outline-ink'
 
-  const indexClass = tone === 'ink' ? 'text-lime' : tone === 'lime' ? 'text-action' : 'text-ink/80'
+  const indexClass = tone === 'ink' ? 'text-lime' : 'text-ink'
+  const titleClass = tone === 'ink' ? 'text-porcelain' : 'text-ink'
+  const kickerClass = tone === 'ink' ? 'text-porcelain/85' : 'text-ink/80'
   const plusClass =
     tone === 'ink'
       ? 'border-2 border-lime bg-lime text-ink'
       : tone === 'lime'
-        ? 'border-2 border-action bg-action text-paper'
-        : 'border-2 border-ink bg-ink text-lime'
+        ? 'border-2 border-ink bg-action text-ink'
+        : 'border-2 border-ink bg-lime text-ink'
 
   return (
-    <div className={`stack-slab overflow-hidden rounded-xl ${surface}`}>
+    <div className={`stack-slab overflow-hidden rounded-[8px] ${surface}`}>
       <button
         id={buttonId}
         type="button"
@@ -229,10 +230,10 @@ function StackSlab({
           0{index + 1}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-2xl font-semibold tracking-tight text-white md:text-3xl">
+          <span className={`block text-2xl font-semibold tracking-tight md:text-3xl ${titleClass}`}>
             {category.label}
           </span>
-          <span className={`mt-1 hidden text-sm md:block ${tone === 'ink' ? 'text-porcelain/70' : 'text-ink/70'}`}>
+          <span className={`mt-1 hidden text-sm md:block ${kickerClass}`}>
             {kickers[category.id]}
           </span>
         </span>
@@ -240,7 +241,7 @@ function StackSlab({
           <CompactViz tone={tone} />
         </span>
         <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-2xl leading-none transition-transform duration-300 ${plusClass} ${open ? 'rotate-45' : ''}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border text-2xl leading-none transition-transform duration-300 ${plusClass} ${open ? 'rotate-45' : ''}`}
           aria-hidden="true"
         >
           +
@@ -250,7 +251,7 @@ function StackSlab({
       <div id={panelId} role="region" aria-labelledby={buttonId} className={`stack-body ${open ? 'is-open' : ''}`}>
         <div>
           <div className="px-5 pb-6 md:px-8 md:pb-8">
-            <p className={`max-w-3xl text-base leading-relaxed md:text-lg ${tone === 'ink' ? 'text-porcelain/85' : 'text-ink/80'}`}>
+            <p className={`max-w-3xl text-base leading-relaxed md:text-lg ${tone === 'ink' ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'}`}>
               {category.explanation}
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
@@ -258,7 +259,7 @@ function StackSlab({
                 <MarkChip key={mark.id} mark={mark} />
               ))}
             </div>
-            <div className={`mt-6 rounded-xl p-4 md:p-5 ${tone === 'ink' ? 'bg-carbon/80' : 'bg-paper/55'}`}>
+            <div className={`mt-6 rounded-[8px] p-4 md:p-5 ${tone === 'ink' ? 'bg-carbon/80' : 'bg-paper/55'}`}>
               <ExpandedViz tone={tone} />
             </div>
           </div>
@@ -275,7 +276,7 @@ export function PlatformCredibility() {
     <section
       id="platforms"
       aria-labelledby="platforms-heading"
-      className="paper-grid paper-grid-wash scroll-mt-20 overflow-hidden border-b border-border"
+      className="paper-grid paper-grid-wash scroll-mt-24 overflow-hidden border-b border-border"
     >
       <div className="paper-grid-bloom" aria-hidden="true" />
       <div className="paper-grid-bloom paper-grid-bloom-soft" aria-hidden="true" />

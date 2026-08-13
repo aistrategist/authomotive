@@ -146,7 +146,7 @@ export function IntelligencePreview() {
   const [view, setView] = useState<ReportView>('Executive Summary')
 
   return (
-    <section id="reporting" aria-labelledby="reporting-heading" className="scroll-mt-20 border-b border-border bg-alloy">
+    <section id="reporting" aria-labelledby="reporting-heading" className="scroll-mt-24 border-b border-border bg-alloy">
       <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
         {/* Asymmetric editorial introduction */}
         <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">

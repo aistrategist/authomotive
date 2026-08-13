@@ -80,6 +80,7 @@
   --secondary-foreground: var(--ink);
   --muted: var(--porcelain);
   --muted-foreground: #4b5c59;
+  --on-ink-muted: #c5d4d0;
   --accent: var(--lime);
   --accent-foreground: var(--ink);
   --destructive: var(--coral);
@@ -94,8 +95,8 @@
     @apply border-border outline-ring/50;
   }
   html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-behavior: auto;
+    scroll-padding-top: 6rem;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -222,18 +223,15 @@
 /* Motion language — a signal moving forward                           */
 /* ------------------------------------------------------------------ */
 
-/* Section-entry reveal (applied by the Reveal client component) */
+/* Section-entry reveal — content stays visible; motion is additive only */
 @media (prefers-reduced-motion: no-preference) {
   .reveal-io {
-    opacity: 0;
-    transform: translateY(12px);
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
+    opacity: 1;
+    transform: none;
   }
   .reveal-io.is-visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -1392,18 +1390,18 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: linear-gradient(to right, #c5ccc9 1px, transparent 1px),
-    linear-gradient(to bottom, #c5ccc9 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgb(6 27 32 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(6 27 32 / 0.06) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
 .paper-grid-wash {
-  background-color: #e4e6e5;
+  background-color: var(--paper);
 }
 
 .paper-grid-wash::before {
-  background-image: linear-gradient(to right, #b4bbb8 1px, transparent 1px),
-    linear-gradient(to bottom, #b4bbb8 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgb(6 27 32 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(6 27 32 / 0.06) 1px, transparent 1px);
   mask-image: radial-gradient(ellipse 86% 120% at 92% 48%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.28) 46%, #000 76%);
   -webkit-mask-image: radial-gradient(ellipse 86% 120% at 92% 48%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.28) 46%, #000 76%);
 }

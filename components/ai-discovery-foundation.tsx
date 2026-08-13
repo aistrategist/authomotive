@@ -40,7 +40,7 @@ function ExpandableRow({
         </span>
         <span className="flex-1 text-base font-semibold text-ink">{title}</span>
         <span
-          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-base leading-none text-signal-deep transition-transform duration-200 motion-reduce:transition-none ${
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[4px] border border-border text-base leading-none text-signal-deep transition-transform duration-200 motion-reduce:transition-none ${
             open ? 'rotate-45' : ''
           }`}
           aria-hidden="true"

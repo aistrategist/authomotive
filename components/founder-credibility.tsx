@@ -7,11 +7,9 @@ import { Reveal } from '@/components/reveal'
  */
 export function FounderCredibility() {
   return (
-    <section aria-labelledby="founder-heading" className="border-b border-border">
+    <section aria-labelledby="founder-heading" className="border-b border-border bg-paper">
       <div className="mx-auto max-w-[1320px] px-5 py-11 md:px-8 md:py-14">
-        {/* Restrained Orange rule distinguishing this Clean Paper section from the Porcelain process above */}
-        <div className="h-[3px] w-16 bg-action" aria-hidden="true" />
-        <Reveal className="mt-8 grid gap-8 lg:grid-cols-[minmax(280px,0.8fr)_1.2fr] lg:gap-16 md:mt-9">
+        <Reveal className="grid gap-8 lg:grid-cols-[minmax(280px,0.8fr)_1.2fr] lg:gap-16">
           <div>
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
               {founder.eyebrow}

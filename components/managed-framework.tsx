@@ -36,7 +36,7 @@ const scopeGroups = [
 
 export function ManagedFramework() {
   return (
-    <section aria-labelledby="framework-heading" className="border-b border-border bg-porcelain">
+    <section aria-labelledby="framework-heading" className="border-b border-border bg-alloy">
       <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
         <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
           <div>
@@ -80,7 +80,7 @@ export function ManagedFramework() {
         </div>
 
         {/* Ideal fit — a wide Warm Alloy inset field presenting bold qualification rows */}
-        <div className="-mx-5 mt-10 border-t-2 border-ink bg-alloy px-5 py-8 md:-mx-8 md:mt-12 md:px-8 md:py-10">
+        <div className="-mx-5 mt-10 border-t-2 border-ink bg-porcelain px-5 py-8 md:-mx-8 md:mt-12 md:px-8 md:py-10">
           <h2 className="max-w-3xl text-3xl font-semibold tracking-tight text-ink md:text-4xl text-balance">
             {idealFit.headline}
           </h2>

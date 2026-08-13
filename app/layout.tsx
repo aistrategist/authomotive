@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { AnchorScroll } from '@/components/anchor-scroll'
 import { getSiteUrl, isProductionDeployment } from '@/lib/site-url'
 import './globals.css'
 
@@ -66,6 +67,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`bg-background ${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased">
+        <AnchorScroll />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

@@ -14,7 +14,7 @@ export function Hero() {
 
   return (
     <>
-      <section id="top" className="hero-atmosphere relative overflow-visible">
+      <section id="top" className="hero-atmosphere relative overflow-visible scroll-mt-24">
         <div className="mx-auto grid w-full max-w-[1320px] items-center gap-8 px-5 md:gap-10 md:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-6">
           <div className="hero-copy relative z-20 max-w-xl overflow-visible lg:max-w-[34rem]">
             <p className="hero-enter hero-enter-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-lime/90 md:text-xs">
@@ -60,7 +60,7 @@ export function Hero() {
         <span className="absolute left-0 top-0 h-[3px] w-20 -translate-y-1/2 bg-action md:w-28" />
       </div>
 
-      <section aria-labelledby="buyer-question-heading" className="bg-porcelain">
+      <section aria-labelledby="buyer-question-heading" className="border-b border-border bg-porcelain">
         <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
           <div className="grid gap-8 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
             <blockquote className="lg:sticky lg:top-24">

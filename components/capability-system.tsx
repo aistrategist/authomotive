@@ -69,6 +69,27 @@ const nextSteps: Record<string, { href: string; label: string }> = {
   'track-matters': { href: '#measurement', label: 'See the measurement' },
 }
 
+const jobLooks = [
+  {
+    card: 'border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]',
+    eyebrow: 'text-lime',
+    arrow: 'text-lime',
+    focus: 'focus-visible:outline-lime',
+  },
+  {
+    card: 'border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]',
+    eyebrow: 'text-ink',
+    arrow: 'text-action',
+    focus: 'focus-visible:outline-ink',
+  },
+  {
+    card: 'border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--lime)]',
+    eyebrow: 'text-ink',
+    arrow: 'text-lime',
+    focus: 'focus-visible:outline-ink',
+  },
+] as const
+
 export function CapabilitySystem() {
   const [activeId, setActiveId] = useState(capabilitySystem.capabilities[0].id)
   const active =
@@ -78,7 +99,7 @@ export function CapabilitySystem() {
   const nextStep = nextSteps[active.id]
 
   return (
-    <section id="capabilities" aria-labelledby="capabilities-heading" className="scroll-mt-20 border-b border-border">
+    <section id="capabilities" aria-labelledby="capabilities-heading" className="scroll-mt-24 border-b border-border bg-paper">
       <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
         {/* Editorial introduction */}
         <div className="max-w-2xl">
@@ -96,36 +117,56 @@ export function CapabilitySystem() {
           </p>
         </div>
 
-        {/* Three-job selector — a stable horizontal control on desktop */}
+        {/* Three-job selector — equal feature cards; click still drives the panel */}
         <div
           role="tablist"
           aria-label="Capabilities"
-          className="mt-8 grid gap-2.5 sm:grid-cols-3 md:mt-10"
+          className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:items-stretch md:mt-10"
         >
           {capabilitySystem.capabilities.map((cap, i) => {
             const selected = cap.id === activeId
+            const job = jobLooks[i]
             return (
               <button
                 key={cap.id}
+                type="button"
                 role="tab"
                 id={`cap-tab-${cap.id}`}
                 aria-selected={selected}
                 aria-controls={`cap-panel-${active.id}`}
                 onClick={() => setActiveId(cap.id)}
-                className={`lift flex min-h-[44px] flex-col items-start gap-1 rounded-lg border-2 px-4 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-deep ${
-                  selected
-                    ? 'border-signal-deep bg-ink text-porcelain'
-                    : 'border-border bg-porcelain text-ink hover:border-fog/50'
-                }`}
+                onKeyDown={(e) => {
+                  const last = capabilitySystem.capabilities.length - 1
+                  let next = i
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = i === last ? 0 : i + 1
+                  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = i === 0 ? last : i - 1
+                  else if (e.key === 'Home') next = 0
+                  else if (e.key === 'End') next = last
+                  else return
+                  e.preventDefault()
+                  const id = capabilitySystem.capabilities[next].id
+                  setActiveId(id)
+                  document.getElementById(`cap-tab-${id}`)?.focus()
+                }}
+                className={`flex h-full min-h-[180px] w-full min-w-0 flex-col items-start rounded-[8px] border-2 px-5 py-5 text-left md:min-h-[200px] md:px-6 ${job.card} ${job.focus} focus-visible:outline-2 focus-visible:outline-offset-2`}
               >
-                <span
-                  className={`font-mono text-[11px] uppercase tracking-wider ${
-                    selected ? 'text-lime' : 'text-signal-deep'
-                  }`}
-                >
+                <span className={`font-mono text-[11px] font-medium uppercase tracking-[0.16em] ${job.eyebrow}`}>
                   Job {i + 1} · {cap.brandedName}
                 </span>
-                <span className="text-lg font-semibold leading-snug">{cap.plainName}</span>
+                <span className="mt-3 text-xl font-semibold leading-snug tracking-tight md:text-2xl">
+                  {cap.plainName}
+                </span>
+                <span className={`mt-auto flex items-center pt-6 ${job.arrow}`} aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M3 10h12m0 0l-4.5-4.5M15 10l-4.5 4.5"
+                      stroke="currentColor"
+                      strokeWidth={selected ? 2.5 : 2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
               </button>
             )
           })}
@@ -136,7 +177,7 @@ export function CapabilitySystem() {
           role="tabpanel"
           id={`cap-panel-${active.id}`}
           aria-labelledby={`cap-tab-${active.id}`}
-          className="mt-4 rounded-xl border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--color-ink)]"
+          className="mt-4 rounded-[8px] border-2 border-ink bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)]"
         >
           <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-3 md:px-7">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">

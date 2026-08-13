@@ -62,7 +62,7 @@ export function FinalCta() {
     <section
       id="opportunity-review"
       aria-labelledby="cta-heading"
-      className="ink-grid scroll-mt-20 bg-ink"
+      className="ink-grid scroll-mt-24 bg-ink"
     >
       {/* Orange directional endpoint marking the final move toward action */}
       <div className="h-[3px] w-full bg-action" aria-hidden="true" />
@@ -77,7 +77,7 @@ export function FinalCta() {
           >
             {finalCta.headline}
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-porcelain/70 text-pretty">
+          <p className="mt-5 text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
             {finalCta.supporting}
           </p>
           <div className="mt-10 border-l-2 border-lime pl-5">
@@ -98,7 +98,7 @@ export function FinalCta() {
               <h3 className="text-2xl font-semibold text-porcelain text-balance">
                 {finalCta.successHeading}
               </h3>
-              <p className="text-base leading-relaxed text-porcelain/70">{finalCta.successCopy}</p>
+              <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)]">{finalCta.successCopy}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-4">

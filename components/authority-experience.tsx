@@ -177,7 +177,7 @@ export function AuthorityExperience() {
     <section
       id="authority-experiences"
       aria-labelledby="authority-heading"
-      className="ink-grid scroll-mt-20 bg-ink"
+      className="ink-grid scroll-mt-24 bg-ink"
     >
       {/* Entrance seam — a Graphite structural rail with an Orange endpoint marking the move into the dark theater */}
       <div className="flex items-center" aria-hidden="true">
@@ -195,7 +195,7 @@ export function AuthorityExperience() {
           >
             {authorityTheater.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-porcelain/70 md:text-xl text-pretty">
+          <p className="mt-4 text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty">
             {authorityTheater.supporting}
           </p>
         </div>
@@ -268,7 +268,7 @@ export function AuthorityExperience() {
         </div>
 
         <div className="mt-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <p className="max-w-2xl text-lg leading-relaxed text-porcelain/70 text-pretty">
+          <p className="max-w-2xl text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
             Three perspectives on the same page: what the shopper experiences, what discovery
             systems understand, and what the dealership can measure. One piece of work, three kinds
             of value.

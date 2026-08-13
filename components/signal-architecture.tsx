@@ -92,7 +92,7 @@ export function SignalArchitecture() {
   }, [layout, selected])
 
   return (
-    <section id="measurement" aria-labelledby="measurement-heading" className="scroll-mt-20 border-b border-border">
+    <section id="measurement" aria-labelledby="measurement-heading" className="scroll-mt-24 border-b border-border bg-paper">
       <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
         <div className="max-w-2xl">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
