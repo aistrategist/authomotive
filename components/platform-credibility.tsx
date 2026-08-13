@@ -182,6 +182,24 @@ function ExpandedViz({ tone }: { tone: Tone }) {
   return <MeasureViz />
 }
 
+const quietSurfaces: Record<Tone, string> = {
+  ink: 'border-2 border-ink bg-teal-mist text-ink shadow-[6px_6px_0_0_var(--ink)] hover:bg-[#cfe3df]',
+  lime: 'border-2 border-ink bg-lime-mist text-ink shadow-[6px_6px_0_0_var(--lime)] hover:bg-[#e3fdb8]',
+  action: 'border-2 border-ink bg-orange-mist text-ink shadow-[6px_6px_0_0_var(--action)] hover:bg-[#ffe3d4]',
+}
+
+const openSurfaces: Record<Tone, string> = {
+  ink: 'border-2 border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]',
+  lime: 'border-2 border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]',
+  action: 'border-2 border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--lime)]',
+}
+
+const swatchClass: Record<Tone, string> = {
+  ink: 'bg-ink',
+  lime: 'bg-lime',
+  action: 'bg-action',
+}
+
 function StackSlab({
   category,
   index,
@@ -196,23 +214,16 @@ function StackSlab({
   const tone = tones[category.id] ?? 'ink'
   const panelId = `stack-panel-${category.id}`
   const buttonId = `stack-btn-${category.id}`
-
-  const surface =
-    tone === 'ink'
-      ? 'border-2 border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]'
-      : tone === 'lime'
-        ? 'border-2 border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]'
-        : 'border-2 border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--ink)]'
-
-  const focus = tone === 'ink' ? 'focus-visible:outline-lime' : 'focus-visible:outline-ink'
-
-  const indexClass = tone === 'ink' ? 'text-lime' : 'text-ink'
-  const titleClass = tone === 'ink' ? 'text-porcelain' : 'text-ink'
-  const kickerClass = tone === 'ink' ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'
-  const plusClass =
-    tone === 'ink'
-      ? 'border-2 border-lime bg-lime text-ink'
-      : 'border-2 border-ink bg-paper text-ink'
+  const loud = open && tone === 'ink'
+  const surface = open ? openSurfaces[tone] : quietSurfaces[tone]
+  const focus = loud ? 'focus-visible:outline-lime' : 'focus-visible:outline-ink'
+  const indexClass = loud ? 'text-lime' : 'text-ink'
+  const titleClass = loud ? 'text-porcelain' : 'text-ink'
+  const kickerClass = loud ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'
+  const plusClass = loud
+    ? 'border-2 border-lime bg-lime text-ink'
+    : 'border-2 border-ink bg-paper text-ink'
+  const bodyText = loud ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'
 
   return (
     <div className={`stack-slab overflow-hidden rounded-[8px] ${surface}`}>
@@ -224,6 +235,10 @@ function StackSlab({
         onClick={onToggle}
         className={`flex w-full min-h-[88px] items-center gap-4 px-5 py-5 text-left md:min-h-[104px] md:px-8 md:py-6 ${focus} focus-visible:outline-2 focus-visible:outline-offset-[-6px]`}
       >
+        <span
+          className={`h-3 w-3 shrink-0 ${swatchClass[tone]}`}
+          aria-hidden="true"
+        />
         <span className={`font-mono text-sm font-medium tracking-[0.18em] md:text-base ${indexClass}`}>
           0{index + 1}
         </span>
@@ -235,11 +250,13 @@ function StackSlab({
             {kickers[category.id]}
           </span>
         </span>
-        <span className="hidden shrink-0 sm:block">
-          <CompactViz tone={tone} />
-        </span>
+        {open ? (
+          <span className="hidden shrink-0 sm:block">
+            <CompactViz tone={tone} />
+          </span>
+        ) : null}
         <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border text-2xl leading-none transition-transform duration-300 ${plusClass} ${open ? 'rotate-45' : ''}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[6px] border text-2xl leading-none transition-transform duration-150 ${plusClass} ${open ? 'rotate-45' : ''}`}
           aria-hidden="true"
         >
           +
@@ -249,7 +266,7 @@ function StackSlab({
       <div id={panelId} role="region" aria-labelledby={buttonId} className={`stack-body ${open ? 'is-open' : ''}`}>
         <div>
           <div className="px-5 pb-6 md:px-8 md:pb-8">
-            <p className={`max-w-3xl text-base leading-relaxed md:text-lg ${tone === 'ink' ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'}`}>
+            <p className={`max-w-3xl text-base leading-relaxed md:text-lg ${bodyText}`}>
               {category.explanation}
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
@@ -257,7 +274,7 @@ function StackSlab({
                 <MarkChip key={mark.id} mark={mark} />
               ))}
             </div>
-            <div className={`mt-6 rounded-[8px] p-4 md:p-5 ${tone === 'ink' ? 'bg-carbon/80' : 'bg-paper/55'}`}>
+            <div className={`mt-6 rounded-[8px] p-4 md:p-5 ${loud ? 'bg-carbon/80' : 'bg-paper/70'}`}>
               <ExpandedViz tone={tone} />
             </div>
           </div>
@@ -274,10 +291,8 @@ export function PlatformCredibility() {
     <section
       id="platforms"
       aria-labelledby="platforms-heading"
-      className="paper-grid paper-grid-wash scroll-mt-24 overflow-hidden border-b border-border"
+      className="paper-grid paper-grid-wash scroll-mt-24 overflow-x-clip border-b border-border"
     >
-      <div className="paper-grid-bloom" aria-hidden="true" />
-      <div className="paper-grid-bloom paper-grid-bloom-soft" aria-hidden="true" />
       <div className="relative z-[1] mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
           <div>
@@ -296,7 +311,7 @@ export function PlatformCredibility() {
           </p>
         </div>
 
-        <div className="mt-8 flex flex-col gap-5 md:mt-10 md:gap-6">
+        <div className="mt-8 flex flex-col gap-5 md:mt-10">
           {platformCredibility.categories.map((category, index) => (
             <StackSlab
               key={category.id}

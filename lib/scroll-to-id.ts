@@ -1,5 +1,5 @@
 const HEADER_OFFSET = 96
-const DURATION = 700
+const DURATION = 600
 
 function easeOutCubic(t: number) {
   return 1 - (1 - t) ** 3

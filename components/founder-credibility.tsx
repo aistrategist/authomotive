@@ -21,11 +21,18 @@ export function FounderCredibility() {
               {founder.headline}
             </h2>
           </div>
-          <div className="lg:pt-1">
-            <p className="text-lg leading-relaxed text-ink text-pretty">{founder.copy}</p>
-            <p className="mt-5 border-l-2 border-lime pl-4 text-base font-semibold leading-relaxed text-muted-foreground md:text-lg">
-              {founder.supporting}
-            </p>
+          <div className="relative lg:pt-1">
+            <div
+              className="absolute -inset-y-4 -left-4 right-0 bg-orange-mist md:-inset-y-6 md:-left-8"
+              aria-hidden="true"
+            />
+            <span className="absolute bottom-0 left-0 top-0 w-1.5 bg-action md:w-2" aria-hidden="true" />
+            <div className="relative pl-6 md:pl-8">
+              <p className="text-lg leading-relaxed text-ink text-pretty">{founder.copy}</p>
+              <p className="mt-5 border-l-2 border-lime pl-4 text-base font-semibold leading-relaxed text-muted-foreground md:text-lg">
+                {founder.supporting}
+              </p>
+            </div>
           </div>
         </Reveal>
       </div>

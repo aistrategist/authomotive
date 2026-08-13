@@ -146,28 +146,31 @@ export function IntelligencePreview() {
   const [view, setView] = useState<ReportView>('Executive Summary')
 
   return (
-    <section id="reporting" aria-labelledby="reporting-heading" className="scroll-mt-24 border-b border-border bg-alloy">
-      <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
-        {/* Asymmetric editorial introduction */}
-        <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
-          <div>
-            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
-              {reporting.eyebrow}
+    <section id="reporting" aria-labelledby="reporting-heading" className="scroll-mt-24 overflow-x-clip border-b border-border bg-alloy">
+      <div className="bg-carbon">
+        <div className="mx-auto max-w-[1320px] px-5 pt-14 pb-20 md:px-8 md:pt-16 md:pb-28">
+          <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
+            <div>
+              <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
+                {reporting.eyebrow}
+              </p>
+              <h2
+                id="reporting-heading"
+                className="mt-3 text-3xl font-semibold tracking-tight text-porcelain md:text-5xl text-balance"
+              >
+                {reporting.headline}
+              </h2>
+            </div>
+            <p className="text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty lg:pb-1">
+              {reporting.supporting}
             </p>
-            <h2
-              id="reporting-heading"
-              className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-5xl text-balance"
-            >
-              {reporting.headline}
-            </h2>
           </div>
-          <p className="text-lg leading-relaxed text-muted-foreground md:text-xl text-pretty lg:pb-1">
-            {reporting.supporting}
-          </p>
         </div>
+      </div>
 
+      <div className="relative z-[1] mx-auto max-w-[1320px] -mt-12 px-5 pb-12 md:-mt-16 md:px-8 md:pb-16">
         {/* The reporting interface — mode navigation and identification in one compact top bar */}
-        <div className="mt-9 overflow-hidden rounded-xl border-2 border-ink bg-paper shadow-[8px_8px_0_0_var(--color-ink)] md:mt-11">
+        <div className="overflow-hidden rounded-[8px] border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--color-ink)]">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink bg-ink px-6 py-4">
             <div className="flex flex-wrap items-center gap-4">
               <p className="text-lg font-semibold text-porcelain">Authomotive Intelligence</p>

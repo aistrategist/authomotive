@@ -255,7 +255,7 @@ export function AuthorityExperience() {
           aria-labelledby={`view-tab-${view}`}
           className="mt-4"
         >
-          <div className="rounded-xl border-2 border-lime/60 bg-paper p-5 shadow-[0_0_0_1px_var(--color-ink),8px_8px_0_0_rgba(183,255,60,0.25)] md:p-8">
+          <div className="rounded-[8px] border-2 border-ink bg-paper p-5 shadow-[6px_6px_0_0_var(--lime)] md:p-8">
             <p className="mb-5 inline-block rounded-full border border-border bg-porcelain px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground">
               Illustrative example — not a live dealership page
             </p>

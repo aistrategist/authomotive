@@ -1,14 +1,19 @@
 import { howItWorks } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 
+const stepLooks = [
+  'border-2 border-ink bg-ink text-porcelain',
+  'border-2 border-ink bg-lime text-ink',
+  'border-2 border-ink bg-action text-ink',
+  'border-2 border-ink bg-ink text-lime',
+] as const
+
 /**
- * Compact working-process loop: all four stages visible side by side on
- * desktop, connected by one signal line that loops back to the next
- * opportunity. Evidence methodology stays embedded in each stage.
+ * Compact working-process loop: square production markers on a Lime Mist canvas.
  */
 export function HowItWorks() {
   return (
-    <section id="how-it-works" aria-labelledby="how-heading" className="scroll-mt-24 border-b border-border bg-porcelain">
+    <section id="how-it-works" aria-labelledby="how-heading" className="scroll-mt-24 border-b border-border bg-lime-mist">
       <div className="mx-auto max-w-[1320px] px-5 py-11 md:px-8 md:py-14">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
           <div>
@@ -27,19 +32,15 @@ export function HowItWorks() {
           </p>
         </div>
 
-        {/* Connected sequence — all stages visible on desktop */}
         <div className="relative mt-9 md:mt-10">
-          {/* Horizontal signal line behind the stage nodes (md+) */}
-          <div className="absolute left-[3%] right-[3%] top-[24px] hidden h-1 bg-border md:block" aria-hidden="true">
-            <div className="draw-line h-full w-full bg-signal-deep/40" />
-          </div>
+          <div className="absolute left-[3%] right-[3%] top-[24px] hidden h-px bg-ink/25 md:block" aria-hidden="true" />
 
           <Reveal as="div">
             <ol className="grid gap-6 md:grid-cols-4 md:gap-5">
-              {howItWorks.stages.map((stage) => (
+              {howItWorks.stages.map((stage, i) => (
                 <li key={stage.number} className="relative flex gap-4 md:block">
                   <span
-                    className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[3px] border-signal-deep bg-lime font-mono text-xl font-bold text-ink"
+                    className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center font-mono text-xl font-bold ${stepLooks[i]}`}
                     aria-hidden="true"
                   >
                     {stage.number}
@@ -63,7 +64,6 @@ export function HowItWorks() {
             </ol>
           </Reveal>
 
-          {/* Loop back — the evidence feeds the next opportunity */}
           <div className="mt-6 flex items-center gap-3 border-t border-border pt-5">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
               <path

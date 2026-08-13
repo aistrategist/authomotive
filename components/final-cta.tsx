@@ -81,13 +81,13 @@ export function FinalCta() {
             {finalCta.supporting}
           </p>
           <div className="mt-10 border-l-2 border-lime pl-5">
-            <p className="text-base leading-relaxed text-porcelain/80 md:text-lg">
+            <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)] md:text-lg">
               {finalCta.confidence}
             </p>
           </div>
         </Reveal>
 
-        <Reveal delay={110} className="rounded-xl border border-graphite bg-carbon/60 p-6 md:p-8">
+        <Reveal delay={110} className="rounded-[8px] border border-graphite bg-carbon p-6 md:p-8">
           {status === 'success' ? (
             <div role="status" className="flex min-h-[400px] flex-col items-start justify-center gap-4">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime" aria-hidden="true">

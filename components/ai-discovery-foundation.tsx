@@ -66,7 +66,7 @@ function ExpandableRow({
 
 export function AiDiscoveryFoundation() {
   return (
-    <section aria-labelledby="ai-discovery-heading" className="overflow-x-clip border-b border-border bg-porcelain">
+    <section aria-labelledby="ai-discovery-heading" className="overflow-x-clip border-b border-border bg-teal-mist">
       <div className="mx-auto grid max-w-[1320px] items-start gap-10 px-5 py-11 md:px-8 md:py-14 lg:grid-cols-[minmax(340px,0.9fr)_1.1fr] lg:gap-14">
         <div>
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
@@ -103,7 +103,7 @@ export function AiDiscoveryFoundation() {
             aria-hidden="true"
             className="absolute -top-2.5 left-7 h-2.5 w-14 rounded-t-sm bg-ink md:left-9 md:w-16"
           />
-          <div className="overflow-hidden rounded-xl border-2 border-ink bg-paper shadow-[8px_8px_0_0_var(--color-ink)]">
+          <div className="overflow-hidden rounded-[8px] border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--color-ink)]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink bg-paper px-5 py-4 md:px-6">
               <div>
                 <p className="text-lg font-semibold text-ink">Dealership AI Discovery Page</p>

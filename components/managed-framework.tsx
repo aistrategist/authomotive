@@ -34,6 +34,24 @@ const scopeGroups = [
   },
 ]
 
+const cardLooks = [
+  {
+    surface: 'border-2 border-ink bg-paper',
+    swatch: 'bg-ink',
+    rule: 'border-ink',
+  },
+  {
+    surface: 'border-2 border-ink bg-lime-mist',
+    swatch: 'bg-lime',
+    rule: 'border-lime',
+  },
+  {
+    surface: 'border-2 border-ink bg-orange-mist',
+    swatch: 'bg-action',
+    rule: 'border-action',
+  },
+] as const
+
 export function ManagedFramework() {
   return (
     <section aria-labelledby="framework-heading" className="border-b border-border bg-alloy">
@@ -55,32 +73,38 @@ export function ManagedFramework() {
           </p>
         </div>
 
-        {/* Scope map — a structured three-column ledger with vertical separators on desktop */}
-        <div className="mt-8 grid gap-6 md:mt-10 md:grid-cols-3 md:gap-8 md:[&>div:not(:first-child)]:border-l md:[&>div:not(:first-child)]:border-border md:[&>div:not(:first-child)]:pl-8">
-          {scopeGroups.map((group, gi) => (
-            <Reveal key={group.capability.id} delay={gi * 90} className="border-t-2 border-ink pt-5">
-              <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
-                {group.capability.brandedName}
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold tracking-tight text-ink">
-                {group.capability.plainName}
-              </h3>
-              <ul className="mt-4 flex flex-col">
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="border-t border-border py-3 text-base leading-relaxed text-ink first:border-t-0"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
+        <div className="mt-8 grid gap-5 md:mt-10 md:grid-cols-3">
+          {scopeGroups.map((group, gi) => {
+            const look = cardLooks[gi]
+            return (
+              <Reveal
+                key={group.capability.id}
+                delay={gi * 90}
+                className={`flex flex-col rounded-[8px] p-6 ${look.surface}`}
+              >
+                <span className={`h-3 w-3 ${look.swatch}`} aria-hidden="true" />
+                <p className="mt-4 font-mono text-xs uppercase tracking-wider text-signal-deep">
+                  {group.capability.brandedName}
+                </p>
+                <h3 className={`mt-2 border-t ${look.rule} pt-3 text-2xl font-semibold tracking-tight text-ink`}>
+                  {group.capability.plainName}
+                </h3>
+                <ul className="mt-4 flex flex-col">
+                  {group.items.map((item) => (
+                    <li
+                      key={item}
+                      className="border-t border-border py-3 text-base leading-relaxed text-ink first:border-t-0"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            )
+          })}
         </div>
 
-        {/* Ideal fit — a wide Warm Alloy inset field presenting bold qualification rows */}
-        <div className="-mx-5 mt-10 border-t-2 border-ink bg-porcelain px-5 py-8 md:-mx-8 md:mt-12 md:px-8 md:py-10">
+        <div className="mt-10 border-t-2 border-ink bg-porcelain px-5 py-8 md:mt-12 md:px-8 md:py-10">
           <h2 className="max-w-3xl text-3xl font-semibold tracking-tight text-ink md:text-4xl text-balance">
             {idealFit.headline}
           </h2>
@@ -89,7 +113,7 @@ export function ManagedFramework() {
               <Reveal key={signal}>
                 <a
                   href="#opportunity-review"
-                  className="lift group flex items-center justify-between gap-6 border-t border-ink/15 py-3.5 last:border-b md:py-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
+                  className="lift group flex items-center justify-between gap-6 border-t border-border py-3.5 last:border-b md:py-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
                 >
                   <div className="flex items-start gap-5 md:items-center md:gap-8">
                     <span
@@ -103,7 +127,7 @@ export function ManagedFramework() {
                     </p>
                   </div>
                   <span
-                    className="shrink-0 text-action transition-transform duration-200 motion-safe:group-hover:translate-x-1.5"
+                    className="shrink-0 text-action transition-transform duration-150 motion-safe:group-hover:translate-x-[3px]"
                     aria-hidden="true"
                   >
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -120,8 +144,7 @@ export function ManagedFramework() {
               </Reveal>
             ))}
           </div>
-          {/* A structural rule separates the closing qualification, not a new panel */}
-          <p className="mt-8 max-w-3xl border-t border-ink/15 pt-6 text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
+          <p className="mt-8 max-w-3xl border-t border-border pt-6 text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
             {idealFit.contrast}
           </p>
         </div>

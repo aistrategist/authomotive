@@ -5,7 +5,7 @@ import { scrollToId } from '@/lib/scroll-to-id'
 
 /**
  * Intercepts same-page hash links and replaces unbounded CSS smooth
- * scrolling with a 700ms capped animation. Reveal content stays visible.
+ * scrolling with a 600ms capped animation. Reveal content stays visible.
  */
 export function AnchorScroll() {
   useEffect(() => {

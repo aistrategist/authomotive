@@ -196,7 +196,7 @@ export function SignalArchitecture() {
           </div>
 
           <div id="signal-map-path" role="tabpanel" aria-label="Measurement layer" className="relative z-[2]">
-            <div ref={layerRef} className="rounded-xl border-2 border-signal-deep bg-porcelain p-4 md:p-5">
+            <div ref={layerRef} className="rounded-[8px] border-2 border-signal-deep bg-porcelain p-4 md:p-5">
               <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
                 The measurement layer
               </p>

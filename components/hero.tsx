@@ -6,7 +6,7 @@ import { HeroStage } from '@/components/hero-stage'
 
 /**
  * First viewport: brand + headline + support + CTAs + dominant HeroStage.
- * Band two (porcelain): buyer question + outcome tabs — kept below the fold.
+ * Band two: Warm Paper behind the buyer question, Porcelain behind outcomes.
  */
 export function Hero() {
   const [active, setActive] = useState(0)
@@ -60,10 +60,10 @@ export function Hero() {
         <span className="absolute left-0 top-0 h-[3px] w-20 -translate-y-1/2 bg-action md:w-28" />
       </div>
 
-      <section aria-labelledby="buyer-question-heading" className="border-b border-border bg-porcelain">
-        <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
-          <div className="grid gap-8 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
-            <blockquote className="lg:sticky lg:top-24">
+      <section aria-labelledby="buyer-question-heading" className="relative border-b border-border bg-paper">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] bg-porcelain lg:block" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-[1320px] gap-8 px-5 py-12 md:px-8 md:py-16 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
+            <blockquote className="bg-paper lg:sticky lg:top-24">
               <p
                 id="buyer-question-heading"
                 className="text-2xl font-semibold leading-snug tracking-tight text-ink text-pretty md:text-3xl"
@@ -74,6 +74,7 @@ export function Hero() {
                 A real buyer question your website should own
               </cite>
               <div className="mt-6 hidden items-center gap-0 lg:flex" aria-hidden="true">
+                <div className="h-0.5 w-10 bg-lime" />
                 <div className="h-0.5 w-16 bg-action" />
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="-ml-px shrink-0">
                   <path
@@ -87,8 +88,9 @@ export function Hero() {
               </div>
             </blockquote>
 
-            <div>
+            <div className="-mx-5 bg-porcelain px-5 py-8 md:-mx-8 md:px-8 lg:mx-0 lg:bg-transparent lg:px-0 lg:py-0">
               <div className="mb-5 flex items-center gap-0 lg:hidden" aria-hidden="true">
+                <div className="h-0.5 w-10 bg-lime" />
                 <div className="h-0.5 w-16 bg-action" />
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="-ml-px shrink-0">
                   <path
@@ -129,7 +131,7 @@ export function Hero() {
                         className={`text-[2rem] font-bold leading-[1.08] tracking-tight transition-colors duration-200 sm:text-[2.75rem] lg:text-[3.25rem] ${
                           selected
                             ? 'text-ink'
-                            : 'text-ink/25 group-hover:text-ink/50'
+                            : 'text-muted-foreground group-hover:text-ink'
                         }`}
                       >
                         {outcome.statement}
@@ -151,7 +153,6 @@ export function Hero() {
               </div>
             </div>
           </div>
-        </div>
       </section>
     </>
   )

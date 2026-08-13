@@ -1,14 +1,19 @@
 import { industryGap } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 
+const numberTiles = [
+  'bg-ink text-porcelain',
+  'bg-lime text-ink',
+  'bg-action text-ink',
+] as const
+
 /**
- * One connected problem field. Three equal columns share a single
- * structural rail across the top, ending in one Orange unresolved
- * endpoint — a single system with three failures, not three cards.
+ * Diagnostic chapter: three equal editorial issue cards on Alloy.
  */
 export function IndustryGap() {
   return (
-    <section aria-labelledby="industry-gap-heading" className="border-b border-border bg-alloy">
+    <section aria-labelledby="industry-gap-heading" className="relative border-b border-border bg-alloy">
+      <span className="absolute left-0 top-0 h-[3px] w-28 bg-action" aria-hidden="true" />
       <div className="mx-auto max-w-[1320px] px-5 py-14 md:px-8 md:py-20">
         <div className="max-w-2xl">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
@@ -25,36 +30,30 @@ export function IndustryGap() {
           </p>
         </div>
 
-        {/* One shared structural rail across the top of the three problem columns */}
-        <div className="relative mt-10 md:mt-14">
-          <div className="absolute inset-x-0 top-0 hidden h-px bg-border md:block" aria-hidden="true" />
-          <Reveal as="div">
-            <div className="grid gap-8 md:grid-cols-3 md:gap-10">
-              {industryGap.problems.map((problem, i) => (
-                <div
-                  key={problem.title}
-                  className="border-t border-border pt-6 md:border-t-0 md:pt-8 first:border-t-0"
+        <Reveal as="div">
+          <div className="mt-10 grid gap-5 md:mt-14 lg:grid-cols-3 lg:gap-5">
+            {industryGap.problems.map((problem, i) => (
+              <article
+                key={problem.title}
+                className="flex flex-col rounded-[8px] border-2 border-ink bg-porcelain p-6 shadow-[0_6px_0_0_var(--ink)] lg:aspect-square lg:p-7"
+              >
+                <span
+                  className={`flex h-16 w-16 items-center justify-center font-mono text-xl font-bold ${numberTiles[i]}`}
+                  aria-hidden="true"
                 >
-                  <span
-                    className="font-mono text-5xl font-bold leading-none text-porcelain md:text-6xl"
-                    style={{ WebkitTextStroke: '1.5px var(--color-signal-deep)' }}
-                    aria-hidden="true"
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className="mt-4 text-xl font-semibold leading-snug tracking-tight text-ink md:text-2xl text-pretty">
-                    {problem.title}
-                  </h3>
-                  <p className="mt-2.5 text-base leading-relaxed text-muted-foreground">
-                    {problem.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="mt-5 text-xl font-semibold leading-snug tracking-tight text-ink md:text-2xl text-pretty">
+                  {problem.title}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground md:mt-auto">
+                  {problem.body}
+                </p>
+              </article>
+            ))}
+          </div>
+        </Reveal>
 
-        {/* One Orange unresolved endpoint, then the closing statement as the resolved bridge */}
         <div className="mt-10 flex items-center gap-0 md:mt-12" aria-hidden="true">
           <div className="h-0.5 w-16 bg-action md:w-28" />
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="-ml-px shrink-0">

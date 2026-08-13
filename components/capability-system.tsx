@@ -69,24 +69,71 @@ const nextSteps: Record<string, { href: string; label: string }> = {
   'track-matters': { href: '#measurement', label: 'See the measurement' },
 }
 
+function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'lime' | 'action' }) {
+  const stroke = tone === 'ink' ? 'var(--lime)' : tone === 'lime' ? 'var(--ink)' : 'var(--ink)'
+  const accent = tone === 'ink' ? 'var(--lime)' : tone === 'lime' ? 'var(--action)' : 'var(--lime)'
+
+  if (id === 'get-found') {
+    return (
+      <svg width="56" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
+        <path d="M4 32 C16 32, 18 8, 32 8 S48 28, 52 12" stroke={stroke} strokeWidth="2" strokeLinecap="round" />
+        <circle cx="4" cy="32" r="3" fill={accent} />
+        <circle cx="52" cy="12" r="3" fill={stroke} />
+      </svg>
+    )
+  }
+  if (id === 'know-working') {
+    return (
+      <svg width="56" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
+        {[10, 16, 14, 22, 28].map((h, i) => (
+          <rect key={i} x={6 + i * 10} y={36 - h} width="6" height={h} fill={i === 4 ? accent : stroke} opacity={i === 4 ? 1 : 0.45} />
+        ))}
+      </svg>
+    )
+  }
+  return (
+    <svg width="56" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
+      <path d="M8 20 H48" stroke={stroke} strokeWidth="1.5" />
+      <circle cx="8" cy="20" r="4" fill={stroke} />
+      <circle cx="28" cy="20" r="4" fill={accent} />
+      <circle cx="48" cy="20" r="4" fill={stroke} />
+    </svg>
+  )
+}
+
 const jobLooks = [
   {
-    card: 'border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]',
+    card: 'border-ink bg-ink text-porcelain',
+    shadow: 'shadow-[6px_6px_0_0_var(--lime)]',
+    shadowOn: 'shadow-[8px_8px_0_0_var(--lime)]',
     eyebrow: 'text-lime',
+    number: 'text-porcelain/20',
     arrow: 'text-lime',
     focus: 'focus-visible:outline-lime',
+    pointer: 'bg-lime',
+    tone: 'ink' as const,
   },
   {
-    card: 'border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]',
+    card: 'border-ink bg-lime text-ink',
+    shadow: 'shadow-[6px_6px_0_0_var(--action)]',
+    shadowOn: 'shadow-[8px_8px_0_0_var(--action)]',
     eyebrow: 'text-ink',
+    number: 'text-ink/15',
     arrow: 'text-action',
     focus: 'focus-visible:outline-ink',
+    pointer: 'bg-action',
+    tone: 'lime' as const,
   },
   {
-    card: 'border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--lime)]',
+    card: 'border-ink bg-action text-ink',
+    shadow: 'shadow-[6px_6px_0_0_var(--lime)]',
+    shadowOn: 'shadow-[8px_8px_0_0_var(--lime)]',
     eyebrow: 'text-ink',
+    number: 'text-ink/15',
     arrow: 'text-lime',
     focus: 'focus-visible:outline-ink',
+    pointer: 'bg-lime',
+    tone: 'action' as const,
   },
 ] as const
 
@@ -99,7 +146,8 @@ export function CapabilitySystem() {
   const nextStep = nextSteps[active.id]
 
   return (
-    <section id="capabilities" aria-labelledby="capabilities-heading" className="scroll-mt-24 border-b border-border bg-paper">
+    <section id="capabilities" aria-labelledby="capabilities-heading" className="relative scroll-mt-24 border-b border-border bg-paper">
+      <span className="absolute left-0 top-0 h-[3px] w-24 bg-lime" aria-hidden="true" />
       <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
         {/* Editorial introduction */}
         <div className="max-w-2xl">
@@ -117,11 +165,11 @@ export function CapabilitySystem() {
           </p>
         </div>
 
-        {/* Three-job selector — equal feature cards; click still drives the panel */}
+        {/* Three-job selector — true square feature cards on desktop */}
         <div
           role="tablist"
           aria-label="Capabilities"
-          className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:items-stretch md:mt-10"
+          className="mt-8 flex flex-col items-stretch gap-5 lg:mt-10 lg:flex-row lg:justify-center lg:gap-5"
         >
           {capabilitySystem.capabilities.map((cap, i) => {
             const selected = cap.id === activeId
@@ -148,28 +196,44 @@ export function CapabilitySystem() {
                   setActiveId(id)
                   document.getElementById(`cap-tab-${id}`)?.focus()
                 }}
-                className={`flex h-full min-h-[180px] w-full min-w-0 flex-col items-start rounded-[8px] border-2 px-5 py-5 text-left md:min-h-[200px] md:px-6 ${job.card} ${job.focus} focus-visible:outline-2 focus-visible:outline-offset-2`}
+                className={`job-card relative flex min-h-[220px] w-full min-w-0 flex-col rounded-[8px] border-2 px-5 py-5 text-left lg:aspect-square lg:h-auto lg:min-h-0 lg:max-w-[360px] lg:flex-1 lg:px-6 ${job.card} ${selected ? job.shadowOn : job.shadow} ${job.focus} focus-visible:outline-2 focus-visible:outline-offset-2`}
               >
-                <span className={`font-mono text-[11px] font-medium uppercase tracking-[0.16em] ${job.eyebrow}`}>
+                <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[6px]" aria-hidden="true">
+                  <span className={`absolute right-3 top-2 font-mono text-[4.5rem] font-bold leading-none ${job.number}`}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </span>
+                <span className={`relative z-[1] font-mono text-[11px] font-medium uppercase tracking-[0.16em] ${job.eyebrow}`}>
                   Job {i + 1} · {cap.brandedName}
                 </span>
-                <span className="mt-3 text-xl font-semibold leading-snug tracking-tight md:text-2xl">
+                <span className="relative z-[1] mt-auto max-w-[12.5rem] text-xl font-semibold leading-snug tracking-tight md:text-2xl">
                   {cap.plainName}
                 </span>
-                <span className={`mt-auto flex items-center pt-6 ${job.arrow}`} aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M3 10h12m0 0l-4.5-4.5M15 10l-4.5 4.5"
-                      stroke="currentColor"
-                      strokeWidth={selected ? 2.5 : 2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                <span className="relative z-[1] mt-4 flex w-full items-end justify-between gap-3">
+                  <span className={job.arrow} aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M3 10h12m0 0l-4.5-4.5M15 10l-4.5 4.5"
+                        stroke="currentColor"
+                        strokeWidth={selected ? 2.5 : 2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <JobMotif id={cap.id} tone={job.tone} />
                 </span>
               </button>
             )
           })}
+        </div>
+
+        <div className="mt-1 hidden justify-center gap-5 lg:flex" aria-hidden="true">
+          {capabilitySystem.capabilities.map((cap, i) => (
+            <div key={cap.id} className="flex w-full max-w-[360px] flex-1 justify-center">
+              <span className={`h-1.5 w-20 ${i === activeIndex ? jobLooks[i].pointer : 'bg-transparent'}`} />
+            </div>
+          ))}
         </div>
 
         {/* Selected-job workspace — one compact operating surface, stable dimensions across jobs */}
@@ -177,7 +241,9 @@ export function CapabilitySystem() {
           role="tabpanel"
           id={`cap-panel-${active.id}`}
           aria-labelledby={`cap-tab-${active.id}`}
-          className="mt-4 rounded-[8px] border-2 border-ink bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)]"
+          className={`mt-3 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${
+            activeIndex === 1 ? 'border-t-action' : 'border-t-lime'
+          }`}
         >
           <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-3 md:px-7">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">

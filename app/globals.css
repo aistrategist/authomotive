@@ -36,6 +36,9 @@
   --color-coral: var(--coral);
   --color-action: var(--action);
   --color-action-deep: var(--action-deep);
+  --color-lime-mist: var(--lime-mist);
+  --color-orange-mist: var(--orange-mist);
+  --color-teal-mist: var(--teal-mist);
 
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -66,6 +69,9 @@
   /* Action colors — Orange means "take action". Lime means "active / connected". */
   --action: #ff6a3d; /* Action Orange */
   --action-deep: #a83a1b; /* Deep Orange */
+  --lime-mist: #eeffd2;
+  --orange-mist: #fff0e8;
+  --teal-mist: #d8eae6;
 
   /* Semantic mapping */
   --background: var(--paper);
@@ -304,7 +310,7 @@
       box-shadow 0.16s ease;
   }
   .lift:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 }
 
@@ -1413,8 +1419,8 @@
 }
 
 .paper-grid-wash::before {
-  background-image: linear-gradient(to right, #b4bbb8 1px, transparent 1px),
-    linear-gradient(to bottom, #b4bbb8 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgb(6 27 32 / 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(6 27 32 / 0.1) 1px, transparent 1px);
   mask-image: radial-gradient(ellipse 86% 120% at 92% 48%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.28) 46%, #000 76%);
   -webkit-mask-image: radial-gradient(ellipse 86% 120% at 92% 48%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.28) 46%, #000 76%);
 }
@@ -1629,10 +1635,31 @@
 /* Platform stack slabs                                                */
 /* ------------------------------------------------------------------ */
 
+.job-card {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.job-card[aria-selected='true'] {
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .job-card,
+  .job-card[aria-selected='true'] {
+    transition: none;
+    transform: none;
+  }
+}
+
 .stack-body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: grid-template-rows 0.28s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stack-body {
+    transition: none;
+  }
 }
 .stack-body > div {
   overflow: hidden;
@@ -1643,10 +1670,10 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .stack-slab {
-    transition: transform 0.18s ease;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
   }
   .stack-slab:hover {
-    transform: translate(-2px, -2px);
+    transform: translate(-3px, -3px);
   }
   .stack-float {
     animation: stack-float 3.6s ease-in-out infinite;
