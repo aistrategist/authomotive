@@ -114,7 +114,7 @@ function SearchViz({ compact = false }: { compact?: boolean }) {
             width={bw}
             height={bh}
             rx="2"
-            className={i === values.length - 1 ? 'stack-bar fill-action' : 'stack-bar fill-ink/25'}
+            className={i === values.length - 1 ? 'stack-bar fill-action' : 'stack-bar fill-ink/45'}
             style={{ animationDelay: `${i * 70}ms` }}
           />
         )
@@ -135,7 +135,7 @@ function MeasureViz({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
       <svg viewBox="0 0 120 40" className="h-9 w-[7.5rem]" aria-hidden="true">
-        <path d="M8 20 H112" className="stroke-ink/30" strokeWidth="2" />
+        <path d="M8 20 H112" className="stroke-ink/55" strokeWidth="2" />
         <circle cx="20" cy="20" r="5" className="fill-ink" />
         <circle cx="60" cy="20" r="5" className="iq-pulse-lime fill-ink/80" />
         <circle cx="100" cy="20" r="5" className="fill-ink" />
@@ -202,19 +202,17 @@ function StackSlab({
       ? 'border-2 border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]'
       : tone === 'lime'
         ? 'border-2 border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]'
-        : 'border-2 border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--lime)]'
+        : 'border-2 border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--ink)]'
 
   const focus = tone === 'ink' ? 'focus-visible:outline-lime' : 'focus-visible:outline-ink'
 
   const indexClass = tone === 'ink' ? 'text-lime' : 'text-ink'
   const titleClass = tone === 'ink' ? 'text-porcelain' : 'text-ink'
-  const kickerClass = tone === 'ink' ? 'text-porcelain/85' : 'text-ink/80'
+  const kickerClass = tone === 'ink' ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'
   const plusClass =
     tone === 'ink'
       ? 'border-2 border-lime bg-lime text-ink'
-      : tone === 'lime'
-        ? 'border-2 border-ink bg-action text-ink'
-        : 'border-2 border-ink bg-lime text-ink'
+      : 'border-2 border-ink bg-paper text-ink'
 
   return (
     <div className={`stack-slab overflow-hidden rounded-[8px] ${surface}`}>
@@ -270,7 +268,7 @@ function StackSlab({
 }
 
 export function PlatformCredibility() {
-  const [openId, setOpenId] = useState<string | null>(platformCredibility.categories[0].id)
+  const [openId, setOpenId] = useState<string | null>(null)
 
   return (
     <section

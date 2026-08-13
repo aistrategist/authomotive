@@ -1409,12 +1409,12 @@
 }
 
 .paper-grid-wash {
-  background-color: var(--paper);
+  background-color: #e4e6e5;
 }
 
 .paper-grid-wash::before {
-  background-image: linear-gradient(to right, rgb(6 27 32 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(6 27 32 / 0.06) 1px, transparent 1px);
+  background-image: linear-gradient(to right, #b4bbb8 1px, transparent 1px),
+    linear-gradient(to bottom, #b4bbb8 1px, transparent 1px);
   mask-image: radial-gradient(ellipse 86% 120% at 92% 48%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.28) 46%, #000 76%);
   -webkit-mask-image: radial-gradient(ellipse 86% 120% at 92% 48%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.28) 46%, #000 76%);
 }
