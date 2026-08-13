@@ -153,7 +153,7 @@ function StackSlab({
                 <MarkChip key={mark.id} mark={mark} />
               ))}
             </div>
-            <div className="mt-6 rounded-[8px] border-2 border-ink bg-paper p-4 md:p-5">
+            <div className="mt-6">
               <ExpandedViz tone={tone} />
             </div>
           </div>

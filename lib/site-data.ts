@@ -33,21 +33,18 @@ export const hero = {
   outcomes: [
     {
       id: 'earn',
-      statement: 'EARN DISCOVERY',
-      explanation:
-        'A shopper finds a dealership-owned answer to a specific question generic dealer content leaves unresolved.',
+      statement: 'Get Found',
+      explanation: 'Capture real buyer questions.',
     },
     {
       id: 'guide',
-      statement: 'GUIDE THE DECISION',
-      explanation:
-        'The experience helps that shopper evaluate fit and move naturally toward relevant inventory.',
+      statement: 'Guide Buyers',
+      explanation: 'Help shoppers compare and move toward inventory.',
     },
     {
       id: 'prove',
-      statement: 'PROVE THE VALUE',
-      explanation:
-        'The dealership sees the visibility, engagement, selections, and meaningful handoffs connected to the work.',
+      statement: 'Prove What Works',
+      explanation: 'Connect the journey to meaningful buyer actions.',
     },
   ],
 }
@@ -89,7 +86,7 @@ export interface Capability {
 
 export const capabilitySystem = {
   eyebrow: 'ONE AUTHORITY SYSTEM · THREE CONNECTED JOBS',
-  headline: 'One system. Three jobs. Every decision connected.',
+  headline: 'One system. Three jobs. One measurable standard.',
   supporting:
     'We build the authority, connect the signals, and turn the evidence into a clear next move.',
   capabilities: [
@@ -213,7 +210,7 @@ export const authorityTheater = {
 }
 
 export const aiDiscovery = {
-  eyebrow: 'AI DISCOVERY · FIRST-PARTY FOUNDATION',
+  eyebrow: 'INCLUDED FOUNDATION WITHIN AUTHORITY EXPERIENCES',
   headline: 'Give AI a dependable source about your dealership.',
   supporting:
     'Every engagement includes a managed, dealership-owned AI Discovery page that organizes verified business information for people, search systems, and AI-assisted discovery.',
@@ -360,7 +357,7 @@ export const managedFramework = {
 }
 
 export const idealFit = {
-  headline: 'Built for dealerships that expect more from their website.',
+  headline: 'A strong fit when…',
   signals: [
     'Your content looks like every competing dealer website.',
     'Your reports provide numbers without a clear explanation.',
@@ -375,7 +372,7 @@ export const finalCta = {
   eyebrow: 'ONE FOCUSED REVIEW · START WITH YOUR WEBSITE',
   headline: 'Find the strongest opportunity on your dealership website.',
   supporting:
-    'Request an Authomotive Opportunity Review. We will identify the clearest opening across authority content, AI discovery, reporting, and measurement.',
+    'Start with an Authomotive Opportunity Review. We will identify the clearest opening across authority content, AI discovery, reporting, and measurement.',
   concernOptions: [
     'Our content is not earning enough visibility',
     'We cannot clearly explain performance',

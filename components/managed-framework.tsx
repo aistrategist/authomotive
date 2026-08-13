@@ -6,11 +6,9 @@ const scopeGroups = [
   {
     capability: capabilitySystem.capabilities[0], // Get Found. Guide Buyers.
     items: [
-      'Dealership visibility and opportunity review',
-      'Prioritized authority-content roadmap',
-      'Search- and AI-ready Authority Experiences',
-      'Managed AI Discovery page',
-      'Interactive research elements where valuable',
+      'Opportunity and visibility review',
+      'Prioritized Authority Experience roadmap',
+      'Authority Experiences and managed AI Discovery',
       'Inventory and conversion pathways',
     ],
   },
@@ -18,18 +16,18 @@ const scopeGroups = [
     capability: capabilitySystem.capabilities[1], // Prove What Works.
     items: [
       'Unified monthly intelligence',
-      'MoM, YoY, locality, engagement, and content analysis',
-      'Identifiable AI referral and visibility observations',
-      'Evidence-backed next-step recommendations',
+      'MoM, YoY, locality, and content analysis',
+      'Search and AI visibility observations',
+      'Evidence-backed next actions',
     ],
   },
   {
     capability: capabilitySystem.capabilities[2], // Track What Matters
     items: [
-      'GTM, GA4, and custom-event improvements',
-      'ASC-aligned event planning',
-      'Advertising and campaign measurement support',
-      'Ongoing optimization and governance',
+      'GA4, GTM, and custom-event definitions',
+      'ASC-aligned measurement planning',
+      'Vendor and advertising measurement support',
+      'Validation, optimization, and governance',
     ],
   },
 ]
@@ -73,23 +71,23 @@ export function ManagedFramework() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-5 md:mt-10 md:grid-cols-3">
+        <div className="mt-8 grid items-stretch gap-5 md:mt-10 md:grid-cols-3">
           {scopeGroups.map((group, gi) => {
             const look = cardLooks[gi]
             return (
               <Reveal
                 key={group.capability.id}
                 delay={gi * 90}
-                className={`flex flex-col rounded-[8px] p-6 ${look.surface}`}
+                className={`flex h-full flex-col rounded-[8px] p-6 ${look.surface}`}
               >
                 <span className={`h-3 w-3 ${look.swatch}`} aria-hidden="true" />
                 <p className="mt-4 font-mono text-xs uppercase tracking-wider text-signal-deep">
-                  {group.capability.brandedName}
+                  Job {gi + 1} · {group.capability.brandedName}
                 </p>
-                <h3 className={`mt-2 border-t ${look.rule} pt-3 text-2xl font-semibold tracking-tight text-ink`}>
+                <h3 className={`mt-2 border-t ${look.rule} pt-3 text-xl font-semibold tracking-tight text-ink md:text-2xl`}>
                   {group.capability.plainName}
                 </h3>
-                <ul className="mt-4 flex flex-col">
+                <ul className="mt-4 flex flex-1 flex-col">
                   {group.items.map((item) => (
                     <li
                       key={item}
@@ -104,47 +102,31 @@ export function ManagedFramework() {
           })}
         </div>
 
-        <div className="mt-10 border-t-2 border-ink bg-porcelain px-5 py-8 md:mt-12 md:px-8 md:py-10">
-          <h2 className="max-w-3xl text-3xl font-semibold tracking-tight text-ink md:text-4xl text-balance">
+        <div className="mt-8 border-t-2 border-ink bg-porcelain px-5 py-6 md:mt-10 md:px-8 md:py-8">
+          <h2 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
             {idealFit.headline}
           </h2>
-          <div className="mt-6 flex flex-col">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {idealFit.signals.map((signal, i) => (
               <Reveal key={signal}>
                 <a
                   href="#opportunity-review"
-                  className="lift group flex items-center justify-between gap-6 border-t border-border py-3.5 last:border-b md:py-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
+                  className="lift group flex min-h-[44px] items-start gap-3 border border-ink/15 bg-paper px-4 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
                 >
-                  <div className="flex items-start gap-5 md:items-center md:gap-8">
-                    <span
-                      className="font-mono text-lg font-bold text-fog transition-colors group-hover:text-action-deep md:text-xl"
-                      aria-hidden="true"
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="text-xl font-semibold leading-snug tracking-tight text-ink md:text-2xl lg:text-3xl text-pretty">
-                      {signal}
-                    </p>
-                  </div>
                   <span
-                    className="shrink-0 text-action transition-transform duration-150 motion-safe:group-hover:translate-x-[3px]"
+                    className="font-mono text-sm font-bold text-fog transition-colors group-hover:text-action-deep"
                     aria-hidden="true"
                   >
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                      <path
-                        d="M5 14h17m0 0l-6.5-6.5M22 14l-6.5 6.5"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    {String(i + 1).padStart(2, '0')}
                   </span>
+                  <p className="text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
+                    {signal}
+                  </p>
                 </a>
               </Reveal>
             ))}
           </div>
-          <p className="mt-8 max-w-3xl border-t border-border pt-6 text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
+          <p className="mt-5 max-w-3xl border-t border-border pt-5 text-sm leading-relaxed text-muted-foreground md:text-base text-pretty">
             {idealFit.contrast}
           </p>
         </div>

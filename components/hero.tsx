@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { hero, siteConfig } from '@/lib/site-data'
 import { HeroStage } from '@/components/hero-stage'
 
@@ -9,9 +8,6 @@ import { HeroStage } from '@/components/hero-stage'
  * Band two: Warm Paper behind the buyer question, Porcelain behind outcomes.
  */
 export function Hero() {
-  const [active, setActive] = useState(0)
-  const activeOutcome = hero.outcomes[active]
-
   return (
     <>
       <section id="top" className="hero-atmosphere relative overflow-visible scroll-mt-24">
@@ -101,54 +97,22 @@ export function Hero() {
                 </svg>
               </div>
 
-              <div
-                role="tablist"
-                aria-label="What Authomotive makes happen"
-                className="flex flex-col gap-1"
-              >
-                {hero.outcomes.map((outcome, i) => {
-                  const selected = active === i
-                  return (
-                    <button
-                      key={outcome.id}
-                      type="button"
-                      role="tab"
-                      id={`outcome-tab-${outcome.id}`}
-                      aria-selected={selected}
-                      aria-controls="outcome-panel"
-                      onClick={() => setActive(i)}
-                      className="group flex min-h-[44px] items-baseline gap-4 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
-                    >
-                      <span
-                        className={`hidden h-1 shrink-0 rounded-full transition-all duration-300 motion-reduce:transition-none sm:block ${
-                          selected ? 'w-12 bg-lime ring-1 ring-signal-deep/40' : 'w-4 bg-border'
-                        }`}
-                        aria-hidden="true"
-                      />
-                      <span
-                        className={`text-[2rem] font-bold leading-[1.08] tracking-tight transition-colors duration-200 sm:text-[2.75rem] lg:text-[3.25rem] ${
-                          selected
-                            ? 'text-ink'
-                            : 'text-muted-foreground group-hover:text-ink'
-                        }`}
-                      >
-                        {outcome.statement}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div
-                role="tabpanel"
-                id="outcome-panel"
-                aria-labelledby={`outcome-tab-${activeOutcome.id}`}
-                className="mt-5 min-h-[76px] max-w-2xl border-l-2 border-lime pl-5"
-              >
-                <p key={activeOutcome.id} className="panel-swap text-lg leading-relaxed text-ink text-pretty">
-                  {activeOutcome.explanation}
-                </p>
-              </div>
+              <ul className="flex flex-col gap-5" aria-label="How the authority system supports the promise">
+                {hero.outcomes.map((outcome, i) => (
+                  <li key={outcome.id} className="flex items-start gap-4">
+                    <span
+                      className={`mt-2.5 h-1 w-8 shrink-0 ${
+                        i === 0 ? 'bg-lime' : i === 1 ? 'bg-action' : 'bg-ink'
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <p className="text-lg leading-snug text-pretty md:text-xl">
+                      <span className="font-semibold tracking-tight text-ink">{outcome.statement}</span>
+                      <span className="text-muted-foreground"> — {outcome.explanation}</span>
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
       </section>

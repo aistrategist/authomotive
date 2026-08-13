@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { authorityTheater } from '@/lib/site-data'
+import { authorityTheater, cta } from '@/lib/site-data'
 
 type ViewId = 'shopper' | 'discovery' | 'measurable'
 
@@ -271,7 +271,7 @@ export function AuthorityExperience() {
             measured.
           </p>
           <a href="#opportunity-review" className="btn btn-action-dark shrink-0">
-            Request My Opportunity Review
+            {cta.primary}
             <span className="btn-arrow" aria-hidden="true">
               →
             </span>

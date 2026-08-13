@@ -7,7 +7,7 @@ import { cta, navLinks, siteConfig } from '@/lib/site-data'
 function Wordmark({ inverted = false }: { inverted?: boolean }) {
   return (
     <span
-      className={`text-[1.375rem] font-bold tracking-tight transition-colors duration-200 md:text-[1.625rem] ${
+      className={`text-[1.375rem] font-bold tracking-tight md:text-[1.625rem] ${
         inverted ? 'text-paper' : 'text-ink'
       }`}
     >
@@ -30,7 +30,7 @@ export function SiteHeader() {
     setMounted(true)
   }, [])
 
-  // Transparent-over-hero → solid Clean Paper scroll state. A single listener
+  // Transparent-over-hero → solid Warm Paper scroll state. A single listener
   // attached once, throttled via rAF, so it never flickers near the threshold.
   // Also re-synced on bfcache restore, tab refocus, and resize/layout shifts,
   // since those can change or reveal scroll position without a scroll event.
@@ -151,10 +151,8 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 border-b transition-[background-color,backdrop-filter,box-shadow,border-color] duration-200 ${
-        scrolled
-          ? 'border-ink/10 bg-paper/95 shadow-[0_6px_16px_-12px_rgba(6,27,32,0.35)] backdrop-blur-md'
-          : 'border-paper/15 bg-transparent'
+      className={`fixed inset-x-0 top-0 z-40 border-b ${
+        scrolled ? 'border-ink/10 bg-paper' : 'border-paper/15 bg-transparent'
       }`}
     >
       <div className="mx-auto flex h-[4.5rem] max-w-[1320px] items-center justify-between gap-6 px-5 md:px-8">
@@ -176,7 +174,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 aria-current={isActive ? 'true' : undefined}
-                className={`relative whitespace-nowrap rounded-sm py-1 text-[15px] font-semibold tracking-[-0.006em] transition-colors duration-200 hover:underline hover:underline-offset-[6px] hover:decoration-action hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px ${
+                className={`relative whitespace-nowrap rounded-sm py-1 text-[15px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-action hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px ${
                   scrolled ? 'text-ink focus-visible:outline-ink' : 'text-paper focus-visible:outline-lime'
                 }`}
               >
@@ -208,8 +206,8 @@ export function SiteHeader() {
           onClick={() => setMenuOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
-          className={`flex h-11 w-11 items-center justify-center rounded-md border-2 transition-colors duration-200 lg:hidden ${
-            scrolled ? 'border-ink bg-ink text-paper' : 'border-paper/60 bg-ink/30 text-paper backdrop-blur-sm'
+          className={`flex h-11 w-11 items-center justify-center rounded-md border-2 lg:hidden ${
+            scrolled ? 'border-ink bg-paper text-ink' : 'border-paper/60 bg-ink/30 text-paper'
           }`}
         >
           <span className="sr-only">Open menu</span>

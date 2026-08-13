@@ -154,7 +154,7 @@ const TRAIL_SEGMENTS = [
 const CHANNELS = [
   { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
   { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 7 },
-  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#fffcf7', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -7 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8f0ed', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -7 },
   { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 4 },
   { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -4 },
 ] as const
@@ -311,63 +311,71 @@ function uiChanged(a: UiSnap, b: UiSnap) {
 function applyTravelerDom(
   g: SVGGElement | null,
   steer: SVGGElement | null,
-  live: { progress: number; opacity: number; thinking: boolean; branch: BranchId; heading: number },
+  live: {
+    progress: number
+    opacity: number
+    thinking: boolean
+    branch: BranchId
+    heading: number
+    atNode: boolean
+  },
 ) {
   if (!g) return
   g.style.offsetPath = OFFSET_PATH[live.branch]
   g.style.offsetDistance = `${(live.progress * 100).toFixed(3)}%`
   g.style.opacity = String(live.opacity)
   g.classList.toggle('is-thinking', live.thinking)
+  g.classList.toggle('is-node', live.atNode)
   if (steer) steer.style.transform = 'rotate(0deg)'
 }
 
 const INK = '#061b20'
+const DEEP_TEAL = '#0B3038'
 
-/** Compact source-colored traffic token — not an avatar or glowing badge */
-function VisitorFace({
-  color,
-  variant = 0,
-  clipId,
-}: {
-  color: string
-  variant?: number
-  clipId: string
-}) {
-  const s = 12
-  const headY = variant === 1 ? -2.6 : variant === 2 ? -3.2 : -2.8
-  const headR = variant === 1 ? 3.2 : 3.6
-  const bodyW = variant === 1 ? 9.4 : 8.6
+/** Raw head-and-shoulders glyph — no plate, halo, ring, or carrier. */
+function VisitorGlyph({ color, variant = 0 }: { color: string; variant?: number }) {
+  const headY = variant === 1 ? -4.1 : variant === 2 ? -4.5 : -4.3
+  const headR = variant === 1 ? 3.5 : variant === 2 ? 3.75 : 3.6
+  const bodyW = variant === 1 ? 7.3 : variant === 2 ? 6.5 : 6.9
 
   return (
-    <g className="hs-packet hs-visitor">
-      <rect x={-s + 1} y={-s + 2} width={s * 2} height={s * 2} rx="3.5" fill={color} opacity="0.22" />
-      <rect x={-s} y={-s} width={s * 2} height={s * 2} rx="3.5" fill={INK} stroke={color} strokeWidth="1.75" />
-      <g clipPath={`url(#${clipId})`}>
-        <circle cx={variant === 2 ? 0.4 : 0} cy={headY} r={headR} fill={color} />
-        {variant === 2 ? <ellipse cx="1.8" cy={headY - 0.8} rx="2.4" ry="2.9" fill={color} /> : null}
-        <path
-          d={`M ${-bodyW} ${s + 1} C ${-bodyW} 1.6 ${-3.4} 0.3 0 0.3 C 3.4 0.3 ${bodyW} 1.6 ${bodyW} ${s + 1} Z`}
+    <g
+      className="hs-visitor"
+      fill={color}
+      stroke={DEEP_TEAL}
+      strokeWidth="1"
+      strokeLinejoin="round"
+    >
+      <circle cx={variant === 2 ? 0.35 : 0} cy={headY} r={headR} />
+      {variant === 2 ? (
+        <ellipse
+          cx="1.6"
+          cy={headY - 0.7}
+          rx="2.1"
+          ry="2.5"
           fill={color}
+          stroke={DEEP_TEAL}
         />
-      </g>
+      ) : null}
+      <path
+        d={`M ${-bodyW} 8.2 C ${-bodyW} 1.5 -3.1 0.15 0 0.15 C 3.1 0.15 ${bodyW} 1.5 ${bodyW} 8.2 Z`}
+      />
+    </g>
+  )
+}
+
+function VisitorFace({ color, variant = 0 }: { color: string; variant?: number }) {
+  return (
+    <g className="hs-packet hs-visitor-fit">
+      <VisitorGlyph color={color} variant={variant} />
     </g>
   )
 }
 
 function VisitorChipIcon({ color, variant = 0 }: { color: string; variant?: number }) {
   return (
-    <svg className="hs-chip-face" viewBox="-12 -12 24 24" width="14" height="14" aria-hidden="true">
-      <rect x="-10" y="-10" width="20" height="20" rx="3" fill={INK} stroke={color} strokeWidth="1.75" />
-      <circle cx={variant === 2 ? 0.3 : 0} cy={variant === 2 ? -2.2 : -1.9} r={variant === 1 ? 2.6 : 2.9} fill={color} />
-      {variant === 2 ? <ellipse cx="1.3" cy="-2.8" rx="1.8" ry="2.2" fill={color} /> : null}
-      <path
-        d={
-          variant === 1
-            ? 'M -7.2 10 C -7.2 1.8 -3 0.5 0 0.5 C 3 0.5 7.2 1.8 7.2 10 Z'
-            : 'M -6.6 10 C -6.6 2 -2.6 0.6 0 0.6 C 2.6 0.6 6.6 2 6.6 10 Z'
-        }
-        fill={color}
-      />
+    <svg className="hs-chip-face" viewBox="-10 -11 20 22" width="16" height="16" aria-hidden="true">
+      <VisitorGlyph color={color} variant={variant} />
     </svg>
   )
 }
@@ -565,6 +573,7 @@ export function HeroStage() {
         thinking: false,
         branch: lead.branch,
         heading: 0,
+        atNode: false,
       })
       return
     }
@@ -600,6 +609,7 @@ export function HeroStage() {
             thinking: false,
             branch: t.branch,
             heading: 0,
+            atNode: false,
           })
           nextTips[ch.id] = {}
           nextFlashes[ch.id] = null
@@ -686,12 +696,15 @@ export function HeroStage() {
             ? t.heading
             : (t.heading = slightHeading(metrics, t.branch, t.progress))
 
+        const atNode = now < t.flashUntil && Boolean(t.flashTip)
+
         let live = {
           progress: t.progress,
           opacity: Math.max(0, Math.min(1, opacity)),
           thinking: t.thinking,
           branch: t.branch,
           heading,
+          atNode,
         }
 
         if (t.progress >= 1) {
@@ -703,6 +716,7 @@ export function HeroStage() {
               thinking: false,
               branch: t.branch,
               heading,
+              atNode,
             }
           } else {
             t.branch = pickBranch(t.branch)
@@ -723,6 +737,7 @@ export function HeroStage() {
               thinking: false,
               branch: t.branch,
               heading: 0,
+              atNode: false,
             }
           }
         }
@@ -798,29 +813,18 @@ export function HeroStage() {
         <div className="hs-intel">
           <p className="hs-intel-kicker">Website visitors</p>
           <div className="hs-intel-channels">
-            <span className="hs-chip hs-chip-seo">
+            <span className="hs-legend-item hs-chip-seo">
               <VisitorChipIcon color="#b7ff3c" variant={0} />
               Search
             </span>
-            <span className="hs-chip hs-chip-aeo">
-              <VisitorChipIcon color="#fffcf7" variant={2} />
+            <span className="hs-legend-item hs-chip-aeo">
+              <VisitorChipIcon color="#e8f0ed" variant={2} />
               AI
             </span>
-            <span className="hs-chip hs-chip-geo">
+            <span className="hs-legend-item hs-chip-geo">
               <VisitorChipIcon color="#ff6a3d" variant={1} />
               Local
             </span>
-          </div>
-          <div className="hs-intel-metrics">
-            <span className="hs-intel-metrics-label">VDP → Engage</span>
-            <div className="hs-legend-bars" role="img" aria-label="Engagement bars">
-              <span className="hs-bar hs-bar-1" />
-              <span className="hs-bar hs-bar-2" />
-              <span className="hs-bar hs-bar-3" />
-              <span className="hs-bar hs-bar-4" />
-              <span className="hs-bar hs-bar-5" />
-              <span className="hs-bar hs-bar-6" />
-            </div>
           </div>
         </div>
 
@@ -846,18 +850,6 @@ export function HeroStage() {
               <mask id="hs-grid-mask">
                 <rect width={VB_W} height={VB_H} fill="url(#hs-grid-fade)" />
               </mask>
-              <filter id="hs-packet-glow" x="-80%" y="-80%" width="260%" height="260%">
-                <feGaussianBlur stdDeviation="1.8" result="b" />
-                <feMerge>
-                  <feMergeNode in="b" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              {CHANNELS.map((ch) => (
-                <clipPath key={`clip-${ch.id}`} id={`hs-vis-${ch.id}`}>
-                  <rect x="-12" y="-12" width="24" height="24" rx="3.5" />
-                </clipPath>
-              ))}
             </defs>
 
             <g className="hs-grid-fragments" mask="url(#hs-grid-mask)" opacity="0.45">
@@ -1045,12 +1037,7 @@ export function HeroStage() {
                   className="hs-packet-steer"
                   transform={`translate(0 ${ch.lane})`}
                 >
-                  <VisitorFace color={ch.color} variant={ch.face} clipId={`hs-vis-${ch.id}`} />
-                </g>
-                <g className="hs-think" transform={`translate(0 ${ch.lane})`}>
-                  <circle className="hs-think-dot" cx="-6" cy="-19" r="1.35" fill={ch.color} />
-                  <circle className="hs-think-dot" cx="0" cy="-19" r="1.35" fill={ch.color} />
-                  <circle className="hs-think-dot" cx="6" cy="-19" r="1.35" fill={ch.color} />
+                  <VisitorFace color={ch.color} variant={ch.face} />
                 </g>
               </g>
             ))}
