@@ -454,16 +454,16 @@
 .hs-intel .hs-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  height: 32px;
+  gap: 0.35rem;
+  height: 28px;
   min-width: 0;
-  padding: 0 0.65rem 0 0.4rem;
+  padding: 0 0.55rem 0 0.35rem;
   font-size: 0.625rem;
   letter-spacing: 0.1em;
   white-space: nowrap;
-  border-radius: 999px;
-  background: rgba(6, 27, 32, 0.42);
-  border-color: rgba(216, 227, 224, 0.18);
+  border-radius: 4px;
+  background: rgba(6, 27, 32, 0.55);
+  border-color: rgba(216, 227, 224, 0.22);
   box-shadow: none;
   backdrop-filter: none;
 }
@@ -471,10 +471,9 @@
 .hs-chip-face {
   display: block;
   flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  overflow: hidden;
-  border-radius: 999px;
+  width: 14px;
+  height: 14px;
+  overflow: visible;
 }
 
 .hs-intel-metrics {
@@ -570,8 +569,8 @@
 /* Subdued blue-teal route — particles carry the brand color */
 .hs-trail-glow {
   fill: none;
-  stroke: rgba(65, 111, 112, 0.16);
-  stroke-width: 11;
+  stroke: rgba(65, 111, 112, 0.1);
+  stroke-width: 9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -583,7 +582,7 @@
 
 .hs-trail-base {
   fill: none;
-  stroke: rgba(65, 111, 112, 0.36);
+  stroke: rgba(65, 111, 112, 0.28);
   stroke-width: 2.35;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -726,8 +725,8 @@
 }
 
 .hs-packet-glow {
-  opacity: 0.16;
-  filter: blur(1.6px);
+  opacity: 0;
+  filter: none;
 }
 
 .hs-visitor {
@@ -735,7 +734,7 @@
 }
 
 .hs-traveler.is-thinking .hs-packet-glow {
-  opacity: 0.34;
+  opacity: 0;
 }
 
 .hs-waypoint {
@@ -767,8 +766,7 @@
 
 .hs-skel.is-lit {
   opacity: 1;
-  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.32))
-    drop-shadow(0 0 18px rgba(183, 255, 60, 0.12));
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
 }
 
 .hs-chip {
@@ -784,10 +782,10 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   background: rgba(6, 27, 32, 0.5);
-  border: 1px solid rgba(216, 227, 224, 0.18);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(216, 227, 224, 0.16);
+  box-shadow: none;
   color: var(--paper);
-  backdrop-filter: blur(6px);
+  backdrop-filter: none;
 }
 
 .hs-chip-dot {
@@ -799,23 +797,23 @@
 }
 
 .hs-chip-seo {
-  border-color: rgba(183, 255, 60, 0.5);
+  border-color: rgba(183, 255, 60, 0.38);
   color: var(--lime);
 }
 
 .hs-chip-aeo {
-  border-color: rgba(255, 252, 247, 0.35);
-  color: rgba(255, 252, 247, 0.9);
+  border-color: rgba(255, 252, 247, 0.28);
+  color: rgba(255, 252, 247, 0.88);
 }
 
 .hs-chip-geo {
-  border-color: rgba(255, 106, 61, 0.55);
+  border-color: rgba(255, 106, 61, 0.4);
   color: var(--action);
 }
 
 .hs-junction {
   pointer-events: none;
-  filter: drop-shadow(0 4px 14px rgba(183, 255, 60, 0.22));
+  filter: drop-shadow(0 3px 8px rgba(183, 255, 60, 0.12));
 }
 
 .hs-hub-bloom {
@@ -827,8 +825,8 @@
 }
 
 .hs-junction.is-bloom .hs-hub-bloom {
-  opacity: 0.2;
-  filter: blur(14px);
+  opacity: 0.12;
+  filter: blur(8px);
 }
 
 .hs-convert {
@@ -1118,7 +1116,7 @@
   }
 
   .hs-skel-block {
-    animation: hs-skel-shimmer 1.8s ease-in-out infinite;
+    animation: none;
   }
 
   .hs-bar-1 {
@@ -1140,14 +1138,10 @@
     animation: hs-bar-pulse 2.9s ease-in-out infinite 0.2s;
   }
 
-  .hs-chip-seo {
-    animation: hs-chip-pulse 2.6s ease-in-out infinite;
-  }
-  .hs-chip-aeo {
-    animation: hs-chip-pulse 3s ease-in-out infinite 0.35s;
-  }
+  .hs-chip-seo,
+  .hs-chip-aeo,
   .hs-chip-geo {
-    animation: hs-chip-pulse 3.4s ease-in-out infinite 0.7s;
+    animation: none;
   }
 }
 

@@ -152,11 +152,11 @@ const TRAIL_SEGMENTS = [
 
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
-  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1 },
-  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#fffcf7', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2 },
-  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1 },
-  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2 },
+  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 7 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#fffcf7', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -7 },
+  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 4 },
+  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -4 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -323,7 +323,7 @@ function applyTravelerDom(
 
 const INK = '#061b20'
 
-/** Large Facebook-style avatar so travelers read as people, not particles */
+/** Compact source-colored traffic token — not an avatar or glowing badge */
 function VisitorFace({
   color,
   variant = 0,
@@ -333,22 +333,22 @@ function VisitorFace({
   variant?: number
   clipId: string
 }) {
-  const s = 15
-  const headY = variant === 1 ? -3.2 : variant === 2 ? -4.1 : -3.6
-  const headR = variant === 1 ? 4.2 : 4.8
-  const bodyW = variant === 1 ? 12.2 : 11.2
+  const s = 12
+  const headY = variant === 1 ? -2.6 : variant === 2 ? -3.2 : -2.8
+  const headR = variant === 1 ? 3.2 : 3.6
+  const bodyW = variant === 1 ? 9.4 : 8.6
 
   return (
     <g className="hs-packet hs-visitor">
-      <circle r={s + 2.4} fill="rgba(255,252,247,0.92)" />
-      <circle className="hs-packet-glow" r={s * 1.35} fill={color} />
-      <circle r={s} fill={color} stroke="rgba(6,27,32,0.35)" strokeWidth="1.2" />
+      <rect x={-s + 1} y={-s + 2} width={s * 2} height={s * 2} rx="3.5" fill={color} opacity="0.22" />
+      <rect x={-s} y={-s} width={s * 2} height={s * 2} rx="3.5" fill={INK} stroke={color} strokeWidth="1.75" />
       <g clipPath={`url(#${clipId})`}>
-        <circle cx={variant === 2 ? 0.6 : 0} cy={headY} r={headR} fill={INK} />
-        {variant === 2 ? (
-          <ellipse cx="2.4" cy={headY - 1.1} rx="3.1" ry="3.8" fill={INK} />
-        ) : null}
-        <path d={`M ${-bodyW} ${s + 1} C ${-bodyW} 2.1 ${-4.4} 0.4 0 0.4 C 4.4 0.4 ${bodyW} 2.1 ${bodyW} ${s + 1} Z`} fill={INK} />
+        <circle cx={variant === 2 ? 0.4 : 0} cy={headY} r={headR} fill={color} />
+        {variant === 2 ? <ellipse cx="1.8" cy={headY - 0.8} rx="2.4" ry="2.9" fill={color} /> : null}
+        <path
+          d={`M ${-bodyW} ${s + 1} C ${-bodyW} 1.6 ${-3.4} 0.3 0 0.3 C 3.4 0.3 ${bodyW} 1.6 ${bodyW} ${s + 1} Z`}
+          fill={color}
+        />
       </g>
     </g>
   )
@@ -356,17 +356,17 @@ function VisitorFace({
 
 function VisitorChipIcon({ color, variant = 0 }: { color: string; variant?: number }) {
   return (
-    <svg className="hs-chip-face" viewBox="-10 -10 20 20" width="18" height="18" aria-hidden="true">
-      <circle r="9.4" fill={color} />
-      <circle cx={variant === 2 ? 0.4 : 0} cy={variant === 2 ? -2.4 : -2.1} r={variant === 1 ? 3.1 : 3.4} fill={INK} />
-      {variant === 2 ? <ellipse cx="1.6" cy="-3" rx="2.2" ry="2.6" fill={INK} /> : null}
+    <svg className="hs-chip-face" viewBox="-12 -12 24 24" width="14" height="14" aria-hidden="true">
+      <rect x="-10" y="-10" width="20" height="20" rx="3" fill={INK} stroke={color} strokeWidth="1.75" />
+      <circle cx={variant === 2 ? 0.3 : 0} cy={variant === 2 ? -2.2 : -1.9} r={variant === 1 ? 2.6 : 2.9} fill={color} />
+      {variant === 2 ? <ellipse cx="1.3" cy="-2.8" rx="1.8" ry="2.2" fill={color} /> : null}
       <path
         d={
           variant === 1
-            ? 'M -8.6 10 C -8.6 2.2 -3.6 0.6 0 0.6 C 3.6 0.6 8.6 2.2 8.6 10 Z'
-            : 'M -8 10 C -8 2.4 -3.2 0.8 0 0.8 C 3.2 0.8 8 2.4 8 10 Z'
+            ? 'M -7.2 10 C -7.2 1.8 -3 0.5 0 0.5 C 3 0.5 7.2 1.8 7.2 10 Z'
+            : 'M -6.6 10 C -6.6 2 -2.6 0.6 0 0.6 C 2.6 0.6 6.6 2 6.6 10 Z'
         }
-        fill={INK}
+        fill={color}
       />
     </svg>
   )
@@ -458,7 +458,7 @@ function PageWireframe({
       <text
         x="12"
         y="44"
-        fill="rgba(255,252,247,0.4)"
+        fill="rgba(255,252,247,0.62)"
         style={{ fontSize: '8px', letterSpacing: '0.14em', fontFamily: 'ui-monospace, monospace' }}
       >
         {label}
@@ -855,7 +855,7 @@ export function HeroStage() {
               </filter>
               {CHANNELS.map((ch) => (
                 <clipPath key={`clip-${ch.id}`} id={`hs-vis-${ch.id}`}>
-                  <circle r="15" />
+                  <rect x="-12" y="-12" width="24" height="24" rx="3.5" />
                 </clipPath>
               ))}
             </defs>
@@ -932,7 +932,7 @@ export function HeroStage() {
               className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
               transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
             >
-              <circle className="hs-hub-bloom" r="52" fill="#b7ff3c" />
+              <circle className="hs-hub-bloom" r="36" fill="#b7ff3c" />
               <circle r="22" fill="#b7ff3c" />
               <circle r="22" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.35" />
               <CarGlyph />
@@ -1043,14 +1043,14 @@ export function HeroStage() {
                     steerEls.current[ch.id] = el
                   }}
                   className="hs-packet-steer"
-                  filter="url(#hs-packet-glow)"
+                  transform={`translate(0 ${ch.lane})`}
                 >
                   <VisitorFace color={ch.color} variant={ch.face} clipId={`hs-vis-${ch.id}`} />
                 </g>
-                <g className="hs-think">
-                  <circle className="hs-think-dot" cx="-8" cy="-24" r="2.1" fill={ch.color} />
-                  <circle className="hs-think-dot" cx="0" cy="-24" r="2.1" fill={ch.color} />
-                  <circle className="hs-think-dot" cx="8" cy="-24" r="2.1" fill={ch.color} />
+                <g className="hs-think" transform={`translate(0 ${ch.lane})`}>
+                  <circle className="hs-think-dot" cx="-6" cy="-19" r="1.35" fill={ch.color} />
+                  <circle className="hs-think-dot" cx="0" cy="-19" r="1.35" fill={ch.color} />
+                  <circle className="hs-think-dot" cx="6" cy="-19" r="1.35" fill={ch.color} />
                 </g>
               </g>
             ))}

@@ -3,6 +3,14 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { platformCredibility, type BrandMark, type PlatformCategory } from '@/lib/platform-data'
+import {
+  CompactLayerGlyph,
+  CompactMeasureGlyph,
+  CompactSearchGlyph,
+  MeasurementFlowViz,
+  SearchOpportunityViz,
+  WebsiteLayersViz,
+} from '@/components/semantic-wireframes'
 
 type Tone = 'ink' | 'lime' | 'action'
 
@@ -46,128 +54,18 @@ function MarkChip({ mark }: { mark: BrandMark }) {
 }
 
 function WebsiteViz({ compact = false }: { compact?: boolean }) {
-  if (compact) {
-    return (
-      <svg viewBox="0 0 120 40" className="h-9 w-[7.5rem]" aria-hidden="true">
-        <rect x="8" y="10" width="42" height="22" rx="3" className="stack-float fill-lime/25 stroke-lime" strokeWidth="1.25" />
-        <rect x="38" y="6" width="42" height="22" rx="3" className="stack-float-b fill-porcelain/20 stroke-porcelain/70" strokeWidth="1.25" />
-        <rect x="68" y="12" width="42" height="22" rx="3" className="stack-float-c fill-lime/15 stroke-lime/80" strokeWidth="1.25" />
-      </svg>
-    )
-  }
-
-  return (
-    <svg viewBox="0 0 640 168" className="h-auto w-full" role="img" aria-label="Illustrative website layers inside an existing platform">
-      <rect x="24" y="28" width="280" height="120" rx="10" className="stack-float fill-carbon stroke-lime/50" strokeWidth="1.5" />
-      <rect x="40" y="44" width="248" height="14" rx="3" className="fill-lime/35" />
-      <rect x="40" y="68" width="160" height="8" rx="2" className="fill-porcelain/25" />
-      <rect x="40" y="84" width="248" height="48" rx="4" className="fill-porcelain/10 stroke-porcelain/20" />
-      <rect x="196" y="20" width="240" height="120" rx="10" className="stack-float-b fill-graphite stroke-porcelain/40" strokeWidth="1.5" />
-      <rect x="212" y="36" width="208" height="14" rx="3" className="fill-porcelain/30" />
-      <rect x="212" y="60" width="96" height="64" rx="4" className="fill-lime/20" />
-      <rect x="320" y="60" width="96" height="64" rx="4" className="fill-porcelain/15" />
-      <rect x="372" y="36" width="240" height="120" rx="10" className="stack-float-c fill-ink stroke-lime/40" strokeWidth="1.5" />
-      <path
-        d="M 80 148 C 220 148, 280 88, 420 88"
-        pathLength={1}
-        className="stack-draw fill-none stroke-lime"
-        strokeWidth="2.25"
-        strokeLinecap="round"
-      />
-      <circle cx="80" cy="148" r="4" className="fill-lime" />
-      <circle cx="420" cy="88" r="4" className="fill-lime" />
-    </svg>
-  )
+  if (compact) return <CompactLayerGlyph />
+  return <WebsiteLayersViz />
 }
 
 function SearchViz({ compact = false }: { compact?: boolean }) {
-  const values = [28, 36, 32, 48, 54, 70]
-  const w = compact ? 120 : 640
-  const h = compact ? 40 : 168
-  const pad = compact ? 6 : 18
-  const max = Math.max(...values)
-  const points = values
-    .map((v, i) => {
-      const x = pad + (i / (values.length - 1)) * (w - pad * 2)
-      const y = h - pad - (v / max) * (h - pad * 2.4)
-      return `${x.toFixed(1)},${y.toFixed(1)}`
-    })
-    .join(' ')
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className={compact ? 'h-9 w-[7.5rem]' : 'h-auto w-full'}
-      role={compact ? undefined : 'img'}
-      aria-hidden={compact}
-      aria-label={compact ? undefined : 'Illustrative non-branded discovery trend'}
-    >
-      {values.map((v, i) => {
-        const bw = (w - pad * 2) / values.length - (compact ? 4 : 10)
-        const x = pad + i * ((w - pad * 2) / values.length)
-        const bh = (v / max) * (h - pad * 2.2)
-        return (
-          <rect
-            key={i}
-            x={x}
-            y={h - pad - bh}
-            width={bw}
-            height={bh}
-            rx="2"
-            className={i === values.length - 1 ? 'stack-bar fill-action' : 'stack-bar fill-ink/45'}
-            style={{ animationDelay: `${i * 70}ms` }}
-          />
-        )
-      })}
-      <polyline
-        points={points}
-        pathLength={1}
-        className="stack-draw fill-none stroke-action"
-        strokeWidth={compact ? 2 : 2.5}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
+  if (compact) return <CompactSearchGlyph />
+  return <SearchOpportunityViz />
 }
 
 function MeasureViz({ compact = false }: { compact?: boolean }) {
-  if (compact) {
-    return (
-      <svg viewBox="0 0 120 40" className="h-9 w-[7.5rem]" aria-hidden="true">
-        <path d="M8 20 H112" className="stroke-ink/55" strokeWidth="2" />
-        <circle cx="20" cy="20" r="5" className="fill-ink" />
-        <circle cx="60" cy="20" r="5" className="iq-pulse-lime fill-ink/80" />
-        <circle cx="100" cy="20" r="5" className="fill-ink" />
-        <circle cx="20" cy="20" r="3.5" className="stack-compact-packet fill-paper" />
-      </svg>
-    )
-  }
-
-  return (
-    <div className="relative" role="img" aria-label="Illustrative measurement event path">
-      <div className="flex items-center gap-2 md:gap-4">
-        {['Page', 'Event', 'Handoff', 'Convert'].map((label, i) => (
-          <div key={label} className="flex min-w-0 flex-1 items-center gap-2 md:gap-4">
-            <div className="flex min-w-0 flex-1 flex-col items-center">
-              <div
-                className={`flex h-14 w-full items-center justify-center rounded-lg border-2 border-ink/15 bg-paper text-sm font-semibold text-ink ${
-                  i === 3 ? 'ring-2 ring-ink/20' : ''
-                }`}
-              >
-                {label}
-              </div>
-            </div>
-            {i < 3 ? <div className="hidden h-0.5 w-4 shrink-0 bg-ink/30 sm:block md:w-8" /> : null}
-          </div>
-        ))}
-      </div>
-      <div className="relative mt-5 h-2 overflow-hidden rounded-full bg-ink/15">
-        <span className="stack-packet-bar absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-ink" />
-        <span className="stack-packet-bar stack-packet-bar-b absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-paper" />
-      </div>
-    </div>
-  )
+  if (compact) return <CompactMeasureGlyph />
+  return <MeasurementFlowViz />
 }
 
 function CompactViz({ tone }: { tone: Tone }) {
@@ -255,7 +153,7 @@ function StackSlab({
                 <MarkChip key={mark.id} mark={mark} />
               ))}
             </div>
-            <div className={`mt-6 rounded-[8px] p-4 md:p-5 ${tone === 'ink' ? 'bg-ink' : 'bg-paper'}`}>
+            <div className="mt-6 rounded-[8px] border-2 border-ink bg-paper p-4 md:p-5">
               <ExpandedViz tone={tone} />
             </div>
           </div>

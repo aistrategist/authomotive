@@ -3,64 +3,17 @@
 import { useState } from 'react'
 import { capabilitySystem } from '@/lib/site-data'
 import { Disclosure } from '@/components/disclosure'
+import {
+  JobAuthorityPreview,
+  JobIntelligencePreview,
+  JobSignalPreview,
+} from '@/components/semantic-wireframes'
 
-/** Distinct visual signature for each capability state. */
+/** Compact semantic previews — detailed proof lives in later sections. */
 function CapabilityVisual({ id }: { id: string }) {
-  if (id === 'get-found') {
-    // A page taking shape: answer-first structure flowing toward inventory
-    return (
-      <div className="flex flex-col gap-2 rounded-lg border border-border bg-porcelain p-4" aria-hidden="true">
-        <div className="h-3 w-3/4 rounded-sm bg-ink/80" />
-        <div className="h-2 w-1/2 rounded-sm bg-fog/50" />
-        <div className="mt-1 rounded-md border-l-4 border-lime bg-paper p-2.5">
-          <div className="h-2 w-11/12 rounded-sm bg-ink/30" />
-          <div className="mt-1.5 h-2 w-2/3 rounded-sm bg-ink/30" />
-        </div>
-        <div className="mt-1 flex items-center gap-2">
-          <div className="h-6 flex-1 rounded-md border border-border bg-paper" />
-          <div className="h-6 flex-1 rounded-md border border-signal-deep/50 bg-lime/30" />
-          <div className="h-6 flex-1 rounded-md border border-border bg-paper" />
-        </div>
-        <div className="mt-1 flex items-center justify-end gap-1.5">
-          <div className="h-2 w-24 rounded-sm bg-fog/40" />
-          <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
-            <path d="M1 6h20m0 0l-4-4m4 4l-4 4" stroke="var(--action)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-      </div>
-    )
-  }
-  if (id === 'know-working') {
-    // Signals converging into one rising story
-    return (
-      <div className="flex items-end gap-1.5 rounded-lg border border-border bg-porcelain p-4" aria-hidden="true">
-        {[32, 40, 36, 48, 56, 64, 60, 74].map((h, i) => (
-          <div
-            key={i}
-            className={`w-full rounded-t-sm ${i >= 6 ? 'bg-lime ring-1 ring-signal-deep/40' : 'bg-ink/15'}`}
-            style={{ height: `${h}px` }}
-          />
-        ))}
-        <div className="ml-2 shrink-0 self-center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M3 12h16m0 0l-5-5m5 5l-5 5" stroke="var(--action)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-      </div>
-    )
-  }
-  // track-matters: an event stream lighting up
-  return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-porcelain p-4" aria-hidden="true">
-      {['w-2/3', 'w-3/4', 'w-1/2'].map((w, i) => (
-        <div key={i} className="flex items-center gap-2.5">
-          <span className={`h-2.5 w-2.5 rounded-full ${i < 2 ? 'bg-lime ring-1 ring-signal-deep/50' : 'bg-fog/40'}`} />
-          <div className={`h-2.5 rounded-sm ${w} ${i < 2 ? 'bg-ink/50' : 'bg-fog/30'}`} />
-          <span className="ml-auto font-mono text-[10px] text-signal-deep">{i < 2 ? 'captured' : 'planned'}</span>
-        </div>
-      ))}
-    </div>
-  )
+  if (id === 'get-found') return <JobAuthorityPreview />
+  if (id === 'know-working') return <JobIntelligencePreview />
+  return <JobSignalPreview />
 }
 
 const nextSteps: Record<string, { href: string; label: string }> = {
