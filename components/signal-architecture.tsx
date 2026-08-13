@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { measurement } from '@/lib/site-data'
 import { Disclosure } from '@/components/disclosure'
 
@@ -10,14 +10,86 @@ import { Disclosure } from '@/components/disclosure'
  * Selecting a shopper action lights its full path in Lime; the resulting
  * business decision carries the Orange action color.
  */
+
+type Pt = { x: number; y: number }
+
+function cubicH(from: Pt, to: Pt) {
+  const dx = Math.max(28, Math.abs(to.x - from.x) * 0.55)
+  return `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} C ${(from.x + dx).toFixed(1)} ${from.y.toFixed(1)}, ${(to.x - dx).toFixed(1)} ${to.y.toFixed(1)}, ${to.x.toFixed(1)} ${to.y.toFixed(1)}`
+}
+
+function edgePoint(box: DOMRect, map: DOMRect, side: 'left' | 'right', t: number): Pt {
+  return {
+    x: (side === 'left' ? box.left : box.right) - map.left,
+    y: box.top - map.top + box.height * t,
+  }
+}
+
+type Routes = {
+  left: string[]
+  right: string[]
+  w: number
+  h: number
+}
+
 export function SignalArchitecture() {
   const [selected, setSelected] = useState(0)
+  const mapRef = useRef<HTMLDivElement>(null)
+  const actionRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const layerRef = useRef<HTMLDivElement>(null)
+  const destRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [routes, setRoutes] = useState<Routes | null>(null)
+
+  const measurementLayer = measurement.destinations.slice(0, 2)
+  const reportingDest = measurement.destinations.slice(2, 4)
+  const decisionDest = measurement.destinations[4]
+  const destCount = 3
   const actionCount = measurement.buyerActions.length
 
-  // Center layer and destination split from approved copy
-  const measurementLayer = measurement.destinations.slice(0, 2) // event definitions, GA4/GTM
-  const reportingDest = measurement.destinations.slice(2, 4) // advertising, Intelligence
-  const decisionDest = measurement.destinations[4] // future content and workflow decisions
+  const layout = useCallback(() => {
+    const map = mapRef.current
+    const layer = layerRef.current
+    if (!map || !layer) return
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      setRoutes(null)
+      return
+    }
+
+    const mapBox = map.getBoundingClientRect()
+    const layerBox = layer.getBoundingClientRect()
+
+    const left = measurement.buyerActions.map((_, i) => {
+      const el = actionRefs.current[i]
+      if (!el) return ''
+      const from = edgePoint(el.getBoundingClientRect(), mapBox, 'right', 0.5)
+      const t = actionCount === 1 ? 0.5 : 0.22 + (i / (actionCount - 1)) * 0.56
+      const to = edgePoint(layerBox, mapBox, 'left', t)
+      return cubicH(from, to)
+    })
+
+    const right = Array.from({ length: destCount }, (_, i) => {
+      const el = destRefs.current[i]
+      if (!el) return ''
+      const t = destCount === 1 ? 0.5 : 0.22 + (i / (destCount - 1)) * 0.56
+      const from = edgePoint(layerBox, mapBox, 'right', t)
+      const to = edgePoint(el.getBoundingClientRect(), mapBox, 'left', 0.5)
+      return cubicH(from, to)
+    })
+
+    setRoutes({ left, right, w: mapBox.width, h: mapBox.height })
+  }, [actionCount])
+
+  useLayoutEffect(() => {
+    layout()
+    const ro = new ResizeObserver(layout)
+    if (mapRef.current) ro.observe(mapRef.current)
+    window.addEventListener('resize', layout)
+    void document.fonts?.ready.then(layout)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', layout)
+    }
+  }, [layout, selected])
 
   return (
     <section id="measurement" aria-labelledby="measurement-heading" className="scroll-mt-20 border-b border-border">
@@ -37,10 +109,51 @@ export function SignalArchitecture() {
           </p>
         </div>
 
-        {/* The signal map — one connected three-stage horizontal system on desktop */}
-        <div className="mt-9 lg:grid lg:grid-cols-[1.1fr_56px_1fr_56px_1.1fr] lg:items-center md:mt-11">
-          {/* Shopper actions */}
-          <div>
+        <div
+          ref={mapRef}
+          className="relative mt-9 lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-x-14 md:mt-11"
+        >
+          {routes ? (
+            <svg
+              className="pointer-events-none absolute inset-0 z-[1] hidden overflow-visible lg:block"
+              width={routes.w}
+              height={routes.h}
+              viewBox={`0 0 ${routes.w} ${routes.h}`}
+              fill="none"
+              aria-hidden="true"
+            >
+              {routes.left.map((d, i) => {
+                if (!d) return null
+                const isSelected = selected === i
+                return (
+                  <path
+                    key={`in-${i}`}
+                    d={d}
+                    stroke={isSelected ? 'var(--signal-deep)' : 'var(--border)'}
+                    strokeWidth={isSelected ? 2.5 : 1.5}
+                    strokeLinecap="round"
+                    className={isSelected ? 'signal-dash' : ''}
+                  />
+                )
+              })}
+              {routes.right.map((d, i) => {
+                if (!d) return null
+                const isDecision = i === destCount - 1
+                return (
+                  <path
+                    key={`out-${i}`}
+                    d={d}
+                    stroke={isDecision ? 'var(--action)' : 'var(--signal-deep)'}
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    className="signal-dash"
+                  />
+                )
+              })}
+            </svg>
+          ) : null}
+
+          <div className="relative z-[2]">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
               What shoppers do
             </p>
@@ -50,6 +163,9 @@ export function SignalArchitecture() {
                 return (
                   <button
                     key={action}
+                    ref={(el) => {
+                      actionRefs.current[i] = el
+                    }}
                     role="tab"
                     aria-selected={isSelected}
                     aria-controls="signal-map-path"
@@ -73,41 +189,14 @@ export function SignalArchitecture() {
             </div>
           </div>
 
-          {/* Curved connectors: actions → measurement layer (desktop only) */}
-          <div className="hidden h-full min-h-[300px] lg:block" aria-hidden="true">
-            <svg
-              className="h-full w-full"
-              viewBox="0 0 56 500"
-              preserveAspectRatio="none"
-              fill="none"
-            >
-              {measurement.buyerActions.map((_, i) => {
-                const y = ((i + 0.5) / actionCount) * 500
-                const isSelected = selected === i
-                return (
-                  <path
-                    key={i}
-                    d={`M0 ${y} C 28 ${y}, 28 250, 56 250`}
-                    stroke={isSelected ? 'var(--signal-deep)' : 'var(--border)'}
-                    strokeWidth={isSelected ? 2.5 : 1.5}
-                    className={isSelected ? 'signal-dash' : ''}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                )
-              })}
-            </svg>
-          </div>
-
-          {/* Mobile connector */}
           <div className="flex justify-center py-2 lg:hidden" aria-hidden="true">
             <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
               <path d="M8 1v18m0 0l-5-5m5 5l5-5" stroke="var(--signal-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
 
-          {/* Measurement layer — the center */}
-          <div id="signal-map-path" role="tabpanel" aria-label="Measurement layer">
-            <div className="rounded-xl border-2 border-signal-deep bg-porcelain p-4 md:p-5">
+          <div id="signal-map-path" role="tabpanel" aria-label="Measurement layer" className="relative z-[2]">
+            <div ref={layerRef} className="rounded-xl border-2 border-signal-deep bg-porcelain p-4 md:p-5">
               <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
                 The measurement layer
               </p>
@@ -129,48 +218,34 @@ export function SignalArchitecture() {
             </div>
           </div>
 
-          {/* Connector: measurement → destinations (desktop only) */}
-          <div className="hidden h-full min-h-[300px] lg:block" aria-hidden="true">
-            <svg className="h-full w-full" viewBox="0 0 56 500" preserveAspectRatio="none" fill="none">
-              {[0, 1, 2].map((i) => {
-                const y = ((i + 0.5) / 3) * 500
-                return (
-                  <path
-                    key={i}
-                    d={`M0 250 C 28 250, 28 ${y}, 56 ${y}`}
-                    stroke="var(--signal-deep)"
-                    strokeWidth={2}
-                    className="signal-dash"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                )
-              })}
-            </svg>
-          </div>
-
-          {/* Mobile connector */}
           <div className="flex justify-center py-2 lg:hidden" aria-hidden="true">
             <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
               <path d="M8 1v18m0 0l-5-5m5 5l5-5" stroke="var(--signal-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
 
-          {/* Reporting and decisions */}
-          <div className="flex flex-col gap-2.5">
+          <div className="relative z-[2] flex flex-col gap-2.5">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
               Where those actions become useful
             </p>
-            {reportingDest.map((dest) => (
+            {reportingDest.map((dest, i) => (
               <div
                 key={dest}
+                ref={(el) => {
+                  destRefs.current[i] = el
+                }}
                 className="flex items-center gap-3 rounded-lg border border-border bg-porcelain px-4 py-3 text-base font-semibold text-ink"
               >
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-lime ring-2 ring-signal-deep/60" aria-hidden="true" />
                 {dest}
               </div>
             ))}
-            {/* The resulting business action — Orange, entering the system as the endpoint */}
-            <div className="flex items-center gap-3 rounded-lg border-2 border-action bg-paper px-4 py-3 text-base font-bold text-ink">
+            <div
+              ref={(el) => {
+                destRefs.current[2] = el
+              }}
+              className="flex items-center gap-3 rounded-lg border-2 border-action bg-paper px-4 py-3 text-base font-bold text-ink"
+            >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="shrink-0" aria-hidden="true">
                 <path d="M2 9h12m0 0l-4-4m4 4l-4 4" stroke="var(--action)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -179,7 +254,6 @@ export function SignalArchitecture() {
           </div>
         </div>
 
-        {/* Implementation rail — a compact two/three-column disclosure layout, not stacked full width */}
         <div className="mt-9 md:mt-11">
           <p className="text-base font-semibold uppercase tracking-wide text-ink">
             How it is implemented

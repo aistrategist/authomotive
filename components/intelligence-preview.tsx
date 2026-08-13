@@ -4,30 +4,16 @@ import { useState } from 'react'
 import { reporting } from '@/lib/site-data'
 import { reportingMatrix } from '@/lib/platform-data'
 import { Disclosure } from '@/components/disclosure'
-import { Reveal } from '@/components/reveal'
 import { ReportingMatrix } from '@/components/reporting-matrix'
+import {
+  AiVisibilityCharts,
+  BuyerActionCharts,
+  ExecutiveCharts,
+  LocalityCharts,
+  SearchContentCharts,
+} from '@/components/intelligence-charts'
 
 type ReportView = (typeof reporting.views)[number]
-
-function TrendBar({ values, label }: { values: number[]; label: string }) {
-  const max = Math.max(...values)
-  return (
-    <div>
-      <div className="flex h-32 items-end gap-2" role="img" aria-label={label}>
-        {values.map((v, i) => (
-          <div
-            key={i}
-            className={`bar-grow flex-1 rounded-t-sm ${
-              i === values.length - 1 ? 'bg-lime ring-1 ring-signal-deep/50' : 'bg-ink/15'
-            }`}
-            style={{ height: `${(v / max) * 100}%`, transitionDelay: `${i * 60}ms` }}
-          />
-        ))}
-      </div>
-      <p className="mt-2.5 text-sm text-muted-foreground">{label}</p>
-    </div>
-  )
-}
 
 function ExecutiveSummary() {
   return (
@@ -43,16 +29,7 @@ function ExecutiveSummary() {
         </p>
       </div>
 
-      <Reveal className="grid gap-6 rounded-lg border border-border p-5 sm:grid-cols-2 md:p-6">
-        <TrendBar
-          values={[38, 44, 41, 52, 58, 63]}
-          label="Month over month (illustrative shape, not client data)"
-        />
-        <TrendBar
-          values={[22, 25, 31, 29, 36, 42]}
-          label="Year over year (illustrative shape, not client data)"
-        />
-      </Reveal>
+      <ExecutiveCharts />
 
       {/* Supporting groups as one connected grid — a single structural rail instead of four separate cards */}
       <div className="grid gap-x-8 gap-y-5 rounded-lg border border-border p-5 md:grid-cols-2 md:p-6">
@@ -95,7 +72,7 @@ function ExecutiveSummary() {
 }
 
 function GenericView({ view }: { view: ReportView }) {
-  const content: Record<string, { conclusion: string; evidence: string[]; chart?: boolean }> = {
+  const content: Record<string, { conclusion: string; evidence: string[] }> = {
     'Search and Content': {
       conclusion:
         'Which pages and buyer questions earned discovery, and which topics deserve investment next.',
@@ -104,7 +81,6 @@ function GenericView({ view }: { view: ReportView }) {
         'New buyer questions the dealership is beginning to earn',
         'Content that should be protected, refreshed, or expanded',
       ],
-      chart: true,
     },
     Locality: {
       conclusion: 'Where local visibility is strengthening, and which markets present opportunity.',
@@ -113,7 +89,6 @@ function GenericView({ view }: { view: ReportView }) {
         'Local queries where the dealership gained or lost ground',
         'Market-level engagement differences that inform local content',
       ],
-      chart: true,
     },
     'Buyer Actions': {
       conclusion:
@@ -123,7 +98,6 @@ function GenericView({ view }: { view: ReportView }) {
         'Inventory-pathway clicks and digital retailing starts',
         'Calls, form starts, and successful submissions',
       ],
-      chart: true,
     },
     'AI Visibility': {
       conclusion:
@@ -149,18 +123,10 @@ function GenericView({ view }: { view: ReportView }) {
           {data.conclusion}
         </p>
       </div>
-      {data.chart && (
-        <Reveal className="grid gap-6 rounded-lg border border-border p-5 sm:grid-cols-2 md:p-6">
-          <TrendBar
-            values={[38, 44, 41, 52, 58, 63]}
-            label="Illustrative period comparison (sample shape, not client data)"
-          />
-          <TrendBar
-            values={[22, 25, 31, 29, 36, 42]}
-            label="Illustrative contribution progression (sample shape, not client data)"
-          />
-        </Reveal>
-      )}
+      {view === 'Search and Content' ? <SearchContentCharts /> : null}
+      {view === 'Locality' ? <LocalityCharts /> : null}
+      {view === 'Buyer Actions' ? <BuyerActionCharts /> : null}
+      {view === 'AI Visibility' ? <AiVisibilityCharts /> : null}
       <ul className="flex flex-col gap-2">
         {data.evidence.map((item) => (
           <li key={item} className="flex items-start gap-3 rounded-lg border border-border p-4 text-base leading-relaxed text-ink">
