@@ -4,7 +4,7 @@
  * HeroStage — treasure-map journey (hard-tuned cubic Béziers from blue sketch).
  * Main sweep: Search → Guide → deep dip → VSRP → leftward lower sweep → VDP
  * → car junction disc → Phone / Form / Lead fan-out (matched lime discs).
- * Five SEO/AEO/GEO traffic dots with pace variance + thinking pauses.
+ * Five website-visitor glyphs (Search / AI / Local) with pace variance + thinking pauses.
  */
 
 import { useEffect, useRef, useState } from 'react'
@@ -150,13 +150,13 @@ const TRAIL_SEGMENTS = [
   { id: 'lead', tone: 'e', d: `M375 335${BRANCH_PATHS.lead}` },
 ] as const
 
-/** Five active traffic dots — legend still SEO / AEO / GEO */
+/** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
-  { id: 'seo' as const, tipLabel: 'SEO', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85 },
-  { id: 'geo' as const, tipLabel: 'GEO', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32 },
-  { id: 'aeo' as const, tipLabel: 'AEO', color: '#fffcf7', r: 6, startDelayMs: 2200, speedBias: 0.88 },
-  { id: 'seo2' as const, tipLabel: 'SEO', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64 },
-  { id: 'geo2' as const, tipLabel: 'GEO', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5 },
+  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#fffcf7', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2 },
+  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1 },
+  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -318,44 +318,57 @@ function applyTravelerDom(
   g.style.offsetDistance = `${(live.progress * 100).toFixed(3)}%`
   g.style.opacity = String(live.opacity)
   g.classList.toggle('is-thinking', live.thinking)
-  if (steer) steer.style.transform = `rotate(${live.heading.toFixed(2)}deg)`
+  if (steer) steer.style.transform = 'rotate(0deg)'
 }
 
 const INK = '#061b20'
 
-/** Compact color-coded signal — rounded diamond, bright core, no comet tail */
-function DataPacket({ color, r }: { color: string; r: number }) {
-  const s = r * 1.05
+/** Large Facebook-style avatar so travelers read as people, not particles */
+function VisitorFace({
+  color,
+  variant = 0,
+  clipId,
+}: {
+  color: string
+  variant?: number
+  clipId: string
+}) {
+  const s = 15
+  const headY = variant === 1 ? -3.2 : variant === 2 ? -4.1 : -3.6
+  const headR = variant === 1 ? 4.2 : 4.8
+  const bodyW = variant === 1 ? 12.2 : 11.2
+
   return (
-    <g className="hs-packet">
-      <circle className="hs-packet-glow" r={s * 1.65} fill={color} />
-      <rect
-        className="hs-packet-body"
-        x={-s * 0.82}
-        y={-s * 0.82}
-        width={s * 1.64}
-        height={s * 1.64}
-        rx={s * 0.34}
-        transform="rotate(45)"
-        fill={color}
-        stroke="rgba(6,27,32,0.28)"
-        strokeWidth="1.05"
-      />
-      <rect
-        className="hs-packet-rim"
-        x={-s * 0.82}
-        y={-s * 0.82}
-        width={s * 1.64}
-        height={s * 1.64}
-        rx={s * 0.34}
-        transform="rotate(45)"
-        fill="none"
-        stroke={color}
-        strokeWidth="1.15"
-        opacity="0.85"
-      />
-      <circle className="hs-packet-core" r={Math.max(1.8, s * 0.3)} fill="#fffcf7" />
+    <g className="hs-packet hs-visitor">
+      <circle r={s + 2.4} fill="rgba(255,252,247,0.92)" />
+      <circle className="hs-packet-glow" r={s * 1.35} fill={color} />
+      <circle r={s} fill={color} stroke="rgba(6,27,32,0.35)" strokeWidth="1.2" />
+      <g clipPath={`url(#${clipId})`}>
+        <circle cx={variant === 2 ? 0.6 : 0} cy={headY} r={headR} fill={INK} />
+        {variant === 2 ? (
+          <ellipse cx="2.4" cy={headY - 1.1} rx="3.1" ry="3.8" fill={INK} />
+        ) : null}
+        <path d={`M ${-bodyW} ${s + 1} C ${-bodyW} 2.1 ${-4.4} 0.4 0 0.4 C 4.4 0.4 ${bodyW} 2.1 ${bodyW} ${s + 1} Z`} fill={INK} />
+      </g>
     </g>
+  )
+}
+
+function VisitorChipIcon({ color, variant = 0 }: { color: string; variant?: number }) {
+  return (
+    <svg className="hs-chip-face" viewBox="-10 -10 20 20" width="18" height="18" aria-hidden="true">
+      <circle r="9.4" fill={color} />
+      <circle cx={variant === 2 ? 0.4 : 0} cy={variant === 2 ? -2.4 : -2.1} r={variant === 1 ? 3.1 : 3.4} fill={INK} />
+      {variant === 2 ? <ellipse cx="1.6" cy="-3" rx="2.2" ry="2.6" fill={INK} /> : null}
+      <path
+        d={
+          variant === 1
+            ? 'M -8.6 10 C -8.6 2.2 -3.6 0.6 0 0.6 C 3.6 0.6 8.6 2.2 8.6 10 Z'
+            : 'M -8 10 C -8 2.4 -3.2 0.8 0 0.8 C 3.2 0.8 8 2.4 8 10 Z'
+        }
+        fill={INK}
+      />
+    </svg>
   )
 }
 
@@ -776,26 +789,26 @@ export function HeroStage() {
   return (
     <div className="hero-stage relative mx-auto w-full max-w-[580px] overflow-visible lg:max-w-none">
       <p className="sr-only">
-        Animated conversion map: SEO, AEO, and GEO traffic follow a treasure-map trail through an
-        authority guide, VSRP, and VDP, meet at a car junction, then randomly convert via phone,
-        form, or lead. Travelers vary in pace and occasionally pause as if thinking. Top legend
-        shows tracking channels and engagement.
+        Animated conversion map: website visitors from Search, AI, and Local follow a trail
+        through an authority guide, VSRP, and VDP, then convert via phone, form, or lead.
+        Visitors vary in pace and occasionally pause as if thinking.
       </p>
 
       <div className="hs-map" aria-hidden="true">
         <div className="hs-intel">
+          <p className="hs-intel-kicker">Website visitors</p>
           <div className="hs-intel-channels">
             <span className="hs-chip hs-chip-seo">
-              <i className="hs-chip-dot" />
-              SEO
+              <VisitorChipIcon color="#b7ff3c" variant={0} />
+              Search
             </span>
             <span className="hs-chip hs-chip-aeo">
-              <i className="hs-chip-dot" />
-              AEO
+              <VisitorChipIcon color="#fffcf7" variant={2} />
+              AI
             </span>
             <span className="hs-chip hs-chip-geo">
-              <i className="hs-chip-dot" />
-              GEO
+              <VisitorChipIcon color="#ff6a3d" variant={1} />
+              Local
             </span>
           </div>
           <div className="hs-intel-metrics">
@@ -840,6 +853,11 @@ export function HeroStage() {
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+              {CHANNELS.map((ch) => (
+                <clipPath key={`clip-${ch.id}`} id={`hs-vis-${ch.id}`}>
+                  <circle r="15" />
+                </clipPath>
+              ))}
             </defs>
 
             <g className="hs-grid-fragments" mask="url(#hs-grid-mask)" opacity="0.45">
@@ -906,7 +924,7 @@ export function HeroStage() {
                 />
               ))}
               {STAGE_WAYPOINTS.map((wp) => (
-                <circle key={`node-${wp.id}`} className="hs-trail-node" cx={wp.cx} cy={wp.cy} r="12" />
+                <circle key={`node-${wp.id}`} className="hs-trail-node" cx={wp.cx} cy={wp.cy} r="16" />
               ))}
             </g>
 
@@ -926,33 +944,22 @@ export function HeroStage() {
               <SearchGlyph />
             </g>
 
-            {STAGE_WAYPOINTS.map((wp) => (
-              <g key={wp.id}>
-                {CHANNELS.map((ch) => (
-                  <circle
-                    key={ch.id}
-                    className={`hs-ring hs-ring-${ch.id}${ui.flashes[ch.id] === wp.id ? ' is-flash' : ''}`}
-                    cx={wp.cx}
-                    cy={wp.cy}
-                    r="15"
-                    fill="none"
-                    stroke={ch.color}
-                    strokeWidth="2"
-                  />
-                ))}
-                <circle
-                  className={`hs-waypoint${
-                    Object.values(ui.flashes).includes(wp.id) ? ' is-flash' : ''
-                  }`}
-                  cx={wp.cx}
-                  cy={wp.cy}
-                  r="7"
-                  fill="rgba(6,27,32,0.85)"
-                  stroke="rgba(65,111,112,0.7)"
-                  strokeWidth="1.5"
-                />
-              </g>
-            ))}
+              {STAGE_WAYPOINTS.map((wp) => (
+                <g key={wp.id}>
+                  {CHANNELS.map((ch) => (
+                    <circle
+                      key={ch.id}
+                      className={`hs-ring hs-ring-${ch.id}${ui.flashes[ch.id] === wp.id ? ' is-flash' : ''}`}
+                      cx={wp.cx}
+                      cy={wp.cy}
+                      r="18"
+                      fill="none"
+                      stroke={ch.color}
+                      strokeWidth="2"
+                    />
+                  ))}
+                </g>
+              ))}
 
             {CONVERSIONS.map((cv) => {
               const isWin = winningBranches.has(cv.id)
@@ -1038,12 +1045,12 @@ export function HeroStage() {
                   className="hs-packet-steer"
                   filter="url(#hs-packet-glow)"
                 >
-                  <DataPacket color={ch.color} r={ch.r} />
+                  <VisitorFace color={ch.color} variant={ch.face} clipId={`hs-vis-${ch.id}`} />
                 </g>
                 <g className="hs-think">
-                  <circle className="hs-think-dot" cx="-7" cy="-16" r="2.1" fill={ch.color} />
-                  <circle className="hs-think-dot" cx="0" cy="-16" r="2.1" fill={ch.color} />
-                  <circle className="hs-think-dot" cx="7" cy="-16" r="2.1" fill={ch.color} />
+                  <circle className="hs-think-dot" cx="-8" cy="-24" r="2.1" fill={ch.color} />
+                  <circle className="hs-think-dot" cx="0" cy="-24" r="2.1" fill={ch.color} />
+                  <circle className="hs-think-dot" cx="8" cy="-24" r="2.1" fill={ch.color} />
                 </g>
               </g>
             ))}
