@@ -27,7 +27,7 @@ export function HowItWorks() {
               {howItWorks.headline}
             </h2>
           </div>
-          <p className="text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
+          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
             {howItWorks.supporting}
           </p>
         </div>

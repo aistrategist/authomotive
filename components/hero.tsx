@@ -25,27 +25,25 @@ export function Hero() {
               <span className="block text-paper">Guide buyers.</span>
               <span className="block text-action">Prove what works.</span>
             </h1>
-            <p className="hero-enter hero-enter-3 mt-4 max-w-[30rem] text-[0.95rem] leading-snug text-paper/80 md:text-base">
-              AI-ready authority content and conversion tracking that moves shoppers from search to
-              inventory—and shows what drives the lead.
+            <p className="hero-enter hero-enter-3 mt-4 max-w-[30rem] text-[0.95rem] leading-snug text-[color:var(--on-ink-muted)] md:text-base">
+              {hero.supporting}
             </p>
             <div className="hero-enter hero-enter-4 mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
               <a href="#opportunity-review" className="btn btn-action">
-                Review My Dealership Website
+                {hero.primaryCta}
                 <span className="btn-arrow" aria-hidden="true">
                   →
                 </span>
               </a>
-              <a
-                href="#capabilities"
-                className="text-[0.9375rem] font-semibold text-paper/70 transition-colors hover:text-paper"
-              >
-                See What We Build
-                <span aria-hidden="true"> →</span>
+              <a href="#capabilities" className="btn btn-outline-paper !min-h-[48px] !px-5">
+                {hero.secondaryCta}
+                <span className="btn-arrow" aria-hidden="true">
+                  →
+                </span>
               </a>
             </div>
-            <p className="hero-enter hero-enter-5 mt-3 max-w-md text-[0.8125rem] leading-snug text-paper/55">
-              Built around your existing dealer website and vendor stack.
+            <p className="hero-enter hero-enter-5 mt-3 max-w-md text-[0.8125rem] leading-snug text-[color:var(--on-ink-muted)]">
+              {hero.confidence}
             </p>
             <p className="sr-only">{siteConfig.tagline}</p>
           </div>

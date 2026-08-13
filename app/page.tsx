@@ -24,7 +24,7 @@ const structuredData = {
       '@id': `${siteUrl}/#organization`,
       name: 'Authomotive',
       url: siteUrl,
-      slogan: 'Build authority. Move buyers.',
+      slogan: 'Get found. Guide buyers. Prove what works.',
       founder: {
         '@type': 'Person',
         name: 'Chris Gabriel',

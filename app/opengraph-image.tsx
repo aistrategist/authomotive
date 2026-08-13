@@ -53,7 +53,7 @@ export default function OgImage() {
               letterSpacing: '0.18em',
             }}
           >
-            THE DEALER WEBSITE AUTHORITY STANDARD
+            THE DEALERSHIP AUTHORITY STANDARD
           </div>
           <div
             style={{
@@ -66,7 +66,7 @@ export default function OgImage() {
               maxWidth: 980,
             }}
           >
-            Build authority. Move buyers.
+            Get found. Guide buyers. Prove what works.
           </div>
           <div
             style={{

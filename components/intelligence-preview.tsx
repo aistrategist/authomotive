@@ -161,7 +161,7 @@ export function IntelligencePreview() {
                 {reporting.headline}
               </h2>
             </div>
-            <p className="text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty lg:pb-1">
+            <p className="lede text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty lg:pb-1">
               {reporting.supporting}
             </p>
           </div>

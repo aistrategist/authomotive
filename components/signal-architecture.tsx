@@ -104,7 +104,7 @@ export function SignalArchitecture() {
           >
             {measurement.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
             {measurement.supporting}
           </p>
         </div>

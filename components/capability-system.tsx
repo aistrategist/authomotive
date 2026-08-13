@@ -64,9 +64,9 @@ function CapabilityVisual({ id }: { id: string }) {
 }
 
 const nextSteps: Record<string, { href: string; label: string }> = {
-  'get-found': { href: '#authority-experiences', label: 'See the pages in action' },
-  'know-working': { href: '#reporting', label: 'See the reporting' },
-  'track-matters': { href: '#measurement', label: 'See the measurement' },
+  'get-found': { href: '#authority-experiences', label: 'See an Authority Experience' },
+  'know-working': { href: '#reporting', label: 'See the Intelligence Story' },
+  'track-matters': { href: '#measurement', label: 'See How Signals Are Captured' },
 }
 
 function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'lime' | 'action' }) {
@@ -160,7 +160,7 @@ export function CapabilitySystem() {
           >
             {capabilitySystem.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
             {capabilitySystem.supporting}
           </p>
         </div>
@@ -206,7 +206,7 @@ export function CapabilitySystem() {
                 <span className={`relative z-[1] font-mono text-[11px] font-medium uppercase tracking-[0.16em] ${job.eyebrow}`}>
                   Job {i + 1} · {cap.brandedName}
                 </span>
-                <span className="relative z-[1] mt-auto max-w-[12.5rem] text-xl font-semibold leading-snug tracking-tight md:text-2xl">
+                <span className="relative z-[1] mt-auto text-xl font-semibold leading-snug tracking-tight md:text-2xl">
                   {cap.plainName}
                 </span>
                 <span className="relative z-[1] mt-4 flex w-full items-end justify-between gap-3">
@@ -307,7 +307,7 @@ export function CapabilitySystem() {
                 </Disclosure>
                 <a
                   href={nextStep.href}
-                  className="inline-flex items-center gap-2 self-start text-base font-bold text-action-deep transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
+                  className="editorial-link"
                 >
                   {nextStep.label}
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">

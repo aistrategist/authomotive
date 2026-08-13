@@ -69,11 +69,9 @@ function ShopperView() {
         <p className="text-lg font-semibold text-ink text-pretty">
           See the three-row SUVs that match your priorities
         </p>
-        <span className="btn btn-action pointer-events-none shrink-0 !min-h-[44px] !px-5 !text-[15px]">
-          View matching inventory
-          <span className="btn-arrow" aria-hidden="true">
-            →
-          </span>
+        <span className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] border-2 border-ink bg-paper px-4 py-2 text-[15px] font-semibold text-ink">
+          View Matching Inventory
+          <span aria-hidden="true">→</span>
         </span>
       </div>
     </div>
@@ -195,7 +193,7 @@ export function AuthorityExperience() {
           >
             {authorityTheater.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty">
+          <p className="lede mt-4 text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty">
             {authorityTheater.supporting}
           </p>
         </div>
@@ -269,12 +267,11 @@ export function AuthorityExperience() {
 
         <div className="mt-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <p className="max-w-2xl text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
-            Three perspectives on the same page: what the shopper experiences, what discovery
-            systems understand, and what the dealership can measure. One piece of work, three kinds
-            of value.
+            One page. Three outcomes: discovery earned, buyers guided, and meaningful actions
+            measured.
           </p>
           <a href="#opportunity-review" className="btn btn-action-dark shrink-0">
-            Request an Opportunity Review
+            Request My Opportunity Review
             <span className="btn-arrow" aria-hidden="true">
               →
             </span>

@@ -1,7 +1,14 @@
 export const siteConfig = {
   name: 'Authomotive',
-  tagline: 'Build authority. Move buyers.',
+  tagline: 'Get found. Guide buyers. Prove what works.',
   category: 'The managed authority and measurement framework for dealership websites',
+}
+
+/** One branded offer. Never compete with Website Review or other names. */
+export const cta = {
+  offer: 'Authomotive Opportunity Review',
+  primary: 'Request My Opportunity Review',
+  secondary: 'See the Authority System',
 }
 
 export const navLinks = [
@@ -14,14 +21,14 @@ export const navLinks = [
 
 export const hero = {
   brand: 'Authomotive',
-  eyebrow: 'DEALERSHIP AUTHORITY, MADE MEASURABLE',
+  eyebrow: 'DEALERSHIP AUTHORITY · MADE MEASURABLE',
   headline: 'Your website should help buyers choose you.',
   emphasis: 'choose you',
   supporting:
-    'Content that gets your dealership found, guides shoppers to the right vehicle on your lot, and proves what drove the sale.',
-  primaryCta: 'Request an Opportunity Review',
-  secondaryCta: 'See What We Build',
-  confidence: 'Built around the dealership website and vendor stack you already have.',
+    'Authority Experiences, connected measurement, and plain-English intelligence that move shoppers from discovery to inventory—and show what drove the action.',
+  primaryCta: 'Request My Opportunity Review',
+  secondaryCta: 'See the Authority System',
+  confidence: 'Works with the dealership website and vendor stack you already have.',
   question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
   outcomes: [
     {
@@ -46,25 +53,25 @@ export const hero = {
 }
 
 export const industryGap = {
-  eyebrow: 'WHY THIS EXISTS',
-  headline: 'Dealer websites have more tools than clarity.',
+  eyebrow: 'THE GAP · DISCONNECTED WORK',
+  headline: 'More tools. Less clarity. Too many missed signals.',
   supporting:
-    'Content, inventory, analytics, advertising, vendor experiences, and AI visibility are often managed separately. That makes it difficult to know what buyers found, what helped them decide, which actions mattered, or what the dealership should build next.',
+    'Content, inventory, analytics, advertising, vendor experiences, and AI visibility are often managed separately—making it difficult to know what buyers found, what helped them decide, and which actions mattered.',
   problems: [
     {
-      title: 'Content that looks like every other dealer page',
+      title: 'Content that looks like every competing dealer page',
       body: 'Most dealership content exists to fill a URL\u2014repeating manufacturer language, answering little, and giving search systems few reasons to treat it as distinctive.',
     },
     {
-      title: 'Reporting without a useful story',
+      title: 'Reports that provide numbers without an explanation',
       body: 'One platform reports traffic, another rankings, another leads. The dealership receives numbers but cannot clearly explain what changed or what should happen next.',
     },
     {
-      title: 'Buyer actions that disappear',
+      title: 'Buyer actions that disappear between platforms',
       body: 'Shoppers use embedded tools, vendor experiences, calls, forms, and digital retailing pathways\u2014and many of those actions never reach standard reporting.',
     },
   ],
-  closing: 'Authomotive connects those missing pieces into one managed standard.',
+  closing: 'Authomotive connects those missing pieces into one measurable standard.',
 }
 
 export interface Capability {
@@ -81,14 +88,14 @@ export interface Capability {
 }
 
 export const capabilitySystem = {
-  eyebrow: 'THE AUTHOMOTIVE AUTHORITY SYSTEM',
-  headline: 'Three jobs. One connected growth framework.',
+  eyebrow: 'ONE AUTHORITY SYSTEM · THREE CONNECTED JOBS',
+  headline: 'One system. Three jobs. Every decision connected.',
   supporting:
-    'We build the experience, connect the measurement, and use the evidence to decide what comes next.',
+    'We build the authority, connect the signals, and turn the evidence into a clear next move.',
   capabilities: [
     {
       id: 'get-found',
-      plainName: 'Get Found and Chosen',
+      plainName: 'Get Found. Guide Buyers.',
       brandedName: 'Authority Experiences',
       primaryMessage:
         'Create dealership-owned pages that answer better questions and move buyers toward a decision.',
@@ -117,11 +124,11 @@ export const capabilitySystem = {
         'Measurement planned before launch',
       ],
       keyLine:
-        'Most dealer pages are built to exist. Authority Experiences are built to earn attention, guide a decision, and prove their value.',
+        'Most dealership pages are built to exist. Authority Experiences are built to earn attention, guide a decision, and prove their value.',
     },
     {
       id: 'know-working',
-      plainName: 'Know What Is Working',
+      plainName: 'Prove What Works.',
       brandedName: 'Authomotive Intelligence',
       primaryMessage: 'Turn disconnected performance data into one reliable monthly story.',
       supporting:
@@ -155,7 +162,7 @@ export const capabilitySystem = {
     },
     {
       id: 'track-matters',
-      plainName: 'Track What Matters',
+      plainName: 'Track What Matters.',
       brandedName: 'Signal Architecture',
       primaryMessage: 'Capture the buyer actions standard analytics often overlooks.',
       supporting:
@@ -193,10 +200,10 @@ export const capabilitySystem = {
 }
 
 export const authorityTheater = {
-  eyebrow: 'BETTER DEALERSHIP CONTENT',
-  headline: 'Pages that do more than rank.',
+  eyebrow: 'AUTHORITY EXPERIENCES · DISCOVERY AND GUIDANCE',
+  headline: 'Pages that get found—and move buyers.',
   supporting:
-    'The strongest dealership content earns discovery, answers the real question, helps the shopper evaluate a decision, and creates a useful next step.',
+    'The strongest dealership content earns discovery, answers the real question, helps the buyer evaluate a decision, and creates a useful path to inventory.',
   exampleTopic: 'Which Three-Row SUV Is Right for My Family?',
   views: [
     { id: 'shopper', label: 'What the shopper sees' },
@@ -206,10 +213,10 @@ export const authorityTheater = {
 }
 
 export const aiDiscovery = {
-  eyebrow: 'INCLUDED FOUNDATION WITHIN GET FOUND AND CHOSEN',
-  headline: 'A managed first-party source for AI discovery.',
+  eyebrow: 'AI DISCOVERY · FIRST-PARTY FOUNDATION',
+  headline: 'Give AI a dependable source about your dealership.',
   supporting:
-    'Every engagement includes a dealership-owned AI Discovery page: one dependable, regularly managed reference that organizes verified business information for people, search systems, and AI-assisted discovery.',
+    'Every engagement includes a managed, dealership-owned AI Discovery page that organizes verified business information for people, search systems, and AI-assisted discovery.',
   pageContents: [
     'Business identity and locations',
     'Brands, services, and markets',
@@ -226,10 +233,10 @@ export const aiDiscovery = {
 }
 
 export const reporting = {
-  eyebrow: 'ONE MONTHLY TRUTH',
+  eyebrow: 'AUTHOMOTIVE INTELLIGENCE · ONE MONTHLY TRUTH',
   headline: 'See what changed. Understand why. Decide what comes next.',
   supporting:
-    'Authomotive Intelligence connects performance across search, content, locality, engagement, AI visibility, and measured buyer actions\u2014then explains it in language dealership teams can use.',
+    'Authomotive Intelligence connects discovery, content, locality, shopper actions, AI visibility, and measured outcomes—then explains the story in language dealership teams can use.',
   disclaimer: 'Illustrative reporting interface \u2014 not client results',
   views: [
     'Executive Summary',
@@ -241,10 +248,10 @@ export const reporting = {
 }
 
 export const measurement = {
-  eyebrow: 'MEASUREMENT THAT MATCHES THE WEBSITE',
-  headline: 'Important shopper actions should not vanish between platforms.',
+  eyebrow: 'SIGNAL ARCHITECTURE · TRACK WHAT MATTERS',
+  headline: 'Track the buyer actions your platforms miss.',
   supporting:
-    'Authomotive helps dealership teams create a cleaner measurement layer across website content, embedded experiences, inventory pathways, conversion tools, and advertising requirements.',
+    'Authomotive creates a cleaner measurement layer across content, inventory pathways, embedded experiences, calls, forms, digital retailing, and advertising requirements.',
   buyerActions: [
     'Research interactions',
     'Inventory handoffs',
@@ -288,50 +295,50 @@ export const measurement = {
 }
 
 export const howItWorks = {
-  eyebrow: 'ONE WORKING PROCESS',
-  headline: 'Managed from opportunity to evidence',
+  eyebrow: 'ONE WORKING PROCESS · OPPORTUNITY TO EVIDENCE',
+  headline: 'One managed loop. From opportunity to evidence.',
   supporting:
-    'Each engagement follows one loop: diagnose the gap, build the work with a measurement plan attached, and let the evidence decide what happens next.',
+    'Every engagement follows the same accountable loop: diagnose the gap, build the work with measurement attached, and let the evidence determine what comes next.',
   stages: [
     {
       number: '1',
-      title: 'Find the opportunity',
+      title: 'Find the Opportunity',
       body: 'Review the dealership\u2019s content, visibility, locality, reporting, analytics, AI footprint, and measurement gaps.',
       evidence: 'What gap exists, and what does the available evidence tell us?',
     },
     {
       number: '2',
-      title: 'Build the authority',
+      title: 'Build the Authority',
       body: 'Create the highest-value Authority Experiences and maintain the managed AI Discovery foundation.',
       evidence: 'Every page launches with its measurement plan already defined.',
     },
     {
       number: '3',
-      title: 'Connect the signals',
+      title: 'Connect the Signals',
       body: 'Implement and validate the measurement required to understand discovery, engagement, inventory movement, and important buyer actions.',
       evidence: 'What changed across visibility, engagement, locality, and meaningful actions?',
     },
     {
       number: '4',
-      title: 'Report and improve',
+      title: 'Prove the Value',
       body: 'Explain what changed, connect the result to the work, and use the evidence to prioritize the next opportunity.',
       evidence: 'What should be expanded, adjusted, protected, or tested next?',
     },
   ],
-  closing: 'One strategy. One measurement standard. One clearer view of what the website is doing.',
+  closing: 'One strategy. Three connected jobs. One measurable standard.',
 }
 
 export const founder = {
-  eyebrow: 'FOUNDER-LED. DEALERSHIP-SPECIALIZED.',
-  headline: 'Built from inside the work.',
+  eyebrow: 'FOUNDER-LED · DEALERSHIP-SPECIALIZED',
+  headline: 'One strategy. One accountable lead.',
   copy:
-    'Authomotive is led by Chris Gabriel, a technical SEO and web analytics strategist with years of hands-on dealership experience across content, organic visibility, GA4, GTM, reporting, measurement, and AI discovery. Strategy, implementation, and interpretation stay connected under one accountable lead.',
+    'Authomotive is led by Chris Gabriel, a technical SEO and web analytics strategist with years of hands-on dealership experience. Strategy, implementation, and interpretation stay connected under one accountable lead.',
   supporting: 'Deep dealership experience without the layers of a conventional agency.',
 }
 
 export const managedFramework = {
-  eyebrow: 'WHAT AN ENGAGEMENT INCLUDES',
-  headline: 'One managed engagement, mapped to the three jobs.',
+  eyebrow: 'ONE MANAGED ENGAGEMENT · THREE CONNECTED JOBS',
+  headline: 'Everything required to get found, guide buyers, and prove the work.',
   inclusions: [
     'Dealership visibility and opportunity review',
     'Prioritized authority-content roadmap',
@@ -353,22 +360,22 @@ export const managedFramework = {
 }
 
 export const idealFit = {
-  headline: 'Authomotive is built for dealerships that know their website should be doing more.',
+  headline: 'Built for dealerships that expect more from their website.',
   signals: [
-    'Your content looks similar to every competing dealer website',
-    'Your reports provide numbers but not a clear explanation',
-    'Important vendor or buyer actions are missing from analytics',
-    'Your team wants a credible search and AI strategy grounded in measurable work',
+    'Your content looks like every competing dealer website.',
+    'Your reports provide numbers without a clear explanation.',
+    'Important buyer and vendor actions are missing from analytics.',
+    'Your team needs a credible search and AI strategy grounded in measurable work.',
   ],
   contrast:
     'Authomotive is not a shortcut, traffic guarantee, or replacement for the dealership\u2019s website provider. It is the authority and measurement layer that helps the existing website become more useful, visible, and accountable.',
 }
 
 export const finalCta = {
-  eyebrow: 'START WITH THE WEBSITE YOU ALREADY HAVE',
-  headline: 'See where your dealership is losing visibility, clarity, or measurable buyer intent.',
+  eyebrow: 'ONE FOCUSED REVIEW · START WITH YOUR WEBSITE',
+  headline: 'Find the strongest opportunity on your dealership website.',
   supporting:
-    'Request an Authomotive Opportunity Review. We will identify the strongest opening across authority content, AI discovery, reporting, and measurement.',
+    'Request an Authomotive Opportunity Review. We will identify the clearest opening across authority content, AI discovery, reporting, and measurement.',
   concernOptions: [
     'Our content is not earning enough visibility',
     'We cannot clearly explain performance',

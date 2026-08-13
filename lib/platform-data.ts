@@ -26,10 +26,10 @@ export interface PlatformCategory {
 }
 
 export const platformCredibility = {
-  eyebrow: 'BUILT FOR THE STACK ALREADY IN PLACE',
-  headline: 'Platform experience without a platform replacement.',
+  eyebrow: 'PLATFORM FIT · NO REPLACEMENT REQUIRED',
+  headline: 'Keep the platform. Add the strategy.',
   supporting:
-    'Authomotive works within the dealership website, search, analytics, and advertising environments already in place\u2014then connects the available signals into a clearer performance story.',
+    'Authomotive works inside the dealership website, search, analytics, and advertising environments already in place—then connects them into one clearer performance system.',
   categories: [
     {
       id: 'website',

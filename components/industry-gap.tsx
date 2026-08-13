@@ -25,7 +25,7 @@ export function IndustryGap() {
           >
             {industryGap.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
             {industryGap.supporting}
           </p>
         </div>
@@ -68,8 +68,8 @@ export function IndustryGap() {
         </div>
         <Reveal>
           <p className="mt-6 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
-            {industryGap.closing.split('one managed standard')[0]}
-            <span className="text-action-deep">one managed standard</span>.
+            {industryGap.closing.split('one measurable standard')[0]}
+            <span className="text-action-deep">one measurable standard</span>.
           </p>
         </Reveal>
       </div>

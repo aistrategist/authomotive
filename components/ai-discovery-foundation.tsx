@@ -78,7 +78,7 @@ export function AiDiscoveryFoundation() {
           >
             {aiDiscovery.headline}
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
+          <p className="lede mt-3 text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
             {aiDiscovery.supporting}
           </p>
 
@@ -122,11 +122,8 @@ export function AiDiscoveryFoundation() {
               ))}
             </ul>
             <div className="flex justify-end border-t border-border bg-porcelain/50 px-5 py-3.5 md:px-6">
-              <a
-                href="#reporting"
-                className="inline-flex items-center gap-2 text-base font-bold text-action-deep transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
-              >
-                See how it feeds the reporting
+              <a href="#reporting" className="editorial-link">
+                See How It Supports the Evidence
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M2 8h11m0 0L9 4m4 4l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

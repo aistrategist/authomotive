@@ -182,22 +182,16 @@ function ExpandedViz({ tone }: { tone: Tone }) {
   return <MeasureViz />
 }
 
-const quietSurfaces: Record<Tone, string> = {
-  ink: 'border-2 border-ink bg-teal-mist text-ink shadow-[6px_6px_0_0_var(--ink)] hover:bg-[#cfe3df]',
-  lime: 'border-2 border-ink bg-lime-mist text-ink shadow-[6px_6px_0_0_var(--lime)] hover:bg-[#e3fdb8]',
-  action: 'border-2 border-ink bg-orange-mist text-ink shadow-[6px_6px_0_0_var(--action)] hover:bg-[#ffe3d4]',
-}
-
-const openSurfaces: Record<Tone, string> = {
-  ink: 'border-2 border-ink bg-ink text-porcelain shadow-[6px_6px_0_0_var(--lime)]',
-  lime: 'border-2 border-ink bg-lime text-ink shadow-[6px_6px_0_0_var(--action)]',
-  action: 'border-2 border-ink bg-action text-ink shadow-[6px_6px_0_0_var(--lime)]',
-}
-
 const swatchClass: Record<Tone, string> = {
   ink: 'bg-ink',
   lime: 'bg-lime',
   action: 'bg-action',
+}
+
+const plusMark: Record<Tone, string> = {
+  ink: 'text-porcelain',
+  lime: 'text-lime',
+  action: 'text-action',
 }
 
 function StackSlab({
@@ -214,39 +208,26 @@ function StackSlab({
   const tone = tones[category.id] ?? 'ink'
   const panelId = `stack-panel-${category.id}`
   const buttonId = `stack-btn-${category.id}`
-  const loud = open && tone === 'ink'
-  const surface = open ? openSurfaces[tone] : quietSurfaces[tone]
-  const focus = loud ? 'focus-visible:outline-lime' : 'focus-visible:outline-ink'
-  const indexClass = loud ? 'text-lime' : 'text-ink'
-  const titleClass = loud ? 'text-porcelain' : 'text-ink'
-  const kickerClass = loud ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'
-  const plusClass = loud
-    ? 'border-2 border-lime bg-lime text-ink'
-    : 'border-2 border-ink bg-paper text-ink'
-  const bodyText = loud ? 'text-[color:var(--on-ink-muted)]' : 'text-ink'
 
   return (
-    <div className={`stack-slab overflow-hidden rounded-[8px] ${surface}`}>
+    <div className={`stack-slab stack-slab-${tone} rounded-[8px] ${open ? 'is-engaged' : ''}`}>
       <button
         id={buttonId}
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
         onClick={onToggle}
-        className={`flex w-full min-h-[88px] items-center gap-4 px-5 py-5 text-left md:min-h-[104px] md:px-8 md:py-6 ${focus} focus-visible:outline-2 focus-visible:outline-offset-[-6px]`}
+        className="flex w-full min-h-[88px] items-center gap-4 px-5 py-5 text-left text-ink focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-ink md:min-h-[104px] md:px-8 md:py-6"
       >
-        <span
-          className={`h-3 w-3 shrink-0 ${swatchClass[tone]}`}
-          aria-hidden="true"
-        />
-        <span className={`font-mono text-sm font-medium tracking-[0.18em] md:text-base ${indexClass}`}>
+        <span className={`h-3 w-3 shrink-0 ${swatchClass[tone]}`} aria-hidden="true" />
+        <span className="font-mono text-sm font-medium tracking-[0.18em] text-ink md:text-base">
           0{index + 1}
         </span>
         <span className="min-w-0 flex-1">
-          <span className={`block text-2xl font-semibold tracking-tight md:text-3xl ${titleClass}`}>
+          <span className="block text-2xl font-semibold tracking-tight text-ink md:text-3xl">
             {category.label}
           </span>
-          <span className={`mt-1 hidden text-sm md:block ${kickerClass}`}>
+          <span className="mt-1 hidden text-sm text-ink md:block">
             {kickers[category.id]}
           </span>
         </span>
@@ -256,7 +237,7 @@ function StackSlab({
           </span>
         ) : null}
         <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[6px] border text-2xl leading-none transition-transform duration-150 ${plusClass} ${open ? 'rotate-45' : ''}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[6px] border-2 border-ink bg-ink text-2xl leading-none transition-transform duration-200 motion-reduce:transition-none ${plusMark[tone]} ${open ? 'rotate-45' : ''}`}
           aria-hidden="true"
         >
           +
@@ -265,8 +246,8 @@ function StackSlab({
 
       <div id={panelId} role="region" aria-labelledby={buttonId} className={`stack-body ${open ? 'is-open' : ''}`}>
         <div>
-          <div className="px-5 pb-6 md:px-8 md:pb-8">
-            <p className={`max-w-3xl text-base leading-relaxed md:text-lg ${bodyText}`}>
+          <div className="border-t border-ink px-5 pb-6 pt-5 md:px-8 md:pb-8">
+            <p className="lede text-base leading-relaxed text-ink md:text-lg">
               {category.explanation}
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
@@ -274,7 +255,7 @@ function StackSlab({
                 <MarkChip key={mark.id} mark={mark} />
               ))}
             </div>
-            <div className={`mt-6 rounded-[8px] p-4 md:p-5 ${loud ? 'bg-carbon/80' : 'bg-paper/70'}`}>
+            <div className={`mt-6 rounded-[8px] p-4 md:p-5 ${tone === 'ink' ? 'bg-ink' : 'bg-paper'}`}>
               <ExpandedViz tone={tone} />
             </div>
           </div>
@@ -306,7 +287,7 @@ export function PlatformCredibility() {
               {platformCredibility.headline}
             </h2>
           </div>
-          <p className="text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
+          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
             {platformCredibility.supporting}
           </p>
         </div>

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
   description:
-    'Authomotive builds search- and AI-ready dealership content, unified performance reporting, managed AI Discovery pages, and custom measurement that shows what buyers found, what they did, and what to improve next.',
+    'Authomotive helps dealerships get found, guide buyers, and prove what works—through Authority Experiences, connected measurement, and plain-English intelligence on the website they already have.',
   alternates: {
     canonical: '/',
   },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
     description:
-      'The managed authority and measurement framework for dealership websites. Build authority. Move buyers.',
+      'The managed authority and measurement framework for dealership websites. Get found. Guide buyers. Prove what works.',
     type: 'website',
     siteName: 'Authomotive',
     url: '/',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
     description:
-      'The managed authority and measurement framework for dealership websites. Build authority. Move buyers.',
+      'The managed authority and measurement framework for dealership websites. Get found. Guide buyers. Prove what works.',
   },
   icons: {
     icon: [

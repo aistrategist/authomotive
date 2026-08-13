@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { navLinks, siteConfig } from '@/lib/site-data'
+import { cta, navLinks, siteConfig } from '@/lib/site-data'
 
 function Wordmark({ inverted = false }: { inverted?: boolean }) {
   return (
@@ -195,7 +195,7 @@ export function SiteHeader() {
             href="#opportunity-review"
             className="btn btn-action !min-h-[44px] !whitespace-nowrap !px-4 !text-[15px] xl:!px-5"
           >
-            Request a Website Review
+            {cta.primary}
             <span className="btn-arrow" aria-hidden="true">
               →
             </span>
@@ -267,7 +267,7 @@ export function SiteHeader() {
                 onClick={closeMenu}
                 className="btn btn-action-dark mt-6 !text-lg"
               >
-                Request a Website Review
+                {cta.primary}
                 <span className="btn-arrow" aria-hidden="true">
                   →
                 </span>

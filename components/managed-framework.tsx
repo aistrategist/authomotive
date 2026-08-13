@@ -4,7 +4,7 @@ import { Reveal } from '@/components/reveal'
 /** Editorial scope map: inclusions grouped under the three primary capabilities. */
 const scopeGroups = [
   {
-    capability: capabilitySystem.capabilities[0], // Get Found and Chosen
+    capability: capabilitySystem.capabilities[0], // Get Found. Guide Buyers.
     items: [
       'Dealership visibility and opportunity review',
       'Prioritized authority-content roadmap',
@@ -15,7 +15,7 @@ const scopeGroups = [
     ],
   },
   {
-    capability: capabilitySystem.capabilities[1], // Know What Is Working
+    capability: capabilitySystem.capabilities[1], // Prove What Works.
     items: [
       'Unified monthly intelligence',
       'MoM, YoY, locality, engagement, and content analysis',
@@ -68,7 +68,7 @@ export function ManagedFramework() {
               {managedFramework.headline}
             </h2>
           </div>
-          <p className="text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
+          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
             {managedFramework.callout}
           </p>
         </div>

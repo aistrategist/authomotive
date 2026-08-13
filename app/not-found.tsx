@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { cta } from '@/lib/site-data'
 
 export default function NotFound() {
   return (
@@ -30,9 +31,10 @@ export default function NotFound() {
         </Link>
         <Link
           href="/#opportunity-review"
-          className="text-base font-bold text-action-deep transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
+          className="editorial-link"
         >
-          Request an Opportunity Review
+          {cta.primary}
+          <span aria-hidden="true">→</span>
         </Link>
       </div>
     </main>
