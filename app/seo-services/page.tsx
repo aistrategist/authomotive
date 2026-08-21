@@ -8,7 +8,6 @@ import { CapabilitySystem } from '@/components/capability-system'
 import { AuthorityExperience } from '@/components/authority-experience'
 import { IntelligencePreview } from '@/components/intelligence-preview'
 import { SignalArchitecture } from '@/components/signal-architecture'
-import { FounderCredibility } from '@/components/founder-credibility'
 import { ManagedFramework } from '@/components/managed-framework'
 import { FinalCta } from '@/components/final-cta'
 import { SiteFooter } from '@/components/site-footer'
@@ -42,7 +41,6 @@ export default function SeoServicesPage() {
         <AuthorityExperience />
         <IntelligencePreview />
         <SignalArchitecture />
-        <FounderCredibility />
         <ManagedFramework />
         <FinalCta />
       </main>

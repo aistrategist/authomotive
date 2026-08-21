@@ -1,34 +1,29 @@
-import { managedFramework, idealFit, capabilitySystem, cta } from '@/lib/site-data'
-import { Reveal } from '@/components/reveal'
+import { managedFramework, idealFit, founder, capabilitySystem, cta } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
 
-/** Editorial scope map: inclusions grouped under the three primary capabilities. */
 const scopeGroups = [
   {
-    capability: capabilitySystem.capabilities[0], // Get Found. Guide Buyers.
+    capability: capabilitySystem.capabilities[0],
     items: [
-      'Opportunity and visibility review',
-      'Prioritized Authority Experience roadmap',
       'Authority Experiences and managed AI Discovery',
       'Inventory and conversion pathways',
+      'Prioritized opportunity roadmap',
     ],
   },
   {
-    capability: capabilitySystem.capabilities[1], // Prove What Works.
+    capability: capabilitySystem.capabilities[1],
     items: [
       'Unified monthly intelligence',
-      'MoM, YoY, locality, and content analysis',
-      'Search and AI visibility observations',
+      'What changed, why it changed, what next',
       'Evidence-backed next actions',
     ],
   },
   {
-    capability: capabilitySystem.capabilities[2], // Track What Matters
+    capability: capabilitySystem.capabilities[2],
     items: [
-      'GA4, GTM, and custom-event definitions',
-      'ASC-aligned measurement planning',
+      'Named events across shopper actions',
       'Vendor and advertising measurement support',
-      'Validation, optimization, and governance',
+      'Validation and governance',
     ],
   },
 ]
@@ -45,7 +40,7 @@ const cardLooks = [
     rule: 'border-proof',
   },
   {
-    surface: 'border-2 border-ink bg-porcelain',
+    surface: 'border-2 border-ink bg-paper',
     swatch: 'bg-ink',
     rule: 'border-ink',
   },
@@ -59,95 +54,106 @@ export function ManagedFramework() {
       aria-labelledby="framework-heading"
       className="scroll-mt-24 border-b border-border bg-alloy"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <SignalRail tone="ink" />
-        <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
-          <div className="lg:col-span-7">
-            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
-              {managedFramework.eyebrow}
-            </p>
-            <h2
-              id="framework-heading"
-              className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-5xl text-balance"
-            >
-              {managedFramework.headline}
-            </h2>
-          </div>
-          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:col-span-5 lg:pb-1">
+        <div className="max-w-[42rem]">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
+            {managedFramework.eyebrow}
+          </p>
+          <h2
+            id="framework-heading"
+            className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-5xl text-balance"
+          >
+            {managedFramework.headline}
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
             {managedFramework.callout}
           </p>
         </div>
 
-        <div className="mt-10 grid items-stretch gap-5 md:mt-12 md:grid-cols-3">
+        <div className="mt-9 grid items-stretch gap-4 md:mt-10 md:grid-cols-3 md:gap-5">
           {scopeGroups.map((group, gi) => {
             const look = cardLooks[gi]
             return (
-              <Reveal
+              <article
                 key={group.capability.id}
-                delay={gi * 60}
-                className={`flex h-full flex-col rounded-[8px] p-6 ${look.surface}`}
+                className={`flex h-full flex-col rounded-[8px] p-5 md:p-6 ${look.surface}`}
               >
                 <span className={`h-3 w-3 ${look.swatch}`} aria-hidden="true" />
                 <p className="mt-4 font-mono text-xs uppercase tracking-wider text-signal-deep">
-                  Job {gi + 1} · {group.capability.brandedName}
+                  Job {gi + 1}
                 </p>
                 <h3 className={`mt-2 border-t ${look.rule} pt-3 text-xl font-semibold tracking-tight text-ink md:text-2xl`}>
                   {group.capability.plainName}
                 </h3>
-                <ul className="mt-4 flex flex-1 flex-col">
+                <ul className="mt-3 flex flex-1 flex-col">
                   {group.items.map((item) => (
                     <li
                       key={item}
-                      className="border-t border-border py-3 text-base leading-relaxed text-ink first:border-t-0"
+                      className="border-t border-ink/10 py-2.5 text-base leading-relaxed text-ink first:border-t-0"
                     >
                       {item}
                     </li>
                   ))}
                 </ul>
-              </Reveal>
+              </article>
             )
           })}
         </div>
 
-        <div className="mt-8 border-t-2 border-ink bg-porcelain px-5 py-6 md:mt-10 md:px-8 md:py-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
-            {idealFit.headline}
-          </h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {idealFit.signals.map((signal, i) => (
-              <Reveal key={signal}>
-                <a
-                  href="#opportunity-review"
-                  className="lift group flex min-h-[44px] items-start gap-3 border border-ink/15 bg-paper px-4 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
-                >
-                  <span
-                    className="font-mono text-sm font-bold text-fog transition-colors group-hover:text-accent-deep"
-                    aria-hidden="true"
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <p className="text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
-                    {signal}
-                  </p>
-                </a>
-              </Reveal>
-            ))}
+        <div className="relative mt-8 overflow-hidden border-2 border-ink bg-paper">
+          <span className="absolute inset-y-0 left-0 w-1.5 bg-ink md:w-2" aria-hidden="true" />
+          <div className="px-5 py-6 pl-7 md:px-8 md:py-7 md:pl-10">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
+              {founder.eyebrow}
+            </p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
+              {founder.headline}
+            </p>
+            <p className="mt-3 max-w-[42rem] text-base leading-relaxed text-ink text-pretty md:text-lg">
+              {founder.copy}
+            </p>
+            <p className="mt-3 max-w-[42rem] text-base font-semibold leading-relaxed text-muted-foreground">
+              {founder.supporting}
+            </p>
           </div>
-          <p className="mt-5 max-w-3xl border-t border-border pt-5 text-sm leading-relaxed text-muted-foreground md:text-base text-pretty">
+        </div>
+
+        <div className="mt-6 bg-paper px-5 py-6 md:px-8 md:py-7">
+          <p className="text-xl font-semibold tracking-tight text-ink md:text-2xl">
+            {idealFit.headline}
+          </p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {idealFit.signals.map((signal, i) => (
+              <li
+                key={signal}
+                className="flex min-h-[72px] items-start gap-3 border border-ink/15 bg-porcelain px-4 py-3.5"
+              >
+                <span className="font-mono text-sm font-bold text-ink" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p className="text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
+                  {signal}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base text-pretty">
             {idealFit.contrast}
           </p>
-          <div className="mt-6 flex flex-col items-start gap-4 border-t border-ink/15 pt-6 md:flex-row md:items-center md:justify-between md:gap-8">
-            <p className="max-w-xl text-base leading-relaxed text-ink md:text-lg text-pretty">
-              Start with one focused review of the dealership website, its discovery pathways and its
-              measurement gaps.
-            </p>
-            <a href="#opportunity-review" className="btn btn-action shrink-0">
-              {cta.primary}
-              <span className="btn-arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
-          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
+          <p className="max-w-xl text-lg font-semibold leading-snug text-ink text-pretty">
+            Start with one focused review of the dealership website, its discovery pathways and its
+            measurement gaps.
+          </p>
+          <a href="#opportunity-review" className="btn btn-action shrink-0">
+            {cta.primary}
+            <span className="btn-arrow" aria-hidden="true">
+              →
+            </span>
+          </a>
         </div>
       </div>
     </section>
