@@ -64,15 +64,61 @@ function pinLabel(n: number) {
   return String(n).padStart(2, '0')
 }
 
+type ViewTransitionLike = {
+  ready: Promise<void>
+  finished: Promise<void>
+  skipTransition: () => void
+}
+
+function viewTransitionDoc() {
+  const doc = document as Document & {
+    startViewTransition?: (update: () => void) => ViewTransitionLike
+    activeViewTransition?: ViewTransitionLike | null
+  }
+  return doc
+}
+
+function canUseAperture(layer: HTMLElement | null, tab: HTMLElement | null) {
+  if (typeof document === 'undefined') return false
+  if (typeof viewTransitionDoc().startViewTransition !== 'function') return false
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
+  if (window.innerWidth < 768) return false
+  if (!layer || !tab) return false
+  const layerBox = layer.getBoundingClientRect()
+  const tabBox = tab.getBoundingClientRect()
+  return layerBox.width > 8 && layerBox.height > 8 && tabBox.width > 8 && tabBox.height > 8
+}
+
+function apertureGeometry(tab: HTMLElement, layer: HTMLElement) {
+  const tabBox = tab.getBoundingClientRect()
+  const layerBox = layer.getBoundingClientRect()
+  const originX = Math.min(Math.max(tabBox.left + tabBox.width / 2 - layerBox.left, 0), layerBox.width)
+  const originY = 0
+  const radius = Math.ceil(
+    Math.max(
+      Math.hypot(originX, originY),
+      Math.hypot(layerBox.width - originX, originY),
+      Math.hypot(originX, layerBox.height - originY),
+      Math.hypot(layerBox.width - originX, layerBox.height - originY),
+    ) + 12,
+  )
+  return { originX, originY, radius }
+}
+
 export function AuthorityExperience() {
   const [view, setView] = useState<ViewId>('shopper')
   const rootRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const applyLensRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
   const lensReadyRef = useRef(false)
   const lensPrimedRef = useRef(false)
+  const skipGsapRef = useRef(false)
+  const vtGenRef = useRef(0)
+  const viewRef = useRef(view)
+  viewRef.current = view
   const activeIndex = views.findIndex((v) => v.id === view)
 
   useGSAP(
@@ -158,19 +204,101 @@ export function AuthorityExperience() {
 
   useLayoutEffect(() => {
     if (!lensReadyRef.current) return
-    const instant = !lensPrimedRef.current
+    const instant = !lensPrimedRef.current || skipGsapRef.current
     lensPrimedRef.current = true
     applyLensRef.current(view, instant)
   }, [view])
 
   const activate = (id: ViewId, focus = false) => {
-    if (id === view) return
-    flushSync(() => {
-      setView(id)
-    })
-    if (focus) {
-      const i = views.findIndex((v) => v.id === id)
-      tabRefs.current[i]?.focus()
+    if (id === viewRef.current) return
+    viewRef.current = id
+
+    const apply = () => {
+      flushSync(() => {
+        setView(id)
+      })
+      if (focus) {
+        const i = views.findIndex((v) => v.id === id)
+        tabRefs.current[i]?.focus()
+      }
+    }
+
+    const layer = stageRef.current
+    const nextTab = tabRefs.current[views.findIndex((v) => v.id === id)] ?? null
+    const doc = viewTransitionDoc()
+
+    if (!canUseAperture(layer, nextTab) || !layer || !nextTab || !doc.startViewTransition) {
+      apply()
+      return
+    }
+
+    const previous = doc.activeViewTransition
+    if (previous) {
+      try {
+        previous.skipTransition()
+      } catch {
+        /* already finished */
+      }
+    }
+
+    const token = ++vtGenRef.current
+    skipGsapRef.current = true
+    const root = document.documentElement
+    root.classList.add('ae-vt-active')
+
+    try {
+      const vt = doc.startViewTransition(() => {
+        apply()
+        applyLensRef.current(id, true)
+      })
+
+      void vt.ready
+        .then(() => {
+          if (token !== vtGenRef.current) return
+          const tab = tabRefs.current[views.findIndex((v) => v.id === id)]
+          const stage = stageRef.current
+          if (!tab || !stage) return
+          const { originX, originY, radius } = apertureGeometry(tab, stage)
+          const origin = `${originX}px ${originY}px`
+          try {
+            root.animate(
+              [
+                { clipPath: `circle(8px at ${origin})` },
+                { clipPath: `circle(${radius}px at ${origin})` },
+              ],
+              {
+              duration: 420,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              fill: 'none',
+              pseudoElement: '::view-transition-new(authority-lens-layer)',
+              },
+            )
+          } catch {
+            /* pseudo-element unavailable */
+          }
+        })
+        .catch(() => {
+          /* skipped or unsupported pseudo */
+        })
+
+      void vt.finished
+        .catch(() => {
+          /* skipped */
+        })
+        .finally(() => {
+          if (token !== vtGenRef.current) return
+          root.classList.remove('ae-vt-active')
+          skipGsapRef.current = false
+        })
+      window.setTimeout(() => {
+        if (token !== vtGenRef.current) return
+        root.classList.remove('ae-vt-active')
+        skipGsapRef.current = false
+      }, 700)
+    } catch {
+      root.classList.remove('ae-vt-active')
+      skipGsapRef.current = false
+      apply()
     }
   }
 
@@ -231,19 +359,20 @@ export function AuthorityExperience() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => activate(v.id as ViewId)}
                 onKeyDown={(event) => onTabKeyDown(event, i)}
-                className={`ae-tab flex min-h-[52px] items-center gap-3 rounded-lg border-2 px-5 py-3 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:px-6 ${
+                className={`ae-tab relative flex min-h-[52px] items-center gap-3 rounded-lg border-2 px-5 py-3 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:px-6 ${
                   selected
-                    ? 'border-lime bg-lime text-ink'
+                    ? 'border-lime bg-transparent text-ink'
                     : 'border-stage-line bg-stage-elevated text-stage-foreground hover:border-stage-muted'
                 }`}
               >
+                {selected ? <span className="ae-tab-indicator" aria-hidden="true" /> : null}
                 <span
-                  className={`font-mono text-xs font-bold ${selected ? 'text-signal-deep' : 'text-fog'}`}
+                  className={`relative z-[1] font-mono text-xs font-bold ${selected ? 'text-signal-deep' : 'text-fog'}`}
                   aria-hidden="true"
                 >
                   0{i + 1}
                 </span>
-                {v.label}
+                <span className="relative z-[1]">{v.label}</span>
               </button>
             )
           })}
@@ -274,7 +403,8 @@ export function AuthorityExperience() {
               Illustrative example — not a live dealership page
             </p>
 
-            <div className="ae-stage">
+            <div ref={stageRef} className="ae-stage">
+              <span className="ae-lens-tint" data-lens={view} aria-hidden="true" />
               <article className="ae-page" data-lens={view}>
                 <div>
                   <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">

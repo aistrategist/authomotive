@@ -589,13 +589,30 @@
 .ae-stage {
   display: grid;
   gap: 1rem;
+  position: relative;
+}
+.ae-lens-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+.ae-lens-tint[data-lens='discovery'] {
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+}
+.ae-lens-tint[data-lens='measurable'] {
+  background: color-mix(in srgb, var(--proof) 11%, transparent);
 }
 .ae-page {
   min-width: 0;
+  position: relative;
+  z-index: 2;
 }
 .ae-rail {
   display: none;
   position: relative;
+  z-index: 2;
 }
 .ae-spot {
   position: relative;
@@ -679,6 +696,18 @@
 .ae-tab {
   transition: none;
 }
+.ae-tab-indicator {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: var(--lime);
+  pointer-events: none;
+  view-transition-name: authority-lens-indicator;
+}
+.ae-stage {
+  view-transition-name: authority-lens-layer;
+}
 .ae-dot {
   transition: none;
 }
@@ -749,6 +778,46 @@
   .ae-chip {
     transition: none;
   }
+}
+
+html.ae-vt-active::view-transition {
+  pointer-events: none;
+}
+html.ae-vt-active::view-transition-group(root) {
+  animation: none;
+}
+html.ae-vt-active::view-transition-old(root) {
+  display: none;
+}
+html.ae-vt-active::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.ae-vt-active::view-transition-group(authority-lens-layer) {
+  animation: none;
+  animation-duration: 0.42s;
+}
+html.ae-vt-active::view-transition-old(authority-lens-layer) {
+  animation: ae-vt-hold 0.42s linear both;
+  mix-blend-mode: normal;
+}
+html.ae-vt-active::view-transition-new(authority-lens-layer) {
+  animation: none;
+  animation-duration: 0.42s;
+  mix-blend-mode: normal;
+  height: 100%;
+  overflow: clip;
+  z-index: 1;
+}
+@keyframes ae-vt-hold {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+html.ae-vt-active::view-transition-group(authority-lens-indicator) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ------------------------------------------------------------------ */
