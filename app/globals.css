@@ -3040,3 +3040,155 @@ details.disclosure[open] > summary .disclosure-plus {
     transform: none !important;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Capabilities — one system bus                                       */
+/* ------------------------------------------------------------------ */
+
+#capabilities .cap-chapter-rule {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  top: 0;
+  height: 2px;
+  background: var(--ink);
+  transform-origin: left center;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  #capabilities .cap-chapter-rule {
+    left: 2rem;
+    right: 2rem;
+  }
+  #capabilities .cap-head-row {
+    padding: 0.75rem 1.75rem;
+  }
+}
+@media (min-width: 1024px) {
+  #capabilities .cap-chapter-rule {
+    left: 0;
+    right: 0;
+  }
+}
+#capabilities .job-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#capabilities .cap-station {
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  z-index: 3;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  pointer-events: none;
+}
+#capabilities .job-card:nth-child(1) .cap-station.is-on {
+  background: var(--accent);
+  border-color: var(--accent-deep);
+}
+#capabilities .job-card:nth-child(2) .cap-station.is-on {
+  background: var(--proof);
+  border-color: var(--proof-deep);
+}
+#capabilities .job-card:nth-child(3) .cap-station.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+#capabilities .cap-bus {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+#capabilities .cap-bus-spine,
+#capabilities .cap-bus-branch {
+  position: absolute;
+  background: var(--ink);
+  pointer-events: none;
+}
+#capabilities .cap-panel-stack {
+  display: grid;
+}
+#capabilities .cap-panel-stack > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+#capabilities .cap-panel-stack > [inert],
+#capabilities .cap-panel-head > [inert] {
+  visibility: hidden;
+  pointer-events: none;
+}
+#capabilities .cap-panel-head {
+  display: grid;
+  border-bottom: 1px solid var(--border);
+}
+#capabilities .cap-head-row {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1.25rem;
+  min-width: 0;
+  padding: 0.75rem 1.5rem;
+}
+#capabilities .cap-ill-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+#capabilities .cap-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 0;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0;
+  border-bottom: 2px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+}
+#capabilities .cap-dock:hover .cap-dock-arrow,
+#capabilities .cap-dock:focus-visible .cap-dock-arrow {
+  transform: translateX(3px);
+}
+#capabilities .cap-dock:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+#capabilities .cap-dock-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+@media (max-width: 1023px) {
+  #capabilities .cap-station {
+    left: 10px;
+    top: 1.35rem;
+    bottom: auto;
+    margin-left: 0;
+  }
+  #capabilities .cap-dock {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #capabilities .cap-chapter-rule,
+  #capabilities .cap-bus-spine,
+  #capabilities .cap-bus-branch {
+    transform: none !important;
+  }
+  #capabilities .cap-dock-arrow {
+    transition: none;
+  }
+  #capabilities .job-card,
+  #capabilities .job-card[aria-selected='true'] {
+    transition: none;
+  }
+}

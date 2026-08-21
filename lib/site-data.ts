@@ -154,6 +154,8 @@ export interface Capability {
   disclosureTitle: string
   disclosureItems: string[]
   keyLine: string
+  nextLabel: string
+  nextHref: string
 }
 
 export const capabilitySystem = {
@@ -169,7 +171,7 @@ export const capabilitySystem = {
       primaryMessage:
         'Create dealership-owned pages that answer better questions and move buyers toward a decision.',
       supporting:
-        'Original dealership research experiences built around real shopper needs, local opportunity, vehicle decisions, and inventory pathways\u2014useful to buyers and clearer for search and AI-assisted systems.',
+        'Original dealership research built around real shopper needs, local opportunity, vehicle decisions and inventory pathways—useful to buyers and clearer to search and AI systems.',
       outcomesTitle: 'Visible outcomes',
       outcomes: [
         'Stronger non-branded discovery opportunities',
@@ -194,6 +196,8 @@ export const capabilitySystem = {
       ],
       keyLine:
         'Most dealership pages are built to exist. Authority Experiences are built to earn attention, guide a decision, and prove their value.',
+      nextLabel: 'See an Authority Experience in action',
+      nextHref: '#authority-experiences',
     },
     {
       id: 'know-working',
@@ -201,7 +205,7 @@ export const capabilitySystem = {
       brandedName: 'Authomotive Intelligence',
       primaryMessage: 'Turn disconnected performance data into one reliable monthly story.',
       supporting:
-        'Authomotive connects search visibility, website engagement, locality, content performance, identifiable AI activity, and meaningful buyer actions so a dealership can understand what changed and make the next decision with evidence.',
+        'Authomotive connects visibility, engagement, locality, content, AI activity and buyer actions into one monthly story—so the dealership sees what changed and decides what comes next.',
       outcomesTitle: 'Reporting questions we answer',
       outcomes: [
         'What improved month over month?',
@@ -228,6 +232,8 @@ export const capabilitySystem = {
         'Advertising measurement signals',
       ],
       keyLine: 'The goal is not another dashboard. It is a clearer decision.',
+      nextLabel: 'See how the evidence becomes a decision',
+      nextHref: '#reporting',
     },
     {
       id: 'track-matters',
@@ -235,7 +241,7 @@ export const capabilitySystem = {
       brandedName: 'Signal Architecture',
       primaryMessage: 'Capture the buyer actions standard analytics often overlooks.',
       supporting:
-        'Authomotive audits and improves dealership measurement through GTM, custom events, vendor-supported integrations, advertising tags, and clearer event standards\u2014so reporting reflects more of what shoppers actually did.',
+        'Authomotive connects GTM, custom events, supported vendor signals and clearer event standards—so reporting reflects more of what shoppers actually did.',
       outcomesTitle: 'Examples of what gets measured',
       outcomes: [
         'Calls and important CTA clicks',
@@ -264,6 +270,8 @@ export const capabilitySystem = {
         'Validation, debugging, naming governance, and documentation',
       ],
       keyLine: 'If an action matters to the dealership, it deserves a clear measurement plan.',
+      nextLabel: 'See the managed measurement loop',
+      nextHref: '#measurement',
     },
   ] satisfies Capability[],
 }
