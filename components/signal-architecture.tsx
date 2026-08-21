@@ -84,21 +84,19 @@ export function SignalArchitecture() {
           </div>
 
           <div className="measure-loop">
+            <span className="measure-feed-in" aria-hidden="true" />
             <svg
               className="measure-loop-ring"
-              viewBox="0 0 640 420"
+              viewBox="0 0 336 192"
               fill="none"
               aria-hidden="true"
             >
               <path
                 className="measure-loop-path"
                 pathLength="1"
-                d="M48 210 V64 Q48 48 64 48 H576 Q592 48 592 64 V356 Q592 372 576 372 H64 Q48 372 48 356 V210"
+                d="M16 96 V28 Q16 16 28 16 H308 Q320 16 320 28 V164 Q320 176 308 176 H28 Q16 176 16 164 V96"
               />
-              <path
-                className="measure-loop-arrow"
-                d="M48 168 l-7 16 h14 z"
-              />
+              <path className="measure-loop-arrow" d="M16 62 l-7 16 h14 z" />
             </svg>
 
             <ol
