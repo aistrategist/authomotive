@@ -388,14 +388,12 @@
   }
 }
 
-.qti-route,
-.loop-route {
+.qti-route {
   position: relative;
   display: grid;
   gap: 1.5rem;
 }
-.qti-route::before,
-.loop-route::before {
+.qti-route::before {
   content: '';
   position: absolute;
   left: 2.75rem;
@@ -407,20 +405,17 @@
   pointer-events: none;
 }
 @media (min-width: 768px) {
-  .qti-route::before,
-  .loop-route::before {
+  .qti-route::before {
     top: 3.5rem;
     bottom: 3.5rem;
   }
 }
 @media (min-width: 1024px) {
-  .qti-route,
-  .loop-route {
+  .qti-route {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
   }
-  .qti-route::before,
-  .loop-route::before {
+  .qti-route::before {
     left: 3.5rem;
     right: 3.5rem;
     top: 3.5rem;
@@ -431,33 +426,27 @@
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .qti-route::before,
-  .loop-route::before {
+  .qti-route::before {
     animation: qti-draw-y 600ms ease-out both;
   }
   .qti-node {
     animation: qti-node 180ms ease-out both;
   }
-  .qti-route > li:nth-child(1) .qti-node,
-  .loop-route > li:nth-child(1) .qti-node {
+  .qti-route > li:nth-child(1) .qti-node {
     animation-delay: 80ms;
   }
-  .qti-route > li:nth-child(2) .qti-node,
-  .loop-route > li:nth-child(2) .qti-node {
+  .qti-route > li:nth-child(2) .qti-node {
     animation-delay: 160ms;
   }
-  .qti-route > li:nth-child(3) .qti-node,
-  .loop-route > li:nth-child(3) .qti-node {
+  .qti-route > li:nth-child(3) .qti-node {
     animation-delay: 240ms;
   }
-  .qti-route > li:nth-child(4) .qti-node,
-  .loop-route > li:nth-child(4) .qti-node {
+  .qti-route > li:nth-child(4) .qti-node {
     animation-delay: 320ms;
   }
 }
 @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-  .qti-route::before,
-  .loop-route::before {
+  .qti-route::before {
     animation-name: qti-draw-x;
   }
 }
@@ -483,6 +472,236 @@
   }
   to {
     transform: scale(1);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Managed measurement loop — closed cycle, not a linear route         */
+/* ------------------------------------------------------------------ */
+
+.measure-cycle {
+  display: grid;
+  gap: 1.25rem;
+}
+.measure-feed {
+  position: relative;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+.measure-feed-arrow {
+  display: none;
+}
+.measure-loop {
+  position: relative;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+.measure-loop-ring {
+  display: none;
+}
+.measure-loop-stages {
+  display: grid;
+  gap: 1.25rem;
+}
+.measure-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.measure-loop-stages > li {
+  position: relative;
+}
+.measure-loop-stages > li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 1.4rem;
+  top: 3.15rem;
+  bottom: -1.25rem;
+  width: 2px;
+  background: var(--ink);
+  pointer-events: none;
+}
+.measure-return {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal-deep);
+}
+.measure-return::before {
+  content: '';
+  width: 2px;
+  height: 1.75rem;
+  background: var(--proof);
+}
+.measure-hub {
+  margin-top: 1rem;
+  border: 2px solid var(--ink);
+  background: var(--proof-soft);
+  padding: 1rem 1.15rem;
+}
+.measure-handoff {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.measure-handoff:hover {
+  color: var(--proof-deep);
+}
+.measure-handoff:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+@media (min-width: 1024px) {
+  .measure-cycle {
+    grid-template-columns: minmax(13.5rem, 16.5rem) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+  .measure-feed {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem 1.35rem 1.75rem;
+  }
+  .measure-feed-arrow {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: -1.15rem;
+    width: 1.15rem;
+    height: 2px;
+    background: var(--accent);
+    transform: translateY(-50%);
+  }
+  .measure-feed-arrow::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    border: 6px solid transparent;
+    border-left-color: var(--accent);
+    transform: translateY(-50%);
+  }
+  .measure-loop {
+    padding: 1.75rem 1.5rem 1.75rem;
+  }
+  .measure-loop-ring {
+    display: block;
+    position: absolute;
+    inset: 8% 6%;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .measure-loop-path {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linejoin: round;
+  }
+  .measure-loop-arrow {
+    fill: var(--proof);
+  }
+  .measure-loop-stages {
+    position: relative;
+    z-index: 1;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'observe connect'
+      'report improve';
+    gap: 4.5rem 5.5rem;
+  }
+  .measure-loop-stages > li:not(:last-child)::after {
+    content: none;
+  }
+  .measure-stage {
+    max-width: 20rem;
+  }
+  .measure-stage.is-observe {
+    grid-area: observe;
+  }
+  .measure-stage.is-connect {
+    grid-area: connect;
+    justify-self: end;
+    text-align: right;
+    flex-direction: row-reverse;
+  }
+  .measure-stage.is-improve {
+    grid-area: improve;
+    justify-self: end;
+    text-align: right;
+    flex-direction: row-reverse;
+  }
+  .measure-stage.is-report {
+    grid-area: report;
+  }
+  .measure-return {
+    display: none;
+  }
+  .measure-hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    width: min(16.5rem, 38%);
+    margin-top: 0;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 1.15rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .measure-loop-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: measure-draw 600ms ease-out forwards;
+  }
+  .measure-stage {
+    animation: qti-node 180ms ease-out both;
+  }
+  .measure-stage.is-observe {
+    animation-delay: 0ms;
+  }
+  .measure-stage.is-connect {
+    animation-delay: 100ms;
+  }
+  .measure-stage.is-improve {
+    animation-delay: 200ms;
+  }
+  .measure-stage.is-report {
+    animation-delay: 300ms;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .measure-handoff .btn-arrow {
+    transition: transform 0.2s ease;
+  }
+  .measure-handoff:hover .btn-arrow {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes measure-draw {
+  to {
+    stroke-dashoffset: 0;
   }
 }
 
