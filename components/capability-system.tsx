@@ -2,45 +2,8 @@
 
 import { useState } from 'react'
 import { capabilitySystem } from '@/lib/site-data'
-import { Disclosure } from '@/components/disclosure'
 import { SignalRail } from '@/components/signal-rail'
 import { SectionHandoff } from '@/components/section-handoff'
-import {
-  JobAuthorityPreview,
-  JobIntelligencePreview,
-  JobSignalPreview,
-} from '@/components/semantic-wireframes'
-
-/** Compact semantic previews — detailed proof lives in later sections. */
-function CapabilityVisual({ id }: { id: string }) {
-  if (id === 'get-found') return <JobAuthorityPreview />
-  if (id === 'know-working') return <JobIntelligencePreview />
-  return <JobSignalPreview />
-}
-
-const nextSteps: Record<
-  string,
-  { href: string; label: string; eyebrow: string; accent: 'discovery' | 'evidence' }
-> = {
-  'get-found': {
-    href: '#authority-experiences',
-    label: 'See an Authority Experience',
-    eyebrow: 'SEE THE DELIVERABLE',
-    accent: 'discovery',
-  },
-  'know-working': {
-    href: '#reporting',
-    label: 'See the Intelligence Story',
-    eyebrow: 'SEE THE INTELLIGENCE',
-    accent: 'evidence',
-  },
-  'track-matters': {
-    href: '#measurement',
-    label: 'See Signal Architecture in Action',
-    eyebrow: 'SEE THE MEASUREMENT FOUNDATION',
-    accent: 'evidence',
-  },
-}
 
 function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'proof' | 'soft' }) {
   const stroke =
@@ -180,11 +143,10 @@ export function CapabilitySystem() {
     capabilitySystem.capabilities.find((c) => c.id === activeId) ??
     capabilitySystem.capabilities[0]
   const activeIndex = capabilitySystem.capabilities.findIndex((c) => c.id === activeId)
-  const nextStep = nextSteps[active.id] ?? nextSteps['get-found']
 
   return (
     <section id="capabilities" aria-labelledby="capabilities-heading" className="relative scroll-mt-24 border-b border-border bg-paper">
-      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <SignalRail tone="ink" />
         <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
@@ -231,7 +193,7 @@ export function CapabilitySystem() {
                   setActiveId(id)
                   document.getElementById(`cap-tab-${id}`)?.focus()
                 }}
-                className={`job-card relative flex min-h-[220px] w-full min-w-0 flex-col rounded-[8px] border-2 px-5 py-5 text-left lg:aspect-square lg:h-auto lg:min-h-0 lg:max-w-[360px] lg:flex-1 lg:px-6 ${job.card} ${selected ? job.shadowOn : job.shadow} ${job.focus} focus-visible:outline-2 focus-visible:outline-offset-2`}
+                className={`job-card relative flex min-h-[11rem] w-full min-w-0 flex-col rounded-[8px] border-2 px-5 py-5 text-left lg:min-h-[12.5rem] lg:flex-1 lg:px-6 ${job.card} ${selected ? job.shadowOn : job.shadow} ${job.focus} focus-visible:outline-2 focus-visible:outline-offset-2`}
               >
                 <span
                   className={`absolute inset-x-6 -bottom-[2px] z-[2] h-1.5 ${selected ? job.rail : 'bg-transparent'}`}
@@ -289,9 +251,8 @@ export function CapabilitySystem() {
             </div>
           </div>
 
-          <div key={active.id} className="panel-swap grid gap-7 p-6 md:min-h-[420px] md:grid-cols-2 md:gap-10 md:p-7">
-            {/* Left — main explanation */}
-            <div className="flex flex-col gap-5">
+          <div key={active.id} className="panel-swap grid gap-6 p-6 md:grid-cols-12 md:gap-10 md:p-7">
+            <div className="flex flex-col gap-4 md:col-span-7">
               <div>
                 <h3 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
                   {active.primaryMessage}
@@ -300,22 +261,20 @@ export function CapabilitySystem() {
                   {active.supporting}
                 </p>
               </div>
-              <CapabilityVisual id={active.id} />
-              <blockquote className={`mt-auto border-l-4 pl-4 text-lg font-semibold leading-snug text-ink text-pretty ${
+              <blockquote className={`border-l-4 pl-4 text-lg font-semibold leading-snug text-ink text-pretty ${
                 active.id === 'know-working' ? 'border-proof' : 'border-accent'
               }`}>
                 {active.keyLine}
               </blockquote>
             </div>
 
-            {/* Right — visible outcomes, supporting proof, disclosure, and CTA */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 md:col-span-5">
               <div>
                 <p className="text-base font-semibold uppercase tracking-wide text-ink">
                   {active.outcomesTitle}
                 </p>
                 <ul className="mt-3 flex flex-col gap-2">
-                  {active.outcomes.map((outcome) => (
+                  {active.outcomes.slice(0, 4).map((outcome) => (
                     <li key={outcome} className="flex items-start gap-2.5 text-base leading-relaxed text-ink">
                       <span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${
                         active.id === 'know-working' ? 'bg-proof-deep' : 'bg-signal-deep'
@@ -325,26 +284,13 @@ export function CapabilitySystem() {
                   ))}
                 </ul>
               </div>
-
-              <div className="mt-auto flex flex-col gap-3">
-                <Disclosure title={active.disclosureTitle}>
-                  <ul className="flex flex-col gap-1.5">
-                    {active.disclosureItems.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-muted-foreground">
-                        <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-fog" aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </Disclosure>
-                <SectionHandoff
-                  eyebrow={nextStep.eyebrow}
-                  label={nextStep.label}
-                  href={nextStep.href}
-                  theme="light"
-                  accent={nextStep.accent}
-                />
-              </div>
+              <SectionHandoff
+                eyebrow="NEXT · THE DELIVERABLE"
+                label="See an Authority Experience"
+                href="#authority-experiences"
+                theme="light"
+                accent="discovery"
+              />
             </div>
           </div>
         </div>
