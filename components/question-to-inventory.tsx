@@ -1,3 +1,4 @@
+import { QtiJourney } from '@/components/qti-journey'
 import { SignalRail } from '@/components/signal-rail'
 
 const stages = [
@@ -41,8 +42,9 @@ const stackItems = [
 ] as const
 
 /**
- * Homepage-only opening chapter: buyer question → answer → inventory → evidence,
- * inside the dealership’s existing stack. Not used by /seo-services/.
+ * Opening chapter on `/` and `/seo-services/`: buyer question → answer →
+ * inventory → evidence, inside the dealership’s existing stack. Motion is
+ * scoped to the route artifact and is safe on both pages.
  */
 export function QuestionToInventory() {
   return (
@@ -75,37 +77,39 @@ export function QuestionToInventory() {
           </p>
         </div>
 
-        <ol
-          className="qti-route mt-9 bg-porcelain px-5 py-7 md:mt-10 md:px-7 md:py-8 lg:px-8"
-          aria-label="From buyer question to measurable evidence"
-        >
-          {stages.map((stage, i) => {
-            const n = String(i + 1).padStart(2, '0')
-            return (
-              <li key={stage.id} className="qti-stage relative flex items-start gap-4 lg:block">
-                <span
-                  className={`qti-node relative z-10 flex h-12 w-12 shrink-0 items-center justify-center font-mono text-sm font-bold ${stageTiles[i]}`}
-                >
-                  <span className="sr-only">
-                    Stage {n}, {stage.label}.{' '}
+        <QtiJourney>
+          <ol
+            className="qti-route px-5 py-7 md:px-7 md:py-8 lg:px-8"
+            aria-label="From buyer question to measurable evidence"
+          >
+            {stages.map((stage, i) => {
+              const n = String(i + 1).padStart(2, '0')
+              return (
+                <li key={stage.id} className="qti-stage relative flex items-start gap-4 lg:block">
+                  <span
+                    className={`qti-node relative z-10 flex h-12 w-12 shrink-0 items-center justify-center font-mono text-sm font-bold ${stageTiles[i]}`}
+                  >
+                    <span className="sr-only">
+                      Stage {n}, {stage.label}.{' '}
+                    </span>
+                    <span aria-hidden="true">{n}</span>
                   </span>
-                  <span aria-hidden="true">{n}</span>
-                </span>
-                <div className="min-w-0 lg:mt-5">
-                  <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-signal-deep">
-                    {stage.label}
-                  </p>
-                  <p className="mt-1.5 text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
-                    {stage.lead}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty md:text-[0.9375rem]">
-                    {stage.support}
-                  </p>
-                </div>
-              </li>
-            )
-          })}
-        </ol>
+                  <div className="qti-copy min-w-0 lg:mt-5">
+                    <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-signal-deep">
+                      {stage.label}
+                    </p>
+                    <p className="mt-1.5 text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
+                      {stage.lead}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty md:text-[0.9375rem]">
+                      {stage.support}
+                    </p>
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        </QtiJourney>
 
         <div
           id="platforms"
