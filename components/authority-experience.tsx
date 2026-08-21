@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { authorityTheater, cta } from '@/lib/site-data'
+import { SignalRail } from '@/components/signal-rail'
 
 type ViewId = 'shopper' | 'discovery' | 'measurable'
 
@@ -177,13 +178,9 @@ export function AuthorityExperience() {
       aria-labelledby="authority-heading"
       className="ink-grid scroll-mt-24 bg-ink"
     >
-      {/* Entrance seam — a Graphite structural rail with an Orange endpoint marking the move into the dark theater */}
-      <div className="flex items-center" aria-hidden="true">
-        <div className="h-0.5 w-10 bg-action md:w-14" />
-        <div className="h-px flex-1 bg-graphite" />
-      </div>
-      <div className="mx-auto max-w-[1320px] px-5 py-14 md:px-8 md:py-20">
-        <div className="max-w-3xl">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
+        <SignalRail tone="lime" />
+        <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
             {authorityTheater.eyebrow}
           </p>
@@ -202,7 +199,7 @@ export function AuthorityExperience() {
         <div
           role="tablist"
           aria-label="Authority Experience views"
-          className="mt-9 flex flex-wrap gap-3"
+          className="mt-10 flex flex-wrap gap-3 md:mt-12"
         >
           {authorityTheater.views.map((v, i) => {
             const selected = view === v.id
@@ -237,7 +234,7 @@ export function AuthorityExperience() {
           {authorityTheater.views.map((v, i) => (
             <div key={v.id} className="flex flex-1 items-center">
               <span
-                className={`h-2 w-2 rounded-full transition-colors duration-300 ${
+                className={`h-2 w-2 rounded-full transition-colors duration-200 ${
                   i === activeIndex ? 'bg-lime' : 'bg-graphite'
                 }`}
               />
@@ -277,12 +274,6 @@ export function AuthorityExperience() {
             </span>
           </a>
         </div>
-      </div>
-
-      {/* Exit seam — mirrors the entrance so the theater feels deliberately embedded */}
-      <div className="flex items-center" aria-hidden="true">
-        <div className="h-px flex-1 bg-graphite" />
-        <div className="h-0.5 w-10 bg-lime md:w-14" />
       </div>
     </section>
   )

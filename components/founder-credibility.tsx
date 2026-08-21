@@ -1,5 +1,6 @@
 import { founder } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
+import { SignalRail } from '@/components/signal-rail'
 
 /**
  * Compact, type-led founder-credibility band. Editorial and restrained:
@@ -7,8 +8,9 @@ import { Reveal } from '@/components/reveal'
  */
 export function FounderCredibility() {
   return (
-    <section aria-labelledby="founder-heading" className="border-b border-border bg-paper">
-      <div className="mx-auto max-w-[1320px] px-5 py-11 md:px-8 md:py-14">
+    <section data-spy="clear" aria-labelledby="founder-heading" className="border-b border-border bg-paper">
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+        <SignalRail tone="ink" />
         <Reveal className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start lg:gap-16">
           <div>
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">

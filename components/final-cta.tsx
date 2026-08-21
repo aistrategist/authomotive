@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import { finalCta } from '@/lib/site-data'
 import { submitOpportunityReview, type ReviewRequest } from '@/lib/submit-review'
 import { Reveal } from '@/components/reveal'
+import { SignalRail } from '@/components/signal-rail'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -64,10 +65,10 @@ export function FinalCta() {
       aria-labelledby="cta-heading"
       className="ink-grid scroll-mt-24 bg-ink"
     >
-      {/* Orange directional endpoint marking the final move toward action */}
-      <div className="h-[3px] w-full bg-action" aria-hidden="true" />
-      <div className="mx-auto grid max-w-[1320px] gap-10 px-5 py-14 md:px-8 md:py-20 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        <Reveal>
+      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
+        <SignalRail tone="handoff" />
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <Reveal className="lg:col-span-5">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
             {finalCta.eyebrow}
           </p>
@@ -87,7 +88,7 @@ export function FinalCta() {
           </div>
         </Reveal>
 
-        <Reveal delay={110} className="rounded-[8px] border border-graphite bg-carbon p-6 md:p-8">
+        <Reveal delay={60} className="rounded-[8px] border border-graphite bg-carbon p-6 md:p-8 lg:col-span-7">
           {status === 'success' ? (
             <div role="status" className="flex min-h-[400px] flex-col items-start justify-center gap-4">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime" aria-hidden="true">
@@ -278,6 +279,7 @@ export function FinalCta() {
             </form>
           )}
         </Reveal>
+        </div>
       </div>
     </section>
   )

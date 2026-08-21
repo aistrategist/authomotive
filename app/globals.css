@@ -133,18 +133,18 @@
   cursor: pointer;
   text-align: center;
   transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    background-color 0.16s ease,
-    color 0.16s ease,
-    border-color 0.16s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 .btn:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 3px;
 }
 .btn .btn-arrow {
-  transition: transform 0.16s ease;
+  transition: transform 0.2s ease;
 }
 @media (prefers-reduced-motion: no-preference) {
   .btn:hover {
@@ -234,7 +234,7 @@
   font-weight: 700;
   color: var(--action-deep);
   text-underline-offset: 0.2em;
-  transition: color 0.16s ease;
+  transition: color 0.2s ease;
 }
 .editorial-link:hover {
   color: var(--ink);
@@ -246,7 +246,7 @@
 }
 .editorial-link .btn-arrow,
 .editorial-link svg {
-  transition: transform 0.16s ease;
+  transition: transform 0.2s ease;
 }
 @media (prefers-reduced-motion: no-preference) {
   .editorial-link:hover .btn-arrow,
@@ -263,11 +263,14 @@
 /* Motion language — a signal moving forward                           */
 /* ------------------------------------------------------------------ */
 
-/* Section-entry reveal — content stays visible; motion is additive only */
+/* Section-entry reveal — 400ms, 16px rise, additive after mount */
 @media (prefers-reduced-motion: no-preference) {
   .reveal-io {
-    opacity: 1;
-    transform: none;
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s ease;
   }
   .reveal-io.is-visible {
     opacity: 1;
@@ -320,13 +323,13 @@
 /* Interface panel transition when a manual selection changes */
 @media (prefers-reduced-motion: no-preference) {
   .panel-swap {
-    animation: panel-in 0.35s ease both;
+    animation: panel-in 0.2s ease both;
   }
 }
 @keyframes panel-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -338,13 +341,13 @@
 @media (prefers-reduced-motion: no-preference) {
   .lift {
     transition:
-      transform 0.16s ease,
-      border-color 0.16s ease,
-      background-color 0.16s ease,
-      box-shadow 0.16s ease;
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .lift:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
   }
 }
 
@@ -474,8 +477,8 @@
 .hs-chip-face {
   display: block;
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   overflow: visible;
 }
 
@@ -551,8 +554,8 @@
   }
 
   .hs-chip-face {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -704,6 +707,16 @@
 .hs-think {
   pointer-events: none;
   opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.hs-traveler.is-thinking .hs-think {
+  opacity: 1;
+}
+
+.hs-think-dot {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .hs-packet-steer {
@@ -722,9 +735,13 @@
   transform-origin: center;
 }
 
+.hs-visitor-fit {
+  transform: scale(1.15);
+}
+
 @media (max-width: 767px) {
   .hs-visitor-fit {
-    transform: scale(1.55);
+    transform: scale(1.82);
   }
 }
 
@@ -1064,7 +1081,7 @@
   }
 
   .hs-map {
-    animation: hs-map-breathe 8s ease-in-out infinite;
+    animation: none;
   }
 
   .hs-trail-center {
@@ -1077,6 +1094,16 @@
    */
   .hs-traveler.is-node .hs-visitor {
     animation: hs-node-pop 180ms ease-out 1;
+  }
+
+  .hs-traveler.is-thinking .hs-think-dot:nth-child(1) {
+    animation: hs-think-blink 0.72s ease-in-out infinite;
+  }
+  .hs-traveler.is-thinking .hs-think-dot:nth-child(2) {
+    animation: hs-think-blink 0.72s ease-in-out infinite 80ms;
+  }
+  .hs-traveler.is-thinking .hs-think-dot:nth-child(3) {
+    animation: hs-think-blink 0.72s ease-in-out infinite 160ms;
   }
 
   .hs-ring.is-flash {
@@ -1158,7 +1185,8 @@
   .hs-chip-geo,
   .hs-skel-block,
   .hs-packet,
-  .hs-visitor {
+  .hs-visitor,
+  .hs-think-dot {
     animation: none !important;
   }
 
@@ -1233,6 +1261,16 @@
   }
   45% {
     transform: scale(1.06);
+  }
+}
+
+@keyframes hs-think-blink {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  45% {
+    opacity: 1;
   }
 }
 
@@ -1642,11 +1680,12 @@
 
 .job-card {
   transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 .job-card[aria-selected='true'] {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 @media (prefers-reduced-motion: reduce) {
   .job-card,
@@ -1659,7 +1698,7 @@
 .stack-body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.22s ease;
+  transition: grid-template-rows 0.2s ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .stack-body {
@@ -1677,9 +1716,8 @@
   border: 2px solid var(--ink);
   color: var(--ink);
   transition:
-    background-color 0.22s ease,
-    box-shadow 0.22s ease,
-    transform 0.16s ease;
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .stack-slab-ink {
   background-color: #d8eae6;
@@ -1725,17 +1763,14 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .stack-slab:hover {
-    transform: translate(-2px, -2px);
+  .stack-slab-ink:hover {
+    box-shadow: 8px 8px 0 0 var(--ink);
   }
-  .stack-float {
-    animation: stack-float 3.6s ease-in-out infinite;
+  .stack-slab-lime:hover {
+    box-shadow: 8px 8px 0 0 var(--lime);
   }
-  .stack-float-b {
-    animation: stack-float 3.6s ease-in-out 0.35s infinite;
-  }
-  .stack-float-c {
-    animation: stack-float 3.6s ease-in-out 0.7s infinite;
+  .stack-slab-action:hover {
+    box-shadow: 8px 8px 0 0 var(--action);
   }
   .stack-draw {
     stroke-dasharray: 1;
@@ -1828,14 +1863,15 @@ details.disclosure > summary {
 details.disclosure > summary::-webkit-details-marker {
   display: none;
 }
-details.disclosure > summary .disclosure-icon {
+details.disclosure > summary .disclosure-plus {
+  display: block;
   transition: transform 0.2s ease;
 }
 @media (prefers-reduced-motion: reduce) {
-  details.disclosure > summary .disclosure-icon {
+  details.disclosure > summary .disclosure-plus {
     transition: none;
   }
 }
-details.disclosure[open] > summary .disclosure-icon {
+details.disclosure[open] > summary .disclosure-plus {
   transform: rotate(45deg);
 }

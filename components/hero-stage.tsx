@@ -153,10 +153,10 @@ const TRAIL_SEGMENTS = [
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
   { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 7 },
-  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8f0ed', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -7 },
-  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 4 },
-  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -4 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8f0ed', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
+  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
+  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -193,6 +193,7 @@ const TIP_FADE_MS = 280
 const THINK_MIN_MS = 700
 const THINK_MAX_MS = 1400
 const THINK_COOLDOWN_MS = 1600
+const THINK_FADE_MS = 150
 /** Target share of active travelers paused in a “thinking” state */
 const THINK_TARGET_RATIO = 0.2
 
@@ -236,6 +237,7 @@ function makeTravelerSeed(branch: BranchId, waitUntil: number) {
     thinking: false,
     thinkUntil: 0,
     cooldownUntil: 0,
+    resumeAt: 0,
     waitUntil,
     fired: { guide: false, vsrp: false, vdp: false, convert: false },
     tipUntil: {} as Partial<Record<TipId, number>>,
@@ -368,13 +370,18 @@ function VisitorFace({ color, variant = 0 }: { color: string; variant?: number }
   return (
     <g className="hs-packet hs-visitor-fit">
       <VisitorGlyph color={color} variant={variant} />
+      <g className="hs-think" fill={color} stroke="none">
+        <circle className="hs-think-dot" cx="8.2" cy="-8.8" r="1.1" />
+        <circle className="hs-think-dot" cx="11.4" cy="-11.2" r="1.35" />
+        <circle className="hs-think-dot" cx="15" cy="-13.8" r="1.65" />
+      </g>
     </g>
   )
 }
 
 function VisitorChipIcon({ color, variant = 0 }: { color: string; variant?: number }) {
   return (
-    <svg className="hs-chip-face" viewBox="-10 -11 20 22" width="16" height="16" aria-hidden="true">
+    <svg className="hs-chip-face" viewBox="-10 -11 20 22" width="18" height="18" aria-hidden="true">
       <VisitorGlyph color={color} variant={variant} />
     </svg>
   )
@@ -629,6 +636,7 @@ export function HeroStage() {
         if (t.thinking) {
           if (now >= t.thinkUntil) {
             t.thinking = false
+            t.resumeAt = now + THINK_FADE_MS
             t.cooldownUntil = now + THINK_COOLDOWN_MS
             thinkingCount = Math.max(0, thinkingCount - 1)
           }
@@ -637,6 +645,7 @@ export function HeroStage() {
           t.progress > 0.08 &&
           t.progress < 0.9 &&
           now >= t.cooldownUntil &&
+          now >= t.resumeAt &&
           thinkingCount / CHANNELS.length < THINK_TARGET_RATIO + 0.05
         ) {
           const startChance = (dt / 1000) * 0.35
@@ -647,7 +656,7 @@ export function HeroStage() {
           }
         }
 
-        if (!t.thinking) {
+        if (!t.thinking && now >= t.resumeAt) {
           t.progress = Math.min(1, t.progress + t.speed * dt)
         }
 
@@ -724,6 +733,7 @@ export function HeroStage() {
             t.progress = 0
             t.started = false
             t.thinking = false
+            t.resumeAt = 0
             t.waitUntil = now + rand(450, 1100)
             t.fired = { guide: false, vsrp: false, vdp: false, convert: false }
             t.tipUntil = {}

@@ -5,6 +5,7 @@ import { reporting } from '@/lib/site-data'
 import { reportingMatrix } from '@/lib/platform-data'
 import { Disclosure } from '@/components/disclosure'
 import { ReportingMatrix } from '@/components/reporting-matrix'
+import { SignalRail } from '@/components/signal-rail'
 import {
   AiVisibilityCharts,
   BuyerActionCharts,
@@ -148,9 +149,10 @@ export function IntelligencePreview() {
   return (
     <section id="reporting" aria-labelledby="reporting-heading" className="scroll-mt-24 overflow-x-clip border-b border-border bg-alloy">
       <div className="bg-carbon">
-        <div className="mx-auto max-w-[1320px] px-5 pt-14 pb-20 md:px-8 md:pt-16 md:pb-28">
-          <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
-            <div>
+        <div className="mx-auto max-w-[1280px] px-5 pt-16 pb-20 md:px-8 md:pt-24 md:pb-28 lg:pt-[7rem]">
+          <SignalRail tone="lime" />
+          <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+            <div className="lg:col-span-7">
               <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
                 {reporting.eyebrow}
               </p>
@@ -161,14 +163,14 @@ export function IntelligencePreview() {
                 {reporting.headline}
               </h2>
             </div>
-            <p className="lede text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty lg:pb-1">
+            <p className="lede text-lg leading-relaxed text-[color:var(--on-ink-muted)] md:text-xl text-pretty lg:col-span-5 lg:pb-1">
               {reporting.supporting}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="relative z-[1] mx-auto max-w-[1320px] -mt-12 px-5 pb-12 md:-mt-16 md:px-8 md:pb-16">
+      <div className="relative z-[1] mx-auto max-w-[1280px] -mt-12 px-5 pb-14 md:-mt-16 md:px-8 md:pb-16 lg:pb-20">
         {/* The reporting interface — mode navigation and identification in one compact top bar */}
         <div className="overflow-hidden rounded-[8px] border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--color-ink)]">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink bg-ink px-6 py-4">

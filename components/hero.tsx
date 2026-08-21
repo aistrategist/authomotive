@@ -2,6 +2,7 @@
 
 import { hero, siteConfig } from '@/lib/site-data'
 import { HeroStage } from '@/components/hero-stage'
+import { SignalRail } from '@/components/signal-rail'
 
 /**
  * First viewport: brand + headline + support + CTAs + dominant HeroStage.
@@ -11,7 +12,7 @@ export function Hero() {
   return (
     <>
       <section id="top" className="hero-atmosphere relative overflow-visible scroll-mt-24">
-        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-8 px-5 md:gap-10 md:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-6">
+        <div className="mx-auto grid w-full max-w-[1280px] items-center gap-8 px-5 md:gap-10 md:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-6">
           <div className="hero-copy relative z-20 max-w-xl overflow-visible lg:max-w-[34rem]">
             <p className="hero-enter hero-enter-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-lime/90 md:text-xs">
               {hero.eyebrow}
@@ -50,13 +51,11 @@ export function Hero() {
         </div>
       </section>
 
-      <div className="relative h-px w-full bg-alloy" aria-hidden="true">
-        <span className="absolute left-0 top-0 h-[3px] w-20 -translate-y-1/2 bg-action md:w-28" />
-      </div>
-
       <section aria-labelledby="buyer-question-heading" className="relative border-b border-border bg-paper">
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] bg-porcelain lg:block" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-[1320px] gap-8 px-5 py-12 md:px-8 md:py-16 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
+        <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+          <SignalRail tone="ink" />
+          <div className="grid gap-8 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
             <blockquote className="bg-paper lg:sticky lg:top-24">
               <p
                 id="buyer-question-heading"
@@ -67,36 +66,9 @@ export function Hero() {
               <cite className="mt-3 block text-base not-italic text-muted-foreground">
                 A real buyer question your website should own
               </cite>
-              <div className="mt-6 hidden items-center gap-0 lg:flex" aria-hidden="true">
-                <div className="h-0.5 w-10 bg-lime" />
-                <div className="h-0.5 w-16 bg-action" />
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="-ml-px shrink-0">
-                  <path
-                    d="M2 8h11m0 0L8.5 3.5M13 8l-4.5 4.5"
-                    stroke="var(--action)"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
             </blockquote>
 
             <div className="-mx-5 bg-porcelain px-5 py-8 md:-mx-8 md:px-8 lg:mx-0 lg:bg-transparent lg:px-0 lg:py-0">
-              <div className="mb-5 flex items-center gap-0 lg:hidden" aria-hidden="true">
-                <div className="h-0.5 w-10 bg-lime" />
-                <div className="h-0.5 w-16 bg-action" />
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="-ml-px shrink-0">
-                  <path
-                    d="M2 8h11m0 0L8.5 3.5M13 8l-4.5 4.5"
-                    stroke="var(--action)"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
               <ul className="flex flex-col gap-5" aria-label="How the authority system supports the promise">
                 {hero.outcomes.map((outcome, i) => (
                   <li key={outcome.id} className="flex items-start gap-4">
@@ -115,6 +87,7 @@ export function Hero() {
               </ul>
             </div>
           </div>
+        </div>
       </section>
     </>
   )

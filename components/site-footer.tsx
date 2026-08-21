@@ -6,10 +6,7 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-ink">
-      <div className="h-px w-full bg-graphite" aria-hidden="true">
-        <div className="h-px w-1/3 bg-lime" />
-      </div>
-      <div className="mx-auto max-w-[1320px] px-5 py-14 md:px-8 md:py-16">
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16">
         <div className="flex flex-col justify-between gap-10 md:flex-row md:items-start">
           <div className="flex flex-col gap-3">
             <Wordmark inverted />

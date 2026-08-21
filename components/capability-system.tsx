@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { capabilitySystem } from '@/lib/site-data'
 import { Disclosure } from '@/components/disclosure'
+import { SignalRail } from '@/components/signal-rail'
 import {
   JobAuthorityPreview,
   JobIntelligencePreview,
@@ -57,35 +58,41 @@ function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'lime' | 'action' })
 const jobLooks = [
   {
     card: 'border-ink bg-ink text-porcelain',
-    shadow: 'shadow-[6px_6px_0_0_var(--lime)]',
+    shadow: 'shadow-[4px_4px_0_0_var(--lime)]',
     shadowOn: 'shadow-[8px_8px_0_0_var(--lime)]',
     eyebrow: 'text-lime',
+    eyebrowQuiet: 'text-lime/80',
     number: 'text-porcelain/20',
     arrow: 'text-lime',
     focus: 'focus-visible:outline-lime',
-    pointer: 'bg-lime',
+    rail: 'bg-lime',
+    panelTop: 'border-t-lime',
     tone: 'ink' as const,
   },
   {
     card: 'border-ink bg-lime text-ink',
-    shadow: 'shadow-[6px_6px_0_0_var(--action)]',
+    shadow: 'shadow-[4px_4px_0_0_var(--action)]',
     shadowOn: 'shadow-[8px_8px_0_0_var(--action)]',
     eyebrow: 'text-ink',
+    eyebrowQuiet: 'text-ink/70',
     number: 'text-ink/15',
     arrow: 'text-action',
     focus: 'focus-visible:outline-ink',
-    pointer: 'bg-action',
+    rail: 'bg-action',
+    panelTop: 'border-t-action',
     tone: 'lime' as const,
   },
   {
     card: 'border-ink bg-action text-ink',
-    shadow: 'shadow-[6px_6px_0_0_var(--lime)]',
+    shadow: 'shadow-[4px_4px_0_0_var(--lime)]',
     shadowOn: 'shadow-[8px_8px_0_0_var(--lime)]',
     eyebrow: 'text-ink',
+    eyebrowQuiet: 'text-ink/70',
     number: 'text-ink/15',
     arrow: 'text-lime',
     focus: 'focus-visible:outline-ink',
-    pointer: 'bg-lime',
+    rail: 'bg-lime',
+    panelTop: 'border-t-lime',
     tone: 'action' as const,
   },
 ] as const
@@ -100,10 +107,9 @@ export function CapabilitySystem() {
 
   return (
     <section id="capabilities" aria-labelledby="capabilities-heading" className="relative scroll-mt-24 border-b border-border bg-paper">
-      <span className="absolute left-0 top-0 h-[3px] w-24 bg-lime" aria-hidden="true" />
-      <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
-        {/* Editorial introduction */}
-        <div className="max-w-2xl">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
+        <SignalRail tone="ink" />
+        <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {capabilitySystem.eyebrow}
           </p>
@@ -113,16 +119,15 @@ export function CapabilitySystem() {
           >
             {capabilitySystem.headline}
           </h2>
-          <p className="lede mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 max-w-[33.75rem] text-lg leading-relaxed text-muted-foreground text-pretty">
             {capabilitySystem.supporting}
           </p>
         </div>
 
-        {/* Three-job selector — true square feature cards on desktop */}
         <div
           role="tablist"
           aria-label="Capabilities"
-          className="mt-8 flex flex-col items-stretch gap-5 lg:mt-10 lg:flex-row lg:justify-center lg:gap-5"
+          className="mt-10 flex flex-col items-stretch gap-5 md:mt-12 lg:flex-row lg:justify-start lg:gap-5"
         >
           {capabilitySystem.capabilities.map((cap, i) => {
             const selected = cap.id === activeId
@@ -134,7 +139,7 @@ export function CapabilitySystem() {
                 role="tab"
                 id={`cap-tab-${cap.id}`}
                 aria-selected={selected}
-                aria-controls={`cap-panel-${active.id}`}
+                aria-controls="cap-panel"
                 onClick={() => setActiveId(cap.id)}
                 onKeyDown={(e) => {
                   const last = capabilitySystem.capabilities.length - 1
@@ -151,12 +156,16 @@ export function CapabilitySystem() {
                 }}
                 className={`job-card relative flex min-h-[220px] w-full min-w-0 flex-col rounded-[8px] border-2 px-5 py-5 text-left lg:aspect-square lg:h-auto lg:min-h-0 lg:max-w-[360px] lg:flex-1 lg:px-6 ${job.card} ${selected ? job.shadowOn : job.shadow} ${job.focus} focus-visible:outline-2 focus-visible:outline-offset-2`}
               >
+                <span
+                  className={`absolute inset-x-6 -bottom-[2px] z-[2] h-1.5 ${selected ? job.rail : 'bg-transparent'}`}
+                  aria-hidden="true"
+                />
                 <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[6px]" aria-hidden="true">
                   <span className={`absolute right-3 top-2 font-mono text-[4.5rem] font-bold leading-none ${job.number}`}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
                 </span>
-                <span className={`relative z-[1] font-mono text-[11px] font-medium uppercase tracking-[0.16em] ${job.eyebrow}`}>
+                <span className={`relative z-[1] font-mono text-[11px] font-medium uppercase tracking-[0.16em] ${selected ? job.eyebrow : job.eyebrowQuiet}`}>
                   Job {i + 1} · {cap.brandedName}
                 </span>
                 <span className="relative z-[1] mt-auto text-xl font-semibold leading-snug tracking-tight md:text-2xl">
@@ -181,22 +190,11 @@ export function CapabilitySystem() {
           })}
         </div>
 
-        <div className="mt-1 hidden justify-center gap-5 lg:flex" aria-hidden="true">
-          {capabilitySystem.capabilities.map((cap, i) => (
-            <div key={cap.id} className="flex w-full max-w-[360px] flex-1 justify-center">
-              <span className={`h-1.5 w-20 ${i === activeIndex ? jobLooks[i].pointer : 'bg-transparent'}`} />
-            </div>
-          ))}
-        </div>
-
-        {/* Selected-job workspace — one compact operating surface, stable dimensions across jobs */}
         <div
           role="tabpanel"
-          id={`cap-panel-${active.id}`}
+          id="cap-panel"
           aria-labelledby={`cap-tab-${active.id}`}
-          className={`mt-3 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${
-            activeIndex === 1 ? 'border-t-action' : 'border-t-lime'
-          }`}
+          className={`mt-2 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${jobLooks[activeIndex].panelTop}`}
         >
           <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-3 md:px-7">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
@@ -206,8 +204,8 @@ export function CapabilitySystem() {
               {capabilitySystem.capabilities.map((c, i) => (
                 <span
                   key={c.id}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === activeIndex ? 'w-6 bg-lime ring-1 ring-signal-deep/40' : 'w-1.5 bg-border'
+                  className={`h-1.5 rounded-full transition-all duration-200 ${
+                    i === activeIndex ? `w-6 ${jobLooks[i].rail}` : 'w-1.5 bg-border'
                   }`}
                 />
               ))}

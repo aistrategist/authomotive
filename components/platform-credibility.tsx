@@ -3,10 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { platformCredibility, type BrandMark, type PlatformCategory } from '@/lib/platform-data'
+import { SignalRail } from '@/components/signal-rail'
 import {
-  CompactLayerGlyph,
-  CompactMeasureGlyph,
-  CompactSearchGlyph,
   MeasurementFlowViz,
   SearchOpportunityViz,
   WebsiteLayersViz,
@@ -53,25 +51,16 @@ function MarkChip({ mark }: { mark: BrandMark }) {
   )
 }
 
-function WebsiteViz({ compact = false }: { compact?: boolean }) {
-  if (compact) return <CompactLayerGlyph />
+function WebsiteViz() {
   return <WebsiteLayersViz />
 }
 
-function SearchViz({ compact = false }: { compact?: boolean }) {
-  if (compact) return <CompactSearchGlyph />
+function SearchViz() {
   return <SearchOpportunityViz />
 }
 
-function MeasureViz({ compact = false }: { compact?: boolean }) {
-  if (compact) return <CompactMeasureGlyph />
+function MeasureViz() {
   return <MeasurementFlowViz />
-}
-
-function CompactViz({ tone }: { tone: Tone }) {
-  if (tone === 'ink') return <WebsiteViz compact />
-  if (tone === 'lime') return <SearchViz compact />
-  return <MeasureViz compact />
 }
 
 function ExpandedViz({ tone }: { tone: Tone }) {
@@ -129,16 +118,13 @@ function StackSlab({
             {kickers[category.id]}
           </span>
         </span>
-        {open ? (
-          <span className="hidden shrink-0 sm:block">
-            <CompactViz tone={tone} />
-          </span>
-        ) : null}
         <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[6px] border-2 border-ink bg-ink text-2xl leading-none transition-transform duration-200 motion-reduce:transition-none ${plusMark[tone]} ${open ? 'rotate-45' : ''}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[6px] border-2 border-ink bg-ink text-2xl leading-none ${plusMark[tone]}`}
           aria-hidden="true"
         >
-          +
+          <span className={`inline-block origin-center transition-transform duration-200 motion-reduce:transition-none ${open ? 'rotate-45' : ''}`}>
+            +
+          </span>
         </span>
       </button>
 
@@ -172,9 +158,10 @@ export function PlatformCredibility() {
       aria-labelledby="platforms-heading"
       className="paper-grid paper-grid-wash scroll-mt-24 overflow-x-clip border-b border-border"
     >
-      <div className="relative z-[1] mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
-        <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
-          <div>
+      <div className="relative z-[1] mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+        <SignalRail tone="ink" />
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+          <div className="lg:col-span-7">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
               {platformCredibility.eyebrow}
             </p>
@@ -185,12 +172,12 @@ export function PlatformCredibility() {
               {platformCredibility.headline}
             </h2>
           </div>
-          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
+          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:col-span-5 lg:pb-1">
             {platformCredibility.supporting}
           </p>
         </div>
 
-        <div className="mt-8 flex flex-col gap-5 md:mt-10">
+        <div className="mt-10 flex flex-col gap-5 md:mt-12">
           {platformCredibility.categories.map((category, index) => (
             <StackSlab
               key={category.id}

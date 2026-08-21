@@ -1,5 +1,6 @@
 import { managedFramework, idealFit, capabilitySystem } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
+import { SignalRail } from '@/components/signal-rail'
 
 /** Editorial scope map: inclusions grouped under the three primary capabilities. */
 const scopeGroups = [
@@ -52,10 +53,11 @@ const cardLooks = [
 
 export function ManagedFramework() {
   return (
-    <section aria-labelledby="framework-heading" className="border-b border-border bg-alloy">
-      <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
-        <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
-          <div>
+    <section data-spy="clear" aria-labelledby="framework-heading" className="border-b border-border bg-alloy">
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+        <SignalRail tone="ink" />
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+          <div className="lg:col-span-7">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
               {managedFramework.eyebrow}
             </p>
@@ -66,18 +68,18 @@ export function ManagedFramework() {
               {managedFramework.headline}
             </h2>
           </div>
-          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
+          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:col-span-5 lg:pb-1">
             {managedFramework.callout}
           </p>
         </div>
 
-        <div className="mt-8 grid items-stretch gap-5 md:mt-10 md:grid-cols-3">
+        <div className="mt-10 grid items-stretch gap-5 md:mt-12 md:grid-cols-3">
           {scopeGroups.map((group, gi) => {
             const look = cardLooks[gi]
             return (
               <Reveal
                 key={group.capability.id}
-                delay={gi * 90}
+                delay={gi * 60}
                 className={`flex h-full flex-col rounded-[8px] p-6 ${look.surface}`}
               >
                 <span className={`h-3 w-3 ${look.swatch}`} aria-hidden="true" />

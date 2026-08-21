@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { aiDiscovery } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
+import { SignalRail } from '@/components/signal-rail'
 
 /** Illustrative grouped-category descriptions for the reference-sheet interface. */
 const rowDetails: Record<string, string> = {
@@ -40,17 +41,17 @@ function ExpandableRow({
         </span>
         <span className="flex-1 text-base font-semibold text-ink">{title}</span>
         <span
-          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[4px] border border-border text-base leading-none text-signal-deep transition-transform duration-200 motion-reduce:transition-none ${
-            open ? 'rotate-45' : ''
-          }`}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[4px] border border-border text-base leading-none text-signal-deep"
           aria-hidden="true"
         >
-          +
+          <span className={`inline-block origin-center transition-transform duration-200 motion-reduce:transition-none ${open ? 'rotate-45' : ''}`}>
+            +
+          </span>
         </span>
       </button>
       <div
         id={`discovery-row-${index}`}
-        className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
+        className={`grid transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none ${
           open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
         }`}
       >
@@ -66,9 +67,15 @@ function ExpandableRow({
 
 export function AiDiscoveryFoundation() {
   return (
-    <section aria-labelledby="ai-discovery-heading" className="overflow-x-clip border-b border-border bg-teal-mist">
-      <div className="mx-auto grid max-w-[1320px] items-start gap-10 px-5 py-11 md:px-8 md:py-14 lg:grid-cols-[minmax(340px,0.9fr)_1.1fr] lg:gap-14">
-        <div>
+    <section
+      data-spy="authority-experiences"
+      aria-labelledby="ai-discovery-heading"
+      className="overflow-x-clip border-b border-border bg-teal-mist"
+    >
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+        <SignalRail tone="ink" />
+        <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-5">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {aiDiscovery.eyebrow}
           </p>
@@ -97,7 +104,7 @@ export function AiDiscoveryFoundation() {
         </div>
 
         {/* Grouped dealership-owned reference sheet — a substantial Clean Paper object set within the Porcelain field */}
-        <Reveal className="relative">
+        <Reveal className="relative lg:col-span-7">
           {/* Restrained index-tab, evoking a maintained reference binder */}
           <div
             aria-hidden="true"
@@ -131,6 +138,7 @@ export function AiDiscoveryFoundation() {
             </div>
           </div>
         </Reveal>
+        </div>
       </div>
     </section>
   )

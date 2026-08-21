@@ -13,7 +13,7 @@ export const cta = {
 
 export const navLinks = [
   { label: 'What We Build', href: '#capabilities' },
-  { label: 'Authority Content', href: '#authority-experiences' },
+  { label: 'Authority Experiences', href: '#authority-experiences' },
   { label: 'Reporting', href: '#reporting' },
   { label: 'Measurement', href: '#measurement' },
   { label: 'How It Works', href: '#how-it-works' },
@@ -317,7 +317,7 @@ export const howItWorks = {
     },
     {
       number: '4',
-      title: 'Prove the Value',
+      title: 'Prove What Works.',
       body: 'Explain what changed, connect the result to the work, and use the evidence to prioritize the next opportunity.',
       evidence: 'What should be expanded, adjusted, protected, or tested next?',
     },
@@ -335,7 +335,7 @@ export const founder = {
 
 export const managedFramework = {
   eyebrow: 'ONE MANAGED ENGAGEMENT · THREE CONNECTED JOBS',
-  headline: 'Everything required to get found, guide buyers, and prove the work.',
+  headline: 'Everything required to get found, guide buyers, and prove what works.',
   inclusions: [
     'Dealership visibility and opportunity review',
     'Prioritized authority-content roadmap',

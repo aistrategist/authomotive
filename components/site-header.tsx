@@ -73,25 +73,84 @@ export function SiteHeader() {
     }
   }, [])
 
-  // Restrained active-link indicator via scrollspy
+  // One active nav item from a viewport band. Hero, platforms, interludes,
+  // and the Opportunity Review clear the state instead of leaving a false hit.
   useEffect(() => {
-    const ids = navLinks.map((l) => l.href.slice(1))
-    const sections = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null)
-    if (sections.length === 0) return
+    const navOrder = [
+      'capabilities',
+      'authority-experiences',
+      'reporting',
+      'measurement',
+      'how-it-works',
+    ] as const
+    const clearIds = new Set(['top', 'platforms', 'opportunity-review', 'clear'])
+    const sources = new Map<Element, { key: string; ratio: number }>()
+
+    function spyKey(el: Element) {
+      if (el.id && (navOrder as readonly string[]).includes(el.id)) return el.id
+      if (el.id && clearIds.has(el.id)) return el.id
+      return el.getAttribute('data-spy') || el.id
+    }
+
+    function pick() {
+      const ratios = new Map<string, number>()
+      for (const { key, ratio } of sources.values()) {
+        ratios.set(key, Math.max(ratios.get(key) ?? 0, ratio))
+      }
+
+      if ((ratios.get('opportunity-review') ?? 0) > 0.12) {
+        setActiveSection('')
+        return
+      }
+
+      let clearScore = 0
+      for (const id of clearIds) {
+        clearScore = Math.max(clearScore, ratios.get(id) ?? 0)
+      }
+
+      let best: string | null = null
+      let bestRatio = 0
+      for (const id of navOrder) {
+        const r = ratios.get(id) ?? 0
+        if (r > bestRatio) {
+          bestRatio = r
+          best = id
+        }
+      }
+
+      if (!best || bestRatio < 0.1 || clearScore > bestRatio + 0.04) {
+        setActiveSection('')
+        return
+      }
+      setActiveSection(`#${best}`)
+    }
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(`#${entry.target.id}`)
-          }
+          const key = spyKey(entry.target)
+          if (!key) continue
+          sources.set(entry.target, {
+            key,
+            ratio: entry.isIntersecting ? entry.intersectionRatio : 0,
+          })
         }
+        pick()
       },
-      { rootMargin: '-30% 0px -60% 0px' },
+      {
+        root: null,
+        rootMargin: '-22% 0px -58% 0px',
+        threshold: [0, 0.08, 0.16, 0.28, 0.45, 0.7, 1],
+      },
     )
-    sections.forEach((s) => io.observe(s))
+
+    const nodes: Element[] = []
+    for (const id of [...navOrder, 'top', 'platforms', 'opportunity-review']) {
+      const el = document.getElementById(id)
+      if (el) nodes.push(el)
+    }
+    document.querySelectorAll('[data-spy]').forEach((el) => nodes.push(el))
+    nodes.forEach((el) => io.observe(el))
     return () => io.disconnect()
   }, [])
 
@@ -155,7 +214,7 @@ export function SiteHeader() {
         scrolled ? 'border-ink/10 bg-paper' : 'border-paper/15 bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-[4.5rem] max-w-[1320px] items-center justify-between gap-6 px-5 md:px-8">
+      <div className="mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-6 px-5 md:px-8">
         <a
           href="#top"
           className={`rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
@@ -166,7 +225,7 @@ export function SiteHeader() {
           <span className="sr-only">Authomotive home</span>
         </a>
 
-        <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-7">
+        <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href
             return (
@@ -174,7 +233,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 aria-current={isActive ? 'true' : undefined}
-                className={`relative whitespace-nowrap rounded-sm py-1 text-[15px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-action hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px ${
+                className={`relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-action hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px] ${
                   scrolled ? 'text-ink focus-visible:outline-ink' : 'text-paper focus-visible:outline-lime'
                 }`}
               >

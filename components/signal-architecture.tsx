@@ -3,6 +3,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { measurement } from '@/lib/site-data'
 import { Disclosure } from '@/components/disclosure'
+import { SignalRail } from '@/components/signal-rail'
 
 /**
  * Interactive signal map: shopper actions on the left, the measurement
@@ -70,7 +71,8 @@ export function SignalArchitecture() {
     const right = Array.from({ length: destCount }, (_, i) => {
       const el = destRefs.current[i]
       if (!el) return ''
-      const t = destCount === 1 ? 0.5 : 0.22 + (i / (destCount - 1)) * 0.56
+      const span = Math.max(destCount - 1, 1)
+      const t = destCount <= 1 ? 0.5 : 0.22 + (i / span) * 0.56
       const from = edgePoint(layerBox, mapBox, 'right', t)
       const to = edgePoint(el.getBoundingClientRect(), mapBox, 'left', 0.5)
       return cubicH(from, to)
@@ -93,8 +95,9 @@ export function SignalArchitecture() {
 
   return (
     <section id="measurement" aria-labelledby="measurement-heading" className="scroll-mt-24 border-b border-border bg-paper">
-      <div className="mx-auto max-w-[1320px] px-5 py-12 md:px-8 md:py-16">
-        <div className="max-w-2xl">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
+        <SignalRail tone="orange" />
+        <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {measurement.eyebrow}
           </p>
@@ -104,14 +107,14 @@ export function SignalArchitecture() {
           >
             {measurement.headline}
           </h2>
-          <p className="lede mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 max-w-[33.75rem] text-lg leading-relaxed text-muted-foreground text-pretty">
             {measurement.supporting}
           </p>
         </div>
 
         <div
           ref={mapRef}
-          className="relative mt-9 lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-x-14 md:mt-11"
+          className="relative mt-10 lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-x-14 md:mt-12"
         >
           {routes ? (
             <svg
@@ -132,7 +135,6 @@ export function SignalArchitecture() {
                     stroke={isSelected ? 'var(--signal-deep)' : 'var(--border)'}
                     strokeWidth={isSelected ? 2.5 : 1.5}
                     strokeLinecap="round"
-                    className={isSelected ? 'signal-dash' : ''}
                   />
                 )
               })}
@@ -146,7 +148,6 @@ export function SignalArchitecture() {
                     stroke={isDecision ? 'var(--action)' : 'var(--signal-deep)'}
                     strokeWidth={2}
                     strokeLinecap="round"
-                    className="signal-dash"
                   />
                 )
               })}

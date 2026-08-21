@@ -31,7 +31,7 @@ export function Disclosure({
           }`}
           aria-hidden="true"
         >
-          +
+          <span className="disclosure-plus">+</span>
         </span>
       </summary>
       <div className={`px-4 pb-4 ${dark ? 'text-porcelain/80' : ''}`}>{children}</div>

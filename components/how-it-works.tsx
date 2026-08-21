@@ -1,5 +1,6 @@
 import { howItWorks } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
+import { SignalRail } from '@/components/signal-rail'
 
 const stepLooks = [
   'border-2 border-ink bg-ink text-porcelain',
@@ -14,9 +15,10 @@ const stepLooks = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" aria-labelledby="how-heading" className="scroll-mt-24 border-b border-border bg-lime-mist">
-      <div className="mx-auto max-w-[1320px] px-5 py-11 md:px-8 md:py-14">
-        <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
-          <div>
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
+        <SignalRail tone="ink" />
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+          <div className="lg:col-span-7">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
               {howItWorks.eyebrow}
             </p>
@@ -27,18 +29,18 @@ export function HowItWorks() {
               {howItWorks.headline}
             </h2>
           </div>
-          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:pb-1">
+          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:col-span-5 lg:pb-1">
             {howItWorks.supporting}
           </p>
         </div>
 
-        <div className="relative mt-9 md:mt-10">
+        <div className="relative mt-10 md:mt-12">
           <div className="absolute left-[3%] right-[3%] top-[24px] hidden h-px bg-ink/25 md:block" aria-hidden="true" />
 
           <Reveal as="div">
             <ol className="grid gap-6 md:grid-cols-4 md:gap-5">
               {howItWorks.stages.map((stage, i) => (
-                <li key={stage.number} className="relative flex gap-4 md:block">
+                <Reveal key={stage.number} as="li" delay={i * 60} className="relative flex gap-4 md:block">
                   <span
                     className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center font-mono text-xl font-bold ${stepLooks[i]}`}
                     aria-hidden="true"
@@ -59,7 +61,7 @@ export function HowItWorks() {
                       {stage.evidence}
                     </p>
                   </div>
-                </li>
+                </Reveal>
               ))}
             </ol>
           </Reveal>
