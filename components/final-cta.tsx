@@ -9,9 +9,9 @@ import { SignalRail } from '@/components/signal-rail'
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 const inputClasses =
-  'w-full rounded-md border border-graphite bg-carbon px-4 py-3 text-base text-porcelain placeholder:text-fog focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime'
+  'w-full rounded-md border border-stage-line bg-stage-deep px-4 py-3 text-base text-stage-foreground placeholder:text-stage-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
 
-const labelClasses = 'text-sm font-semibold text-porcelain'
+const labelClasses = 'text-sm font-semibold text-stage-foreground'
 
 export function FinalCta() {
   const [status, setStatus] = useState<Status>('idle')
@@ -63,7 +63,7 @@ export function FinalCta() {
     <section
       id="opportunity-review"
       aria-labelledby="cta-heading"
-      className="ink-grid scroll-mt-24 bg-ink"
+      className="ink-grid scroll-mt-24 bg-stage"
     >
       <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
         <SignalRail tone="handoff" />
@@ -74,7 +74,7 @@ export function FinalCta() {
           </p>
           <h2
             id="cta-heading"
-            className="mt-4 text-3xl font-semibold tracking-tight text-porcelain md:text-5xl text-balance"
+            className="mt-4 text-3xl font-semibold tracking-tight text-stage-foreground md:text-5xl text-balance"
           >
             {finalCta.headline}
           </h2>
@@ -88,7 +88,7 @@ export function FinalCta() {
           </div>
         </Reveal>
 
-        <Reveal delay={60} className="rounded-[8px] border border-graphite bg-carbon p-6 md:p-8 lg:col-span-7">
+        <Reveal delay={60} className="rounded-[8px] border border-stage-line bg-stage-elevated p-6 md:p-8 lg:col-span-7">
           {status === 'success' ? (
             <div role="status" className="flex min-h-[400px] flex-col items-start justify-center gap-4">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime" aria-hidden="true">
@@ -96,7 +96,7 @@ export function FinalCta() {
                   <path d="M4 11.5l5 5L18 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <h3 className="text-2xl font-semibold text-porcelain text-balance">
+              <h3 className="text-2xl font-semibold text-stage-foreground text-balance">
                 {finalCta.successHeading}
               </h3>
               <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)]">{finalCta.successCopy}</p>
@@ -251,7 +251,7 @@ export function FinalCta() {
               </div>
 
               {status === 'error' && (
-                <p role="alert" className="rounded-md border border-coral/50 bg-coral/10 px-4 py-3 text-sm text-porcelain">
+                <p role="alert" className="rounded-md border border-coral/50 bg-coral/10 px-4 py-3 text-sm text-stage-foreground">
                   {finalCta.errorCopy}
                 </p>
               )}

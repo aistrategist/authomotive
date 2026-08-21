@@ -268,7 +268,7 @@ export function SiteHeader() {
           className={`flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden ${
             scrolled
               ? 'border-ink bg-paper text-ink focus-visible:outline-accent-deep'
-              : 'border-paper/60 bg-ink/30 text-paper focus-visible:outline-accent'
+              : 'border-paper/60 bg-stage/30 text-paper focus-visible:outline-accent'
           }`}
         >
           <span className="sr-only">Open menu</span>
@@ -286,14 +286,14 @@ export function SiteHeader() {
             role="dialog"
             aria-modal="true"
             aria-label="Site navigation"
-            className="fixed inset-0 z-50 flex h-dvh flex-col bg-ink"
+            className="fixed inset-0 z-50 flex h-dvh flex-col bg-stage"
           >
-            <div className="flex h-[4.5rem] items-center justify-between border-b border-graphite px-5">
+            <div className="flex h-[4.5rem] items-center justify-between border-b border-stage-line px-5">
               <Wordmark inverted />
               <button
                 type="button"
                 onClick={closeMenu}
-                className="flex h-11 w-11 items-center justify-center rounded-md border border-graphite text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="flex h-11 w-11 items-center justify-center rounded-md border border-stage-line text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <span className="sr-only">Close menu</span>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -310,7 +310,7 @@ export function SiteHeader() {
                     href={link.href}
                     onClick={closeMenu}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`flex items-center gap-3 rounded-md px-3 py-4 text-2xl transition-colors hover:bg-carbon focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                    className={`flex items-center gap-3 rounded-md px-3 py-4 text-2xl transition-colors hover:bg-stage-elevated focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                       isActive ? 'font-bold text-accent' : 'font-semibold text-paper'
                     }`}
                   >

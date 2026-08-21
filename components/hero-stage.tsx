@@ -152,10 +152,10 @@ const TRAIL_SEGMENTS = [
 
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
-  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#bdd9ff', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
+  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#8fbcf5', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
   { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ffc982', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
   { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8eef5', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
-  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#d7e8ff', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
+  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#6ea5e8', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
   { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ffe3cf', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
 ] as const
 
@@ -332,7 +332,6 @@ function applyTravelerDom(
 }
 
 const INK = '#061b20'
-const DEEP_TEAL = '#0B3038'
 
 /** Raw head-and-shoulders glyph — no plate, halo, ring, or carrier. */
 function VisitorGlyph({ color, variant = 0 }: { color: string; variant?: number }) {
@@ -344,7 +343,7 @@ function VisitorGlyph({ color, variant = 0 }: { color: string; variant?: number 
     <g
       className="hs-visitor"
       fill={color}
-      stroke={DEEP_TEAL}
+      stroke={INK}
       strokeWidth="1"
       strokeLinejoin="round"
     >
@@ -356,7 +355,7 @@ function VisitorGlyph({ color, variant = 0 }: { color: string; variant?: number 
           rx="2.1"
           ry="2.5"
           fill={color}
-          stroke={DEEP_TEAL}
+          stroke={INK}
         />
       ) : null}
       <path
@@ -824,7 +823,7 @@ export function HeroStage() {
           <p className="hs-intel-kicker">Website visitors</p>
           <div className="hs-intel-channels">
             <span className="hs-legend-item hs-chip-seo">
-              <VisitorChipIcon color="#bdd9ff" variant={0} />
+              <VisitorChipIcon color="#8fbcf5" variant={0} />
               Search
             </span>
             <span className="hs-legend-item hs-chip-aeo">
@@ -935,13 +934,13 @@ export function HeroStage() {
               transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
             >
               <circle className="hs-hub-bloom" r="36" fill="#bdd9ff" />
-              <circle r="22" fill="#bdd9ff" />
+              <circle r="22" fill="#8fbcf5" />
               <circle r="22" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.35" />
               <CarGlyph />
             </g>
 
             <g className="hs-start" transform={`translate(${SEARCH.cx} ${SEARCH.cy})`}>
-              <circle className="hs-convert-disc" r="16" fill="#bdd9ff" />
+              <circle className="hs-convert-disc" r="16" fill="#8fbcf5" />
               <circle r="16" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.25" />
               <SearchGlyph />
             </g>

@@ -8,7 +8,7 @@ export const contentType = 'image/png'
 
 /**
  * Branded Open Graph image rendered with the Authomotive visual system:
- * Ink environment, Paper type, pale-blue signal line, sherbet action accent.
+ * Charcoal stage, paper type, stronger blue discovery, sherbet action accent.
  */
 export default function OgImage() {
   return new ImageResponse(
@@ -20,7 +20,7 @@ export default function OgImage() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          backgroundColor: '#0A0D0C',
+          backgroundColor: '#252A31',
           padding: '72px 80px',
           fontFamily: 'sans-serif',
         }}
@@ -37,7 +37,7 @@ export default function OgImage() {
             }}
           >
             Auth
-            <span style={{ color: '#BDD9FF' }}>o</span>
+            <span style={{ color: '#8FBCF5' }}>o</span>
             motive
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function OgImage() {
               display: 'flex',
               fontSize: 20,
               fontWeight: 600,
-              color: '#BDD9FF',
+              color: '#8FBCF5',
               letterSpacing: '0.18em',
             }}
           >
@@ -66,7 +66,8 @@ export default function OgImage() {
               maxWidth: 980,
             }}
           >
-            Get found. Guide buyers. Prove what works.
+            <span style={{ color: '#FFFCF7' }}>Get found. Guide buyers.&nbsp;</span>
+            <span style={{ color: '#C8B8FF' }}>Prove what works.</span>
           </div>
           <div
             style={{
@@ -83,7 +84,7 @@ export default function OgImage() {
 
         {/* Signal line with Orange terminus */}
         <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <div style={{ display: 'flex', height: 6, width: '76%', backgroundColor: '#BDD9FF' }} />
+          <div style={{ display: 'flex', height: 6, width: '76%', backgroundColor: '#8FBCF5' }} />
           <div style={{ display: 'flex', height: 6, width: '8%', backgroundColor: '#FFC982' }} />
         </div>
       </div>

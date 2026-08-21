@@ -52,6 +52,16 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-deep: var(--accent-deep);
   --color-accent-dark: var(--accent-dark);
+  --color-proof: var(--proof);
+  --color-proof-soft: var(--proof-soft);
+  --color-proof-deep: var(--proof-deep);
+  --color-proof-foreground: var(--proof-foreground);
+  --color-stage: var(--stage);
+  --color-stage-deep: var(--stage-deep);
+  --color-stage-elevated: var(--stage-elevated);
+  --color-stage-line: var(--stage-line);
+  --color-stage-muted: var(--stage-muted);
+  --color-stage-foreground: var(--stage-foreground);
 
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -66,7 +76,7 @@
 :root {
   color-scheme: light;
 
-  /* Brand palette — petrol ink, paper, sherbet conversion, pale-blue intelligence */
+  /* Brand palette — charcoal stage, petrol ink, paper, sherbet conversion, blue intelligence */
   --ink: #061b20;
   --carbon: #0b3038;
   --graphite: #174c54;
@@ -74,14 +84,26 @@
   --porcelain: #e8eef5;
   --alloy: #dce5ee;
 
+  --stage-deep: #191c21;
+  --stage: #252a31;
+  --stage-elevated: #303640;
+  --stage-line: #48515e;
+  --stage-muted: #b8c1cc;
+  --stage-foreground: #fffcf7;
+
   --accent-softest: #f3f8ff;
   --accent-soft: #eaf3ff;
-  --accent-muted: #d7e8ff;
-  --accent: #bdd9ff;
-  --accent-mid: #8fbcf5;
-  --accent-strong: #5d96da;
+  --accent-muted: #bdd9ff;
+  --accent: #8fbcf5;
+  --accent-mid: #6ea5e8;
+  --accent-strong: #4b86cf;
   --accent-deep: #285f9e;
   --accent-dark: #173f73;
+
+  --proof: #c8b8ff;
+  --proof-soft: #f1edff;
+  --proof-deep: #6c54b5;
+  --proof-foreground: #061b20;
 
   /* Legacy lime names — aliases to the blue family so existing utilities stay valid */
   --lime: var(--accent);
@@ -429,11 +451,11 @@
 
 .hero-atmosphere {
   position: relative;
-  background-color: var(--ink);
+  background-color: var(--stage);
   background-image:
-    radial-gradient(ellipse 720px 520px at 88% 42%, rgba(23, 76, 84, 0.55), transparent 64%),
-    radial-gradient(ellipse 420px 320px at 12% 78%, rgba(189, 217, 255, 0.07), transparent 55%),
-    linear-gradient(120deg, var(--ink) 0%, var(--carbon) 52%, var(--graphite) 100%);
+    radial-gradient(ellipse 720px 520px at 88% 42%, rgba(93, 150, 218, 0.22), transparent 64%),
+    radial-gradient(ellipse 420px 320px at 12% 78%, rgba(255, 201, 130, 0.1), transparent 55%),
+    linear-gradient(120deg, var(--stage-deep) 0%, var(--stage) 52%, var(--stage-elevated) 100%);
   display: flex;
   align-items: center;
   padding-top: 6.25rem; /* 4.5rem header + 1.75rem air */
@@ -448,8 +470,8 @@
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, rgba(245, 241, 232, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 241, 232, 0.07) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 252, 247, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 252, 247, 0.06) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 92% 88% at 22% 48%, #000 18%, rgba(0, 0, 0, 0.55) 52%, transparent 78%);
   -webkit-mask-image: radial-gradient(ellipse 92% 88% at 22% 48%, #000 18%, rgba(0, 0, 0, 0.55) 52%, transparent 78%);
@@ -587,7 +609,7 @@
   background: rgba(255, 252, 247, 0.3);
 }
 .hs-legend-bars .hs-bar-4 {
-  background: #bdd9ff;
+  background: #8fbcf5;
 }
 .hs-legend-bars .hs-bar-5 {
   background: rgba(255, 201, 130, 0.8);
@@ -632,7 +654,7 @@
 /* Subdued blue-teal route — particles carry the brand color */
 .hs-trail-glow {
   fill: none;
-  stroke: rgba(65, 111, 112, 0.1);
+  stroke: rgba(72, 81, 94, 0.1);
   stroke-width: 9;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -640,12 +662,12 @@
 
 .hs-trail-glow-branch {
   stroke-width: 9;
-  stroke: rgba(65, 111, 112, 0.12);
+  stroke: rgba(72, 81, 94, 0.12);
 }
 
 .hs-trail-base {
   fill: none;
-  stroke: rgba(65, 111, 112, 0.28);
+  stroke: rgba(72, 81, 94, 0.28);
   stroke-width: 2.35;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -658,8 +680,8 @@
 .hs-trail-base-branch.is-hot,
 .hs-trail-center-branch.is-hot,
 .hs-trail-seg.is-hot {
-  stroke: rgba(189, 217, 255, 0.88);
-  filter: drop-shadow(0 0 7px rgba(189, 217, 255, 0.5));
+  stroke: rgba(143, 188, 245, 0.88);
+  filter: drop-shadow(0 0 7px rgba(143, 188, 245, 0.5));
 }
 
 .hs-trail-base-branch.is-hot {
@@ -690,7 +712,7 @@
 .hs-trail-seg-d,
 .hs-trail-seg-e,
 .hs-trail-seg-f {
-  stroke: rgba(65, 111, 112, 0.32);
+  stroke: rgba(72, 81, 94, 0.32);
   stroke-width: 1.7;
 }
 
@@ -712,7 +734,7 @@
 
 .hs-trail-seg-e,
 .hs-trail-seg-f {
-  stroke: rgba(65, 111, 112, 0.3);
+  stroke: rgba(72, 81, 94, 0.3);
   stroke-dasharray: 7 6;
 }
 
@@ -746,13 +768,13 @@
 
 .hs-trail-node {
   fill: none;
-  stroke: rgba(65, 111, 112, 0.42);
+  stroke: rgba(72, 81, 94, 0.42);
   stroke-width: 1.2;
   stroke-dasharray: 3 4;
 }
 
 .hs-trail-node-junc {
-  stroke: rgba(65, 111, 112, 0.5);
+  stroke: rgba(72, 81, 94, 0.5);
   stroke-dasharray: 4 5;
 }
 
@@ -806,7 +828,7 @@
 
 .hs-traveler-seo .hs-visitor,
 .hs-traveler-seo2 .hs-visitor {
-  filter: drop-shadow(0 1px 0.6px rgba(189, 217, 255, 0.28));
+  filter: drop-shadow(0 1px 0.6px rgba(143, 188, 245, 0.28));
 }
 
 .hs-traveler-aeo .hs-visitor {
@@ -995,7 +1017,7 @@
 
 .hs-tip-win {
   border-color: rgba(189, 217, 255, 0.9);
-  background: linear-gradient(180deg, rgba(18, 56, 48, 0.98), rgba(8, 34, 32, 0.96));
+  background: linear-gradient(180deg, rgba(48, 54, 64, 0.98), rgba(25, 28, 33, 0.96));
   box-shadow:
     0 0 0 1px rgba(189, 217, 255, 0.28),
     0 14px 36px rgba(0, 0, 0, 0.48),
@@ -1014,7 +1036,7 @@
 }
 
 .hs-tip-win .hs-tip-label {
-  color: #bdd9ff;
+  color: #8fbcf5;
   font-weight: 700;
   letter-spacing: 0.07em;
 }
@@ -1032,11 +1054,11 @@
 }
 
 .hs-convert.is-win .hs-convert-disc {
-  filter: drop-shadow(0 0 18px rgba(189, 217, 255, 0.65));
+  filter: drop-shadow(0 0 18px rgba(255, 201, 130, 0.65));
 }
 
 .hs-convert.is-win .hs-convert-label {
-  fill: rgba(212, 255, 112, 0.9);
+  fill: rgba(255, 252, 247, 0.9);
 }
 
 .hs-tip-dot {
@@ -1261,8 +1283,8 @@
 
   /* Static win emphasis — no motion, still reads as a conversion hit */
   .hs-convert.is-win .hs-convert-disc {
-    fill: #d7e8ff;
-    filter: drop-shadow(0 0 14px rgba(189, 217, 255, 0.55));
+    fill: #ffc982;
+    filter: drop-shadow(0 0 14px rgba(255, 201, 130, 0.55));
   }
 
   .hs-win-glow.is-flash {
@@ -1355,7 +1377,7 @@
 @keyframes hs-ping-flash {
   0% {
     transform: scale(1);
-    stroke: rgba(65, 111, 112, 0.7);
+    stroke: rgba(72, 81, 94, 0.7);
   }
   35% {
     transform: scale(1.45);
@@ -1363,7 +1385,7 @@
   }
   100% {
     transform: scale(1);
-    stroke: rgba(65, 111, 112, 0.7);
+    stroke: rgba(72, 81, 94, 0.7);
   }
 }
 
@@ -1390,12 +1412,12 @@
   }
   35% {
     opacity: 0.85;
-    stroke: #bdd9ff;
+    stroke: #ffc982;
   }
   100% {
     opacity: 0;
     transform: scale(2.15);
-    stroke: #bdd9ff;
+    stroke: #ffc982;
   }
 }
 
@@ -1411,20 +1433,20 @@
   }
   45% {
     opacity: 0.7;
-    stroke: #d7e8ff;
+    stroke: #ffe3cf;
   }
   100% {
     opacity: 0;
     transform: scale(2.55);
-    stroke: #bdd9ff;
+    stroke: #ffc982;
   }
 }
 
 @keyframes hs-win-disc-flash {
   0% {
-    fill: #bdd9ff;
+    fill: #ffc982;
     transform: scale(1);
-    filter: drop-shadow(0 2px 10px rgba(189, 217, 255, 0.2));
+    filter: drop-shadow(0 2px 10px rgba(255, 201, 130, 0.2));
   }
   14% {
     fill: #fffcf7;
@@ -1432,14 +1454,14 @@
     filter: drop-shadow(0 0 20px rgba(255, 252, 247, 0.75));
   }
   38% {
-    fill: #d7e8ff;
+    fill: #ffe3cf;
     transform: scale(1.1);
-    filter: drop-shadow(0 0 18px rgba(189, 217, 255, 0.7));
+    filter: drop-shadow(0 0 18px rgba(255, 201, 130, 0.7));
   }
   100% {
-    fill: #bdd9ff;
+    fill: #ffc982;
     transform: scale(1);
-    filter: drop-shadow(0 0 12px rgba(189, 217, 255, 0.4));
+    filter: drop-shadow(0 0 12px rgba(255, 201, 130, 0.4));
   }
 }
 
@@ -1579,8 +1601,8 @@
 }
 
 .ink-grid {
-  background-image: linear-gradient(to right, rgba(245, 241, 232, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 241, 232, 0.045) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(255, 252, 247, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 252, 247, 0.06) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
@@ -1801,7 +1823,7 @@
 .stack-slab-lime:hover,
 .stack-slab-lime:focus-within,
 .stack-slab-lime.is-engaged {
-  background-color: #d7e8ff;
+  background-color: #bdd9ff;
 }
 .stack-slab-lime.is-engaged {
   box-shadow: 8px 8px 0 0 var(--lime);

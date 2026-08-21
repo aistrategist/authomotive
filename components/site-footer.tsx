@@ -5,12 +5,12 @@ export function SiteFooter() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-ink">
+    <footer className="bg-stage">
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16">
         <div className="flex flex-col justify-between gap-10 md:flex-row md:items-start">
           <div className="flex flex-col gap-3">
             <Wordmark inverted />
-            <p className="text-base text-fog">{siteConfig.tagline}</p>
+            <p className="text-base text-stage-muted">{siteConfig.tagline}</p>
           </div>
 
           <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-3 sm:grid-cols-3">
@@ -18,22 +18,22 @@ export function SiteFooter() {
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-sm text-sm font-medium text-porcelain/80 transition-colors hover:text-porcelain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                className="rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
               >
                 {link.label}
               </a>
             ))}
             <a
               href="#opportunity-review"
-              className="rounded-sm text-sm font-medium text-porcelain/80 transition-colors hover:text-porcelain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+              className="rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               Contact
             </a>
           </nav>
         </div>
 
-        <div className="mt-12 border-t border-graphite pt-6">
-          <p className="text-sm text-fog">
+        <div className="mt-12 border-t border-stage-line pt-6">
+          <p className="text-sm text-stage-muted">
             &copy; {year} {siteConfig.name}. All rights reserved.
           </p>
         </div>

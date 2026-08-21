@@ -176,7 +176,7 @@ export function AuthorityExperience() {
     <section
       id="authority-experiences"
       aria-labelledby="authority-heading"
-      className="ink-grid scroll-mt-24 bg-ink"
+      className="ink-grid scroll-mt-24 bg-stage"
     >
       <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
         <SignalRail tone="lime" />
@@ -186,7 +186,7 @@ export function AuthorityExperience() {
           </p>
           <h2
             id="authority-heading"
-            className="mt-3 text-3xl font-semibold tracking-tight text-porcelain md:text-5xl text-balance"
+            className="mt-3 text-3xl font-semibold tracking-tight text-stage-foreground md:text-5xl text-balance"
           >
             {authorityTheater.headline}
           </h2>
@@ -214,7 +214,7 @@ export function AuthorityExperience() {
                 className={`lift flex min-h-[56px] items-center gap-3 rounded-lg border-2 px-5 py-3 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:px-6 ${
                   selected
                     ? 'border-lime bg-lime text-ink'
-                    : 'border-graphite bg-carbon text-porcelain hover:border-fog'
+                    : 'border-stage-line bg-stage-elevated text-stage-foreground hover:border-stage-muted'
                 }`}
               >
                 <span
@@ -235,10 +235,10 @@ export function AuthorityExperience() {
             <div key={v.id} className="flex flex-1 items-center">
               <span
                 className={`h-2 w-2 rounded-full transition-colors duration-200 ${
-                  i === activeIndex ? 'bg-lime' : 'bg-graphite'
+                  i === activeIndex ? 'bg-lime' : 'bg-stage-line'
                 }`}
               />
-              {i < authorityTheater.views.length - 1 && <span className="h-px flex-1 bg-graphite" />}
+              {i < authorityTheater.views.length - 1 && <span className="h-px flex-1 bg-stage-line" />}
             </div>
           ))}
         </div>
