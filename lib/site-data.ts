@@ -335,7 +335,7 @@ export const reporting = {
     decision: {
       kicker: 'The decision',
       title: 'Changed. Why. Next.',
-      lead: 'What moved, what caused it, what to do.',
+      lead: 'What moved, what likely contributed, what to do next.',
       body: 'The monthly output is a decision a dealership team can act on. The interface above shows the format. Live reporting uses the dealership’s own observed signals, with honest limits on what cannot be seen.',
     },
   },
@@ -454,7 +454,7 @@ export const managedFramework = {
       mark: 'bg-proof',
       items: [
         'What changed?',
-        'Why did it change?',
+        'What likely contributed?',
         'What did shoppers do?',
         'What should we build, correct or expand next?',
       ],

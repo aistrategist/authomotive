@@ -134,12 +134,14 @@ export function IntelligencePreview() {
 
       const beats = () => gsap.utils.toArray<HTMLElement>('.ri-beat', root)
       const steps = gsap.utils.toArray<HTMLElement>('.ri-step', root)
+      const nodes = gsap.utils.toArray<HTMLElement>('.ri-step-node', root)
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
       const complete = () => {
         gsap.set(rule, { scaleX: 1 })
         beats().forEach((el) => el.classList.add('is-on'))
         steps.forEach((el) => el.classList.add('is-on'))
+        nodes.forEach((el) => el.classList.add('is-on'))
         packet.classList.add('is-settled')
         gsap.set(packet, { x: 0, y: 0, autoAlpha: 0 })
       }
@@ -152,6 +154,7 @@ export function IntelligencePreview() {
       gsap.set(rule, { scaleX: 0, transformOrigin: 'left center' })
       gsap.set(packet, { autoAlpha: 1, x: 0, y: 0 })
       steps.forEach((el) => el.classList.remove('is-on'))
+      nodes.forEach((el) => el.classList.remove('is-on'))
 
       ScrollTrigger.create({
         trigger: frame,
@@ -185,7 +188,10 @@ export function IntelligencePreview() {
                 packet.classList.add('is-settled')
                 gsap.to(packet, { autoAlpha: 0, duration: 0.2, overwrite: 'auto' })
                 steps.forEach((el, i) => {
-                  gsap.delayedCall(0.04 + i * 0.3, () => el.classList.add('is-on'))
+                  gsap.delayedCall(0.04 + i * 0.3, () => {
+                    el.classList.add('is-on')
+                    nodes[i]?.classList.add('is-on')
+                  })
                 })
               },
             },
@@ -448,12 +454,16 @@ export function IntelligencePreview() {
                 <h3 className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
                   {decisionSteps.map((label) => (
                     <span key={label} className="ri-step">
-                      <span className="ri-step-mark" aria-hidden="true" />
                       {label}{' '}
                     </span>
                   ))}
                 </h3>
-                <p className="mt-3 border-t border-ink/15 pt-3 text-lg font-semibold leading-snug text-ink text-pretty">
+                <div className="ri-step-route" aria-hidden="true">
+                  {decisionSteps.map((label) => (
+                    <span key={label} className="ri-step-node" />
+                  ))}
+                </div>
+                <p className="mt-3 text-lg font-semibold leading-snug text-ink text-pretty">
                   {reporting.evidence.decision.lead}
                 </p>
                 <p className="mt-2 text-base leading-relaxed text-muted-foreground text-pretty md:text-lg">
