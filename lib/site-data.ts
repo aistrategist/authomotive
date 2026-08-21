@@ -53,15 +53,15 @@ export const discoveryToInventory = {
   eyebrow: 'FROM DISCOVERY TO INVENTORY',
   headline: 'Turn buyer questions into inventory pathways.',
   supporting:
-    'Shoppers search with specific needs, not generic keywords. Authomotive turns those questions into dealership-owned research experiences that help buyers compare options, explore matching live inventory and continue into measurable VDP activity.',
-  path: ['Buyer Question', 'Helpful Research', 'Matching Inventory', 'VDP Activity'],
+    'Shoppers search with specific needs, not generic keywords. Authomotive turns those questions into dealership-owned Authority Experiences that combine useful research with matching live inventory, then measures the movement into VDPs and lead actions.',
+  path: ['Buyer Question', 'Authority Experience', 'Live Inventory', 'VDP Activity'],
   intentStream: {
     label: 'BUYER INTENT SIGNAL',
     liveLabel: 'LIVE',
     srDescription:
       'Illustration of Search, AI and Local buyer questions mapped to intent signals, then into helpful research with live vehicles on one dealership-owned page.',
     signalsLabel: 'INTENT SIGNALS',
-    mappedLabel: 'MAPPED EXPERIENCE',
+    mappedLabel: 'AUTHORITY EXPERIENCE',
     statusMapping: 'MAPPING BUYER INTENT',
     statusActive: 'LIVE INVENTORY PATH ACTIVE',
     researchZone: 'Helpful Research',
@@ -92,24 +92,33 @@ export const discoveryToInventory = {
   steps: [
     {
       id: 'found',
-      stage: 'Helpful Research',
+      stage: 'Dealership-Owned Research',
       title: 'Get Found',
-      body: 'Answer specific, high-intent shopping questions through useful dealership-owned research built for organic, local and AI discovery.',
+      body: 'Build Authority Experiences around specific, high-intent questions for organic, local and AI-assisted discovery.',
     },
     {
       id: 'guide',
-      stage: 'Matching Inventory',
+      stage: 'Live Inventory Pathway',
       title: 'Guide Buyers',
-      body: 'Place matching live inventory within the research experience, giving shoppers a direct path from helpful guidance to real vehicles.',
+      body: 'Embed or connect matching live inventory, depending on platform capability, so shoppers can move directly from useful guidance to real vehicles and VDPs.',
     },
     {
       id: 'prove',
-      stage: 'VDP Activity',
+      stage: 'Measurement Attached',
       title: 'Prove What Works',
-      body: 'Measure movement from the research page into inventory engagement, VDP entries and lead actions.',
+      body: 'Measure research-to-inventory movement, VDP entries and lead actions, then use the evidence to expand what works.',
     },
   ],
-  note: 'This pathway is built within the dealership website and inventory system you already have.',
+  stack: {
+    eyebrow: 'BUILT INTO THE EXISTING DEALER STACK',
+    items: [
+      'Dealership-owned page',
+      'Live inventory connection',
+      'Measurement defined at launch',
+    ],
+    supporting:
+      'No website replacement. No inventory-feed takeover. Exact implementation depends on platform access and vendor capability.',
+  },
 }
 
 export const industryGap = {

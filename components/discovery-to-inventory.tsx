@@ -8,11 +8,17 @@ const stepMarks = [
   { tile: 'bg-accent-soft text-ink', rule: 'bg-ink' },
 ] as const
 
+const stackMarks = [
+  { swatch: 'bg-ink' },
+  { swatch: 'bg-accent' },
+  { swatch: 'bg-proof' },
+] as const
+
 /**
  * Bridge below the hero: a real shopper question becomes a research-to-inventory path.
  */
 export function DiscoveryToInventory() {
-  const { eyebrow, headline, supporting, path, steps, note } =
+  const { eyebrow, headline, supporting, path, steps, stack } =
     discoveryToInventory
 
   return (
@@ -98,9 +104,30 @@ export function DiscoveryToInventory() {
           </div>
         </div>
 
-        <p className="mt-10 max-w-[36rem] text-base leading-relaxed text-muted-foreground text-pretty lg:mt-12">
-          {note}
-        </p>
+        <div className="mt-10 border-t border-ink/15 pt-6 lg:mt-12">
+          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-signal-deep md:text-xs">
+            {stack.eyebrow}
+          </p>
+          <ul
+            className="mt-3 grid gap-3 md:grid-cols-3 md:gap-6"
+            aria-label="Built into the existing dealer stack"
+          >
+            {stack.items.map((item, i) => (
+              <li key={item} className="flex items-start gap-2.5">
+                <span
+                  className={`mt-[0.45rem] h-1.5 w-1.5 shrink-0 ${stackMarks[i].swatch}`}
+                  aria-hidden="true"
+                />
+                <span className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-ink md:text-[0.6875rem]">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 max-w-[42rem] text-sm leading-relaxed text-muted-foreground text-pretty">
+            {stack.supporting}
+          </p>
+        </div>
       </div>
     </section>
   )
