@@ -54,9 +54,33 @@ export const discoveryToInventory = {
   headline: 'Turn buyer questions into inventory pathways.',
   supporting:
     'Shoppers search with specific needs, not generic keywords. Authomotive turns those questions into dealership-owned research experiences that help buyers compare options, explore matching live inventory and continue into measurable VDP activity.',
-  questionLabel: 'A REAL SHOPPER QUESTION',
-  question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
   path: ['Buyer Question', 'Helpful Research', 'Matching Inventory', 'VDP Activity'],
+  intentStream: {
+    label: 'REAL SHOPPER INTENT',
+    signalsLabel: 'INTENT SIGNALS',
+    opportunityLabel: 'AUTHOMOTIVE OPPORTUNITY',
+    opportunity: 'Research guidance + matching live inventory',
+    researchLabel: 'Research guidance',
+    inventoryLabel: 'Matching live inventory',
+    signals: ['Family seating', 'Winter capability', 'Budget', 'Local availability'],
+    sources: [
+      {
+        id: 'search' as const,
+        name: 'Search',
+        question: 'best three-row SUV for Cleveland winters under $50,000',
+      },
+      {
+        id: 'ai' as const,
+        name: 'AI',
+        question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
+      },
+      {
+        id: 'local' as const,
+        name: 'Local',
+        question: 'three-row SUVs with AWD available near Cleveland',
+      },
+    ],
+  },
   steps: [
     {
       id: 'found',

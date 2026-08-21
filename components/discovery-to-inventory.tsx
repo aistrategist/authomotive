@@ -1,5 +1,6 @@
 import { discoveryToInventory } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
+import { BuyerIntentStream } from '@/components/buyer-intent-stream'
 
 const stepMarks = [
   { tile: 'bg-ink text-porcelain', rule: 'bg-lime' },
@@ -11,7 +12,7 @@ const stepMarks = [
  * Bridge below the hero: a real shopper question becomes a research-to-inventory path.
  */
 export function DiscoveryToInventory() {
-  const { eyebrow, headline, supporting, questionLabel, question, path, steps, note } =
+  const { eyebrow, headline, supporting, path, steps, note } =
     discoveryToInventory
 
   return (
@@ -54,15 +55,10 @@ export function DiscoveryToInventory() {
           ))}
         </p>
 
-        <div className="mt-10 grid gap-10 lg:mt-12 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
-          <blockquote className="bg-paper lg:sticky lg:top-24">
-            <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-signal-deep md:text-xs">
-              {questionLabel}
-            </p>
-            <p className="mt-3 text-2xl font-semibold leading-snug tracking-tight text-ink text-pretty md:text-3xl">
-              &ldquo;{question}&rdquo;
-            </p>
-          </blockquote>
+        <div className="mt-10 grid gap-10 lg:mt-12 lg:grid-cols-[0.68fr_1fr] lg:items-stretch lg:gap-14">
+          <div className="min-w-0">
+            <BuyerIntentStream />
+          </div>
 
           <div className="-mx-5 bg-porcelain px-5 py-8 md:-mx-8 md:px-8 lg:mx-0 lg:bg-transparent lg:px-0 lg:py-0">
             <ol className="relative flex flex-col gap-7" aria-label="From discovery to inventory">
