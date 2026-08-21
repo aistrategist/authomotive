@@ -314,6 +314,25 @@ export const reporting = {
     'Buyer Actions',
     'AI Visibility',
   ],
+  evidence: {
+    eyebrow: 'HOW THE EVIDENCE IS FRAMED',
+    frames: [
+      {
+        id: 'work',
+        kicker: 'The work',
+        title: 'A buyer question becomes an owned pathway.',
+        lead: 'Which Three-Row SUV Is Right for My Family?',
+        body: 'The Authority Experience answers the question and connects the shopper to matching inventory. That page is the asset Intelligence can observe — not a separate shopping environment.',
+      },
+      {
+        id: 'decision',
+        kicker: 'The decision',
+        title: 'Changed. Why. Next.',
+        lead: 'What moved, what caused it, what to do.',
+        body: 'The monthly output is a decision a dealership team can act on. The interface above shows the format. Live reporting uses the dealership’s own observed signals, with honest limits on what cannot be seen.',
+      },
+    ],
+  },
 }
 
 export const measurement = {

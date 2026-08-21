@@ -1,5 +1,4 @@
 import { SignalRail } from '@/components/signal-rail'
-import { SectionHandoff } from '@/components/section-handoff'
 
 const stages = [
   {
@@ -128,20 +127,10 @@ export function QuestionToInventory() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-            <p className="max-w-[42rem] text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
-              No platform replacement. No new dashboard for the dealership to manage. Authomotive
-              adds the authority and measurement layer that connects the existing work.
-            </p>
-            <SectionHandoff
-              eyebrow="NEXT · THE AUTHOMOTIVE SYSTEM"
-              label="See the Three Connected Jobs"
-              href="#capabilities"
-              theme="light"
-              accent="discovery"
-              className="lg:shrink-0"
-            />
-          </div>
+          <p className="mt-5 max-w-[42rem] text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
+            No platform replacement. No new dashboard for the dealership to manage. Authomotive
+            adds the authority and measurement layer that connects the existing work.
+          </p>
         </div>
       </div>
     </section>

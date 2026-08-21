@@ -6,7 +6,6 @@ import { reportingMatrix } from '@/lib/platform-data'
 import { Disclosure } from '@/components/disclosure'
 import { ReportingMatrix } from '@/components/reporting-matrix'
 import { SignalRail } from '@/components/signal-rail'
-import { SectionHandoff } from '@/components/section-handoff'
 import {
   AiVisibilityCharts,
   BuyerActionCharts,
@@ -219,6 +218,36 @@ export function IntelligencePreview() {
           </div>
         </div>
 
+        <div className="mt-8">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-proof-deep">
+            {reporting.evidence.eyebrow}
+          </p>
+          <ul className="mt-4 grid gap-4 md:grid-cols-2 md:gap-5" aria-label="How Intelligence frames evidence">
+            {reporting.evidence.frames.map((frame, i) => (
+              <li
+                key={frame.id}
+                className={`flex h-full flex-col rounded-[8px] border-2 border-ink p-5 md:p-6 ${
+                  i === 0 ? 'bg-proof-soft' : 'bg-paper'
+                }`}
+              >
+                <span className={`h-3 w-3 ${i === 0 ? 'bg-proof-deep' : 'bg-ink'}`} aria-hidden="true" />
+                <p className="mt-4 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-proof-deep">
+                  {frame.kicker}
+                </p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
+                  {frame.title}
+                </p>
+                <p className="mt-3 border-t border-ink/15 pt-3 text-lg font-semibold leading-snug text-ink text-pretty">
+                  {frame.lead}
+                </p>
+                <p className="mt-2 text-base leading-relaxed text-muted-foreground text-pretty md:text-lg">
+                  {frame.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <blockquote className="mt-6 border-l-4 border-proof pl-4 text-xl font-semibold leading-snug text-ink md:text-3xl text-pretty">
           The goal is not another dashboard. It is a clearer decision.
         </blockquote>
@@ -234,14 +263,6 @@ export function IntelligencePreview() {
             </p>
           </Disclosure>
         </div>
-        <SectionHandoff
-          eyebrow="SEE THE MEASUREMENT FOUNDATION"
-          label="See What Feeds Authomotive Intelligence"
-          href="#measurement"
-          theme="light"
-          accent="evidence"
-          className="mt-6"
-        />
       </div>
     </section>
   )

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { capabilitySystem } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
-import { SectionHandoff } from '@/components/section-handoff'
 
 function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'proof' | 'soft' }) {
   const stroke =
@@ -284,13 +283,6 @@ export function CapabilitySystem() {
                   ))}
                 </ul>
               </div>
-              <SectionHandoff
-                eyebrow="NEXT · THE DELIVERABLE"
-                label="See an Authority Experience"
-                href="#authority-experiences"
-                theme="light"
-                accent="discovery"
-              />
             </div>
           </div>
         </div>

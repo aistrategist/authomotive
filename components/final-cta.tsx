@@ -67,232 +67,232 @@ export function FinalCta() {
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <SignalRail tone="handoff" />
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-        <div className="lg:col-span-5">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
-            {finalCta.eyebrow}
-          </p>
-          <h2
-            id="cta-heading"
-            className="mt-4 text-3xl font-semibold tracking-tight text-stage-foreground md:text-5xl text-balance"
-          >
-            {finalCta.headline}
-          </h2>
-          <p className="mt-5 text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
-            {finalCta.supporting}
-          </p>
-          <ul className="mt-8 flex flex-col gap-3" aria-label="What the Opportunity Review covers">
-            {[
-              { mark: 'bg-accent', label: 'Authority content' },
-              { mark: 'bg-proof', label: 'Intelligence and reporting' },
-              { mark: 'bg-paper', label: 'Measurement gaps' },
-            ].map((item) => (
-              <li
-                key={item.label}
-                className="flex min-h-[56px] items-center gap-3 border border-stage-line bg-stage-elevated px-4 py-3 text-lg font-semibold tracking-tight text-paper"
-              >
-                <span className={`h-3 w-3 shrink-0 ${item.mark}`} aria-hidden="true" />
-                {item.label}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8 border-l-2 border-lime pl-5">
-            <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)] md:text-lg">
-              {finalCta.confidence}
+          <div className="lg:col-span-5">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
+              {finalCta.eyebrow}
             </p>
-          </div>
-        </div>
-
-        <div className="rounded-[8px] border-2 border-ink bg-stage-elevated p-6 shadow-[6px_6px_0_0_var(--accent)] md:p-8 lg:col-span-7">
-          {status === 'success' ? (
-            <div role="status" className="flex min-h-[400px] flex-col items-start justify-center gap-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-ink">
-                  <path d="M4 11.5l5 5L18 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <h3 className="text-2xl font-semibold text-stage-foreground text-balance">
-                {finalCta.successHeading}
-              </h3>
-              <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)]">{finalCta.successCopy}</p>
+            <h2
+              id="cta-heading"
+              className="mt-4 text-3xl font-semibold tracking-tight text-stage-foreground md:text-5xl text-balance"
+            >
+              {finalCta.headline}
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
+              {finalCta.supporting}
+            </p>
+            <ul className="mt-8 flex flex-col gap-3" aria-label="What the Opportunity Review covers">
+              {[
+                { mark: 'bg-accent', label: 'Authority content' },
+                { mark: 'bg-proof', label: 'Intelligence and reporting' },
+                { mark: 'bg-paper', label: 'Measurement gaps' },
+              ].map((item) => (
+                <li
+                  key={item.label}
+                  className="flex min-h-[56px] items-center gap-3 border border-stage-line bg-stage-elevated px-4 py-3 text-lg font-semibold tracking-tight text-paper"
+                >
+                  <span className={`h-3 w-3 shrink-0 ${item.mark}`} aria-hidden="true" />
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 border-l-2 border-lime pl-5">
+              <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)] md:text-lg">
+                {finalCta.confidence}
+              </p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-4">
-              {/* Honeypot — hidden from real users, filled only by bots */}
-              <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
-                <label htmlFor="cta-company-website">Company website</label>
-                <input
-                  id="cta-company-website"
-                  name="company_website"
-                  type="text"
-                  tabIndex={-1}
-                  autoComplete="off"
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="cta-name" className={labelClasses}>
-                    Name
-                  </label>
-                  <input
-                    id="cta-name"
-                    name="name"
-                    autoComplete="name"
-                    required
-                    aria-invalid={Boolean(errors.name)}
-                    aria-describedby={errors.name ? 'cta-name-error' : undefined}
-                    className={inputClasses}
-                  />
-                  {errors.name && (
-                    <p id="cta-name-error" className="text-sm text-coral">
-                      {errors.name}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="cta-email" className={labelClasses}>
-                    Work email
-                  </label>
-                  <input
-                    id="cta-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    aria-invalid={Boolean(errors.email)}
-                    aria-describedby={errors.email ? 'cta-email-error' : undefined}
-                    className={inputClasses}
-                  />
-                  {errors.email && (
-                    <p id="cta-email-error" className="text-sm text-coral">
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-              </div>
+          </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="cta-dealership" className={labelClasses}>
-                    Dealership or dealer group
-                  </label>
-                  <input
-                    id="cta-dealership"
-                    name="dealership"
-                    autoComplete="organization"
-                    required
-                    aria-invalid={Boolean(errors.dealership)}
-                    aria-describedby={errors.dealership ? 'cta-dealership-error' : undefined}
-                    className={inputClasses}
-                  />
-                  {errors.dealership && (
-                    <p id="cta-dealership-error" className="text-sm text-coral">
-                      {errors.dealership}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="cta-website" className={labelClasses}>
-                    Website URL
-                  </label>
-                  <input
-                    id="cta-website"
-                    name="website"
-                    type="url"
-                    inputMode="url"
-                    placeholder="https://"
-                    autoComplete="url"
-                    required
-                    aria-invalid={Boolean(errors.website)}
-                    aria-describedby={errors.website ? 'cta-website-error' : undefined}
-                    className={inputClasses}
-                  />
-                  {errors.website && (
-                    <p id="cta-website-error" className="text-sm text-coral">
-                      {errors.website}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="cta-role" className={labelClasses}>
-                    Role
-                  </label>
-                  <input
-                    id="cta-role"
-                    name="role"
-                    autoComplete="organization-title"
-                    className={inputClasses}
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="cta-concern" className={labelClasses}>
-                    Primary concern
-                  </label>
-                  <select
-                    id="cta-concern"
-                    name="concern"
-                    required
-                    defaultValue=""
-                    aria-invalid={Boolean(errors.concern)}
-                    aria-describedby={errors.concern ? 'cta-concern-error' : undefined}
-                    className={inputClasses}
-                  >
-                    <option value="" disabled>
-                      Choose one
-                    </option>
-                    {finalCta.concernOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.concern && (
-                    <p id="cta-concern-error" className="text-sm text-coral">
-                      {errors.concern}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="cta-notes" className={labelClasses}>
-                  What should your website be doing better?{' '}
-                  <span className="font-normal text-fog">(optional)</span>
-                </label>
-                <textarea id="cta-notes" name="notes" rows={4} className={inputClasses} />
-              </div>
-
-              {status === 'error' && (
-                <p role="alert" className="rounded-md border border-coral/50 bg-coral/10 px-4 py-3 text-sm text-stage-foreground">
-                  {finalCta.errorCopy}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                aria-busy={status === 'submitting'}
-                className="btn btn-action-dark mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {status === 'submitting' ? 'Sending your request…' : finalCta.submitLabel}
-                <span className="btn-arrow" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <path
-                      d="M3 9h11m0 0L9.5 4.5M14 9l-4.5 4.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+          <div className="rounded-[8px] border-2 border-ink bg-stage-elevated p-6 shadow-[6px_6px_0_0_var(--accent)] md:p-8 lg:col-span-7">
+            {status === 'success' ? (
+              <div role="status" className="flex min-h-[400px] flex-col items-start justify-center gap-4">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-ink">
+                    <path d="M4 11.5l5 5L18 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
-              </button>
-              <p className="text-sm leading-relaxed text-fog">{finalCta.consent}</p>
-            </form>
-          )}
-        </div>
+                <h3 className="text-2xl font-semibold text-stage-foreground text-balance">
+                  {finalCta.successHeading}
+                </h3>
+                <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)]">{finalCta.successCopy}</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-4">
+                {/* Honeypot — hidden from real users, filled only by bots */}
+                <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                  <label htmlFor="cta-company-website">Company website</label>
+                  <input
+                    id="cta-company-website"
+                    name="company_website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="cta-name" className={labelClasses}>
+                      Name
+                    </label>
+                    <input
+                      id="cta-name"
+                      name="name"
+                      autoComplete="name"
+                      required
+                      aria-invalid={Boolean(errors.name)}
+                      aria-describedby={errors.name ? 'cta-name-error' : undefined}
+                      className={inputClasses}
+                    />
+                    {errors.name && (
+                      <p id="cta-name-error" className="text-sm text-coral">
+                        {errors.name}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="cta-email" className={labelClasses}>
+                      Work email
+                    </label>
+                    <input
+                      id="cta-email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      aria-invalid={Boolean(errors.email)}
+                      aria-describedby={errors.email ? 'cta-email-error' : undefined}
+                      className={inputClasses}
+                    />
+                    {errors.email && (
+                      <p id="cta-email-error" className="text-sm text-coral">
+                        {errors.email}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="cta-dealership" className={labelClasses}>
+                      Dealership or dealer group
+                    </label>
+                    <input
+                      id="cta-dealership"
+                      name="dealership"
+                      autoComplete="organization"
+                      required
+                      aria-invalid={Boolean(errors.dealership)}
+                      aria-describedby={errors.dealership ? 'cta-dealership-error' : undefined}
+                      className={inputClasses}
+                    />
+                    {errors.dealership && (
+                      <p id="cta-dealership-error" className="text-sm text-coral">
+                        {errors.dealership}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="cta-website" className={labelClasses}>
+                      Website URL
+                    </label>
+                    <input
+                      id="cta-website"
+                      name="website"
+                      type="url"
+                      inputMode="url"
+                      placeholder="https://"
+                      autoComplete="url"
+                      required
+                      aria-invalid={Boolean(errors.website)}
+                      aria-describedby={errors.website ? 'cta-website-error' : undefined}
+                      className={inputClasses}
+                    />
+                    {errors.website && (
+                      <p id="cta-website-error" className="text-sm text-coral">
+                        {errors.website}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="cta-role" className={labelClasses}>
+                      Role
+                    </label>
+                    <input
+                      id="cta-role"
+                      name="role"
+                      autoComplete="organization-title"
+                      className={inputClasses}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="cta-concern" className={labelClasses}>
+                      Primary concern
+                    </label>
+                    <select
+                      id="cta-concern"
+                      name="concern"
+                      required
+                      defaultValue=""
+                      aria-invalid={Boolean(errors.concern)}
+                      aria-describedby={errors.concern ? 'cta-concern-error' : undefined}
+                      className={inputClasses}
+                    >
+                      <option value="" disabled>
+                        Choose one
+                      </option>
+                      {finalCta.concernOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.concern && (
+                      <p id="cta-concern-error" className="text-sm text-coral">
+                        {errors.concern}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="cta-notes" className={labelClasses}>
+                    What should your website be doing better?{' '}
+                    <span className="font-normal text-fog">(optional)</span>
+                  </label>
+                  <textarea id="cta-notes" name="notes" rows={4} className={inputClasses} />
+                </div>
+
+                {status === 'error' && (
+                  <p role="alert" className="rounded-md border border-coral/50 bg-coral/10 px-4 py-3 text-sm text-stage-foreground">
+                    {finalCta.errorCopy}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  aria-busy={status === 'submitting'}
+                  className="btn btn-action-dark mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {status === 'submitting' ? 'Sending your request…' : finalCta.submitLabel}
+                  <span className="btn-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path
+                        d="M3 9h11m0 0L9.5 4.5M14 9l-4.5 4.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+                <p className="text-sm leading-relaxed text-fog">{finalCta.consent}</p>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>

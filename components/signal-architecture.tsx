@@ -1,6 +1,5 @@
 import { measurement } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
-import { SectionHandoff } from '@/components/section-handoff'
 
 const stages = [
   {
@@ -119,19 +118,9 @@ export function SignalArchitecture() {
           available. Technical depth lives in the engagement, not in another dashboard to operate.
         </p>
 
-        <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-          <p className="max-w-[40rem] text-xl font-semibold leading-snug tracking-tight text-ink md:text-2xl text-pretty">
-            {measurement.headline}
-          </p>
-          <SectionHandoff
-            eyebrow="SEE WHAT IS INCLUDED"
-            label="See the Complete Authomotive Engagement"
-            href="#engagement"
-            theme="light"
-            accent="evidence"
-            className="lg:shrink-0"
-          />
-        </div>
+        <p className="mt-6 max-w-[40rem] text-xl font-semibold leading-snug tracking-tight text-ink md:text-2xl text-pretty">
+          {measurement.headline}
+        </p>
       </div>
     </section>
   )
