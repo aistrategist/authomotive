@@ -8,7 +8,7 @@ export const contentType = 'image/png'
 
 /**
  * Branded Open Graph image rendered with the Authomotive visual system:
- * Ink environment, Paper type, pale-blue signal line, Orange action accent.
+ * Ink environment, Paper type, pale-blue signal line, sherbet action accent.
  */
 export default function OgImage() {
   return new ImageResponse(
@@ -84,7 +84,7 @@ export default function OgImage() {
         {/* Signal line with Orange terminus */}
         <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <div style={{ display: 'flex', height: 6, width: '76%', backgroundColor: '#BDD9FF' }} />
-          <div style={{ display: 'flex', height: 6, width: '8%', backgroundColor: '#FF5A1F' }} />
+          <div style={{ display: 'flex', height: 6, width: '8%', backgroundColor: '#FFC982' }} />
         </div>
       </div>
     ),

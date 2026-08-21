@@ -36,6 +36,12 @@
   --color-coral: var(--coral);
   --color-action: var(--action);
   --color-action-deep: var(--action-deep);
+  --color-action-softest: var(--action-softest);
+  --color-action-soft: var(--action-soft);
+  --color-action-muted: var(--action-muted);
+  --color-action-hover: var(--action-hover);
+  --color-action-strong: var(--action-strong);
+  --color-action-foreground: var(--action-foreground);
   --color-lime-mist: var(--lime-mist);
   --color-orange-mist: var(--orange-mist);
   --color-teal-mist: var(--teal-mist);
@@ -60,7 +66,7 @@
 :root {
   color-scheme: light;
 
-  /* Brand palette — petrol ink, paper, orange conversion, pale-blue intelligence */
+  /* Brand palette — petrol ink, paper, sherbet conversion, pale-blue intelligence */
   --ink: #061b20;
   --carbon: #0b3038;
   --graphite: #174c54;
@@ -86,9 +92,15 @@
   --cobalt: var(--accent-strong);
   --coral: #ff6b5e;
 
-  --action: #ff6a3d;
-  --action-deep: #a83a1b;
-  --orange-mist: #fff0e8;
+  --action-softest: #fff8f1;
+  --action-soft: #fff3e8;
+  --action-muted: #ffe3cf;
+  --action: #ffc982;
+  --action-hover: #f8a85f;
+  --action-strong: #e9893f;
+  --action-deep: #a45118;
+  --action-foreground: #061b20;
+  --orange-mist: var(--action-soft);
   --teal-mist: #dcebfa;
 
   --background: var(--paper);
@@ -174,35 +186,62 @@
   }
 }
 
-/* Primary conversion button — Action Orange */
+/* Primary conversion button — sherbet apricot */
 .btn-action {
   background: var(--action);
-  color: var(--ink);
+  color: var(--action-foreground);
   border: 2px solid var(--ink);
   box-shadow: 6px 6px 0 0 var(--ink);
 }
 .btn-action:hover {
+  background: var(--action-hover);
+  color: var(--action-foreground);
   box-shadow: 7px 7px 0 0 var(--ink);
 }
 .btn-action:active {
+  background: var(--action-strong);
+  color: var(--action-foreground);
   box-shadow: 3px 3px 0 0 var(--ink);
 }
+.btn-action:focus-visible {
+  outline-color: var(--accent-deep);
+}
+.btn-action:disabled,
+.btn-action[aria-disabled='true'] {
+  background: var(--action-muted);
+  color: var(--ink);
+  cursor: not-allowed;
+}
 
-/* Primary Orange on dark surfaces */
+/* Primary conversion on dark surfaces */
 .btn-action-dark {
   background: var(--action);
-  color: var(--ink);
+  color: var(--action-foreground);
   border: 2px solid var(--ink);
-  box-shadow: 6px 6px 0 0 var(--lime);
+  box-shadow: 6px 6px 0 0 var(--accent);
 }
 .btn-action-dark:hover {
-  box-shadow: 7px 7px 0 0 var(--lime);
+  background: var(--action-hover);
+  color: var(--action-foreground);
+  box-shadow: 7px 7px 0 0 var(--accent);
 }
 .btn-action-dark:active {
-  box-shadow: 3px 3px 0 0 var(--lime);
+  background: var(--action-strong);
+  color: var(--action-foreground);
+  box-shadow: 3px 3px 0 0 var(--accent);
 }
 .btn-action-dark:focus-visible {
-  outline-color: var(--lime);
+  outline-color: var(--accent);
+}
+.btn-action-dark:disabled,
+.btn-action-dark[aria-disabled='true'] {
+  background: var(--action-muted);
+  color: var(--ink);
+  cursor: not-allowed;
+}
+
+.hero-atmosphere .btn-action:focus-visible {
+  outline-color: var(--accent);
 }
 
 /* Secondary — Ink fill on paper sections */
@@ -551,7 +590,7 @@
   background: #bdd9ff;
 }
 .hs-legend-bars .hs-bar-5 {
-  background: rgba(255, 106, 61, 0.8);
+  background: rgba(255, 201, 130, 0.8);
 }
 .hs-legend-bars .hs-bar-6 {
   background: rgba(189, 217, 255, 0.55);
@@ -776,7 +815,7 @@
 
 .hs-traveler-geo .hs-visitor,
 .hs-traveler-geo2 .hs-visitor {
-  filter: drop-shadow(0 1px 0.6px rgba(255, 106, 61, 0.28));
+  filter: drop-shadow(0 1px 0.6px rgba(255, 201, 130, 0.28));
 }
 
 .hs-waypoint {
@@ -887,6 +926,10 @@
   transform-box: fill-box;
   transform-origin: center;
   filter: drop-shadow(0 2px 10px rgba(189, 217, 255, 0.2));
+}
+
+.hs-convert .hs-convert-disc {
+  filter: drop-shadow(0 2px 10px rgba(255, 201, 130, 0.35));
 }
 
 .hs-convert-glyph {
@@ -1041,16 +1084,16 @@
 }
 
 .hs-tip-geo {
-  border-color: rgba(255, 106, 61, 0.6);
+  border-color: rgba(255, 201, 130, 0.6);
   box-shadow:
-    0 0 0 1px rgba(255, 106, 61, 0.14),
+    0 0 0 1px rgba(255, 201, 130, 0.14),
     0 8px 22px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(255, 106, 61, 0.2);
+    0 0 18px rgba(255, 201, 130, 0.2);
 }
 
 .hs-tip-geo .hs-tip-dot {
   background: var(--action);
-  box-shadow: 0 0 8px rgba(255, 106, 61, 0.85);
+  box-shadow: 0 0 8px rgba(255, 201, 130, 0.85);
 }
 
 .hs-bar {

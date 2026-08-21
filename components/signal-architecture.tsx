@@ -96,7 +96,7 @@ export function SignalArchitecture() {
   return (
     <section id="measurement" aria-labelledby="measurement-heading" className="scroll-mt-24 border-b border-border bg-paper">
       <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
-        <SignalRail tone="orange" />
+        <SignalRail tone="lime" />
         <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {measurement.eyebrow}

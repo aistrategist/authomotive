@@ -216,8 +216,8 @@ export function CompactSearchGlyph() {
     <svg viewBox="0 0 120 40" className="h-9 w-[7.5rem]" aria-hidden="true">
       <rect x="8" y="8" width="32" height="24" rx="3" className="fill-lime-mist stroke-ink" strokeWidth="1.25" />
       <rect x="44" y="8" width="32" height="24" rx="3" className="fill-paper stroke-ink" strokeWidth="1.25" />
-      <rect x="80" y="8" width="32" height="24" rx="3" className="fill-orange-mist stroke-ink" strokeWidth="1.25" />
-      <rect x="86" y="14" width="20" height="4" className="fill-action" />
+      <rect x="80" y="8" width="32" height="24" rx="3" className="fill-accent-soft stroke-ink" strokeWidth="1.25" />
+      <rect x="86" y="14" width="20" height="4" className="fill-accent" />
     </svg>
   )
 }

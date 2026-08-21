@@ -153,10 +153,10 @@ const TRAIL_SEGMENTS = [
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
   { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#bdd9ff', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ffc982', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
   { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8eef5', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
   { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#d7e8ff', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
-  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
+  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ffe3cf', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -832,7 +832,7 @@ export function HeroStage() {
               AI
             </span>
             <span className="hs-legend-item hs-chip-geo">
-              <VisitorChipIcon color="#ff6a3d" variant={1} />
+              <VisitorChipIcon color="#ffc982" variant={1} />
               Local
             </span>
           </div>
@@ -978,7 +978,7 @@ export function HeroStage() {
                     cx={cv.cx}
                     cy={cv.cy}
                     r="30"
-                    fill="#bdd9ff"
+                    fill="#ffc982"
                     opacity="0"
                   />
                   <circle
@@ -987,7 +987,7 @@ export function HeroStage() {
                     cy={cv.cy}
                     r="16"
                     fill="none"
-                    stroke="#bdd9ff"
+                    stroke="#ffc982"
                     strokeWidth="2"
                     opacity="0"
                   />
@@ -1006,7 +1006,7 @@ export function HeroStage() {
                     cx={cv.cx}
                     cy={cv.cy}
                     r="13"
-                    fill="#bdd9ff"
+                    fill="#ffc982"
                   />
                   <g transform={`translate(${cv.cx} ${cv.cy})`}>
                     <g className="hs-convert-glyph">

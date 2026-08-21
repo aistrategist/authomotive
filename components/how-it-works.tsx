@@ -70,7 +70,7 @@ export function HowItWorks() {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
               <path
                 d="M20 12a8 8 0 1 1-3-6.2M20 4v4h-4"
-                stroke="var(--action)"
+                stroke="var(--accent-deep)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"

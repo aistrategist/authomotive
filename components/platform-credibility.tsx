@@ -72,13 +72,13 @@ function ExpandedViz({ tone }: { tone: Tone }) {
 const swatchClass: Record<Tone, string> = {
   ink: 'bg-ink',
   lime: 'bg-lime',
-  action: 'bg-action',
+  action: 'bg-accent',
 }
 
 const plusMark: Record<Tone, string> = {
   ink: 'text-porcelain',
-  lime: 'text-lime',
-  action: 'text-action',
+  lime: 'text-accent',
+  action: 'text-accent',
 }
 
 function StackSlab({

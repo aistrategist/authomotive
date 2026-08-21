@@ -233,7 +233,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 aria-current={isActive ? 'true' : undefined}
-                className={`relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-action hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px] ${
+                className={`relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px] ${
                   scrolled ? 'text-ink focus-visible:outline-accent-deep' : 'text-paper focus-visible:outline-accent'
                 }`}
               >
