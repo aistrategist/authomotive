@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from 'react'
 import { finalCta } from '@/lib/site-data'
 import { submitOpportunityReview, type ReviewRequest } from '@/lib/submit-review'
-import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
@@ -65,10 +64,10 @@ export function FinalCta() {
       aria-labelledby="cta-heading"
       className="ink-grid scroll-mt-24 bg-stage"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-24 lg:py-[7rem]">
+      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <SignalRail tone="handoff" />
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-        <Reveal className="lg:col-span-5">
+        <div className="lg:col-span-5">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
             {finalCta.eyebrow}
           </p>
@@ -81,14 +80,29 @@ export function FinalCta() {
           <p className="mt-5 text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
             {finalCta.supporting}
           </p>
-          <div className="mt-10 border-l-2 border-lime pl-5">
+          <ul className="mt-8 flex flex-col gap-3" aria-label="What the Opportunity Review covers">
+            {[
+              { mark: 'bg-accent', label: 'Authority content' },
+              { mark: 'bg-proof', label: 'Intelligence and reporting' },
+              { mark: 'bg-paper', label: 'Measurement gaps' },
+            ].map((item) => (
+              <li
+                key={item.label}
+                className="flex min-h-[56px] items-center gap-3 border border-stage-line bg-stage-elevated px-4 py-3 text-lg font-semibold tracking-tight text-paper"
+              >
+                <span className={`h-3 w-3 shrink-0 ${item.mark}`} aria-hidden="true" />
+                {item.label}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 border-l-2 border-lime pl-5">
             <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)] md:text-lg">
               {finalCta.confidence}
             </p>
           </div>
-        </Reveal>
+        </div>
 
-        <Reveal delay={60} className="rounded-[8px] border border-stage-line bg-stage-elevated p-6 md:p-8 lg:col-span-7">
+        <div className="rounded-[8px] border-2 border-ink bg-stage-elevated p-6 shadow-[6px_6px_0_0_var(--accent)] md:p-8 lg:col-span-7">
           {status === 'success' ? (
             <div role="status" className="flex min-h-[400px] flex-col items-start justify-center gap-4">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime" aria-hidden="true">
@@ -278,7 +292,7 @@ export function FinalCta() {
               <p className="text-sm leading-relaxed text-fog">{finalCta.consent}</p>
             </form>
           )}
-        </Reveal>
+        </div>
         </div>
       </div>
     </section>
