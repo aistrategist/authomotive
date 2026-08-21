@@ -489,6 +489,93 @@
   }
 }
 
+.qti-route {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+}
+.qti-route::before {
+  content: '';
+  position: absolute;
+  left: 2.75rem;
+  top: 3.25rem;
+  bottom: 3.25rem;
+  width: 2px;
+  background: var(--accent);
+  transform-origin: top center;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .qti-route::before {
+    top: 3.5rem;
+    bottom: 3.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .qti-route {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .qti-route::before {
+    left: 3.5rem;
+    right: 3.5rem;
+    top: 3.5rem;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+    transform-origin: left center;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .qti-route::before {
+    animation: qti-draw-y 600ms ease-out both;
+  }
+  .qti-node {
+    animation: qti-node 180ms ease-out both;
+  }
+  .qti-route > li:nth-child(1) .qti-node {
+    animation-delay: 80ms;
+  }
+  .qti-route > li:nth-child(2) .qti-node {
+    animation-delay: 160ms;
+  }
+  .qti-route > li:nth-child(3) .qti-node {
+    animation-delay: 240ms;
+  }
+  .qti-route > li:nth-child(4) .qti-node {
+    animation-delay: 320ms;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .qti-route::before {
+    animation-name: qti-draw-x;
+  }
+}
+@keyframes qti-draw-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes qti-draw-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes qti-node {
+  from {
+    transform: scale(0.94);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .lede {
   max-width: 68ch;
 }
