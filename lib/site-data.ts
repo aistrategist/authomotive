@@ -49,6 +49,37 @@ export const hero = {
   ],
 }
 
+export const discoveryToInventory = {
+  eyebrow: 'FROM DISCOVERY TO INVENTORY',
+  headline: 'Turn buyer questions into inventory pathways.',
+  supporting:
+    'Shoppers search with specific needs, not generic keywords. Authomotive turns those questions into dealership-owned research experiences that help buyers compare options, explore matching live inventory and continue into measurable VDP activity.',
+  questionLabel: 'A REAL SHOPPER QUESTION',
+  question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
+  path: ['Buyer Question', 'Helpful Research', 'Matching Inventory', 'VDP Activity'],
+  steps: [
+    {
+      id: 'found',
+      stage: 'Helpful Research',
+      title: 'Get Found',
+      body: 'Answer specific, high-intent shopping questions through useful dealership-owned research built for organic, local and AI discovery.',
+    },
+    {
+      id: 'guide',
+      stage: 'Matching Inventory',
+      title: 'Guide Buyers',
+      body: 'Place matching live inventory within the research experience, giving shoppers a direct path from helpful guidance to real vehicles.',
+    },
+    {
+      id: 'prove',
+      stage: 'VDP Activity',
+      title: 'Prove What Works',
+      body: 'Measure movement from the research page into inventory engagement, VDP entries and lead actions.',
+    },
+  ],
+  note: 'This pathway is built within the dealership website and inventory system you already have.',
+}
+
 export const industryGap = {
   eyebrow: 'THE GAP · DISCONNECTED WORK',
   headline: 'More tools. Less clarity. Too many missed signals.',

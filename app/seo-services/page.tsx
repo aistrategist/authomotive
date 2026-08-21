@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { Hero } from '@/components/hero'
+import { DiscoveryToInventory } from '@/components/discovery-to-inventory'
 import { PlatformCredibility } from '@/components/platform-credibility'
 import { IndustryGap } from '@/components/industry-gap'
 import { CapabilitySystem } from '@/components/capability-system'
@@ -36,6 +37,7 @@ export default function SeoServicesPage() {
       <SiteHeader />
       <main id="main-content">
         <Hero />
+        <DiscoveryToInventory />
         <PlatformCredibility />
         <IndustryGap />
         <CapabilitySystem />

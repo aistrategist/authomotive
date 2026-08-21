@@ -2,11 +2,9 @@
 
 import { hero, siteConfig } from '@/lib/site-data'
 import { HeroStage } from '@/components/hero-stage'
-import { SignalRail } from '@/components/signal-rail'
 
 /**
  * First viewport: brand + headline + support + CTAs + dominant HeroStage.
- * Band two: Warm Paper behind the buyer question, Porcelain behind outcomes.
  */
 export function Hero() {
   return (
@@ -47,45 +45,6 @@ export function Hero() {
 
           <div className="hero-enter hero-enter-stage relative z-[1] min-w-0 overflow-visible lg:-ml-4 lg:-mr-2 xl:-ml-8 xl:-mr-6">
             <HeroStage />
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="buyer-question-heading" className="relative border-b border-border bg-paper">
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] bg-porcelain lg:block" aria-hidden="true" />
-        <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
-          <SignalRail tone="ink" />
-          <div className="grid gap-8 lg:grid-cols-[0.68fr_1fr] lg:items-start lg:gap-14">
-            <blockquote className="bg-paper lg:sticky lg:top-24">
-              <p
-                id="buyer-question-heading"
-                className="text-2xl font-semibold leading-snug tracking-tight text-ink text-pretty md:text-3xl"
-              >
-                &ldquo;{hero.question}&rdquo;
-              </p>
-              <cite className="mt-3 block text-base not-italic text-muted-foreground">
-                A real buyer question your website should own
-              </cite>
-            </blockquote>
-
-            <div className="-mx-5 bg-porcelain px-5 py-8 md:-mx-8 md:px-8 lg:mx-0 lg:bg-transparent lg:px-0 lg:py-0">
-              <ul className="flex flex-col gap-5" aria-label="How the authority system supports the promise">
-                {hero.outcomes.map((outcome, i) => (
-                  <li key={outcome.id} className="flex items-start gap-4">
-                    <span
-                      className={`mt-2.5 h-1 w-8 shrink-0 ${
-                        i === 0 ? 'bg-lime' : i === 1 ? 'bg-action' : 'bg-ink'
-                      }`}
-                      aria-hidden="true"
-                    />
-                    <p className="text-lg leading-snug text-pretty md:text-xl">
-                      <span className="font-semibold tracking-tight text-ink">{outcome.statement}</span>
-                      <span className="text-muted-foreground"> — {outcome.explanation}</span>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
       </section>
