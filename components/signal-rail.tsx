@@ -3,13 +3,13 @@
 const bars = {
   ink: 'bg-ink',
   lime: 'bg-lime',
-  orange: 'bg-action',
+  orange: 'bg-accent',
 } as const
 
 const rests = {
   ink: 'bg-ink/15',
   lime: 'bg-lime/25',
-  orange: 'bg-action/25',
+  orange: 'bg-accent/25',
 } as const
 
 export function SignalRail({
@@ -21,8 +21,8 @@ export function SignalRail({
     return (
       <div className="mb-8 flex items-center md:mb-10" aria-hidden="true">
         <span className="h-[2px] w-[4.5rem] bg-lime md:w-16" />
-        <span className="h-[2px] w-8 bg-action md:w-10" />
-        <span className="h-2 w-2 shrink-0 bg-action" />
+        <span className="h-[2px] w-8 bg-stage-muted md:w-10" />
+        <span className="h-2 w-2 shrink-0 bg-accent" />
         <span className="h-[2px] flex-1 bg-porcelain/15" />
       </div>
     )

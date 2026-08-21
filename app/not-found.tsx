@@ -15,7 +15,7 @@ export default function NotFound() {
         everything Authomotive builds, measures, and reports.
       </p>
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-        <Link href="/" className="btn btn-action">
+        <Link href="/" className="btn btn-ink">
           Back to the homepage
           <span className="btn-arrow" aria-hidden="true">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">

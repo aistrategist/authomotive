@@ -287,7 +287,7 @@ export function BuyerActionCharts() {
               <div className="h-9 overflow-hidden rounded-md bg-porcelain">
                 <div
                   className={`iq-bar-in-x flex h-full items-center rounded-md px-3 ${
-                    i === funnel.length - 1 ? 'bg-action/80' : i === 0 ? 'bg-lime' : 'bg-signal-deep/45'
+                    i === funnel.length - 1 ? 'bg-proof/80' : i === 0 ? 'bg-lime' : 'bg-signal-deep/45'
                   }`}
                   style={{ width: `${step.width}%`, animationDelay: `${100 + i * 90}ms` }}
                 />

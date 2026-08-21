@@ -70,6 +70,11 @@
   --color-hero-ui-muted: var(--hero-ui-muted);
   --color-hero-ui-foreground: var(--hero-ui-foreground);
   --color-hero-ui-highlight: var(--hero-ui-highlight);
+  --color-hero-local: var(--hero-local);
+  --color-hero-local-soft: var(--hero-local-soft);
+  --color-discovery: var(--discovery);
+  --color-evidence: var(--evidence);
+  --color-conversion: var(--conversion);
 
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -84,20 +89,65 @@
 :root {
   color-scheme: light;
 
-  /* Brand palette — charcoal stage, petrol ink, paper, sherbet conversion, blue intelligence */
-  --ink: #061b20;
-  --carbon: #0b3038;
-  --graphite: #174c54;
-  --paper: #fffcf7;
-  --porcelain: #e8eef5;
-  --alloy: #dce5ee;
+  /*
+    AUTHOMOTIVE COLOR GOVERNANCE
+    Blue: discovery, guidance, inventory pathways
+    Lavender: evidence, intelligence, proof
+    Apricot: actionable conversion and conversion confirmation
+    Ink/charcoal: authority, structure, selected states
+    Paper/cool gray: content surfaces and breathing room
+  */
 
+  /* Architecture */
+  --ink: #061b20;
   --stage-deep: #191c21;
   --stage: #252a31;
   --stage-elevated: #303640;
   --stage-line: #48515e;
   --stage-muted: #b8c1cc;
   --stage-foreground: #fffcf7;
+  --architecture: var(--stage);
+
+  /* Discovery and guidance */
+  --accent-softest: #f3f8ff;
+  --accent-soft: #eaf3ff;
+  --accent-muted: #bdd9ff;
+  --accent: #8fbcf5;
+  --accent-mid: #6ea5e8;
+  --accent-strong: #4b86cf;
+  --accent-deep: #285f9e;
+  --accent-dark: #173f73;
+  --discovery: var(--accent);
+  --discovery-soft: var(--accent-soft);
+
+  /* Evidence and proof */
+  --proof-soft: #f1edff;
+  --proof: #c8b8ff;
+  --proof-deep: #6c54b5;
+  --proof-foreground: #061b20;
+  --evidence: var(--proof);
+  --evidence-soft: var(--proof-soft);
+
+  /* Action and conversion */
+  --action-softest: #fff8f1;
+  --action-soft: #fff3e8;
+  --action-muted: #ffe3cf;
+  --action: #ffc982;
+  --action-hover: #f8a85f;
+  --action-strong: #e9893f;
+  --action-deep: #a45118;
+  --action-foreground: #061b20;
+  --conversion: var(--action);
+
+  /* Neutral content surfaces */
+  --paper: #fffcf7;
+  --porcelain: #e8eef5;
+  --alloy: #dce5ee;
+  --border: #d4dfea;
+
+  /* Hero Local source — proof family, not conversion apricot */
+  --hero-local: #c8b8ff;
+  --hero-local-soft: #f1edff;
 
   --hero-ui-deep: #2f2c37;
   --hero-ui: #383442;
@@ -115,37 +165,15 @@
   --hero-panel-shadow: rgba(0, 0, 0, 0.24);
   --hero-panel-line: rgba(232, 238, 245, 0.11);
 
-  --accent-softest: #f3f8ff;
-  --accent-soft: #eaf3ff;
-  --accent-muted: #bdd9ff;
-  --accent: #8fbcf5;
-  --accent-mid: #6ea5e8;
-  --accent-strong: #4b86cf;
-  --accent-deep: #285f9e;
-  --accent-dark: #173f73;
-
-  --proof: #c8b8ff;
-  --proof-soft: #f1edff;
-  --proof-deep: #6c54b5;
-  --proof-foreground: #061b20;
-
-  /* Legacy lime names — aliases to the blue family so existing utilities stay valid */
+  /* Legacy names — keep utilities valid; carbon/graphite now resolve to stage */
+  --carbon: var(--stage);
+  --graphite: var(--stage-elevated);
   --lime: var(--accent);
   --lime-mist: var(--accent-soft);
   --signal-deep: var(--accent-deep);
-
   --fog: #8794a2;
   --cobalt: var(--accent-strong);
   --coral: #ff6b5e;
-
-  --action-softest: #fff8f1;
-  --action-soft: #fff3e8;
-  --action-muted: #ffe3cf;
-  --action: #ffc982;
-  --action-hover: #f8a85f;
-  --action-strong: #e9893f;
-  --action-deep: #a45118;
-  --action-foreground: #061b20;
   --orange-mist: var(--action-soft);
   --teal-mist: #dcebfa;
 
@@ -636,7 +664,7 @@
   background: #8fbcf5;
 }
 .hs-legend-bars .hs-bar-5 {
-  background: rgba(255, 201, 130, 0.8);
+  background: rgba(200, 184, 255, 0.8);
 }
 .hs-legend-bars .hs-bar-6 {
   background: rgba(189, 217, 255, 0.55);
@@ -862,7 +890,7 @@
 
 .hs-traveler-geo .hs-visitor,
 .hs-traveler-geo2 .hs-visitor {
-  filter: drop-shadow(0 1px 0.6px rgba(255, 201, 130, 0.28));
+  filter: drop-shadow(0 1px 0.6px rgba(200, 184, 255, 0.28));
 }
 
 .hs-waypoint {
@@ -933,7 +961,7 @@
 }
 
 .hs-chip-geo {
-  color: var(--action);
+  color: var(--hero-local);
 }
 
 .hs-junction {
@@ -1140,7 +1168,7 @@
 }
 
 .hs-tip-geo .hs-tip-dot {
-  background: var(--action);
+  background: var(--proof);
   box-shadow: none;
 }
 
@@ -1171,7 +1199,7 @@
 }
 
 .hs-tip-convert.hs-tip-geo .hs-tip-dot {
-  background: var(--action);
+  background: var(--proof);
 }
 
 .hs-tip-convert .hs-tip-icon,

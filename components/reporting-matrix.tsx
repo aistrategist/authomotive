@@ -32,7 +32,7 @@ function SourceChips({ activeSources }: { activeSources: string[] }) {
 
 function InterpretationPanel({ row }: { row: MatrixRow }) {
   return (
-    <div className="min-h-[170px] rounded-lg border-l-4 border-lime bg-porcelain p-4 md:min-h-[130px] md:p-5">
+    <div className="min-h-[170px] rounded-lg border-l-4 border-proof bg-porcelain p-4 md:min-h-[130px] md:p-5">
       <div key={row.id} className="panel-swap">
         <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
           {row.lens} — plain-English interpretation
@@ -110,7 +110,7 @@ export function ReportingMatrix() {
                     >
                       <span
                         className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full border transition-colors ${
-                          selected ? 'border-signal-deep bg-lime' : 'border-fog bg-transparent'
+                          selected ? 'border-proof-deep bg-proof' : 'border-fog bg-transparent'
                         }`}
                         aria-hidden="true"
                       />
@@ -157,7 +157,7 @@ export function ReportingMatrix() {
                 }`}
               >
                 <span
-                  className={`h-1.5 w-1.5 rounded-full ${selected ? 'bg-lime' : 'bg-border'}`}
+                  className={`h-1.5 w-1.5 rounded-full ${selected ? 'bg-proof' : 'bg-border'}`}
                   aria-hidden="true"
                 />
                 {row.lens}

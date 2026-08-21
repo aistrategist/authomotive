@@ -82,10 +82,10 @@ export default function OgImage() {
           </div>
         </div>
 
-        {/* Signal line with Orange terminus */}
+        {/* Signal line — discovery blue with a restrained proof terminus */}
         <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <div style={{ display: 'flex', height: 6, width: '76%', backgroundColor: '#8FBCF5' }} />
-          <div style={{ display: 'flex', height: 6, width: '8%', backgroundColor: '#FFC982' }} />
+          <div style={{ display: 'flex', height: 6, width: '8%', backgroundColor: '#C8B8FF' }} />
         </div>
       </div>
     ),

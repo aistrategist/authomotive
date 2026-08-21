@@ -19,7 +19,7 @@ function Region({
     accent === 'lime'
       ? 'border-l-[3px] border-l-lime bg-lime-mist'
       : accent === 'orange'
-        ? 'border-l-[3px] border-l-action bg-orange-mist'
+        ? 'border-l-[3px] border-l-proof bg-proof-soft'
         : accent === 'ink'
           ? 'border-l-[3px] border-l-ink bg-teal-mist'
           : 'border-ink/15 bg-porcelain'
@@ -188,7 +188,7 @@ export function JobSignalPreview() {
           <li key={row.label} className="flex items-center gap-2">
             <span
               className={`h-2.5 w-2.5 shrink-0 ${
-                row.state === 'lime' ? 'bg-lime' : row.state === 'orange' ? 'bg-action' : 'bg-ink'
+                row.state === 'lime' ? 'bg-lime' : row.state === 'orange' ? 'bg-accent' : 'bg-ink'
               }`}
             />
             <span className="flex-1 border border-ink/15 bg-porcelain px-2.5 py-1.5 text-[12px] font-semibold text-ink">
@@ -226,7 +226,7 @@ export function CompactMeasureGlyph() {
   return (
     <svg viewBox="0 0 120 40" className="h-9 w-[7.5rem]" aria-hidden="true">
       <path d="M14 20 H106" className="stroke-ink/40" strokeWidth="1.5" />
-      <rect x="8" y="14" width="12" height="12" className="fill-action" />
+      <rect x="8" y="14" width="12" height="12" className="fill-accent" />
       <rect x="54" y="14" width="12" height="12" className="fill-ink" />
       <rect x="100" y="14" width="12" height="12" className="fill-lime" />
     </svg>

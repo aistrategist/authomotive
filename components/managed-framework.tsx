@@ -35,19 +35,19 @@ const scopeGroups = [
 
 const cardLooks = [
   {
-    surface: 'border-2 border-ink bg-paper',
-    swatch: 'bg-ink',
-    rule: 'border-ink',
-  },
-  {
     surface: 'border-2 border-ink bg-accent-soft',
-    swatch: 'bg-accent',
+    swatch: 'bg-accent-deep',
     rule: 'border-accent',
   },
   {
-    surface: 'border-2 border-ink bg-paper',
-    swatch: 'bg-accent-deep',
-    rule: 'border-accent-deep',
+    surface: 'border-2 border-ink bg-proof-soft',
+    swatch: 'bg-proof-deep',
+    rule: 'border-proof',
+  },
+  {
+    surface: 'border-2 border-ink bg-porcelain',
+    swatch: 'bg-ink',
+    rule: 'border-ink',
   },
 ] as const
 

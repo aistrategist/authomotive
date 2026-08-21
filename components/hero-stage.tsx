@@ -153,10 +153,10 @@ const TRAIL_SEGMENTS = [
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
   { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#8fbcf5', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ffc982', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#c8b8ff', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
   { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8eef5', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
   { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#6ea5e8', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
-  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ffe3cf', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
+  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#f1edff', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -831,7 +831,7 @@ export function HeroStage() {
               AI
             </span>
             <span className="hs-legend-item hs-chip-geo">
-              <VisitorChipIcon color="#ffc982" variant={1} />
+              <VisitorChipIcon color="#c8b8ff" variant={1} />
               Local
             </span>
           </div>

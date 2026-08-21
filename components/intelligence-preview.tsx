@@ -148,7 +148,7 @@ export function IntelligencePreview() {
 
   return (
     <section id="reporting" aria-labelledby="reporting-heading" className="scroll-mt-24 overflow-x-clip border-b border-border bg-alloy">
-      <div className="bg-carbon">
+      <div className="bg-stage">
         <div className="mx-auto max-w-[1280px] px-5 pt-16 pb-20 md:px-8 md:pt-24 md:pb-28 lg:pt-[7rem]">
           <SignalRail tone="lime" />
           <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
@@ -177,7 +177,7 @@ export function IntelligencePreview() {
             <div className="flex flex-wrap items-center gap-4">
               <p className="text-lg font-semibold text-porcelain">Authomotive Intelligence</p>
               {/* Separator distinguishing the title from mode navigation */}
-              <span className="hidden h-6 w-px bg-graphite md:block" aria-hidden="true" />
+              <span className="hidden h-6 w-px bg-stage-line md:block" aria-hidden="true" />
               {/* Primary mode selection — manual only, no rotation */}
               <div role="tablist" aria-label="Reporting modes" className="flex gap-1.5">
                 {(['story', 'matrix'] as const).map((m) => {
@@ -190,14 +190,14 @@ export function IntelligencePreview() {
                       aria-selected={selected}
                       aria-controls="mode-panel"
                       onClick={() => setMode(m)}
-                      className={`flex min-h-[44px] items-center gap-2 rounded-md border px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime ${
+                      className={`flex min-h-[44px] items-center gap-2 rounded-md border px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                         selected
-                          ? 'border-lime/60 bg-graphite text-porcelain'
-                          : 'border-graphite text-fog hover:text-porcelain'
+                          ? 'border-proof bg-stage-elevated text-stage-foreground'
+                          : 'border-stage-line text-stage-muted hover:text-stage-foreground'
                       }`}
                     >
                       <span
-                        className={`h-1.5 w-1.5 rounded-full ${selected ? 'bg-lime' : 'bg-graphite'}`}
+                        className={`h-1.5 w-1.5 rounded-full ${selected ? 'bg-proof' : 'bg-stage-line'}`}
                         aria-hidden="true"
                       />
                       {reportingMatrix.modeLabels[m]}
@@ -206,7 +206,7 @@ export function IntelligencePreview() {
                 })}
               </div>
             </div>
-            <span className="rounded-full border border-graphite bg-carbon px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-fog">
+            <span className="rounded-full border border-stage-line bg-stage-deep px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-stage-muted">
               {reporting.disclaimer}
             </span>
           </div>
@@ -235,13 +235,13 @@ export function IntelligencePreview() {
                     onClick={() => setView(v)}
                     className={`flex min-h-[48px] shrink-0 items-center gap-3 whitespace-nowrap rounded-md px-4 py-3 text-left text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-deep ${
                       selected
-                        ? 'bg-ink font-semibold text-porcelain'
+                        ? 'bg-stage-elevated font-semibold text-stage-foreground'
                         : 'text-muted-foreground hover:bg-porcelain hover:text-ink'
                     }`}
                   >
                     <span
                       className={`h-2 w-2 shrink-0 rounded-full transition-colors ${
-                        selected ? 'bg-lime' : 'bg-border'
+                        selected ? 'bg-proof' : 'bg-border'
                       }`}
                       aria-hidden="true"
                     />

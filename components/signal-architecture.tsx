@@ -8,8 +8,8 @@ import { SignalRail } from '@/components/signal-rail'
 /**
  * Interactive signal map: shopper actions on the left, the measurement
  * layer in the center, reporting and decisions on the destination side.
- * Selecting a shopper action lights its full path in Lime; the resulting
- * business decision carries the Orange action color.
+ * Selecting a shopper action lights its full path in discovery blue; the
+ * resulting business decision carries the proof/evidence color.
  */
 
 type Pt = { x: number; y: number }
@@ -145,7 +145,7 @@ export function SignalArchitecture() {
                   <path
                     key={`out-${i}`}
                     d={d}
-                    stroke={isDecision ? 'var(--action)' : 'var(--signal-deep)'}
+                    stroke={isDecision ? 'rgba(108, 84, 181, 0.48)' : 'var(--signal-deep)'}
                     strokeWidth={2}
                     strokeLinecap="round"
                   />
@@ -245,10 +245,10 @@ export function SignalArchitecture() {
               ref={(el) => {
                 destRefs.current[2] = el
               }}
-              className="flex items-center gap-3 rounded-lg border-2 border-action bg-paper px-4 py-3 text-base font-bold text-ink"
+              className="flex items-center gap-3 rounded-lg border-2 border-proof bg-proof-soft px-4 py-3 text-base font-bold text-ink"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="shrink-0" aria-hidden="true">
-                <path d="M2 9h12m0 0l-4-4m4 4l-4 4" stroke="var(--action)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M2 9h12m0 0l-4-4m4 4l-4 4" stroke="var(--proof-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               {decisionDest}
             </div>

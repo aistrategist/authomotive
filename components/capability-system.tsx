@@ -23,9 +23,17 @@ const nextSteps: Record<string, { href: string; label: string }> = {
   'track-matters': { href: '#measurement', label: 'See How Signals Are Captured' },
 }
 
-function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'soft' }) {
-  const stroke = tone === 'ink' ? 'var(--accent)' : 'var(--ink)'
-  const mark = tone === 'ink' ? 'var(--accent)' : tone === 'accent' ? 'var(--accent-deep)' : 'var(--accent)'
+function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'proof' | 'soft' }) {
+  const stroke =
+    tone === 'ink' ? 'var(--accent)' : tone === 'proof' ? 'var(--proof-deep)' : 'var(--ink)'
+  const mark =
+    tone === 'ink'
+      ? 'var(--accent)'
+      : tone === 'accent'
+        ? 'var(--accent-deep)'
+        : tone === 'proof'
+          ? 'var(--proof-deep)'
+          : 'var(--stage-muted)'
 
   if (id === 'get-found') {
     return (
@@ -55,52 +63,96 @@ function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'soft' })
   )
 }
 
-const selectedLook = {
-  card: 'border-ink bg-ink text-paper',
-  shadow: 'shadow-[4px_4px_0_0_var(--accent)]',
-  shadowOn: 'shadow-[8px_8px_0_0_var(--accent)]',
-  eyebrow: 'text-accent',
-  eyebrowQuiet: 'text-accent/80',
-  number: 'text-paper/20',
-  arrow: 'text-accent',
-  focus: 'focus-visible:outline-accent',
-  rail: 'bg-accent',
-  panelTop: 'border-t-accent',
-  tone: 'ink' as const,
-}
+const jobLooks = [
+  {
+    selected: {
+      card: 'border-ink bg-ink text-paper',
+      shadow: 'shadow-[4px_4px_0_0_var(--accent)]',
+      shadowOn: 'shadow-[8px_8px_0_0_var(--accent)]',
+      eyebrow: 'text-accent',
+      eyebrowQuiet: 'text-accent/80',
+      number: 'text-paper/20',
+      arrow: 'text-accent',
+      focus: 'focus-visible:outline-accent',
+      rail: 'bg-accent',
+      panelTop: 'border-t-accent',
+      tone: 'ink' as const,
+    },
+    rest: {
+      card: 'border-ink bg-accent-soft text-ink',
+      shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
+      shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
+      eyebrow: 'text-ink',
+      eyebrowQuiet: 'text-ink/70',
+      number: 'text-ink/15',
+      arrow: 'text-accent-deep',
+      focus: 'focus-visible:outline-accent-deep',
+      rail: 'bg-accent-deep',
+      panelTop: 'border-t-accent',
+      tone: 'accent' as const,
+    },
+  },
+  {
+    selected: {
+      card: 'border-ink bg-ink text-paper',
+      shadow: 'shadow-[4px_4px_0_0_var(--proof)]',
+      shadowOn: 'shadow-[8px_8px_0_0_var(--proof)]',
+      eyebrow: 'text-proof',
+      eyebrowQuiet: 'text-proof/80',
+      number: 'text-paper/20',
+      arrow: 'text-proof',
+      focus: 'focus-visible:outline-proof',
+      rail: 'bg-proof',
+      panelTop: 'border-t-proof',
+      tone: 'ink' as const,
+    },
+    rest: {
+      card: 'border-ink bg-proof-soft text-ink',
+      shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
+      shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
+      eyebrow: 'text-ink',
+      eyebrowQuiet: 'text-ink/70',
+      number: 'text-ink/15',
+      arrow: 'text-proof-deep',
+      focus: 'focus-visible:outline-proof-deep',
+      rail: 'bg-proof-deep',
+      panelTop: 'border-t-proof',
+      tone: 'proof' as const,
+    },
+  },
+  {
+    selected: {
+      card: 'border-ink bg-ink text-paper',
+      shadow: 'shadow-[4px_4px_0_0_var(--stage-muted)]',
+      shadowOn: 'shadow-[8px_8px_0_0_var(--stage-muted)]',
+      eyebrow: 'text-stage-muted',
+      eyebrowQuiet: 'text-stage-muted/80',
+      number: 'text-paper/20',
+      arrow: 'text-stage-muted',
+      focus: 'focus-visible:outline-accent',
+      rail: 'bg-stage-muted',
+      panelTop: 'border-t-stage-muted',
+      tone: 'ink' as const,
+    },
+    rest: {
+      card: 'border-ink bg-porcelain text-ink',
+      shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
+      shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
+      eyebrow: 'text-ink',
+      eyebrowQuiet: 'text-ink/70',
+      number: 'text-ink/15',
+      arrow: 'text-ink',
+      focus: 'focus-visible:outline-accent-deep',
+      rail: 'bg-ink',
+      panelTop: 'border-t-ink',
+      tone: 'soft' as const,
+    },
+  },
+] as const
 
-const altLook = {
-  card: 'border-ink bg-accent text-ink',
-  shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
-  shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
-  eyebrow: 'text-ink',
-  eyebrowQuiet: 'text-ink/70',
-  number: 'text-ink/15',
-  arrow: 'text-accent-deep',
-  focus: 'focus-visible:outline-accent-deep',
-  rail: 'bg-accent-deep',
-  panelTop: 'border-t-accent',
-  tone: 'accent' as const,
-}
-
-const secondaryLook = {
-  card: 'border-ink bg-accent-soft text-ink',
-  shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
-  shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
-  eyebrow: 'text-ink',
-  eyebrowQuiet: 'text-ink/70',
-  number: 'text-ink/15',
-  arrow: 'text-ink',
-  focus: 'focus-visible:outline-accent-deep',
-  rail: 'bg-ink',
-  panelTop: 'border-t-ink',
-  tone: 'soft' as const,
-}
-
-function jobLook(index: number, selectedIndex: number) {
-  if (index === selectedIndex) return selectedLook
-  const others = [0, 1, 2].filter((n) => n !== selectedIndex)
-  return index === others[0] ? altLook : secondaryLook
+function jobLook(index: number, selected: boolean) {
+  const look = jobLooks[index] ?? jobLooks[0]
+  return selected ? look.selected : look.rest
 }
 
 export function CapabilitySystem() {
@@ -137,7 +189,7 @@ export function CapabilitySystem() {
         >
           {capabilitySystem.capabilities.map((cap, i) => {
             const selected = cap.id === activeId
-            const job = jobLook(i, activeIndex)
+            const job = jobLook(i, selected)
             return (
               <button
                 key={cap.id}
@@ -200,7 +252,7 @@ export function CapabilitySystem() {
           role="tabpanel"
           id="cap-panel"
           aria-labelledby={`cap-tab-${active.id}`}
-          className={`mt-2 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${jobLook(activeIndex, activeIndex).panelTop}`}
+          className={`mt-2 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${jobLook(activeIndex, true).panelTop}`}
         >
           <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-3 md:px-7">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
@@ -211,7 +263,7 @@ export function CapabilitySystem() {
                 <span
                   key={c.id}
                   className={`h-1.5 rounded-full transition-all duration-200 ${
-                    i === activeIndex ? `w-6 ${jobLook(i, activeIndex).rail}` : 'w-1.5 bg-border'
+                    i === activeIndex ? `w-6 ${jobLook(i, true).rail}` : 'w-1.5 bg-border'
                   }`}
                 />
               ))}
@@ -230,7 +282,9 @@ export function CapabilitySystem() {
                 </p>
               </div>
               <CapabilityVisual id={active.id} />
-              <blockquote className="mt-auto border-l-4 border-accent pl-4 text-lg font-semibold leading-snug text-ink text-pretty">
+              <blockquote className={`mt-auto border-l-4 pl-4 text-lg font-semibold leading-snug text-ink text-pretty ${
+                active.id === 'know-working' ? 'border-proof' : 'border-accent'
+              }`}>
                 {active.keyLine}
               </blockquote>
             </div>
@@ -244,7 +298,9 @@ export function CapabilitySystem() {
                 <ul className="mt-3 flex flex-col gap-2">
                   {active.outcomes.map((outcome) => (
                     <li key={outcome} className="flex items-start gap-2.5 text-base leading-relaxed text-ink">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-signal-deep" aria-hidden="true" />
+                      <span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${
+                        active.id === 'know-working' ? 'bg-proof-deep' : 'bg-signal-deep'
+                      }`} aria-hidden="true" />
                       {outcome}
                     </li>
                   ))}
