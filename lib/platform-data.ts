@@ -21,30 +21,62 @@ export interface BrandMark {
 export interface PlatformCategory {
   id: string
   label: string
+  subtitle: string
   marks: BrandMark[]
   explanation: string
+  boundary?: string
 }
 
 export const platformCredibility = {
-  eyebrow: 'PLATFORM FIT · NO REPLACEMENT REQUIRED',
+  eyebrow: 'PLATFORM AND PARTNER FIT · NO REPLACEMENT REQUIRED',
   headline: 'Keep the platform. Add the strategy.',
   supporting:
-    'Authomotive works inside the dealership website, search, analytics, and advertising environments already in place—then connects them into one clearer performance system.',
+    "Authomotive works alongside the dealership's website provider, marketing agency, inventory system and vendor partners. We lead a defined authority and measurement scope while the existing stack and partner relationships stay in place.",
+  roleMap: [
+    {
+      id: 'ecosystem',
+      label: 'EXISTING DEALER ECOSYSTEM',
+      items: ['Website Provider', 'Marketing Agency', 'Inventory System', 'Vendor Partners'],
+    },
+    {
+      id: 'scope',
+      label: 'AUTHOMOTIVE SCOPE',
+      items: [
+        'Authority Experiences',
+        'Managed AI Discovery',
+        'Authomotive Intelligence',
+        'Signal Architecture',
+      ],
+    },
+    {
+      id: 'outcome',
+      label: 'DEALERSHIP OUTCOME',
+      items: [
+        'Clearer Priorities',
+        'Connected Inventory Pathways',
+        'Measurable Buyer Actions',
+        'Evidence-Backed Decisions',
+      ],
+    },
+  ],
   categories: [
     {
       id: 'website',
-      label: 'Website Platforms',
+      label: 'Website and Inventory Platforms',
+      subtitle: 'Build inside the existing CMS and connect to the inventory experience already in place.',
       marks: [
         { id: 'dealer-com', name: 'Dealer.com', kind: 'wordmark' },
         { id: 'dealer-inspire', name: 'Dealer Inspire', kind: 'wordmark' },
         { id: 'motive', name: 'Motive', kind: 'wordmark', note: 'motivehq.com' },
+        { id: 'open-cms', name: 'Open or Custom CMS', kind: 'wordmark' },
       ],
       explanation:
-        'Authomotive can plan and implement authority content, buyer pathways, and supported measurement within major dealership website environments\u2014subject to platform access and technical constraints.',
+        'Authomotive plans and implements Authority Experiences, managed AI Discovery, inventory pathways and supported measurement across locked dealership platforms and more flexible website environments. Exact implementation depends on CMS access, inventory capability and vendor restrictions.',
     },
     {
       id: 'search',
-      label: 'Search and Visibility',
+      label: 'Search and AI Discovery',
+      subtitle: 'Turn organic, local and AI visibility signals into useful priorities.',
       marks: [
         {
           id: 'search-console',
@@ -56,11 +88,12 @@ export const platformCredibility = {
         { id: 'dataforseo', name: 'DataForSEO', kind: 'wordmark' },
       ],
       explanation:
-        'These sources help identify non-branded discovery, page and query movement, locality opportunity, competitive visibility, and observable search or AI-surface footprints.',
+        'Authomotive uses observable search, locality and AI-surface signals to identify non-branded demand, content gaps, competitive visibility and emerging shopper questions, then turns those findings into prioritized Authority Experiences and updates.',
     },
     {
       id: 'measurement',
-      label: 'Measurement and Advertising',
+      label: 'Analytics and Measurement',
+      subtitle: 'Connect meaningful buyer actions and supported vendor signals to consistent definitions.',
       marks: [
         {
           id: 'ga4',
@@ -78,13 +111,14 @@ export const platformCredibility = {
         { id: 'asc', name: 'ASC Event Standards', kind: 'wordmark', note: 'Standards' },
       ],
       explanation:
-        'These systems help connect engagement, calls, forms, inventory handoffs, supported vendor activity, digital-retailing starts, and campaign measurement to consistent event definitions.',
+        'Authomotive defines, implements where access allows, and validates the events needed to understand research engagement, inventory handoffs, VDP entries, calls, forms and supported vendor or advertising requirements.',
+      boundary: 'Measurement work is scoped around the Authomotive program and agreed dealership priorities.',
     },
   ] satisfies PlatformCategory[],
   clarification:
     'Third-party marks identify platforms, tools, and standards used or supported in applicable Authomotive work. They do not imply partnership, certification, or endorsement. Exact implementation depends on access and vendor capabilities.',
   closing:
-    'The platform is not the strategy. Authomotive makes the existing stack more useful, measurable, and accountable.',
+    'Authomotive adds a defined authority and measurement layer without forcing the dealership to replace the platforms and partners already working.',
 }
 
 /* ------------------------------------------------------------------ */

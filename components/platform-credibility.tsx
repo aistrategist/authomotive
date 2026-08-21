@@ -18,12 +18,6 @@ const tones: Record<string, Tone> = {
   measurement: 'action',
 }
 
-const kickers: Record<string, string> = {
-  website: 'Authority work inside the CMS already running.',
-  search: 'Discovery signals the dealership can actually use.',
-  measurement: 'Buyer actions connected to a standard you can trust.',
-}
-
 function MarkChip({ mark }: { mark: BrandMark }) {
   return (
     <div className="flex min-h-[44px] items-center gap-2.5 rounded-lg border border-ink/10 bg-paper px-3 py-2">
@@ -35,6 +29,16 @@ function MarkChip({ mark }: { mark: BrandMark }) {
           height={22}
           className="h-[22px] w-[22px] shrink-0"
         />
+      ) : mark.id === 'open-cms' ? (
+        <span
+          className="grid h-[22px] w-[22px] shrink-0 grid-cols-2 gap-px rounded-sm border border-ink/20 p-[3px]"
+          aria-hidden="true"
+        >
+          <span className="bg-ink/25" />
+          <span className="bg-ink/45" />
+          <span className="bg-ink/45" />
+          <span className="bg-ink/25" />
+        </span>
       ) : (
         <span
           className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-sm border border-ink/20 font-mono text-[10px] font-bold uppercase text-ink"
@@ -72,13 +76,63 @@ function ExpandedViz({ tone }: { tone: Tone }) {
 const swatchClass: Record<Tone, string> = {
   ink: 'bg-ink',
   lime: 'bg-lime',
-  action: 'bg-accent',
+  action: 'bg-proof',
 }
 
 const plusMark: Record<Tone, string> = {
   ink: 'text-porcelain',
   lime: 'text-accent',
-  action: 'text-accent',
+  action: 'text-proof',
+}
+
+function roleChipMark(layerId: string, item: string) {
+  if (layerId === 'scope') {
+    return item === 'Authomotive Intelligence' ? 'bg-proof' : 'bg-accent'
+  }
+  if (layerId === 'outcome') {
+    return item === 'Evidence-Backed Decisions' ? 'bg-proof' : 'bg-ink'
+  }
+  return 'bg-stage-muted'
+}
+
+function RoleMap() {
+  const layers = platformCredibility.roleMap
+  return (
+    <div className="border border-ink/15 bg-paper px-4 py-4 md:px-5 md:py-5">
+      {layers.map((layer, i) => (
+        <div key={layer.id}>
+          {i > 0 ? (
+            <div className="flex items-center gap-2 py-2.5" aria-hidden="true">
+              <span className="h-px flex-1 bg-ink/15" />
+              <span className="font-mono text-[10px] font-medium text-ink/45">
+                {i === 1 ? '+' : '→'}
+              </span>
+              <span className="h-px flex-1 bg-ink/15" />
+            </div>
+          ) : null}
+          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-signal-deep">
+            {layer.label}
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {layer.items.map((item) => (
+              <li
+                key={item}
+                className="inline-flex items-center gap-1.5 border border-ink/10 bg-porcelain px-2 py-1"
+              >
+                <span
+                  className={`h-1.5 w-1.5 shrink-0 ${roleChipMark(layer.id, item)}`}
+                  aria-hidden="true"
+                />
+                <span className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] text-ink">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 function StackSlab({
@@ -115,7 +169,7 @@ function StackSlab({
             {category.label}
           </span>
           <span className="mt-1 hidden text-sm text-ink md:block">
-            {kickers[category.id]}
+            {category.subtitle}
           </span>
         </span>
         <span
@@ -134,6 +188,11 @@ function StackSlab({
             <p className="lede text-base leading-relaxed text-ink md:text-lg">
               {category.explanation}
             </p>
+            {category.boundary ? (
+              <p className="mt-3 text-sm leading-relaxed text-ink/80 md:text-base">
+                {category.boundary}
+              </p>
+            ) : null}
             <div className="mt-5 flex flex-wrap gap-2.5">
               {category.marks.map((mark) => (
                 <MarkChip key={mark.id} mark={mark} />
@@ -160,7 +219,7 @@ export function PlatformCredibility() {
     >
       <div className="relative z-[1] mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
         <SignalRail tone="ink" />
-        <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-start lg:gap-16">
           <div className="lg:col-span-7">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
               {platformCredibility.eyebrow}
@@ -171,10 +230,13 @@ export function PlatformCredibility() {
             >
               {platformCredibility.headline}
             </h2>
+            <p className="lede mt-4 max-w-[36rem] text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
+              {platformCredibility.supporting}
+            </p>
           </div>
-          <p className="lede text-base leading-relaxed text-muted-foreground md:text-lg text-pretty lg:col-span-5 lg:pb-1">
-            {platformCredibility.supporting}
-          </p>
+          <div className="lg:col-span-5">
+            <RoleMap />
+          </div>
         </div>
 
         <div className="mt-10 flex flex-col gap-5 md:mt-12">

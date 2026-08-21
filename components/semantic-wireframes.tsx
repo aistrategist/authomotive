@@ -87,14 +87,14 @@ export function WebsiteLayersViz() {
   return (
     <CompactFlow
       disclaimer="Illustrative example — not a live dealership page"
-      route="Dealer Website → Authority Experience → Matching Inventory"
+      route="Existing Website → Authority Experience → Live Inventory"
       columns={[
         { title: 'Dealer Website', items: ['Homepage', 'Inventory Search'] },
         {
           title: 'Authority Experience',
           items: ['Buyer Question', 'Short Answer', 'Comparison Guidance', 'Ownership Insight'],
         },
-        { title: 'Matching Inventory', items: ['Matching Vehicles', 'VDP View'] },
+        { title: 'Live Inventory', items: ['Matching Vehicles', 'VDP View'] },
       ]}
     />
   )
@@ -104,7 +104,7 @@ export function SearchOpportunityViz() {
   return (
     <CompactFlow
       disclaimer="Illustrative opportunity interface — not client results"
-      route="Search Opportunity → Discovery Signals → Next Content Action"
+      route="Shopper Demand → Discovery Evidence → Next Authority Action"
       spark
       columns={[
         {
@@ -122,7 +122,7 @@ export function MeasurementFlowViz() {
   return (
     <CompactFlow
       disclaimer="Illustrative measurement standard — not client results"
-      route="Shopper Action → Named Event → Reporting Destination"
+      route="Buyer Action → Named Event → Useful Destination"
       columns={[
         {
           title: 'Shopper Action',
