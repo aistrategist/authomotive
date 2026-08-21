@@ -455,9 +455,9 @@
   left: 0;
   z-index: 3;
   display: none;
-  width: 1.125rem;
-  height: 1.125rem;
-  margin-top: -0.5625rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: -0.75rem;
   border: 2px solid var(--ink);
   background: var(--paper);
   opacity: 0;
@@ -465,7 +465,7 @@
 .qti-signal-mark {
   display: none;
   position: absolute;
-  inset: 3px;
+  inset: 4px;
   background: var(--accent-deep);
 }
 .qti-signal[data-state='question'] .qti-signal-mark[data-mark='question'],
@@ -479,19 +479,19 @@
   background: var(--accent-deep);
 }
 .qti-signal[data-state='guidance'] .qti-signal-mark[data-mark='guidance'] {
-  inset: 4px 3px;
+  inset: 5px 4px;
   background: var(--ink);
 }
 .qti-signal[data-state='inventory'] .qti-signal-mark[data-mark='inventory'] {
-  inset: 4px;
+  inset: 5px;
   background: var(--accent-strong);
 }
 .qti-signal[data-state='evidence'] .qti-signal-mark[data-mark='evidence'] {
-  inset: 3px 4px 3px 3px;
+  inset: 4px;
   background:
-    linear-gradient(var(--accent-deep), var(--accent-deep)) 0 70% / 2px 30% no-repeat,
-    linear-gradient(var(--accent-deep), var(--accent-deep)) 4px 45% / 2px 55% no-repeat,
-    linear-gradient(var(--accent-deep), var(--accent-deep)) 8px 20% / 2px 80% no-repeat;
+    linear-gradient(var(--accent-deep), var(--accent-deep)) 0 70% / 3px 30% no-repeat,
+    linear-gradient(var(--accent-deep), var(--accent-deep)) 5px 45% / 3px 55% no-repeat,
+    linear-gradient(var(--accent-deep), var(--accent-deep)) 10px 20% / 3px 80% no-repeat;
   background-color: transparent;
 }
 .qti-node {

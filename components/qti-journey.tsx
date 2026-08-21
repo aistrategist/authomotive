@@ -1,25 +1,47 @@
 'use client'
 
 import {
-  Component,
   useEffect,
   useRef,
   useState,
+  type ComponentType,
   type ReactNode,
 } from 'react'
-import dynamic from 'next/dynamic'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
-const QtiGrainSurface = dynamic(() => import('@/components/qti-grain-surface'), {
-  ssr: false,
-  loading: () => null,
-})
-
 const SIGNAL_STATES = ['question', 'guidance', 'inventory', 'evidence'] as const
+
+const WEBGL2_ATTRIBUTES: WebGLContextAttributes = {
+  alpha: true,
+  antialias: false,
+  depth: false,
+  stencil: false,
+  powerPreference: 'low-power',
+  preserveDrawingBuffer: false,
+}
+
+type GrainSurface = ComponentType<{ paused: boolean }>
+
+let webgl2Support: boolean | null = null
+
+function hasWebGL2() {
+  if (webgl2Support !== null) return webgl2Support
+  try {
+    const canvas = document.createElement('canvas')
+    const gl = canvas.getContext('webgl2', WEBGL2_ATTRIBUTES)
+    webgl2Support = gl instanceof WebGL2RenderingContext
+    gl?.getExtension('WEBGL_lose_context')?.loseContext()
+    canvas.width = 0
+    canvas.height = 0
+  } catch {
+    webgl2Support = false
+  }
+  return webgl2Support
+}
 
 function canUseShader() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
@@ -31,27 +53,12 @@ function canUseShader() {
   ).connection
   if (connection?.saveData) return false
   if (window.matchMedia('(prefers-reduced-data: reduce)').matches) return false
+  if (!hasWebGL2()) return false
   return true
 }
 
 function stageIndexFromProgress(progress: number) {
   return Math.min(3, Math.max(0, Math.floor(progress * 3.999)))
-}
-
-class ShaderBoundary extends Component<
-  { children: ReactNode },
-  { failed: boolean }
-> {
-  state = { failed: false }
-
-  static getDerivedStateFromError() {
-    return { failed: true }
-  }
-
-  render() {
-    if (this.state.failed) return null
-    return this.props.children
-  }
 }
 
 export function QtiJourney({ children }: { children: ReactNode }) {
@@ -60,19 +67,44 @@ export function QtiJourney({ children }: { children: ReactNode }) {
   const lineVRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const signalRef = useRef<HTMLDivElement>(null)
+  const grainRef = useRef<GrainSurface | null>(null)
   const [shaderEnabled, setShaderEnabled] = useState(false)
   const [shaderPaused, setShaderPaused] = useState(true)
+  const [GrainSurface, setGrainSurface] = useState<GrainSurface | null>(null)
 
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
 
+    let cancelled = false
     let enabled = false
     let near = false
+
+    const loadShader = () => {
+      if (cancelled || !enabled || !near) {
+        if (!enabled) setShaderEnabled(false)
+        return
+      }
+      if (grainRef.current) {
+        setGrainSurface(() => grainRef.current)
+        setShaderEnabled(true)
+        return
+      }
+      void import('@/components/qti-grain-surface').then((mod) => {
+        if (cancelled || !canUseShader()) return
+        grainRef.current = mod.default
+        setGrainSurface(() => mod.default)
+        setShaderEnabled(true)
+      })
+    }
+
     const syncCapability = () => {
       enabled = canUseShader()
-      if (enabled && near) setShaderEnabled(true)
-      else if (!enabled) setShaderEnabled(false)
+      if (!enabled) {
+        setShaderEnabled(false)
+        return
+      }
+      loadShader()
     }
     syncCapability()
 
@@ -85,7 +117,7 @@ export function QtiJourney({ children }: { children: ReactNode }) {
     const io = new IntersectionObserver(
       ([entry]) => {
         near = Boolean(entry?.isIntersecting)
-        if (enabled && near) setShaderEnabled(true)
+        if (enabled && near) loadShader()
         setShaderPaused(document.hidden || !near)
       },
       { rootMargin: '160px 0px', threshold: 0.01 },
@@ -94,12 +126,13 @@ export function QtiJourney({ children }: { children: ReactNode }) {
 
     const onVisibility = () => {
       const rect = root.getBoundingClientRect()
-      const near = rect.bottom > -160 && rect.top < window.innerHeight + 160
-      setShaderPaused(document.hidden || !near)
+      const inRange = rect.bottom > -160 && rect.top < window.innerHeight + 160
+      setShaderPaused(document.hidden || !inRange)
     }
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
+      cancelled = true
       reduceMq.removeEventListener('change', onCapabilityChange)
       desktopMq.removeEventListener('change', onCapabilityChange)
       io.disconnect()
@@ -197,6 +230,8 @@ export function QtiJourney({ children }: { children: ReactNode }) {
     { scope: rootRef },
   )
 
+  const ShaderSurface = shaderEnabled ? GrainSurface : null
+
   return (
     <div
       ref={rootRef}
@@ -204,11 +239,7 @@ export function QtiJourney({ children }: { children: ReactNode }) {
       data-qti-motion="static"
     >
       <div className="qti-shader-slot" aria-hidden="true">
-        {shaderEnabled ? (
-          <ShaderBoundary>
-            <QtiGrainSurface paused={shaderPaused} />
-          </ShaderBoundary>
-        ) : null}
+        {ShaderSurface ? <ShaderSurface paused={shaderPaused} /> : null}
       </div>
 
       <div ref={lineVRef} className="qti-line qti-line-v" aria-hidden="true" />
@@ -218,6 +249,7 @@ export function QtiJourney({ children }: { children: ReactNode }) {
           ref={signalRef}
           className="qti-signal"
           data-state="question"
+          aria-hidden="true"
         >
           <span className="qti-signal-mark" data-mark="question" />
           <span className="qti-signal-mark" data-mark="guidance" />
