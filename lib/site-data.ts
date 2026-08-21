@@ -316,22 +316,28 @@ export const reporting = {
   ],
   evidence: {
     eyebrow: 'HOW THE EVIDENCE IS FRAMED',
-    frames: [
-      {
-        id: 'work',
-        kicker: 'The work',
-        title: 'A buyer question becomes an owned pathway.',
-        lead: 'Which Three-Row SUV Is Right for My Family?',
-        body: 'The Authority Experience answers the question and connects the shopper to matching inventory. That page is the asset Intelligence can observe — not a separate shopping environment.',
-      },
-      {
-        id: 'decision',
-        kicker: 'The decision',
-        title: 'Changed. Why. Next.',
-        lead: 'What moved, what caused it, what to do.',
-        body: 'The monthly output is a decision a dealership team can act on. The interface above shows the format. Live reporting uses the dealership’s own observed signals, with honest limits on what cannot be seen.',
-      },
-    ],
+    observed: {
+      kicker: 'OBSERVED PAGE-LEVEL RESULT',
+      title: 'One guide. A clearer before-and-after.',
+      context:
+        'A commercial vehicle dealership’s Sprinter Wheelbase Guide existed before its July 14, 2026 authority and AEO upgrade. In the following 28-day comparison, the page recorded:',
+      metrics: [
+        { id: 'clicks', label: 'WEB CLICKS', before: '4', after: '39' },
+        { id: 'impressions', label: 'WEB IMPRESSIONS', before: '3,021', after: '10,429' },
+        { id: 'ai', label: 'AI DISCOVERY IMPRESSIONS', before: '1,369', after: '3,377' },
+      ],
+      interpretation:
+        'The guide was expanded around real wheelbase questions, comparison needs and a clearer path toward relevant inventory. The result does not prove a single cause, but it gives the dealership an observable asset and a credible before-and-after.',
+      source: 'Google Search Console · 28-day comparison · Reporting through August 10, 2026',
+      qualification:
+        'Observed result from one anonymized dealership page. Outcomes vary by market, website and reporting period.',
+    },
+    decision: {
+      kicker: 'The decision',
+      title: 'Changed. Why. Next.',
+      lead: 'What moved, what caused it, what to do.',
+      body: 'The monthly output is a decision a dealership team can act on. The interface above shows the format. Live reporting uses the dealership’s own observed signals, with honest limits on what cannot be seen.',
+    },
   },
 }
 

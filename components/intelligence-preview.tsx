@@ -222,29 +222,64 @@ export function IntelligencePreview() {
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-proof-deep">
             {reporting.evidence.eyebrow}
           </p>
-          <ul className="mt-4 grid gap-4 md:grid-cols-2 md:gap-5" aria-label="How Intelligence frames evidence">
-            {reporting.evidence.frames.map((frame, i) => (
-              <li
-                key={frame.id}
-                className={`flex h-full flex-col rounded-[8px] border-2 border-ink p-5 md:p-6 ${
-                  i === 0 ? 'bg-proof-soft' : 'bg-paper'
-                }`}
-              >
-                <span className={`h-3 w-3 ${i === 0 ? 'bg-proof-deep' : 'bg-ink'}`} aria-hidden="true" />
-                <p className="mt-4 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-proof-deep">
-                  {frame.kicker}
+          <ul
+            className="mt-4 grid gap-4 md:grid-cols-2 md:gap-5 md:items-stretch"
+            aria-label="Observed evidence and how Intelligence interprets it"
+          >
+            <li className="flex h-full flex-col rounded-[8px] border-2 border-ink bg-paper p-5 md:p-6">
+              <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-proof-deep">
+                {reporting.evidence.observed.kicker}
+              </p>
+              <h3 className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
+                {reporting.evidence.observed.title}
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground text-pretty md:text-[0.9375rem]">
+                {reporting.evidence.observed.context}
+              </p>
+              <dl className="mt-4 grid gap-3 sm:grid-cols-3">
+                {reporting.evidence.observed.metrics.map((metric) => (
+                  <div key={metric.id} className="border border-ink/15 border-l-[3px] border-l-accent bg-proof-soft px-3 py-3">
+                    <dt className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-proof-deep">
+                      {metric.label}
+                    </dt>
+                    <dd className="mt-1.5 text-lg font-semibold tracking-tight text-ink">
+                      <span>{metric.before}</span>
+                      <span className="sr-only"> to </span>
+                      <span className="mx-1.5 text-signal-deep" aria-hidden="true">
+                        →
+                      </span>
+                      <span>{metric.after}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-4 text-sm leading-relaxed text-ink text-pretty md:text-base">
+                {reporting.evidence.observed.interpretation}
+              </p>
+              <div className="mt-auto border-t border-ink/15 pt-3">
+                <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
+                  {reporting.evidence.observed.source}
                 </p>
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
-                  {frame.title}
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground text-pretty">
+                  {reporting.evidence.observed.qualification}
                 </p>
-                <p className="mt-3 border-t border-ink/15 pt-3 text-lg font-semibold leading-snug text-ink text-pretty">
-                  {frame.lead}
-                </p>
-                <p className="mt-2 text-base leading-relaxed text-muted-foreground text-pretty md:text-lg">
-                  {frame.body}
-                </p>
-              </li>
-            ))}
+              </div>
+            </li>
+            <li className="flex h-full flex-col rounded-[8px] border-2 border-ink bg-paper p-5 md:p-6">
+              <span className="h-3 w-3 bg-ink" aria-hidden="true" />
+              <p className="mt-4 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-proof-deep">
+                {reporting.evidence.decision.kicker}
+              </p>
+              <h3 className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
+                {reporting.evidence.decision.title}
+              </h3>
+              <p className="mt-3 border-t border-ink/15 pt-3 text-lg font-semibold leading-snug text-ink text-pretty">
+                {reporting.evidence.decision.lead}
+              </p>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground text-pretty md:text-lg">
+                {reporting.evidence.decision.body}
+              </p>
+            </li>
           </ul>
         </div>
 
