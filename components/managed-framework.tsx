@@ -1,52 +1,9 @@
-import { managedFramework, idealFit, founder, capabilitySystem, cta } from '@/lib/site-data'
+import { managedFramework } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
 
-const scopeGroups = [
-  {
-    capability: capabilitySystem.capabilities[0],
-    items: [
-      'Authority Experiences and managed AI Discovery',
-      'Inventory and conversion pathways',
-      'Prioritized opportunity roadmap',
-    ],
-  },
-  {
-    capability: capabilitySystem.capabilities[1],
-    items: [
-      'Unified monthly intelligence',
-      'What changed, why it changed, what next',
-      'Evidence-backed next actions',
-    ],
-  },
-  {
-    capability: capabilitySystem.capabilities[2],
-    items: [
-      'Named events across shopper actions',
-      'Vendor and advertising measurement support',
-      'Validation and governance',
-    ],
-  },
-]
-
-const cardLooks = [
-  {
-    surface: 'border-2 border-ink bg-accent-soft',
-    swatch: 'bg-accent-deep',
-    rule: 'border-accent',
-  },
-  {
-    surface: 'border-2 border-ink bg-proof-soft',
-    swatch: 'bg-proof-deep',
-    rule: 'border-proof',
-  },
-  {
-    surface: 'border-2 border-ink bg-paper',
-    swatch: 'bg-ink',
-    rule: 'border-ink',
-  },
-] as const
-
 export function ManagedFramework() {
+  const { leadInset, collab } = managedFramework
+
   return (
     <section
       id="engagement"
@@ -56,7 +13,7 @@ export function ManagedFramework() {
     >
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <SignalRail tone="ink" />
-        <div className="max-w-[42rem]">
+        <div className="max-w-[46rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {managedFramework.eyebrow}
           </p>
@@ -67,93 +24,107 @@ export function ManagedFramework() {
             {managedFramework.headline}
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
-            {managedFramework.callout}
+            {managedFramework.lead}
           </p>
         </div>
 
-        <div className="mt-9 grid items-stretch gap-4 md:mt-10 md:grid-cols-3 md:gap-5">
-          {scopeGroups.map((group, gi) => {
-            const look = cardLooks[gi]
-            return (
-              <article
-                key={group.capability.id}
-                className={`flex h-full flex-col rounded-[8px] p-5 md:p-6 ${look.surface}`}
+        <article className="mt-9 overflow-hidden rounded-[8px] border-2 border-ink bg-paper md:mt-10">
+          <header className="flex items-start gap-3 border-b-2 border-ink bg-ink px-5 py-4 md:items-center md:gap-4 md:px-7 md:py-5">
+            <span className="mt-1.5 h-3 w-3 shrink-0 bg-paper md:mt-0" aria-hidden="true" />
+            <div>
+              <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.16em] text-stage-muted">
+                Monthly operating agenda
+              </p>
+              <h3 className="mt-1 text-lg font-semibold tracking-tight text-paper md:text-2xl text-balance">
+                {managedFramework.sessionTitle}
+              </h3>
+            </div>
+          </header>
+
+          <ol className="grid gap-0 lg:grid-cols-3">
+            {managedFramework.sessionParts.map((part, i) => (
+              <li
+                key={part.id}
+                className={`flex flex-col p-5 md:p-6 ${
+                  i < managedFramework.sessionParts.length - 1
+                    ? 'border-b border-ink/15 lg:border-b-0 lg:border-r'
+                    : ''
+                }`}
               >
-                <span className={`h-3 w-3 ${look.swatch}`} aria-hidden="true" />
-                <p className="mt-4 font-mono text-xs uppercase tracking-wider text-signal-deep">
-                  Job {gi + 1}
-                </p>
-                <h3 className={`mt-2 border-t ${look.rule} pt-3 text-xl font-semibold tracking-tight text-ink md:text-2xl`}>
-                  {group.capability.plainName}
-                </h3>
-                <ul className="mt-3 flex flex-1 flex-col">
-                  {group.items.map((item) => (
+                <h4 className="flex items-center gap-2.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-signal-deep">
+                  <span className={`h-2.5 w-2.5 shrink-0 ${part.mark}`} aria-hidden="true" />
+                  <span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  {part.label}
+                </h4>
+                <ul className="mt-4 flex flex-col">
+                  {part.items.map((item) => (
                     <li
                       key={item}
-                      className="border-t border-ink/10 py-2.5 text-base leading-relaxed text-ink first:border-t-0"
+                      className="border-t border-ink/10 py-2.5 text-base font-semibold leading-snug text-ink first:border-t-0 md:text-lg text-pretty"
                     >
                       {item}
                     </li>
                   ))}
                 </ul>
-              </article>
-            )
-          })}
-        </div>
+              </li>
+            ))}
+          </ol>
 
-        <div className="relative mt-8 overflow-hidden border-2 border-ink bg-paper">
-          <span className="absolute inset-y-0 left-0 w-1.5 bg-ink md:w-2" aria-hidden="true" />
-          <div className="px-5 py-6 pl-7 md:px-8 md:py-7 md:pl-10">
-            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
-              {founder.eyebrow}
-            </p>
-            <p className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
-              {founder.headline}
-            </p>
-            <p className="mt-3 max-w-[42rem] text-base leading-relaxed text-ink text-pretty md:text-lg">
-              {founder.copy}
-            </p>
-            <p className="mt-3 max-w-[42rem] text-base font-semibold leading-relaxed text-muted-foreground">
-              {founder.supporting}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 bg-paper px-5 py-6 md:px-8 md:py-7">
-          <p className="text-xl font-semibold tracking-tight text-ink md:text-2xl">
-            {idealFit.headline}
-          </p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {idealFit.signals.map((signal, i) => (
-              <li
-                key={signal}
-                className="flex min-h-[72px] items-start gap-3 border border-ink/15 bg-porcelain px-4 py-3.5"
-              >
-                <span className="font-mono text-sm font-bold text-ink" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <p className="text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
-                  {signal}
+          <aside className="border-t-2 border-ink bg-porcelain px-5 py-5 md:px-7 md:py-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:gap-8">
+              <div className="md:max-w-[11rem] md:shrink-0">
+                <h4 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-signal-deep">
+                  {leadInset.kicker}
+                </h4>
+              </div>
+              <div className="min-w-0 flex-1 border-l-2 border-ink pl-4 md:pl-6">
+                <p className="text-lg font-semibold leading-snug tracking-tight text-ink md:text-xl text-pretty">
+                  {leadInset.copy}
                 </p>
+                <p className="mt-2 text-base leading-relaxed text-muted-foreground text-pretty">
+                  {leadInset.supporting}
+                </p>
+              </div>
+            </div>
+          </aside>
+        </article>
+
+        <div className="mt-6 border-t border-ink/15 pt-6">
+          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-signal-deep md:text-xs">
+            {collab.eyebrow}
+          </p>
+          <ul
+            className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+            aria-label="Partners Authomotive works alongside"
+          >
+            {collab.partners.map((partner) => (
+              <li key={partner} className="flex items-start gap-2.5">
+                <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 bg-ink" aria-hidden="true" />
+                <span className="text-sm font-semibold leading-snug text-ink md:text-base">
+                  {partner}
+                </span>
               </li>
             ))}
           </ul>
-          <p className="mt-5 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base text-pretty">
-            {idealFit.contrast}
+          <p className="mt-4 max-w-[46rem] text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
+            {collab.supporting}
           </p>
         </div>
 
-        <div className="mt-6 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
-          <p className="max-w-xl text-lg font-semibold leading-snug text-ink text-pretty">
-            Start with one focused review of the dealership website, its discovery pathways and its
-            measurement gaps.
-          </p>
-          <a href="#opportunity-review" className="btn btn-action shrink-0">
-            {cta.primary}
+        <p className="mt-6 max-w-[46rem] text-lg font-semibold leading-snug tracking-tight text-ink md:text-xl text-pretty">
+          {managedFramework.fit}
+        </p>
+
+        <div className="mt-6 flex flex-col items-start gap-3">
+          <a href="#opportunity-review" className="btn btn-action">
+            {managedFramework.ctaLabel}
             <span className="btn-arrow" aria-hidden="true">
               →
             </span>
           </a>
+          <p className="max-w-[36rem] text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
+            {managedFramework.ctaSupport}
+          </p>
         </div>
       </div>
     </section>

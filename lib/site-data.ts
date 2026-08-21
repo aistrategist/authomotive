@@ -425,26 +425,68 @@ export const founder = {
 }
 
 export const managedFramework = {
-  eyebrow: 'ONE MANAGED ENGAGEMENT · THREE CONNECTED JOBS',
-  headline: 'Everything required to get found, guide buyers, and prove what works.',
-  inclusions: [
-    'Dealership visibility and opportunity review',
-    'Prioritized authority-content roadmap',
-    'Search- and AI-ready Authority Experiences',
-    'Managed AI Discovery page',
-    'Interactive research elements where valuable',
-    'Inventory and conversion pathways',
-    'GTM, GA4, and custom-event improvements',
-    'ASC-aligned event planning',
-    'Advertising and campaign measurement support',
-    'Unified monthly intelligence',
-    'MoM, YoY, locality, engagement, and content analysis',
-    'Identifiable AI referral and visibility observations',
-    'Evidence-backed next-step recommendations',
-    'Ongoing optimization and governance',
+  eyebrow: 'THE ENGAGEMENT · ONE ACCOUNTABLE LEAD',
+  headline: 'A working strategy—not another vendor handoff.',
+  lead:
+    'Authomotive works alongside your website provider, agency and vendors. One strategic lead connects the implementation, ongoing authority work, measurement and monthly decisions.',
+  sessionTitle: 'YOUR AUTHOMOTIVE MONTHLY WORKING SESSION',
+  sessionParts: [
+    {
+      id: 'between',
+      label: 'BETWEEN SESSIONS',
+      mark: 'bg-accent',
+      items: [
+        'Build and improve prioritized Authority Experiences',
+        'Maintain the dealership’s AI Discovery foundation',
+        'Review discovery, inventory-pathway and shopper-action signals',
+        'Validate the measurement attached to the work',
+      ],
+    },
+    {
+      id: 'during',
+      label: 'AT THE WORKING SESSION',
+      mark: 'bg-proof',
+      items: [
+        'What changed?',
+        'Why did it change?',
+        'What did shoppers do?',
+        'What should we build, correct or expand next?',
+      ],
+    },
+    {
+      id: 'after',
+      label: 'AFTER THE SESSION',
+      mark: 'bg-ink',
+      items: [
+        'Documented decisions',
+        'Prioritized next work',
+        'Clear ownership',
+        'Measurement attached before the next launch',
+      ],
+    },
   ],
-  callout:
-    'Designed to work with the dealership website and vendor stack you already have. Exact implementation depends on platform and data access.',
+  leadInset: {
+    kicker: 'ONE STRATEGIC LEAD',
+    copy:
+      'Chris Gabriel leads the strategy, implementation and interpretation. The work does not disappear between departments, account managers or disconnected vendor reports.',
+    supporting: 'Deep dealership experience without the layers of a conventional agency.',
+  },
+  collab: {
+    eyebrow: 'BUILT TO WORK WITH THE TEAM ALREADY IN PLACE',
+    partners: [
+      'Dealership leadership',
+      'Website and inventory provider',
+      'Marketing agency',
+      'Advertising and technology vendors',
+    ],
+    supporting:
+      'Authomotive adds the authority, measurement and decision-making layer. It does not require the dealership to replace the partners or platforms already supporting the business.',
+  },
+  fit:
+    'A strong fit for dealerships that know the website should be producing more—but cannot yet connect content, visibility, inventory movement and buyer behavior into one accountable plan.',
+  ctaLabel: 'Start With My Dealership Website',
+  ctaSupport:
+    'Begin with one focused Opportunity Review—not a generic audit deck or invented score.',
 }
 
 export const idealFit = {
