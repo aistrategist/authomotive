@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState, type KeyboardEvent } from 'react'
+import { flushSync } from 'react-dom'
 import { reportingMatrix, type MatrixRow } from '@/lib/platform-data'
 
 function SourceChips({ activeSources }: { activeSources: string[] }) {
@@ -11,14 +12,12 @@ function SourceChips({ activeSources }: { activeSources: string[] }) {
         return (
           <span
             key={source.id}
-            className={`flex min-h-[32px] items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors duration-200 motion-reduce:transition-none ${
-              active
-                ? 'border-signal-deep/50 bg-lime/25 text-ink'
-                : 'border-border text-fog'
+            className={`flex min-h-[32px] items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium ${
+              active ? 'border-proof-deep/50 bg-proof-soft text-ink' : 'border-border text-fog'
             }`}
           >
             <span
-              className={`h-1.5 w-1.5 rounded-full ${active ? 'bg-signal-deep' : 'bg-border'}`}
+              className={`h-1.5 w-1.5 rounded-full ${active ? 'bg-proof-deep' : 'bg-border'}`}
               aria-hidden="true"
             />
             {source.label}
@@ -33,20 +32,18 @@ function SourceChips({ activeSources }: { activeSources: string[] }) {
 function InterpretationPanel({ row }: { row: MatrixRow }) {
   return (
     <div className="min-h-[170px] rounded-lg border-l-4 border-proof bg-porcelain p-4 md:min-h-[130px] md:p-5">
-      <div key={row.id} className="panel-swap">
-        <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
-          {row.lens} — plain-English interpretation
-        </p>
-        <p className="mt-2.5 text-lg font-semibold leading-snug text-ink md:text-xl text-pretty">
-          {row.interpretation}
-        </p>
-        <p className="mt-3 text-base leading-relaxed text-ink">
-          <span className="font-mono text-xs font-medium uppercase tracking-wider text-accent-deep">
-            The decision this supports:{' '}
-          </span>
-          {row.decision}
-        </p>
-      </div>
+      <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">
+        {row.lens} — plain-English interpretation
+      </p>
+      <p className="mt-2.5 text-lg font-semibold leading-snug text-ink md:text-xl text-pretty">
+        {row.interpretation}
+      </p>
+      <p className="mt-3 text-base leading-relaxed text-ink">
+        <span className="font-mono text-xs font-medium uppercase tracking-wider text-proof-deep">
+          The decision this supports:{' '}
+        </span>
+        {row.decision}
+      </p>
     </div>
   )
 }
@@ -59,8 +56,42 @@ function InterpretationPanel({ row }: { row: MatrixRow }) {
  */
 export function ReportingMatrix() {
   const [activeId, setActiveId] = useState(reportingMatrix.rows[0].id)
-  const activeRow =
-    reportingMatrix.rows.find((r) => r.id === activeId) ?? reportingMatrix.rows[0]
+  const desktopRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const mobileRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const rows = reportingMatrix.rows
+  const activeRow = rows.find((r) => r.id === activeId) ?? rows[0]
+
+  const activate = (id: string, focus: 'desktop' | 'mobile' | false = false) => {
+    flushSync(() => {
+      setActiveId(id)
+    })
+    if (focus) {
+      const i = rows.findIndex((r) => r.id === id)
+      const refs = focus === 'desktop' ? desktopRefs : mobileRefs
+      refs.current[i]?.focus()
+    }
+  }
+
+  const onKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+    focus: 'desktop' | 'mobile',
+    orientation: 'horizontal' | 'vertical',
+  ) => {
+    const last = rows.length - 1
+    let next = index
+    const nextKey = orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight'
+    const prevKey = orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
+    if (event.key === nextKey || (orientation === 'vertical' && event.key === 'ArrowRight')) {
+      next = index === last ? 0 : index + 1
+    } else if (event.key === prevKey || (orientation === 'vertical' && event.key === 'ArrowLeft')) {
+      next = index === 0 ? last : index - 1
+    } else if (event.key === 'Home') next = 0
+    else if (event.key === 'End') next = last
+    else return
+    event.preventDefault()
+    activate(rows[next]!.id, focus)
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -70,7 +101,6 @@ export function ReportingMatrix() {
 
       <SourceChips activeSources={activeRow.sources} />
 
-      {/* Desktop: semantic matrix */}
       <div className="hidden overflow-hidden rounded-lg border border-border lg:block">
         <table className="w-full border-collapse text-left">
           <caption className="sr-only">
@@ -93,23 +123,29 @@ export function ReportingMatrix() {
             </tr>
           </thead>
           <tbody>
-            {reportingMatrix.rows.map((row) => {
+            {rows.map((row, i) => {
               const selected = row.id === activeId
               return (
                 <tr
                   key={row.id}
-                  className={`border-b border-border transition-colors duration-200 last:border-b-0 motion-reduce:transition-none ${
-                    selected ? 'bg-lime/15' : 'hover:bg-porcelain/50'
+                  className={`border-b border-border last:border-b-0 ${
+                    selected ? 'bg-proof-soft' : ''
                   }`}
                 >
                   <th scope="row" className="p-0 align-top">
                     <button
-                      onClick={() => setActiveId(row.id)}
+                      ref={(el) => {
+                        desktopRefs.current[i] = el
+                      }}
+                      type="button"
+                      onClick={() => activate(row.id)}
+                      onKeyDown={(event) => onKeyDown(event, i, 'desktop', 'vertical')}
                       aria-pressed={selected}
-                      className="flex min-h-[44px] w-full items-start gap-2.5 px-4 py-4 text-left text-base font-semibold text-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-signal-deep"
+                      tabIndex={selected ? 0 : -1}
+                      className="ri-tab flex min-h-[44px] w-full items-start gap-2.5 px-4 py-4 text-left text-base font-semibold text-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-proof-deep"
                     >
                       <span
-                        className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full border transition-colors ${
+                        className={`ri-dot mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full border ${
                           selected ? 'border-proof-deep bg-proof' : 'border-fog bg-transparent'
                         }`}
                         aria-hidden="true"
@@ -137,27 +173,37 @@ export function ReportingMatrix() {
         </table>
       </div>
 
-      {/* Mobile / tablet: four selectable reporting lenses */}
       <div className="flex flex-col gap-3 lg:hidden">
-        <div role="tablist" aria-label="Reporting lenses" className="flex flex-wrap gap-2">
-          {reportingMatrix.rows.map((row) => {
+        <div
+          role="tablist"
+          aria-label="Reporting lenses"
+          aria-orientation="horizontal"
+          className="flex flex-wrap gap-2"
+        >
+          {rows.map((row, i) => {
             const selected = row.id === activeId
             return (
               <button
                 key={row.id}
+                ref={(el) => {
+                  mobileRefs.current[i] = el
+                }}
+                type="button"
                 role="tab"
                 id={`lens-tab-${row.id}`}
                 aria-selected={selected}
                 aria-controls="lens-panel"
-                onClick={() => setActiveId(row.id)}
-                className={`flex min-h-[44px] items-center gap-2 rounded-md border-2 px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-deep ${
+                tabIndex={selected ? 0 : -1}
+                onClick={() => activate(row.id)}
+                onKeyDown={(event) => onKeyDown(event, i, 'mobile', 'horizontal')}
+                className={`ri-tab flex min-h-[44px] items-center gap-2 rounded-md border-2 px-3.5 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-proof-deep ${
                   selected
                     ? 'border-ink bg-ink text-porcelain'
                     : 'border-border text-muted-foreground'
                 }`}
               >
                 <span
-                  className={`h-1.5 w-1.5 rounded-full ${selected ? 'bg-proof' : 'bg-border'}`}
+                  className={`ri-dot h-1.5 w-1.5 rounded-full ${selected ? 'bg-proof' : 'bg-border'}`}
                   aria-hidden="true"
                 />
                 {row.lens}

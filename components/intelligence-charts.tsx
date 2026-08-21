@@ -1,28 +1,42 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useRef, type RefObject } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-function useCountUp(end: number, duration = 900) {
-  const [value, setValue] = useState(0)
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setValue(end)
-      return
-    }
-    let raf = 0
-    const start = performance.now()
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration)
-      const eased = 1 - (1 - t) ** 3
-      setValue(Math.round(end * eased))
-      if (t < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [end, duration])
-
-  return value
+function useChartDraw(scopeRef: RefObject<HTMLElement | null>) {
+  useGSAP(
+    () => {
+      const root = scopeRef.current
+      if (!root) return
+      const lines = root.querySelectorAll<SVGElement>('.ri-chart-line')
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (lines.length === 0) return
+      if (reduced) {
+        gsap.set(lines, { strokeDashoffset: 0 })
+        return
+      }
+      gsap.set(lines, { strokeDasharray: 1, strokeDashoffset: 1 })
+      ScrollTrigger.create({
+        trigger: root,
+        start: 'top 88%',
+        once: true,
+        onEnter: () => {
+          gsap.to(lines, {
+            strokeDashoffset: 0,
+            duration: 0.85,
+            ease: 'power2.out',
+            stagger: 0.06,
+            overwrite: 'auto',
+          })
+        },
+      })
+    },
+    { scope: scopeRef },
+  )
 }
 
 function ChartNote({ children }: { children: string }) {
@@ -48,26 +62,21 @@ function areaPath(values: number[], w: number, h: number, pad = 4) {
 }
 
 export function ExecutiveCharts() {
+  const rootRef = useRef<HTMLDivElement>(null)
+  useChartDraw(rootRef)
   const mom = [38, 44, 41, 52, 58, 71]
   const yoy = [22, 25, 31, 29, 36, 48]
-  const vis = useCountUp(18)
-  const ae = useCountUp(2)
-  const inv = useCountUp(12)
 
   return (
-    <div className="flex flex-col gap-4">
+    <div ref={rootRef} className="flex flex-col gap-4">
       <div className="grid gap-3 sm:grid-cols-3">
         {[
-          { value: `+${vis}%`, label: 'Research visibility' },
-          { value: String(ae), label: 'Authority Experiences launched' },
-          { value: `+${inv}%`, label: 'Inventory-pathway clicks' },
-        ].map((kpi, i) => (
-          <div
-            key={kpi.label}
-            className="iq-fade-up rounded-lg border border-border bg-porcelain/70 px-4 py-3"
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <p className="font-mono text-2xl font-semibold tracking-tight text-signal-deep">{kpi.value}</p>
+          { value: '+18%', label: 'Research visibility' },
+          { value: '2', label: 'Authority Experiences launched' },
+          { value: '+12%', label: 'Inventory-pathway clicks' },
+        ].map((kpi) => (
+          <div key={kpi.label} className="rounded-lg border border-border bg-porcelain/70 px-4 py-3">
+            <p className="font-mono text-2xl font-semibold tracking-tight text-proof-deep">{kpi.value}</p>
             <p className="mt-1 text-sm text-muted-foreground">{kpi.label}</p>
           </div>
         ))}
@@ -110,14 +119,14 @@ function TimeSeriesChart({
 
   return (
     <div>
-      <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">{title}</p>
+      <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">{title}</p>
       <div className="relative mt-3 h-36" role="img" aria-label={`${title} illustrative trend`}>
         <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
-          <path d={area} className="iq-fade-up fill-lime/20" />
+          <path d={area} className="fill-proof/20" />
           <polyline
             points={points}
             pathLength={1}
-            className="iq-draw fill-none stroke-signal-deep"
+            className="ri-chart-line fill-none stroke-proof-deep"
             strokeWidth="2.25"
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -129,9 +138,9 @@ function TimeSeriesChart({
             <div key={labels[i]} className="flex min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
               <div
                 className={`iq-bar-in w-full max-w-8 rounded-t-sm ${
-                  i === values.length - 1 ? 'iq-pulse-lime bg-lime ring-1 ring-signal-deep/50' : 'bg-ink/12'
+                  i === values.length - 1 ? 'bg-proof ring-1 ring-proof-deep/50' : 'bg-ink/12'
                 }`}
-                style={{ height: `${(v / max) * 78}%`, animationDelay: `${i * 70}ms` }}
+                style={{ height: `${(v / max) * 78}%` }}
               />
             </div>
           ))}
@@ -156,21 +165,23 @@ const searchTopics = [
 ]
 
 export function SearchContentCharts() {
+  const rootRef = useRef<HTMLDivElement>(null)
+  useChartDraw(rootRef)
   const trend = [28, 31, 30, 38, 44, 52, 61]
   const points = sparkline(trend, 280, 64, 6)
 
   return (
-    <div className="rounded-lg border border-border p-5 md:p-6">
+    <div ref={rootRef} className="rounded-lg border border-border p-5 md:p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">Query contribution</p>
+          <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Query contribution</p>
           <p className="mt-1 text-base font-semibold text-ink">Non-branded topics earning discovery</p>
         </div>
-        <svg width="160" height="40" viewBox="0 0 280 64" aria-hidden="true" className="text-signal-deep">
+        <svg width="160" height="40" viewBox="0 0 280 64" aria-hidden="true" className="text-proof-deep">
           <polyline
             points={points}
             pathLength={1}
-            className="iq-draw fill-none stroke-current"
+            className="ri-chart-line fill-none stroke-current"
             strokeWidth="3"
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -180,12 +191,12 @@ export function SearchContentCharts() {
 
       <ul className="mt-5 flex flex-col gap-2.5" aria-label="Illustrative query contribution ranking">
         {searchTopics.map((row, i) => (
-          <li key={row.label} className="iq-fade-up" style={{ animationDelay: `${i * 70}ms` }}>
+          <li key={row.label}>
             <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
               <span className="font-medium text-ink">{row.label}</span>
               <span
                 className={`font-mono text-xs font-semibold ${
-                  row.delta.startsWith('+') ? 'text-signal-deep' : 'text-fog'
+                  row.delta.startsWith('+') ? 'text-proof-deep' : 'text-fog'
                 }`}
               >
                 {row.delta === '0' ? 'flat' : row.delta}
@@ -193,10 +204,8 @@ export function SearchContentCharts() {
             </div>
             <div className="h-2.5 overflow-hidden rounded-full bg-porcelain">
               <div
-                className={`iq-bar-in-x h-full rounded-full ${
-                  i === 0 ? 'bg-lime' : 'bg-signal-deep/55'
-                }`}
-                style={{ width: `${row.value}%`, animationDelay: `${120 + i * 80}ms` }}
+                className={`iq-bar-in-x h-full rounded-full ${i === 0 ? 'bg-proof' : 'bg-proof-deep/45'}`}
+                style={{ width: `${row.value}%` }}
               />
             </div>
           </li>
@@ -217,37 +226,36 @@ const markets = [
 export function LocalityCharts() {
   return (
     <div className="rounded-lg border border-border p-5 md:p-6">
-      <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">Priority markets</p>
+      <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Priority markets</p>
       <p className="mt-1 text-base font-semibold text-ink">Where local visibility is moving</p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2" role="img" aria-label="Illustrative locality strength by market">
-        {markets.map((m, i) => (
+        {markets.map((m) => (
           <div
             key={m.name}
-            className={`iq-fade-up relative overflow-hidden rounded-lg border p-4 ${
-              m.hot ? 'border-signal-deep/50 bg-lime/15' : 'border-border bg-porcelain/50'
+            className={`relative overflow-hidden rounded-lg border p-4 ${
+              m.hot ? 'border-proof-deep/50 bg-proof-soft' : 'border-border bg-porcelain/50'
             }`}
-            style={{ animationDelay: `${i * 90}ms` }}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <span className="relative flex h-3 w-3 shrink-0">
-                  {m.hot ? <span className="iq-ping absolute inset-0 rounded-full bg-lime" /> : null}
-                  <span
-                    className={`relative h-3 w-3 rounded-full ${m.hot ? 'bg-lime ring-2 ring-signal-deep' : 'bg-fog/70'}`}
-                  />
-                </span>
+                <span
+                  className={`h-3 w-3 shrink-0 rounded-full ${
+                    m.hot ? 'bg-proof ring-2 ring-proof-deep' : 'bg-fog/70'
+                  }`}
+                  aria-hidden="true"
+                />
                 <div>
                   <p className="text-base font-semibold text-ink">{m.name}</p>
                   <p className="text-sm text-muted-foreground">{m.status}</p>
                 </div>
               </div>
-              <p className="font-mono text-lg font-semibold text-signal-deep">{m.strength}</p>
+              <p className="font-mono text-lg font-semibold text-proof-deep">{m.strength}</p>
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-paper">
               <div
-                className={`iq-bar-in-x h-full rounded-full ${m.hot ? 'bg-lime' : 'bg-signal-deep/50'}`}
-                style={{ width: `${m.strength}%`, animationDelay: `${140 + i * 80}ms` }}
+                className={`iq-bar-in-x h-full rounded-full ${m.hot ? 'bg-proof' : 'bg-proof-deep/50'}`}
+                style={{ width: `${m.strength}%` }}
               />
             </div>
           </div>
@@ -268,28 +276,30 @@ const funnel = [
 export function BuyerActionCharts() {
   return (
     <div className="rounded-lg border border-border p-5 md:p-6">
-      <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">Measured pathway</p>
+      <p className="font-mono text-xs uppercase tracking-wider text-accent-deep">Measured pathway</p>
       <p className="mt-1 text-base font-semibold text-ink">How shopper actions move through the site</p>
 
       <div className="relative mt-6" aria-label="Illustrative buyer-action funnel">
-        <div className="pointer-events-none absolute top-2 bottom-2 left-3 hidden w-px bg-alloy sm:block" aria-hidden="true">
-          <span className="iq-funnel-dot absolute left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-lime" />
-          <span className="iq-funnel-dot iq-funnel-dot-b absolute left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-signal-deep" />
-        </div>
+        <div
+          className="pointer-events-none absolute top-2 bottom-2 left-3 hidden w-px bg-alloy sm:block"
+          aria-hidden="true"
+        />
 
         <ol className="flex flex-col gap-3 sm:pl-8">
           {funnel.map((step, i) => (
-            <li key={step.label} className="iq-fade-up" style={{ animationDelay: `${i * 90}ms` }}>
+            <li key={step.label}>
               <div className="mb-1.5 flex items-baseline justify-between gap-3">
                 <span className="text-sm font-semibold text-ink">{step.label}</span>
-                <FunnelCount end={step.value} />
+                <span className="font-mono text-sm font-semibold tabular-nums text-accent-deep">
+                  {step.value.toLocaleString()}
+                </span>
               </div>
               <div className="h-9 overflow-hidden rounded-md bg-porcelain">
                 <div
                   className={`iq-bar-in-x flex h-full items-center rounded-md px-3 ${
-                    i === funnel.length - 1 ? 'bg-proof/80' : i === 0 ? 'bg-lime' : 'bg-signal-deep/45'
+                    i === funnel.length - 1 ? 'bg-proof/80' : i === 0 ? 'bg-accent' : 'bg-accent-deep/45'
                   }`}
-                  style={{ width: `${step.width}%`, animationDelay: `${100 + i * 90}ms` }}
+                  style={{ width: `${step.width}%` }}
                 />
               </div>
             </li>
@@ -299,11 +309,6 @@ export function BuyerActionCharts() {
       <ChartNote>Illustrative conversion pathway, not client data</ChartNote>
     </div>
   )
-}
-
-function FunnelCount({ end }: { end: number }) {
-  const n = useCountUp(end, 1100)
-  return <span className="font-mono text-sm font-semibold tabular-nums text-signal-deep">{n.toLocaleString()}</span>
 }
 
 const radarBlips = [
@@ -319,6 +324,8 @@ const radarBlips = [
 ]
 
 export function AiVisibilityCharts() {
+  const rootRef = useRef<HTMLDivElement>(null)
+  useChartDraw(rootRef)
   const referrals = [8, 11, 9, 14, 18, 16, 22]
   const points = sparkline(referrals, 260, 72, 8)
   const cx = 110
@@ -326,9 +333,9 @@ export function AiVisibilityCharts() {
   const maxR = 92
 
   return (
-    <div className="grid gap-6 rounded-lg border border-border p-5 md:grid-cols-[minmax(0,220px)_1fr] md:p-6">
+    <div ref={rootRef} className="grid gap-6 rounded-lg border border-border p-5 md:grid-cols-[minmax(0,220px)_1fr] md:p-6">
       <div className="mx-auto w-full max-w-[220px]">
-        <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">Observed footprint</p>
+        <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Observed footprint</p>
         <svg
           className="mt-3 h-auto w-full"
           viewBox="0 0 220 220"
@@ -339,13 +346,11 @@ export function AiVisibilityCharts() {
           <circle cx={cx} cy={cy} r={maxR * 0.66} className="fill-none stroke-border" />
           <circle cx={cx} cy={cy} r={maxR * 0.33} className="fill-none stroke-border" />
           <g transform={`translate(${cx} ${cy})`}>
-            <g className="iq-sweep">
-              <path
-                d={`M 0 0 L 0 ${-maxR} A ${maxR} ${maxR} 0 0 1 ${maxR * 0.42} ${-maxR * 0.91} Z`}
-                className="fill-lime/25 stroke-lime/60"
-                strokeWidth="1"
-              />
-            </g>
+            <path
+              d={`M 0 0 L 0 ${-maxR} A ${maxR} ${maxR} 0 0 1 ${maxR * 0.42} ${-maxR * 0.91} Z`}
+              className="fill-proof/25 stroke-proof/60"
+              strokeWidth="1"
+            />
           </g>
           {radarBlips.map((b, i) => {
             const rad = ((b.a - 90) * Math.PI) / 180
@@ -357,16 +362,16 @@ export function AiVisibilityCharts() {
                 cx={x}
                 cy={y}
                 r={b.seen ? 4.5 : 3.5}
-                className={b.seen ? 'iq-pulse-lime fill-lime stroke-signal-deep' : 'fill-fog/40 stroke-fog'}
+                className={b.seen ? 'fill-proof stroke-proof-deep' : 'fill-fog/40 stroke-fog'}
                 strokeWidth="1.25"
               />
             )
           })}
-          <circle cx={cx} cy={cy} r="3.5" className="fill-signal-deep" />
+          <circle cx={cx} cy={cy} r="3.5" className="fill-proof-deep" />
         </svg>
         <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-lime ring-1 ring-signal-deep" /> Observed
+            <span className="h-2 w-2 rounded-full bg-proof ring-1 ring-proof-deep" /> Observed
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-fog/50" /> Unobserved
@@ -375,14 +380,14 @@ export function AiVisibilityCharts() {
       </div>
 
       <div>
-        <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">Identifiable AI referrals</p>
+        <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Identifiable AI referrals</p>
         <p className="mt-1 text-base font-semibold text-ink">Signals we can actually attribute</p>
         <svg className="mt-4 h-24 w-full" viewBox="0 0 260 72" preserveAspectRatio="none" aria-hidden="true">
-          <path d={areaPath(referrals, 260, 72, 8)} className="iq-fade-up fill-lime/20" />
+          <path d={areaPath(referrals, 260, 72, 8)} className="fill-proof/20" />
           <polyline
             points={points}
             pathLength={1}
-            className="iq-draw fill-none stroke-signal-deep"
+            className="ri-chart-line fill-none stroke-proof-deep"
             strokeWidth="2.5"
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -390,7 +395,7 @@ export function AiVisibilityCharts() {
           />
         </svg>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Lime marks identifiable referrals and observed visibility. Dim marks remain outside honest
+          Highlighted marks identifiable referrals and observed visibility. Dim marks remain outside honest
           attribution — we do not invent complete AI journey tracking.
         </p>
         <ChartNote>Illustrative AI footprint, not client data</ChartNote>

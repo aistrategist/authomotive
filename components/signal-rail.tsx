@@ -4,18 +4,20 @@ const bars = {
   ink: 'bg-ink',
   lime: 'bg-lime',
   orange: 'bg-accent',
+  proof: 'bg-proof',
 } as const
 
 const rests = {
   ink: 'bg-ink/15',
   lime: 'bg-lime/25',
   orange: 'bg-accent/25',
+  proof: 'bg-proof/35',
 } as const
 
 export function SignalRail({
   tone = 'ink',
 }: {
-  tone?: 'ink' | 'lime' | 'orange' | 'handoff'
+  tone?: 'ink' | 'lime' | 'orange' | 'handoff' | 'proof'
 }) {
   if (tone === 'handoff') {
     return (

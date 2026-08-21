@@ -2605,3 +2605,165 @@ details.disclosure > summary .disclosure-plus {
 details.disclosure[open] > summary .disclosure-plus {
   transform: rotate(45deg);
 }
+
+/* ------------------------------------------------------------------ */
+/* Reporting — evidence to decision                                    */
+/* ------------------------------------------------------------------ */
+
+#reporting .ri-frame {
+  position: relative;
+}
+#reporting .ri-frame-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 2px;
+  background: var(--proof);
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 2;
+}
+#reporting .ri-tab,
+#reporting .ri-dot {
+  transition: none;
+}
+#reporting .ri-stage {
+  display: grid;
+}
+#reporting .ri-stage > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+#reporting .ri-stage > [inert] {
+  visibility: hidden;
+  pointer-events: none;
+}
+#reporting .ri-beat.is-on {
+  background: var(--proof-soft);
+  box-shadow: inset 3px 0 0 0 var(--proof-deep);
+}
+#reporting .ri-beat-index {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+#reporting .ri-step {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-right: 0.2rem;
+}
+#reporting .ri-step-mark {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid var(--ink);
+  background: transparent;
+  transform: translateY(-0.12em);
+  flex-shrink: 0;
+}
+#reporting .ri-step.is-on {
+  color: var(--proof-deep);
+}
+#reporting .ri-step.is-on .ri-step-mark {
+  background: var(--proof);
+  border-color: var(--proof-deep);
+}
+#reporting .ri-proof-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+#reporting .ri-observed {
+  grid-row: 1;
+}
+#reporting .ri-bridge {
+  grid-row: 2;
+  position: relative;
+  width: 2px;
+  height: 1.15rem;
+  margin: 0.15rem 0 0.15rem 0.4rem;
+  pointer-events: none;
+}
+#reporting .ri-bridge-line {
+  display: block;
+  width: 2px;
+  height: 100%;
+  background: var(--ink);
+}
+#reporting .ri-packet {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 8px;
+  height: 8px;
+  background: var(--proof);
+  border: 1px solid var(--proof-deep);
+  pointer-events: none;
+}
+#reporting .ri-decision {
+  grid-row: 3;
+}
+@media (min-width: 768px) {
+  #reporting .ri-proof-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+  #reporting .ri-observed {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  #reporting .ri-decision {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  #reporting .ri-bridge {
+    position: absolute;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    left: 50%;
+    top: 7.25rem;
+    width: 1.25rem;
+    height: 2px;
+    margin: 0 0 0 -0.625rem;
+  }
+  #reporting .ri-bridge-line {
+    width: 100%;
+    height: 2px;
+  }
+  #reporting .ri-packet {
+    top: -3px;
+    left: 50%;
+    margin-left: -4px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ri-chart-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ri-chart-line {
+    stroke-dashoffset: 0 !important;
+  }
+  #reporting .ri-frame-rule {
+    transform: scaleX(1) !important;
+  }
+  #reporting .ri-beat {
+    background: var(--proof-soft);
+    box-shadow: inset 3px 0 0 0 var(--proof-deep);
+  }
+  #reporting .ri-step {
+    color: var(--proof-deep);
+  }
+  #reporting .ri-step .ri-step-mark {
+    background: var(--proof);
+    border-color: var(--proof-deep);
+  }
+  #reporting .ri-packet {
+    visibility: hidden;
+  }
+}

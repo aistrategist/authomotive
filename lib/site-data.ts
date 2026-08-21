@@ -320,7 +320,7 @@ export const reporting = {
       kicker: 'OBSERVED PAGE-LEVEL RESULT',
       title: 'One guide. A clearer before-and-after.',
       context:
-        'A commercial vehicle dealership’s Sprinter Wheelbase Guide existed before its July 14, 2026 authority and AEO upgrade. In the following 28-day comparison, the page recorded:',
+        'A commercial vehicle dealership’s Sprinter Wheelbase Guide existed before its July 14, 2026 authority and AI-discovery upgrade. In the following 28-day comparison, the page recorded:',
       metrics: [
         { id: 'clicks', label: 'WEB CLICKS', before: '4', after: '39' },
         { id: 'impressions', label: 'WEB IMPRESSIONS', before: '3,021', after: '10,429' },
