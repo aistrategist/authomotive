@@ -458,12 +458,12 @@ function PageWireframe({
         width={PAGE_W}
         height={PAGE_H}
         rx="11"
-        fill="rgba(6,27,32,0.74)"
-        stroke="rgba(216,227,224,0.24)"
+        fill="rgba(56,52,66,0.92)"
+        stroke="rgba(200,184,255,0.32)"
         strokeWidth="1.25"
       />
-      <rect width={PAGE_W} height="26" rx="11" fill="rgba(23,76,84,0.55)" />
-      <rect y="13" width={PAGE_W} height="13" fill="rgba(23,76,84,0.55)" />
+      <rect width={PAGE_W} height="26" rx="11" fill="rgba(81,72,95,0.90)" />
+      <rect y="13" width={PAGE_W} height="13" fill="rgba(81,72,95,0.90)" />
       <circle cx="16" cy="13" r="3" fill="rgba(255,252,247,0.35)" />
       <circle cx="27" cy="13" r="3" fill="rgba(255,252,247,0.22)" />
       <circle cx="38" cy="13" r="3" fill="rgba(255,252,247,0.14)" />
@@ -512,8 +512,8 @@ function PageWireframe({
         width="104"
         height="28"
         rx="6"
-        fill="rgba(189,217,255,0.2)"
-        stroke="rgba(189,217,255,0.55)"
+        fill="rgba(143,188,245,0.18)"
+        stroke="rgba(143,188,245,0.60)"
         strokeWidth="1.25"
       />
       <rect className="hs-skel-block" x={CTA_X - 28} y={CTA_Y - 3} width="56" height="6" rx="2" opacity="0.7" />
@@ -849,7 +849,7 @@ export function HeroStage() {
           >
             <defs>
               <pattern id="hs-map-grid" width="28" height="28" patternUnits="userSpaceOnUse">
-                <path d="M28 0H0V28" fill="none" stroke="rgba(120,168,170,0.16)" strokeWidth="1" />
+                <path d="M28 0H0V28" fill="none" stroke="rgba(110,101,125,0.28)" strokeWidth="1" />
               </pattern>
               <radialGradient id="hs-grid-fade" cx="48%" cy="46%" r="62%">
                 <stop offset="0%" stopColor="#fff" stopOpacity="0.55" />

@@ -62,6 +62,14 @@
   --color-stage-line: var(--stage-line);
   --color-stage-muted: var(--stage-muted);
   --color-stage-foreground: var(--stage-foreground);
+  --color-hero-ui-deep: var(--hero-ui-deep);
+  --color-hero-ui: var(--hero-ui);
+  --color-hero-ui-elevated: var(--hero-ui-elevated);
+  --color-hero-ui-chrome: var(--hero-ui-chrome);
+  --color-hero-ui-border: var(--hero-ui-border);
+  --color-hero-ui-muted: var(--hero-ui-muted);
+  --color-hero-ui-foreground: var(--hero-ui-foreground);
+  --color-hero-ui-highlight: var(--hero-ui-highlight);
 
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -90,6 +98,15 @@
   --stage-line: #48515e;
   --stage-muted: #b8c1cc;
   --stage-foreground: #fffcf7;
+
+  --hero-ui-deep: #2f2c37;
+  --hero-ui: #383442;
+  --hero-ui-elevated: #464052;
+  --hero-ui-chrome: #51485f;
+  --hero-ui-border: #6e657d;
+  --hero-ui-muted: #afa6c0;
+  --hero-ui-foreground: #fffcf7;
+  --hero-ui-highlight: #c8b8ff;
 
   --accent-softest: #f3f8ff;
   --accent-soft: #eaf3ff;
@@ -571,7 +588,7 @@
   height: 32px;
   flex-shrink: 0;
   padding-left: 0.85rem;
-  border-left: 1px solid rgba(120, 168, 170, 0.28);
+  border-left: 1px solid rgba(110, 101, 125, 0.55);
 }
 
 .hs-intel-metrics-label {
@@ -705,7 +722,7 @@
     filter 0.35s ease;
 }
 
-/* Soft texture dashes — same teal family, no persistent lime */
+/* Soft texture dashes — stage-line family, no persistent lime */
 .hs-trail-seg-a,
 .hs-trail-seg-b,
 .hs-trail-seg-c,
@@ -745,7 +762,7 @@
 
 .hs-trail-center {
   fill: none;
-  stroke: rgba(120, 168, 170, 0.42);
+  stroke: rgba(143, 188, 245, 0.38);
   stroke-width: 1.25;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -753,7 +770,7 @@
 }
 
 .hs-trail-center-branch {
-  stroke: rgba(120, 168, 170, 0.36);
+  stroke: rgba(143, 188, 245, 0.32);
   stroke-dasharray: 4 8;
   transition:
     opacity 0.35s ease,
@@ -832,7 +849,7 @@
 }
 
 .hs-traveler-aeo .hs-visitor {
-  filter: drop-shadow(0 1px 0.6px rgba(232, 240, 237, 0.28));
+  filter: drop-shadow(0 1px 0.6px rgba(255, 252, 247, 0.28));
 }
 
 .hs-traveler-geo .hs-visitor,
@@ -884,8 +901,8 @@
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  background: rgba(6, 27, 32, 0.5);
-  border: 1px solid rgba(216, 227, 224, 0.16);
+  background: rgba(56, 52, 66, 0.88);
+  border: 1px solid rgba(110, 101, 125, 0.55);
   box-shadow: none;
   color: var(--paper);
   backdrop-filter: none;
@@ -976,7 +993,7 @@
   padding: 0.35rem 0.65rem;
   border-radius: 999px;
   border: 1px solid rgba(189, 217, 255, 0.45);
-  background: rgba(6, 27, 32, 0.9);
+  background: rgba(47, 44, 55, 0.92);
   box-shadow:
     0 0 0 1px rgba(189, 217, 255, 0.1),
     0 10px 26px rgba(0, 0, 0, 0.38);
@@ -1129,11 +1146,11 @@
 
 /* YouTube-style skeleton blocks */
 .hs-skel-block {
-  fill: rgba(232, 240, 237, 0.12);
+  fill: rgba(255, 252, 247, 0.08);
 }
 
 .hs-skel-accent {
-  fill: rgba(189, 217, 255, 0.18);
+  fill: rgba(143, 188, 245, 0.18);
 }
 
 /* Copy entrance + map motion */
