@@ -6,7 +6,6 @@ import { PlatformCredibility } from '@/components/platform-credibility'
 import { IndustryGap } from '@/components/industry-gap'
 import { CapabilitySystem } from '@/components/capability-system'
 import { AuthorityExperience } from '@/components/authority-experience'
-import { AiDiscoveryFoundation } from '@/components/ai-discovery-foundation'
 import { IntelligencePreview } from '@/components/intelligence-preview'
 import { SignalArchitecture } from '@/components/signal-architecture'
 import { HowItWorks } from '@/components/how-it-works'
@@ -42,7 +41,6 @@ export default function SeoServicesPage() {
         <IndustryGap />
         <CapabilitySystem />
         <AuthorityExperience />
-        <AiDiscoveryFoundation />
         <IntelligencePreview />
         <SignalArchitecture />
         <HowItWorks />

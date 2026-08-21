@@ -3,7 +3,6 @@ import { Hero } from '@/components/hero'
 import { QuestionToInventory } from '@/components/question-to-inventory'
 import { CapabilitySystem } from '@/components/capability-system'
 import { AuthorityExperience } from '@/components/authority-experience'
-import { AiDiscoveryFoundation } from '@/components/ai-discovery-foundation'
 import { IntelligencePreview } from '@/components/intelligence-preview'
 import { SignalArchitecture } from '@/components/signal-architecture'
 import { HowItWorks } from '@/components/how-it-works'
@@ -68,7 +67,6 @@ export default function Home() {
         <QuestionToInventory />
         <CapabilitySystem />
         <AuthorityExperience />
-        <AiDiscoveryFoundation />
         <IntelligencePreview />
         <SignalArchitecture />
         <HowItWorks />
