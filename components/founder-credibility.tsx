@@ -25,13 +25,13 @@ export function FounderCredibility() {
           </div>
           <div className="relative lg:pt-1">
             <div
-              className="absolute inset-y-0 left-0 right-0 bg-orange-mist md:-inset-y-2"
+              className="absolute inset-y-0 left-0 right-0 bg-accent-soft md:-inset-y-2"
               aria-hidden="true"
             />
-            <span className="absolute bottom-0 left-0 top-0 w-1.5 bg-action md:w-2" aria-hidden="true" />
+            <span className="absolute bottom-0 left-0 top-0 w-1.5 bg-ink md:w-2" aria-hidden="true" />
             <div className="relative pl-6 md:pl-8">
               <p className="text-lg leading-relaxed text-ink text-pretty">{founder.copy}</p>
-              <p className="mt-5 border-l-2 border-lime pl-4 text-base font-semibold leading-relaxed text-muted-foreground md:text-lg">
+              <p className="mt-5 border-l-2 border-accent pl-4 text-base font-semibold leading-relaxed text-muted-foreground md:text-lg">
                 {founder.supporting}
               </p>
               <ul className="mt-5 flex flex-wrap gap-2" aria-label="Practice focus">

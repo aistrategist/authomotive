@@ -10,14 +10,15 @@ const SIGNAL_STAGGER_MS = 140
 const TRAVEL_MS = 600
 const POLL_MS = 50
 const INK = '#061b20'
+const PAPER = '#fffcf7'
 
 type SourceId = (typeof discoveryToInventory.intentStream.sources)[number]['id']
 type Handoff = 'rest' | 'travel' | 'arrived'
 
 const SOURCE_DOT: Record<SourceId, string> = {
-  search: 'bg-lime',
+  search: 'bg-accent',
   ai: 'bg-ink',
-  local: 'bg-action',
+  local: 'bg-accent-strong',
 }
 
 function typeDuration(length: number) {
@@ -71,6 +72,7 @@ function ResearchGlyph() {
 }
 
 function VehiclesGlyph({ live = false }: { live?: boolean }) {
+  const stroke = live ? PAPER : INK
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
       <rect
@@ -79,9 +81,9 @@ function VehiclesGlyph({ live = false }: { live?: boolean }) {
         width="7.2"
         height="6.4"
         rx="1"
-        fill={live ? INK : 'none'}
-        fillOpacity={live ? 0.18 : 0}
-        stroke={INK}
+        fill={live ? PAPER : 'none'}
+        fillOpacity={live ? 0.22 : 0}
+        stroke={stroke}
         strokeWidth={live ? '1.7' : '1.35'}
       />
       <rect
@@ -90,9 +92,9 @@ function VehiclesGlyph({ live = false }: { live?: boolean }) {
         width="7.2"
         height="6.4"
         rx="1"
-        fill={live ? INK : 'none'}
-        fillOpacity={live ? 0.18 : 0}
-        stroke={INK}
+        fill={live ? PAPER : 'none'}
+        fillOpacity={live ? 0.22 : 0}
+        stroke={stroke}
         strokeWidth={live ? '1.7' : '1.35'}
       />
       <rect
@@ -101,9 +103,9 @@ function VehiclesGlyph({ live = false }: { live?: boolean }) {
         width="7.2"
         height="6.4"
         rx="1"
-        fill={live ? INK : 'none'}
-        fillOpacity={live ? 0.18 : 0}
-        stroke={INK}
+        fill={live ? PAPER : 'none'}
+        fillOpacity={live ? 0.22 : 0}
+        stroke={stroke}
         strokeWidth={live ? '1.7' : '1.35'}
       />
       <rect
@@ -112,9 +114,9 @@ function VehiclesGlyph({ live = false }: { live?: boolean }) {
         width="7.2"
         height="6.4"
         rx="1"
-        fill={live ? INK : 'none'}
-        fillOpacity={live ? 0.18 : 0}
-        stroke={INK}
+        fill={live ? PAPER : 'none'}
+        fillOpacity={live ? 0.22 : 0}
+        stroke={stroke}
         strokeWidth={live ? '1.7' : '1.35'}
       />
     </svg>
@@ -272,7 +274,7 @@ export function BuyerIntentStream() {
           <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-paper md:text-[0.6875rem]">
             {data.label}
           </p>
-          <p className="flex items-center gap-1.5 font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-lime">
+          <p className="flex items-center gap-1.5 font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-accent">
             <span className="bis-live-dot h-1.5 w-1.5 shrink-0" />
             {data.liveLabel}
           </p>
@@ -305,7 +307,7 @@ export function BuyerIntentStream() {
               {data.surfacesLabel}
             </p>
             <p className="mt-1 text-[0.75rem] leading-snug text-ink/55">{source.surfaces}</p>
-            <div className="mt-3 flex items-start gap-3 border-2 border-ink bg-porcelain px-3 py-3 md:px-3.5 md:py-3.5">
+            <div className="mt-3 flex items-start gap-3 border-2 border-ink bg-paper px-3 py-3 md:px-3.5 md:py-3.5">
             <span className="mt-0.5 shrink-0">
               <SourceGlyph id={source.id} />
             </span>
@@ -339,7 +341,7 @@ export function BuyerIntentStream() {
                   <li
                     key={signal}
                     className={`bis-chip border px-2 py-1 font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] ${
-                      on ? 'border-ink bg-lime text-ink' : 'border-ink/20 bg-paper text-ink/35'
+                      on ? 'border-ink bg-accent text-ink' : 'border-ink/20 bg-paper text-ink/35'
                     }`}
                   >
                     {signal}
@@ -371,18 +373,22 @@ export function BuyerIntentStream() {
                 } ${hit ? 'is-hit' : ''}`}
               >
                 <VehiclesGlyph live={handoff === 'arrived'} />
-                <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-ink">
+                <p
+                  className={`font-mono text-[0.625rem] font-semibold uppercase tracking-[0.1em] ${
+                    handoff === 'arrived' ? 'text-paper' : 'text-ink'
+                  }`}
+                >
                   {data.vehiclesZone}
                 </p>
               </div>
             </div>
             <p
               className={`mt-2.5 flex items-center gap-1.5 font-mono text-[0.625rem] font-semibold uppercase tracking-[0.14em] ${
-                handoff === 'arrived' ? 'text-signal-deep' : 'text-ink/45'
+                handoff === 'arrived' ? 'text-ink' : 'text-ink/45'
               }`}
             >
               {handoff === 'arrived' ? (
-                <span className="h-1.5 w-1.5 shrink-0 bg-lime" />
+                <span className="h-1.5 w-1.5 shrink-0 bg-accent" />
               ) : (
                 <span className="h-1.5 w-1.5 shrink-0 bg-ink/25" />
               )}

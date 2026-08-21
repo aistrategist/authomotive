@@ -152,10 +152,10 @@ const TRAIL_SEGMENTS = [
 
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
-  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#b7ff3c', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
+  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#bdd9ff', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
   { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff6a3d', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
-  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8f0ed', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
-  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#c8ff66', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8eef5', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
+  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#d7e8ff', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
   { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#ff8a5c', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
 ] as const
 
@@ -513,8 +513,8 @@ function PageWireframe({
         width="104"
         height="28"
         rx="6"
-        fill="rgba(183,255,60,0.2)"
-        stroke="rgba(183,255,60,0.55)"
+        fill="rgba(189,217,255,0.2)"
+        stroke="rgba(189,217,255,0.55)"
         strokeWidth="1.25"
       />
       <rect className="hs-skel-block" x={CTA_X - 28} y={CTA_Y - 3} width="56" height="6" rx="2" opacity="0.7" />
@@ -824,11 +824,11 @@ export function HeroStage() {
           <p className="hs-intel-kicker">Website visitors</p>
           <div className="hs-intel-channels">
             <span className="hs-legend-item hs-chip-seo">
-              <VisitorChipIcon color="#b7ff3c" variant={0} />
+              <VisitorChipIcon color="#bdd9ff" variant={0} />
               Search
             </span>
             <span className="hs-legend-item hs-chip-aeo">
-              <VisitorChipIcon color="#e8f0ed" variant={2} />
+              <VisitorChipIcon color="#e8eef5" variant={2} />
               AI
             </span>
             <span className="hs-legend-item hs-chip-geo">
@@ -934,14 +934,14 @@ export function HeroStage() {
               className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
               transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
             >
-              <circle className="hs-hub-bloom" r="36" fill="#b7ff3c" />
-              <circle r="22" fill="#b7ff3c" />
+              <circle className="hs-hub-bloom" r="36" fill="#bdd9ff" />
+              <circle r="22" fill="#bdd9ff" />
               <circle r="22" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.35" />
               <CarGlyph />
             </g>
 
             <g className="hs-start" transform={`translate(${SEARCH.cx} ${SEARCH.cy})`}>
-              <circle className="hs-convert-disc" r="16" fill="#b7ff3c" />
+              <circle className="hs-convert-disc" r="16" fill="#bdd9ff" />
               <circle r="16" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.25" />
               <SearchGlyph />
             </g>
@@ -978,7 +978,7 @@ export function HeroStage() {
                     cx={cv.cx}
                     cy={cv.cy}
                     r="30"
-                    fill="#b7ff3c"
+                    fill="#bdd9ff"
                     opacity="0"
                   />
                   <circle
@@ -987,7 +987,7 @@ export function HeroStage() {
                     cy={cv.cy}
                     r="16"
                     fill="none"
-                    stroke="#b7ff3c"
+                    stroke="#bdd9ff"
                     strokeWidth="2"
                     opacity="0"
                   />
@@ -1006,7 +1006,7 @@ export function HeroStage() {
                     cx={cv.cx}
                     cy={cv.cy}
                     r="13"
-                    fill="#b7ff3c"
+                    fill="#bdd9ff"
                   />
                   <g transform={`translate(${cv.cx} ${cv.cy})`}>
                     <g className="hs-convert-glyph">

@@ -12,11 +12,11 @@ export function Hero() {
       <section id="top" className="hero-atmosphere relative overflow-visible scroll-mt-24">
         <div className="mx-auto grid w-full max-w-[1280px] items-center gap-8 px-5 md:gap-10 md:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-6">
           <div className="hero-copy relative z-20 max-w-xl overflow-visible lg:max-w-[34rem]">
-            <p className="hero-enter hero-enter-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-lime/90 md:text-xs">
+            <p className="hero-enter hero-enter-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-accent/90 md:text-xs">
               {hero.eyebrow}
             </p>
             <h1 className="hero-enter hero-enter-2 mt-3 text-[2.15rem] font-semibold uppercase leading-[0.92] tracking-[-0.035em] md:text-[2.75rem] lg:text-[3.15rem] xl:text-[3.45rem]">
-              <span className="block text-lime">Get found.</span>
+              <span className="block text-accent">Get found.</span>
               <span className="block text-paper">Guide buyers.</span>
               <span className="block text-action">Prove what works.</span>
             </h1>

@@ -3,9 +3,9 @@ import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
 
 const numberTiles = [
-  'bg-ink text-porcelain',
-  'bg-lime text-ink',
-  'bg-action text-ink',
+  'bg-ink text-paper',
+  'bg-accent text-ink',
+  'bg-accent-soft text-ink',
 ] as const
 
 function BrokenLink() {
@@ -73,7 +73,7 @@ export function IndustryGap() {
         <Reveal>
           <p className="mt-10 max-w-[46.5rem] text-2xl font-semibold tracking-tight text-ink md:mt-12 md:text-3xl text-balance">
             {industryGap.closing.split('one measurable standard')[0]}
-            <span className="text-action-deep">one measurable standard</span>.
+            <span className="text-accent-deep">one measurable standard</span>.
           </p>
         </Reveal>
       </div>

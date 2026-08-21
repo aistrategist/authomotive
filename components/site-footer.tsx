@@ -18,14 +18,14 @@ export function SiteFooter() {
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-sm text-sm font-medium text-porcelain/80 transition-colors hover:text-porcelain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
+                className="rounded-sm text-sm font-medium text-porcelain/80 transition-colors hover:text-porcelain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
               >
                 {link.label}
               </a>
             ))}
             <a
               href="#opportunity-review"
-              className="rounded-sm text-sm font-medium text-porcelain/80 transition-colors hover:text-porcelain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
+              className="rounded-sm text-sm font-medium text-porcelain/80 transition-colors hover:text-porcelain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               Contact
             </a>

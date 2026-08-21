@@ -11,7 +11,7 @@ function Wordmark({ inverted = false }: { inverted?: boolean }) {
         inverted ? 'text-paper' : 'text-ink'
       }`}
     >
-      Auth<span className={inverted ? 'text-lime' : 'text-signal-deep'}>o</span>motive
+      Auth<span className={inverted ? 'text-accent' : 'text-accent-deep'}>o</span>motive
     </span>
   )
 }
@@ -218,7 +218,7 @@ export function SiteHeader() {
         <a
           href="#top"
           className={`rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
-            scrolled ? 'focus-visible:outline-ink' : 'focus-visible:outline-lime'
+            scrolled ? 'focus-visible:outline-accent-deep' : 'focus-visible:outline-accent'
           }`}
         >
           <Wordmark inverted={!scrolled} />
@@ -234,7 +234,7 @@ export function SiteHeader() {
                 href={link.href}
                 aria-current={isActive ? 'true' : undefined}
                 className={`relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-action hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px] ${
-                  scrolled ? 'text-ink focus-visible:outline-ink' : 'text-paper focus-visible:outline-lime'
+                  scrolled ? 'text-ink focus-visible:outline-accent-deep' : 'text-paper focus-visible:outline-accent'
                 }`}
               >
                 {link.label}
@@ -265,8 +265,10 @@ export function SiteHeader() {
           onClick={() => setMenuOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
-          className={`flex h-11 w-11 items-center justify-center rounded-md border-2 lg:hidden ${
-            scrolled ? 'border-ink bg-paper text-ink' : 'border-paper/60 bg-ink/30 text-paper'
+          className={`flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden ${
+            scrolled
+              ? 'border-ink bg-paper text-ink focus-visible:outline-accent-deep'
+              : 'border-paper/60 bg-ink/30 text-paper focus-visible:outline-accent'
           }`}
         >
           <span className="sr-only">Open menu</span>
@@ -291,7 +293,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={closeMenu}
-                className="flex h-11 w-11 items-center justify-center rounded-md border border-graphite text-paper"
+                className="flex h-11 w-11 items-center justify-center rounded-md border border-graphite text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <span className="sr-only">Close menu</span>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -308,8 +310,8 @@ export function SiteHeader() {
                     href={link.href}
                     onClick={closeMenu}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`flex items-center gap-3 rounded-md px-3 py-4 text-2xl transition-colors hover:bg-carbon focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime ${
-                      isActive ? 'font-bold text-lime' : 'font-semibold text-paper'
+                    className={`flex items-center gap-3 rounded-md px-3 py-4 text-2xl transition-colors hover:bg-carbon focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                      isActive ? 'font-bold text-accent' : 'font-semibold text-paper'
                     }`}
                   >
                     {isActive && (

@@ -23,15 +23,15 @@ const nextSteps: Record<string, { href: string; label: string }> = {
   'track-matters': { href: '#measurement', label: 'See How Signals Are Captured' },
 }
 
-function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'lime' | 'action' }) {
-  const stroke = tone === 'ink' ? 'var(--lime)' : tone === 'lime' ? 'var(--ink)' : 'var(--ink)'
-  const accent = tone === 'ink' ? 'var(--lime)' : tone === 'lime' ? 'var(--action)' : 'var(--lime)'
+function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'soft' }) {
+  const stroke = tone === 'ink' ? 'var(--accent)' : 'var(--ink)'
+  const mark = tone === 'ink' ? 'var(--accent)' : tone === 'accent' ? 'var(--accent-deep)' : 'var(--accent)'
 
   if (id === 'get-found') {
     return (
       <svg width="56" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
         <path d="M4 32 C16 32, 18 8, 32 8 S48 28, 52 12" stroke={stroke} strokeWidth="2" strokeLinecap="round" />
-        <circle cx="4" cy="32" r="3" fill={accent} />
+        <circle cx="4" cy="32" r="3" fill={mark} />
         <circle cx="52" cy="12" r="3" fill={stroke} />
       </svg>
     )
@@ -40,7 +40,7 @@ function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'lime' | 'action' })
     return (
       <svg width="56" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
         {[10, 16, 14, 22, 28].map((h, i) => (
-          <rect key={i} x={6 + i * 10} y={36 - h} width="6" height={h} fill={i === 4 ? accent : stroke} opacity={i === 4 ? 1 : 0.45} />
+          <rect key={i} x={6 + i * 10} y={36 - h} width="6" height={h} fill={i === 4 ? mark : stroke} opacity={i === 4 ? 1 : 0.45} />
         ))}
       </svg>
     )
@@ -49,53 +49,59 @@ function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'lime' | 'action' })
     <svg width="56" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
       <path d="M8 20 H48" stroke={stroke} strokeWidth="1.5" />
       <circle cx="8" cy="20" r="4" fill={stroke} />
-      <circle cx="28" cy="20" r="4" fill={accent} />
+      <circle cx="28" cy="20" r="4" fill={mark} />
       <circle cx="48" cy="20" r="4" fill={stroke} />
     </svg>
   )
 }
 
-const jobLooks = [
-  {
-    card: 'border-ink bg-ink text-porcelain',
-    shadow: 'shadow-[4px_4px_0_0_var(--lime)]',
-    shadowOn: 'shadow-[8px_8px_0_0_var(--lime)]',
-    eyebrow: 'text-lime',
-    eyebrowQuiet: 'text-lime/80',
-    number: 'text-porcelain/20',
-    arrow: 'text-lime',
-    focus: 'focus-visible:outline-lime',
-    rail: 'bg-lime',
-    panelTop: 'border-t-lime',
-    tone: 'ink' as const,
-  },
-  {
-    card: 'border-ink bg-lime text-ink',
-    shadow: 'shadow-[4px_4px_0_0_var(--action)]',
-    shadowOn: 'shadow-[8px_8px_0_0_var(--action)]',
-    eyebrow: 'text-ink',
-    eyebrowQuiet: 'text-ink/70',
-    number: 'text-ink/15',
-    arrow: 'text-action',
-    focus: 'focus-visible:outline-ink',
-    rail: 'bg-action',
-    panelTop: 'border-t-action',
-    tone: 'lime' as const,
-  },
-  {
-    card: 'border-ink bg-action text-ink',
-    shadow: 'shadow-[4px_4px_0_0_var(--lime)]',
-    shadowOn: 'shadow-[8px_8px_0_0_var(--lime)]',
-    eyebrow: 'text-ink',
-    eyebrowQuiet: 'text-ink/70',
-    number: 'text-ink/15',
-    arrow: 'text-lime',
-    focus: 'focus-visible:outline-ink',
-    rail: 'bg-lime',
-    panelTop: 'border-t-lime',
-    tone: 'action' as const,
-  },
-] as const
+const selectedLook = {
+  card: 'border-ink bg-ink text-paper',
+  shadow: 'shadow-[4px_4px_0_0_var(--accent)]',
+  shadowOn: 'shadow-[8px_8px_0_0_var(--accent)]',
+  eyebrow: 'text-accent',
+  eyebrowQuiet: 'text-accent/80',
+  number: 'text-paper/20',
+  arrow: 'text-accent',
+  focus: 'focus-visible:outline-accent',
+  rail: 'bg-accent',
+  panelTop: 'border-t-accent',
+  tone: 'ink' as const,
+}
+
+const altLook = {
+  card: 'border-ink bg-accent text-ink',
+  shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
+  shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
+  eyebrow: 'text-ink',
+  eyebrowQuiet: 'text-ink/70',
+  number: 'text-ink/15',
+  arrow: 'text-accent-deep',
+  focus: 'focus-visible:outline-accent-deep',
+  rail: 'bg-accent-deep',
+  panelTop: 'border-t-accent',
+  tone: 'accent' as const,
+}
+
+const secondaryLook = {
+  card: 'border-ink bg-accent-soft text-ink',
+  shadow: 'shadow-[4px_4px_0_0_var(--ink)]',
+  shadowOn: 'shadow-[8px_8px_0_0_var(--ink)]',
+  eyebrow: 'text-ink',
+  eyebrowQuiet: 'text-ink/70',
+  number: 'text-ink/15',
+  arrow: 'text-ink',
+  focus: 'focus-visible:outline-accent-deep',
+  rail: 'bg-ink',
+  panelTop: 'border-t-ink',
+  tone: 'soft' as const,
+}
+
+function jobLook(index: number, selectedIndex: number) {
+  if (index === selectedIndex) return selectedLook
+  const others = [0, 1, 2].filter((n) => n !== selectedIndex)
+  return index === others[0] ? altLook : secondaryLook
+}
 
 export function CapabilitySystem() {
   const [activeId, setActiveId] = useState(capabilitySystem.capabilities[0].id)
@@ -131,7 +137,7 @@ export function CapabilitySystem() {
         >
           {capabilitySystem.capabilities.map((cap, i) => {
             const selected = cap.id === activeId
-            const job = jobLooks[i]
+            const job = jobLook(i, activeIndex)
             return (
               <button
                 key={cap.id}
@@ -194,7 +200,7 @@ export function CapabilitySystem() {
           role="tabpanel"
           id="cap-panel"
           aria-labelledby={`cap-tab-${active.id}`}
-          className={`mt-2 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${jobLooks[activeIndex].panelTop}`}
+          className={`mt-2 rounded-[8px] border-2 border-ink border-t-[6px] bg-porcelain shadow-[6px_6px_0_0_var(--color-ink)] ${jobLook(activeIndex, activeIndex).panelTop}`}
         >
           <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-3 md:px-7">
             <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
@@ -205,7 +211,7 @@ export function CapabilitySystem() {
                 <span
                   key={c.id}
                   className={`h-1.5 rounded-full transition-all duration-200 ${
-                    i === activeIndex ? `w-6 ${jobLooks[i].rail}` : 'w-1.5 bg-border'
+                    i === activeIndex ? `w-6 ${jobLook(i, activeIndex).rail}` : 'w-1.5 bg-border'
                   }`}
                 />
               ))}
@@ -224,7 +230,7 @@ export function CapabilitySystem() {
                 </p>
               </div>
               <CapabilityVisual id={active.id} />
-              <blockquote className="mt-auto border-l-4 border-lime pl-4 text-lg font-semibold leading-snug text-ink text-pretty">
+              <blockquote className="mt-auto border-l-4 border-accent pl-4 text-lg font-semibold leading-snug text-ink text-pretty">
                 {active.keyLine}
               </blockquote>
             </div>

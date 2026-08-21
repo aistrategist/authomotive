@@ -3,9 +3,9 @@ import { SignalRail } from '@/components/signal-rail'
 import { BuyerIntentStream } from '@/components/buyer-intent-stream'
 
 const stepMarks = [
-  { tile: 'bg-ink text-porcelain', rule: 'bg-lime' },
-  { tile: 'bg-lime text-ink', rule: 'bg-action' },
-  { tile: 'bg-action text-ink', rule: 'bg-ink' },
+  { tile: 'bg-ink text-paper', rule: 'bg-accent' },
+  { tile: 'bg-accent text-ink', rule: 'bg-accent-deep' },
+  { tile: 'bg-accent-soft text-ink', rule: 'bg-ink' },
 ] as const
 
 /**

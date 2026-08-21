@@ -41,7 +41,7 @@ function InterpretationPanel({ row }: { row: MatrixRow }) {
           {row.interpretation}
         </p>
         <p className="mt-3 text-base leading-relaxed text-ink">
-          <span className="font-mono text-xs font-medium uppercase tracking-wider text-action-deep">
+          <span className="font-mono text-xs font-medium uppercase tracking-wider text-accent-deep">
             The decision this supports:{' '}
           </span>
           {row.decision}

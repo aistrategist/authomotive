@@ -40,14 +40,14 @@ const cardLooks = [
     rule: 'border-ink',
   },
   {
-    surface: 'border-2 border-ink bg-lime-mist',
-    swatch: 'bg-lime',
-    rule: 'border-lime',
+    surface: 'border-2 border-ink bg-accent-soft',
+    swatch: 'bg-accent',
+    rule: 'border-accent',
   },
   {
-    surface: 'border-2 border-ink bg-orange-mist',
-    swatch: 'bg-action',
-    rule: 'border-action',
+    surface: 'border-2 border-ink bg-paper',
+    swatch: 'bg-accent-deep',
+    rule: 'border-accent-deep',
   },
 ] as const
 
@@ -116,7 +116,7 @@ export function ManagedFramework() {
                   className="lift group flex min-h-[44px] items-start gap-3 border border-ink/15 bg-paper px-4 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-deep"
                 >
                   <span
-                    className="font-mono text-sm font-bold text-fog transition-colors group-hover:text-action-deep"
+                    className="font-mono text-sm font-bold text-fog transition-colors group-hover:text-accent-deep"
                     aria-hidden="true"
                   >
                     {String(i + 1).padStart(2, '0')}

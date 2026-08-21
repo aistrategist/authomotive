@@ -8,7 +8,7 @@ export const contentType = 'image/png'
 
 /**
  * Branded Open Graph image rendered with the Authomotive visual system:
- * Ink environment, Porcelain type, Lime signal line, Orange action accent.
+ * Ink environment, Paper type, pale-blue signal line, Orange action accent.
  */
 export default function OgImage() {
   return new ImageResponse(
@@ -37,7 +37,7 @@ export default function OgImage() {
             }}
           >
             Auth
-            <span style={{ color: '#B7FF3C' }}>o</span>
+            <span style={{ color: '#BDD9FF' }}>o</span>
             motive
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function OgImage() {
               display: 'flex',
               fontSize: 20,
               fontWeight: 600,
-              color: '#B7FF3C',
+              color: '#BDD9FF',
               letterSpacing: '0.18em',
             }}
           >
@@ -83,7 +83,7 @@ export default function OgImage() {
 
         {/* Signal line with Orange terminus */}
         <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <div style={{ display: 'flex', height: 6, width: '76%', backgroundColor: '#B7FF3C' }} />
+          <div style={{ display: 'flex', height: 6, width: '76%', backgroundColor: '#BDD9FF' }} />
           <div style={{ display: 'flex', height: 6, width: '8%', backgroundColor: '#FF5A1F' }} />
         </div>
       </div>

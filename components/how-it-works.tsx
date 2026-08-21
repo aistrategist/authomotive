@@ -3,10 +3,10 @@ import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
 
 const stepLooks = [
-  'border-2 border-ink bg-ink text-porcelain',
-  'border-2 border-ink bg-lime text-ink',
-  'border-2 border-ink bg-action text-ink',
-  'border-2 border-ink bg-ink text-lime',
+  'border-2 border-ink bg-ink text-paper',
+  'border-2 border-ink bg-accent text-ink',
+  'border-2 border-ink bg-accent-soft text-ink',
+  'border-2 border-ink bg-ink text-accent',
 ] as const
 
 /**
@@ -54,7 +54,7 @@ export function HowItWorks() {
                     <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
                       {stage.body}
                     </p>
-                    <p className="mt-3 border-l-2 border-lime pl-3 text-[15px] leading-relaxed text-ink">
+                    <p className="mt-3 border-l-2 border-accent pl-3 text-[15px] leading-relaxed text-ink">
                       <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-signal-deep">
                         Evidence:{' '}
                       </span>

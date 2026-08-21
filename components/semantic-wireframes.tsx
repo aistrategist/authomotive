@@ -147,7 +147,7 @@ export function JobAuthorityPreview() {
         <Region label="Short Answer" accent="lime" />
         <Region label="Comparison Guidance" />
         <Region label="Ownership Insight" />
-        <Region label="Inventory Pathway" accent="orange" />
+        <Region label="Inventory Pathway" accent="lime" />
       </ul>
     </div>
   )

@@ -58,7 +58,7 @@ function ExecutiveSummary() {
           </ul>
         </div>
         <div className="border-t border-border pt-4">
-          <p className="text-base font-semibold text-action-deep">
+          <p className="text-base font-semibold text-accent-deep">
             Next opportunities the evidence supports
           </p>
           <ul className="mt-2.5 flex flex-col gap-1.5 text-base leading-relaxed text-ink">
