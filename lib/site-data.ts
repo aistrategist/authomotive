@@ -56,12 +56,15 @@ export const discoveryToInventory = {
     'Shoppers search with specific needs, not generic keywords. Authomotive turns those questions into dealership-owned research experiences that help buyers compare options, explore matching live inventory and continue into measurable VDP activity.',
   path: ['Buyer Question', 'Helpful Research', 'Matching Inventory', 'VDP Activity'],
   intentStream: {
-    label: 'REAL SHOPPER INTENT',
+    label: 'BUYER INTENT SIGNAL',
+    liveLabel: 'LIVE',
+    srDescription:
+      'Illustration of Search, AI and Local buyer questions mapped to intent signals, then into helpful research with live vehicles on one dealership-owned page.',
     signalsLabel: 'INTENT SIGNALS',
-    opportunityLabel: 'AUTHOMOTIVE OPPORTUNITY',
-    opportunity: 'Research guidance + matching live inventory',
-    researchLabel: 'Research guidance',
-    inventoryLabel: 'Matching live inventory',
+    mappedLabel: 'MAPPED EXPERIENCE',
+    mappedCaption: 'ONE DEALERSHIP-OWNED PAGE',
+    researchZone: 'Helpful Research',
+    vehiclesZone: 'Live Vehicles',
     signals: ['Family seating', 'Winter capability', 'Budget', 'Local availability'],
     sources: [
       {
