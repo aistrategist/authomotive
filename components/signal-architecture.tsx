@@ -4,6 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { measurement } from '@/lib/site-data'
 import { Disclosure } from '@/components/disclosure'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 
 /**
  * Interactive signal map: shopper actions on the left, the measurement
@@ -271,6 +272,14 @@ export function SignalArchitecture() {
         <blockquote className="mt-8 border-l-4 border-lime pl-4 text-xl font-semibold leading-snug text-ink md:text-2xl text-pretty">
           If an action matters to the dealership, it deserves a clear measurement plan.
         </blockquote>
+        <SectionHandoff
+          eyebrow="SEE HOW THE WORK MOVES"
+          label="See the Managed Engagement"
+          href="#how-it-works"
+          theme="light"
+          accent="discovery"
+          className="mt-6"
+        />
       </div>
     </section>
   )

@@ -388,6 +388,107 @@
   }
 }
 
+.section-handoff {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  max-width: 28rem;
+  text-decoration: none;
+}
+.section-handoff-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.section-handoff-eyebrow::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  flex-shrink: 0;
+}
+.section-handoff-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.section-handoff-arrow {
+  display: inline-block;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.section-handoff.is-light {
+  color: var(--ink);
+}
+.section-handoff.is-light .section-handoff-eyebrow {
+  color: var(--signal-deep);
+}
+.section-handoff.is-light.is-discovery .section-handoff-eyebrow::before {
+  background: var(--accent);
+}
+.section-handoff.is-light.is-evidence .section-handoff-eyebrow::before {
+  background: var(--proof);
+}
+.section-handoff.is-light.is-neutral .section-handoff-eyebrow::before {
+  background: var(--ink);
+}
+.section-handoff.is-light:hover {
+  color: var(--accent-deep);
+}
+.section-handoff.is-light:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 4px;
+}
+
+.section-handoff.is-dark {
+  color: var(--paper);
+}
+.section-handoff.is-dark .section-handoff-eyebrow {
+  color: var(--stage-muted);
+}
+.section-handoff.is-dark.is-discovery .section-handoff-eyebrow::before {
+  background: var(--accent);
+}
+.section-handoff.is-dark.is-evidence .section-handoff-eyebrow::before {
+  background: var(--proof);
+}
+.section-handoff.is-dark.is-neutral .section-handoff-eyebrow::before {
+  background: var(--stage-muted);
+}
+.section-handoff.is-dark:hover {
+  color: var(--accent-muted);
+}
+.section-handoff.is-dark.is-evidence:hover {
+  color: var(--proof);
+}
+.section-handoff.is-dark:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .section-handoff:hover .section-handoff-arrow {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-handoff-arrow {
+    transition: none;
+  }
+}
+
 .lede {
   max-width: 68ch;
 }

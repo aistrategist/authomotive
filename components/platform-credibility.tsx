@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { platformCredibility, type BrandMark, type PlatformCategory } from '@/lib/platform-data'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 import {
   MeasurementFlowViz,
   SearchOpportunityViz,
@@ -255,6 +256,14 @@ export function PlatformCredibility() {
         <p className="mt-5 text-lg font-semibold tracking-tight text-ink md:text-xl text-pretty">
           {platformCredibility.closing}
         </p>
+        <SectionHandoff
+          eyebrow="SEE THE COMPLETE SYSTEM"
+          label="See the Three Connected Jobs"
+          href="#capabilities"
+          theme="light"
+          accent="discovery"
+          className="mt-5"
+        />
       </div>
     </section>
   )

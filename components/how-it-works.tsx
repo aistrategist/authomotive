@@ -1,6 +1,7 @@
 import { howItWorks } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 
 const stepLooks = [
   'border-2 border-ink bg-ink text-paper',
@@ -80,6 +81,14 @@ export function HowItWorks() {
               {howItWorks.closing}
             </p>
           </div>
+          <SectionHandoff
+            eyebrow="SEE WHAT IS INCLUDED"
+            label="See the Complete Authomotive Engagement"
+            href="#engagement"
+            theme="light"
+            accent="evidence"
+            className="mt-6"
+          />
         </div>
       </div>
     </section>

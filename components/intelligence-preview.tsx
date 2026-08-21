@@ -6,6 +6,7 @@ import { reportingMatrix } from '@/lib/platform-data'
 import { Disclosure } from '@/components/disclosure'
 import { ReportingMatrix } from '@/components/reporting-matrix'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 import {
   AiVisibilityCharts,
   BuyerActionCharts,
@@ -282,6 +283,14 @@ export function IntelligencePreview() {
             The goal is not another dashboard. It is a clearer decision.
           </blockquote>
         </div>
+        <SectionHandoff
+          eyebrow="SEE THE MEASUREMENT FOUNDATION"
+          label="See What Feeds Authomotive Intelligence"
+          href="#measurement"
+          theme="light"
+          accent="evidence"
+          className="mt-8"
+        />
       </div>
     </section>
   )

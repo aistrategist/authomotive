@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { capabilitySystem } from '@/lib/site-data'
 import { Disclosure } from '@/components/disclosure'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 import {
   JobAuthorityPreview,
   JobIntelligencePreview,
@@ -17,10 +18,28 @@ function CapabilityVisual({ id }: { id: string }) {
   return <JobSignalPreview />
 }
 
-const nextSteps: Record<string, { href: string; label: string }> = {
-  'get-found': { href: '#authority-experiences', label: 'See an Authority Experience' },
-  'know-working': { href: '#reporting', label: 'See the Intelligence Story' },
-  'track-matters': { href: '#measurement', label: 'See How Signals Are Captured' },
+const nextSteps: Record<
+  string,
+  { href: string; label: string; eyebrow: string; accent: 'discovery' | 'evidence' }
+> = {
+  'get-found': {
+    href: '#authority-experiences',
+    label: 'See an Authority Experience',
+    eyebrow: 'SEE THE DELIVERABLE',
+    accent: 'discovery',
+  },
+  'know-working': {
+    href: '#reporting',
+    label: 'See the Intelligence Story',
+    eyebrow: 'SEE THE INTELLIGENCE',
+    accent: 'evidence',
+  },
+  'track-matters': {
+    href: '#measurement',
+    label: 'See Signal Architecture in Action',
+    eyebrow: 'SEE THE MEASUREMENT FOUNDATION',
+    accent: 'evidence',
+  },
 }
 
 function JobMotif({ id, tone }: { id: string; tone: 'ink' | 'accent' | 'proof' | 'soft' }) {
@@ -161,7 +180,7 @@ export function CapabilitySystem() {
     capabilitySystem.capabilities.find((c) => c.id === activeId) ??
     capabilitySystem.capabilities[0]
   const activeIndex = capabilitySystem.capabilities.findIndex((c) => c.id === activeId)
-  const nextStep = nextSteps[active.id]
+  const nextStep = nextSteps[active.id] ?? nextSteps['get-found']
 
   return (
     <section id="capabilities" aria-labelledby="capabilities-heading" className="relative scroll-mt-24 border-b border-border bg-paper">
@@ -318,15 +337,13 @@ export function CapabilitySystem() {
                     ))}
                   </ul>
                 </Disclosure>
-                <a
+                <SectionHandoff
+                  eyebrow={nextStep.eyebrow}
+                  label={nextStep.label}
                   href={nextStep.href}
-                  className="editorial-link"
-                >
-                  {nextStep.label}
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M2 8h11m0 0L9 4m4 4l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
+                  theme="light"
+                  accent={nextStep.accent}
+                />
               </div>
             </div>
           </div>

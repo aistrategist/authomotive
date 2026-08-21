@@ -1,6 +1,7 @@
 import { founder } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 
 /**
  * Compact, type-led founder-credibility band. Editorial and restrained:
@@ -44,6 +45,14 @@ export function FounderCredibility() {
                   </li>
                 ))}
               </ul>
+              <SectionHandoff
+                eyebrow="WORK WITH ONE ACCOUNTABLE LEAD"
+                label="Start With Your Dealership Website"
+                href="#opportunity-review"
+                theme="light"
+                accent="neutral"
+                className="mt-6"
+              />
             </div>
           </div>
         </Reveal>

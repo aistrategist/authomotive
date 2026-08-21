@@ -1,6 +1,7 @@
 import { discoveryToInventory } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
 import { BuyerIntentStream } from '@/components/buyer-intent-stream'
+import { SectionHandoff } from '@/components/section-handoff'
 
 const stepMarks = [
   { tile: 'bg-ink text-paper', rule: 'bg-accent' },
@@ -124,9 +125,19 @@ export function DiscoveryToInventory() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 max-w-[42rem] text-sm leading-relaxed text-muted-foreground text-pretty">
-            {stack.supporting}
-          </p>
+          <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+            <p className="max-w-[42rem] text-sm leading-relaxed text-muted-foreground text-pretty">
+              {stack.supporting}
+            </p>
+            <SectionHandoff
+              eyebrow="SEE THE DELIVERABLE"
+              label="See an Inventory-Connected Authority Experience"
+              href="#authority-experiences"
+              theme="light"
+              accent="discovery"
+              className="lg:shrink-0"
+            />
+          </div>
         </div>
       </div>
     </section>

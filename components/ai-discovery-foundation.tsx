@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { aiDiscovery } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 
 /** Illustrative grouped-category descriptions for the reference-sheet interface. */
 const rowDetails: Record<string, string> = {
@@ -128,17 +129,17 @@ export function AiDiscoveryFoundation() {
                 <ExpandableRow key={item} index={i} title={item} detail={rowDetails[item] ?? ''} />
               ))}
             </ul>
-            <div className="flex justify-end border-t border-border bg-porcelain/50 px-5 py-3.5 md:px-6">
-              <a href="#reporting" className="editorial-link">
-                See How It Supports the Evidence
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M2 8h11m0 0L9 4m4 4l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-            </div>
           </div>
         </Reveal>
         </div>
+        <SectionHandoff
+          eyebrow="CONNECT IT TO THE INTELLIGENCE"
+          label="See How AI Discovery Supports the Evidence"
+          href="#reporting"
+          theme="light"
+          accent="evidence"
+          className="mt-8"
+        />
       </div>
     </section>
   )

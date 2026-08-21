@@ -1,6 +1,7 @@
 import { industryGap } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
+import { SectionHandoff } from '@/components/section-handoff'
 
 const numberTiles = [
   'bg-ink text-paper',
@@ -71,10 +72,20 @@ export function IndustryGap() {
         </Reveal>
 
         <Reveal>
-          <p className="mt-10 max-w-[46.5rem] text-2xl font-semibold tracking-tight text-ink md:mt-12 md:text-3xl text-balance">
-            {industryGap.closing.split('one measurable standard')[0]}
-            <span className="text-accent-deep">one measurable standard</span>.
-          </p>
+          <div className="mt-10 grid gap-6 md:mt-12 lg:grid-cols-12 lg:items-end lg:gap-16">
+            <p className="max-w-[46.5rem] text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance lg:col-span-7">
+              {industryGap.closing.split('one measurable standard')[0]}
+              <span className="text-accent-deep">one measurable standard</span>.
+            </p>
+            <SectionHandoff
+              eyebrow="THE CONNECTED ANSWER"
+              label="See How Authomotive Connects the Work"
+              href="#capabilities"
+              theme="light"
+              accent="evidence"
+              className="lg:col-span-5"
+            />
+          </div>
         </Reveal>
       </div>
     </section>

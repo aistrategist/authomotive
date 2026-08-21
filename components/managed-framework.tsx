@@ -1,4 +1,4 @@
-import { managedFramework, idealFit, capabilitySystem } from '@/lib/site-data'
+import { managedFramework, idealFit, capabilitySystem, cta } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
 import { SignalRail } from '@/components/signal-rail'
 
@@ -53,7 +53,12 @@ const cardLooks = [
 
 export function ManagedFramework() {
   return (
-    <section data-spy="clear" aria-labelledby="framework-heading" className="border-b border-border bg-alloy">
+    <section
+      id="engagement"
+      data-spy="clear"
+      aria-labelledby="framework-heading"
+      className="scroll-mt-24 border-b border-border bg-alloy"
+    >
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-20">
         <SignalRail tone="ink" />
         <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
@@ -131,6 +136,18 @@ export function ManagedFramework() {
           <p className="mt-5 max-w-3xl border-t border-border pt-5 text-sm leading-relaxed text-muted-foreground md:text-base text-pretty">
             {idealFit.contrast}
           </p>
+          <div className="mt-6 flex flex-col items-start gap-4 border-t border-ink/15 pt-6 md:flex-row md:items-center md:justify-between md:gap-8">
+            <p className="max-w-xl text-base leading-relaxed text-ink md:text-lg text-pretty">
+              Start with one focused review of the dealership website, its discovery pathways and its
+              measurement gaps.
+            </p>
+            <a href="#opportunity-review" className="btn btn-action shrink-0">
+              {cta.primary}
+              <span className="btn-arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
