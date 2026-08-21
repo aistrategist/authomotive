@@ -1883,10 +1883,12 @@ details.disclosure[open] > summary .disclosure-plus {
 .bis-console {
   position: relative;
   overflow: hidden;
+  background: #e7ecea;
 }
 
 .bis-console-body {
-  background-image: radial-gradient(circle, rgb(6 27 32 / 0.055) 1px, transparent 1px);
+  background-color: #e7ecea;
+  background-image: radial-gradient(circle, rgb(6 27 32 / 0.05) 1px, transparent 1px);
   background-size: 11px 11px;
 }
 
@@ -1903,30 +1905,56 @@ details.disclosure[open] > summary .disclosure-plus {
   background: var(--ink);
 }
 
-.bis-bridge-rule {
-  background: var(--ink);
-  transform-origin: center;
+.bis-track {
+  position: relative;
+  overflow: visible;
+  background: rgb(6 27 32 / 0.22);
 }
 
-.bis-bridge-rule.is-off {
-  transform: scaleX(0);
+.bis-courier {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--ink);
+  background: var(--lime);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bis-courier.is-rest {
+  opacity: 0;
 }
 
 @media (min-width: 640px) {
-  .bis-bridge-rule {
-    width: 1.75rem;
+  .bis-track {
+    width: 2.75rem;
     height: 2px;
+  }
+  .bis-courier {
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+  .bis-courier.is-arrived {
+    left: 100%;
+    opacity: 1;
   }
 }
 
 @media (max-width: 639px) {
-  .bis-bridge-rule {
+  .bis-track {
     width: 2px;
-    height: 0.9rem;
-    transform-origin: center top;
+    height: 1.35rem;
   }
-  .bis-bridge-rule.is-off {
-    transform: scaleY(0);
+  .bis-courier {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .bis-courier.is-arrived {
+    top: 100%;
+    left: 50%;
+    opacity: 1;
   }
 }
 
@@ -1936,6 +1964,15 @@ details.disclosure[open] > summary .disclosure-plus {
   bottom: 0;
   height: 2px;
   width: 33.333%;
+  background: var(--lime);
+}
+
+.bis-dest {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.bis-dest.is-live {
   background: var(--lime);
 }
 
@@ -1949,35 +1986,49 @@ details.disclosure[open] > summary .disclosure-plus {
   .bis-caret.is-soft {
     opacity: 0.22;
   }
-  .bis-bridge-rule {
-    transition: transform 0.42s ease;
-  }
   .bis-rail-mark {
-    transition: transform 0.42s ease;
+    transition: transform 0.28s ease;
   }
   .bis-chip {
     transition:
-      background-color 0.28s ease,
-      color 0.28s ease,
-      border-color 0.28s ease,
-      opacity 0.28s ease;
+      background-color 0.22s ease,
+      color 0.22s ease,
+      border-color 0.22s ease,
+      opacity 0.22s ease;
+  }
+  .bis-dest {
+    transition: background-color 0.22s ease;
+  }
+  .bis-dest.is-hit {
+    animation: bis-dest-hit 0.48s ease-out 1;
+  }
+  .bis-courier.is-travel {
+    opacity: 1;
+    animation: bis-courier-x 0.6s ease-in-out forwards;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (max-width: 639px) {
+  .bis-courier.is-travel {
+    animation-name: bis-courier-y;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bis-live-dot,
   .bis-caret,
-  .bis-bridge-rule,
   .bis-rail-mark,
-  .bis-chip {
+  .bis-chip,
+  .bis-dest,
+  .bis-courier {
     animation: none !important;
     transition: none !important;
   }
   .bis-caret {
     display: none;
   }
-  .bis-bridge-rule.is-off {
-    transform: none;
+  .bis-courier.is-arrived {
+    opacity: 1;
   }
 }
 
@@ -1999,5 +2050,41 @@ details.disclosure[open] > summary .disclosure-plus {
   50%,
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes bis-courier-x {
+  from {
+    left: 0;
+    opacity: 1;
+  }
+  to {
+    left: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes bis-courier-y {
+  from {
+    top: 0;
+    left: 50%;
+    opacity: 1;
+  }
+  to {
+    top: 100%;
+    left: 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes bis-dest-hit {
+  0% {
+    box-shadow: 0 0 0 0 rgb(183 255 60 / 0);
+  }
+  35% {
+    box-shadow: 0 0 0 4px rgb(183 255 60 / 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(183 255 60 / 0);
   }
 }

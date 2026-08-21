@@ -3,14 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { discoveryToInventory } from '@/lib/site-data'
 
-const CYCLE_MS = 8000
-const HOLD_MIN_MS = 3200
-const SIGNAL_STAGGER_MS = 120
-const BRIDGE_MS = 420
-const POLL_MS = 80
+const CYCLE_MS = 6000
+const HOLD_MIN_MS = 3000
+const ACTIVATE_MS = 200
+const SIGNAL_STAGGER_MS = 140
+const TRAVEL_MS = 600
+const POLL_MS = 50
 const INK = '#061b20'
 
 type SourceId = (typeof discoveryToInventory.intentStream.sources)[number]['id']
+type Handoff = 'rest' | 'travel' | 'arrived'
 
 const SOURCE_DOT: Record<SourceId, string> = {
   search: 'bg-lime',
@@ -19,7 +21,7 @@ const SOURCE_DOT: Record<SourceId, string> = {
 }
 
 function typeDuration(length: number) {
-  return Math.min(2500, Math.max(1500, length * 32))
+  return Math.min(1600, Math.max(1000, length * 22))
 }
 
 function SearchGlyph() {
@@ -68,13 +70,53 @@ function ResearchGlyph() {
   )
 }
 
-function VehiclesGlyph() {
+function VehiclesGlyph({ live = false }: { live?: boolean }) {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-      <rect x="2.8" y="3.4" width="7.2" height="6.4" rx="1" stroke={INK} strokeWidth="1.35" />
-      <rect x="12" y="3.4" width="7.2" height="6.4" rx="1" stroke={INK} strokeWidth="1.35" />
-      <rect x="2.8" y="12.2" width="7.2" height="6.4" rx="1" stroke={INK} strokeWidth="1.35" />
-      <rect x="12" y="12.2" width="7.2" height="6.4" rx="1" stroke={INK} strokeWidth="1.35" />
+      <rect
+        x="2.8"
+        y="3.4"
+        width="7.2"
+        height="6.4"
+        rx="1"
+        fill={live ? INK : 'none'}
+        fillOpacity={live ? 0.18 : 0}
+        stroke={INK}
+        strokeWidth={live ? '1.7' : '1.35'}
+      />
+      <rect
+        x="12"
+        y="3.4"
+        width="7.2"
+        height="6.4"
+        rx="1"
+        fill={live ? INK : 'none'}
+        fillOpacity={live ? 0.18 : 0}
+        stroke={INK}
+        strokeWidth={live ? '1.7' : '1.35'}
+      />
+      <rect
+        x="2.8"
+        y="12.2"
+        width="7.2"
+        height="6.4"
+        rx="1"
+        fill={live ? INK : 'none'}
+        fillOpacity={live ? 0.18 : 0}
+        stroke={INK}
+        strokeWidth={live ? '1.7' : '1.35'}
+      />
+      <rect
+        x="12"
+        y="12.2"
+        width="7.2"
+        height="6.4"
+        rx="1"
+        fill={live ? INK : 'none'}
+        fillOpacity={live ? 0.18 : 0}
+        stroke={INK}
+        strokeWidth={live ? '1.7' : '1.35'}
+      />
     </svg>
   )
 }
@@ -96,7 +138,8 @@ export function BuyerIntentStream() {
   const [active, setActive] = useState(0)
   const [typed, setTyped] = useState(firstLen)
   const [lit, setLit] = useState(data.signals.length)
-  const [mapped, setMapped] = useState(true)
+  const [handoff, setHandoff] = useState<Handoff>('arrived')
+  const [hit, setHit] = useState(true)
   const [typing, setTyping] = useState(false)
   const [reduced, setReduced] = useState(false)
 
@@ -125,7 +168,8 @@ export function BuyerIntentStream() {
       clearTimers()
       setTyped(sources[active].question.length)
       setLit(data.signals.length)
-      setMapped(true)
+      setHandoff('arrived')
+      setHit(true)
       setTyping(false)
       return
     }
@@ -162,12 +206,17 @@ export function BuyerIntentStream() {
         skipFirstType.current = false
         setTyped(question.length)
         setLit(data.signals.length)
-        setMapped(true)
+        setHandoff('arrived')
+        setHit(true)
         setTyping(false)
       } else {
         setTyped(0)
         setLit(0)
-        setMapped(false)
+        setHandoff('rest')
+        setHit(false)
+        setTyping(false)
+        await wait(ACTIVATE_MS)
+        if (cancelled) return
         setTyping(true)
         for (let i = 1; i <= question.length; i++) {
           await wait(charMs)
@@ -180,13 +229,18 @@ export function BuyerIntentStream() {
           if (cancelled) return
           setLit(i)
         }
-        setMapped(true)
-        await wait(BRIDGE_MS)
         if (cancelled) return
+        setHandoff('travel')
+        await wait(TRAVEL_MS)
+        if (cancelled) return
+        setHandoff('arrived')
+        setHit(true)
       }
 
-      const spent = skipped ? 0 : typeMs + data.signals.length * SIGNAL_STAGGER_MS + BRIDGE_MS
-      await wait(Math.max(HOLD_MIN_MS, CYCLE_MS - spent))
+      const spent = skipped
+        ? 0
+        : ACTIVATE_MS + typeMs + data.signals.length * SIGNAL_STAGGER_MS + TRAVEL_MS
+      await wait(skipped ? HOLD_MIN_MS : Math.max(HOLD_MIN_MS, CYCLE_MS - spent))
       if (cancelled) return
       setActive((current) => (current + 1) % sources.length)
     }
@@ -203,7 +257,7 @@ export function BuyerIntentStream() {
 
   return (
     <div
-      className="bis-console flex h-full flex-col rounded-[8px] border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--ink)]"
+      className="bis-console flex h-full flex-col rounded-[8px] border-2 border-ink shadow-[6px_6px_0_0_var(--ink)]"
       onMouseEnter={() => {
         pausedRef.current = true
       }}
@@ -246,7 +300,12 @@ export function BuyerIntentStream() {
         </div>
 
         <div className="bis-console-body flex min-h-0 flex-1 flex-col justify-between gap-5 px-4 py-4 md:gap-6 md:px-5 md:py-5">
-          <div className="flex items-start gap-3 border-2 border-ink bg-porcelain px-3 py-3 md:px-3.5 md:py-3.5">
+          <div>
+            <p className="font-mono text-[0.5625rem] font-medium uppercase tracking-[0.16em] text-ink/45">
+              {data.surfacesLabel}
+            </p>
+            <p className="mt-1 text-[0.75rem] leading-snug text-ink/55">{source.surfaces}</p>
+            <div className="mt-3 flex items-start gap-3 border-2 border-ink bg-porcelain px-3 py-3 md:px-3.5 md:py-3.5">
             <span className="mt-0.5 shrink-0">
               <SourceGlyph id={source.id} />
             </span>
@@ -266,6 +325,7 @@ export function BuyerIntentStream() {
                 ) : null}
               </p>
             </div>
+          </div>
           </div>
 
           <div>
@@ -300,20 +360,33 @@ export function BuyerIntentStream() {
                   {data.researchZone}
                 </p>
               </div>
-              <div className="flex items-center justify-center px-2 py-1.5 sm:px-2 sm:py-0">
-                <span className={`bis-bridge-rule ${mapped ? '' : 'is-off'}`} />
-                <span className={`mx-0.5 h-2 w-2 shrink-0 bg-lime ${mapped ? 'opacity-100' : 'opacity-25'}`} />
-                <span className={`bis-bridge-rule ${mapped ? '' : 'is-off'}`} />
+              <div className="flex items-center justify-center px-2 py-1.5 sm:px-2.5 sm:py-0">
+                <div className="bis-track">
+                  <span className={`bis-courier is-${handoff}`} />
+                </div>
               </div>
-              <div className="flex min-w-0 flex-1 items-center gap-2.5 border-2 border-ink bg-paper px-3 py-3">
-                <VehiclesGlyph />
+              <div
+                className={`bis-dest flex min-w-0 flex-1 items-center gap-2.5 px-3 py-3 ${
+                  handoff === 'arrived' ? 'is-live' : ''
+                } ${hit ? 'is-hit' : ''}`}
+              >
+                <VehiclesGlyph live={handoff === 'arrived'} />
                 <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-ink">
                   {data.vehiclesZone}
                 </p>
               </div>
             </div>
-            <p className="mt-2.5 font-mono text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-ink">
-              {data.mappedCaption}
+            <p
+              className={`mt-2.5 flex items-center gap-1.5 font-mono text-[0.625rem] font-semibold uppercase tracking-[0.14em] ${
+                handoff === 'arrived' ? 'text-signal-deep' : 'text-ink/45'
+              }`}
+            >
+              {handoff === 'arrived' ? (
+                <span className="h-1.5 w-1.5 shrink-0 bg-lime" />
+              ) : (
+                <span className="h-1.5 w-1.5 shrink-0 bg-ink/25" />
+              )}
+              {handoff === 'arrived' ? data.statusActive : data.statusMapping}
             </p>
           </div>
         </div>
