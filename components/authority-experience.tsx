@@ -1,6 +1,7 @@
 'use client'
 
-import { useRef, useState, type KeyboardEvent } from 'react'
+import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { flushSync } from 'react-dom'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -69,6 +70,9 @@ export function AuthorityExperience() {
   const frameRef = useRef<HTMLDivElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const applyLensRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
+  const lensReadyRef = useRef(false)
+  const lensPrimedRef = useRef(false)
   const activeIndex = views.findIndex((v) => v.id === view)
 
   useGSAP(
@@ -76,6 +80,58 @@ export function AuthorityExperience() {
       const frame = frameRef.current
       const rule = ruleRef.current
       if (!frame || !rule) return
+
+      const root = rootRef.current
+      const pinD = gsap.utils.toArray<HTMLElement>('.ae-pin-d', root)
+      const pinM = gsap.utils.toArray<HTMLElement>('.ae-pin-m', root)
+      const railIdle = gsap.utils.toArray<HTMLElement>('.ae-rail-idle', root)
+      const railD = gsap.utils.toArray<HTMLElement>('.ae-rail-d', root)
+      const railM = gsap.utils.toArray<HTMLElement>('.ae-rail-m', root)
+      const layers = [...pinD, ...pinM, ...railIdle, ...railD, ...railM]
+
+      const applyLens = (id: ViewId, instant = false) => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const duration = instant || reduced ? 0 : 0.3
+        gsap.killTweensOf(layers)
+        gsap.to(pinD, {
+          autoAlpha: id === 'discovery' ? 1 : 0,
+          duration,
+          overwrite: 'auto',
+          ease: 'power2.out',
+        })
+        gsap.to(pinM, {
+          autoAlpha: id === 'measurable' ? 1 : 0,
+          duration,
+          overwrite: 'auto',
+          ease: 'power2.out',
+        })
+        gsap.to(railIdle, {
+          autoAlpha: id === 'shopper' ? 1 : 0,
+          y: id === 'shopper' ? 0 : 4,
+          duration,
+          overwrite: 'auto',
+          ease: 'power2.out',
+        })
+        gsap.to(railD, {
+          autoAlpha: id === 'discovery' ? 1 : 0,
+          y: id === 'discovery' ? 0 : 4,
+          duration,
+          overwrite: 'auto',
+          ease: 'power2.out',
+        })
+        gsap.to(railM, {
+          autoAlpha: id === 'measurable' ? 1 : 0,
+          y: id === 'measurable' ? 0 : 4,
+          duration,
+          overwrite: 'auto',
+          ease: 'power2.out',
+        })
+      }
+
+      applyLensRef.current = applyLens
+      applyLens('shopper', true)
+      lensReadyRef.current = true
+      ScrollTrigger.refresh()
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       if (reduced) {
@@ -100,8 +156,18 @@ export function AuthorityExperience() {
     { scope: rootRef },
   )
 
+  useLayoutEffect(() => {
+    if (!lensReadyRef.current) return
+    const instant = !lensPrimedRef.current
+    lensPrimedRef.current = true
+    applyLensRef.current(view, instant)
+  }, [view])
+
   const activate = (id: ViewId, focus = false) => {
-    setView(id)
+    if (id === view) return
+    flushSync(() => {
+      setView(id)
+    })
     if (focus) {
       const i = views.findIndex((v) => v.id === id)
       tabRefs.current[i]?.focus()
@@ -165,7 +231,7 @@ export function AuthorityExperience() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => activate(v.id as ViewId)}
                 onKeyDown={(event) => onTabKeyDown(event, i)}
-                className={`lift flex min-h-[52px] items-center gap-3 rounded-lg border-2 px-5 py-3 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:px-6 ${
+                className={`ae-tab flex min-h-[52px] items-center gap-3 rounded-lg border-2 px-5 py-3 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:px-6 ${
                   selected
                     ? 'border-lime bg-lime text-ink'
                     : 'border-stage-line bg-stage-elevated text-stage-foreground hover:border-stage-muted'
@@ -187,7 +253,7 @@ export function AuthorityExperience() {
           {views.map((v, i) => (
             <div key={v.id} className="flex flex-1 items-center">
               <span
-                className={`h-2 w-2 rounded-full transition-colors duration-200 ${
+                className={`ae-dot h-2 w-2 rounded-full ${
                   i === activeIndex ? 'bg-lime' : 'bg-stage-line'
                 }`}
               />
@@ -231,7 +297,7 @@ export function AuthorityExperience() {
                     budget range, and how much winter capability you actually need. Start with your
                     priorities below and we&apos;ll narrow the field.
                   </p>
-                  <p className="ae-inline ae-inline-d" hidden={view !== 'discovery'}>
+                  <p className="ae-inline ae-inline-d" aria-hidden={view !== 'discovery'}>
                     <span className="font-semibold">{discoveryPoints[0].label}. </span>
                     {discoveryPoints[0].detail}
                   </p>
@@ -249,7 +315,7 @@ export function AuthorityExperience() {
                       </span>
                     ))}
                   </div>
-                  <p className="ae-inline ae-inline-m" hidden={view !== 'measurable'}>
+                  <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
                     <span className="font-semibold">{measuredActions[0].action}. </span>
                     {measuredActions[0].signal}
                   </p>
@@ -268,7 +334,7 @@ export function AuthorityExperience() {
                       How AWD systems, ground clearance, and heated features compare across the
                       three-row models we carry.
                     </p>
-                    <p className="ae-inline ae-inline-m" hidden={view !== 'measurable'}>
+                    <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
                       <span className="font-semibold">{measuredActions[1].action}. </span>
                       {measuredActions[1].signal}
                     </p>
@@ -280,7 +346,7 @@ export function AuthorityExperience() {
                       first winter.
                     </p>
                   </div>
-                  <p className="ae-inline ae-inline-d sm:col-span-2" hidden={view !== 'discovery'}>
+                  <p className="ae-inline ae-inline-d sm:col-span-2" aria-hidden={view !== 'discovery'}>
                     <span className="font-semibold">{discoveryPoints[1].label}. </span>
                     {discoveryPoints[1].detail}
                   </p>
@@ -305,11 +371,11 @@ export function AuthorityExperience() {
                       <span aria-hidden="true">→</span>
                     </span>
                   </div>
-                  <p className="ae-inline ae-inline-d" hidden={view !== 'discovery'}>
+                  <p className="ae-inline ae-inline-d" aria-hidden={view !== 'discovery'}>
                     <span className="font-semibold">{discoveryPoints[2].label}. </span>
                     {discoveryPoints[2].detail}
                   </p>
-                  <p className="ae-inline ae-inline-m" hidden={view !== 'measurable'}>
+                  <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
                     <span className="font-semibold">{measuredActions[2].action}. </span>
                     {measuredActions[2].signal}
                   </p>
@@ -322,7 +388,7 @@ export function AuthorityExperience() {
                   <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     Questions remain? Speak with the dealership.
                   </p>
-                  <p className="ae-inline ae-inline-m" hidden={view !== 'measurable'}>
+                  <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
                     <span className="font-semibold">{measuredActions[3].action}. </span>
                     {measuredActions[3].signal}
                   </p>
@@ -332,14 +398,15 @@ export function AuthorityExperience() {
               <aside className="ae-rail" data-lens={view} aria-hidden={view === 'shopper'}>
                 <p
                   className="ae-rail-idle font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-fog"
-                  hidden={view !== 'shopper'}
+                  aria-hidden={view !== 'shopper'}
                 >
                   Shopper lens — the page as published.
                 </p>
                 <ol
                   className="ae-rail-panel ae-rail-d"
                   aria-label="How discovery systems read this page"
-                  hidden={view !== 'discovery'}
+                  aria-hidden={view !== 'discovery'}
+                  inert={view !== 'discovery'}
                 >
                   {discoveryPoints.map((item, i) => (
                     <li key={item.label} className="ae-rail-item">
@@ -358,7 +425,8 @@ export function AuthorityExperience() {
                 <ol
                   className="ae-rail-panel ae-rail-m"
                   aria-label="Measured actions on this page"
-                  hidden={view !== 'measurable'}
+                  aria-hidden={view !== 'measurable'}
+                  inert={view !== 'measurable'}
                 >
                   {measuredActions.map((row, i) => (
                     <li key={row.action} className="ae-rail-item">
