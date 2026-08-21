@@ -489,12 +489,14 @@
   }
 }
 
-.qti-route {
+.qti-route,
+.loop-route {
   position: relative;
   display: grid;
   gap: 1.5rem;
 }
-.qti-route::before {
+.qti-route::before,
+.loop-route::before {
   content: '';
   position: absolute;
   left: 2.75rem;
@@ -506,17 +508,20 @@
   pointer-events: none;
 }
 @media (min-width: 768px) {
-  .qti-route::before {
+  .qti-route::before,
+  .loop-route::before {
     top: 3.5rem;
     bottom: 3.5rem;
   }
 }
 @media (min-width: 1024px) {
-  .qti-route {
+  .qti-route,
+  .loop-route {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
   }
-  .qti-route::before {
+  .qti-route::before,
+  .loop-route::before {
     left: 3.5rem;
     right: 3.5rem;
     top: 3.5rem;
@@ -527,27 +532,33 @@
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .qti-route::before {
+  .qti-route::before,
+  .loop-route::before {
     animation: qti-draw-y 600ms ease-out both;
   }
   .qti-node {
     animation: qti-node 180ms ease-out both;
   }
-  .qti-route > li:nth-child(1) .qti-node {
+  .qti-route > li:nth-child(1) .qti-node,
+  .loop-route > li:nth-child(1) .qti-node {
     animation-delay: 80ms;
   }
-  .qti-route > li:nth-child(2) .qti-node {
+  .qti-route > li:nth-child(2) .qti-node,
+  .loop-route > li:nth-child(2) .qti-node {
     animation-delay: 160ms;
   }
-  .qti-route > li:nth-child(3) .qti-node {
+  .qti-route > li:nth-child(3) .qti-node,
+  .loop-route > li:nth-child(3) .qti-node {
     animation-delay: 240ms;
   }
-  .qti-route > li:nth-child(4) .qti-node {
+  .qti-route > li:nth-child(4) .qti-node,
+  .loop-route > li:nth-child(4) .qti-node {
     animation-delay: 320ms;
   }
 }
 @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-  .qti-route::before {
+  .qti-route::before,
+  .loop-route::before {
     animation-name: qti-draw-x;
   }
 }
