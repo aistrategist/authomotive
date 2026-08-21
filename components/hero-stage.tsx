@@ -933,9 +933,9 @@ export function HeroStage() {
               className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
               transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
             >
-              <circle className="hs-hub-bloom" r="36" fill="#bdd9ff" />
-              <circle r="22" fill="#8fbcf5" />
-              <circle r="22" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.35" />
+              <circle className="hs-hub-bloom" r="36" fill="#c8b8ff" />
+              <circle r="22" fill="#b8c1cc" />
+              <circle r="22" fill="none" stroke="rgba(255,252,247,0.35)" strokeWidth="1.35" />
               <CarGlyph />
             </g>
 
@@ -1005,7 +1005,7 @@ export function HeroStage() {
                     cx={cv.cx}
                     cy={cv.cy}
                     r="13"
-                    fill="#ffc982"
+                    fill="#b8c1cc"
                   />
                   <g transform={`translate(${cv.cx} ${cv.cy})`}>
                     <g className="hs-convert-glyph">
