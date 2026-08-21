@@ -1,40 +1,121 @@
-/** Shared chapter-entry mark: 2px rule, 72–96px emphasis, square node. */
+'use client'
 
-const bars = {
-  ink: 'bg-ink',
-  lime: 'bg-lime',
-  orange: 'bg-accent',
-  proof: 'bg-proof',
-} as const
+import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 
-const rests = {
-  ink: 'bg-ink/15',
-  lime: 'bg-lime/25',
-  orange: 'bg-accent/25',
-  proof: 'bg-proof/35',
-} as const
+const TOTAL = 7
 
-export function SignalRail({
-  tone = 'ink',
-}: {
-  tone?: 'ink' | 'lime' | 'orange' | 'handoff' | 'proof'
-}) {
-  if (tone === 'handoff') {
-    return (
-      <div className="mb-8 flex items-center md:mb-10" aria-hidden="true">
-        <span className="h-[2px] w-[4.5rem] bg-lime md:w-16" />
-        <span className="h-[2px] w-8 bg-stage-muted md:w-10" />
-        <span className="h-2 w-2 shrink-0 bg-accent" />
-        <span className="h-[2px] flex-1 bg-porcelain/15" />
-      </div>
+const chapters = [
+  {
+    step: 1,
+    label: 'Buyer Questions to Inventory',
+    anchors: ['platforms'],
+    color: 'var(--accent)',
+    surface: 'paper',
+  },
+  {
+    step: 2,
+    label: 'One System · Three Jobs',
+    anchors: ['capabilities'],
+    color: 'var(--ink)',
+    surface: 'paper',
+  },
+  {
+    step: 3,
+    label: 'Authority Experience',
+    anchors: ['authority-experiences'],
+    color: 'var(--accent)',
+    surface: 'stage',
+  },
+  {
+    step: 4,
+    label: 'Intelligence',
+    anchors: ['reporting'],
+    color: 'var(--proof)',
+    surface: 'stage',
+  },
+  {
+    step: 5,
+    label: 'Measurement',
+    anchors: ['measurement', 'how-it-works'],
+    color: 'var(--ink)',
+    surface: 'paper',
+  },
+  {
+    step: 6,
+    label: 'Engagement',
+    anchors: ['engagement'],
+    color: 'var(--ink)',
+    surface: 'paper',
+  },
+  {
+    step: 7,
+    label: 'Opportunity Review',
+    anchors: ['opportunity-review'],
+    color: 'var(--action)',
+    surface: 'stage',
+  },
+] as const
+
+function widthFor(step: number) {
+  return step >= TOTAL ? 100 : (step / TOTAL) * 100
+}
+
+export function SignalRail({ step }: { step: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) {
+  const chapter = chapters[step - 1]
+  const rootRef = useRef<HTMLDivElement>(null)
+  const to = widthFor(step)
+  const from = step === 1 ? 0 : widthFor(step - 1)
+  const counter = `${String(step).padStart(2, '0')} / ${String(TOTAL).padStart(2, '0')}`
+
+  useLayoutEffect(() => {
+    const el = rootRef.current
+    if (!el || !chapter) return
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const hash = window.location.hash.replace('#', '')
+    const landedOnChapter = (chapter.anchors as readonly string[]).includes(hash)
+    if (reduced || landedOnChapter) return
+
+    el.classList.add('is-pending')
+
+    const target = el.closest('section') ?? el
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return
+        el.classList.remove('is-pending')
+        el.classList.add('is-in')
+        io.disconnect()
+      },
+      { threshold: 0.18, rootMargin: '0px 0px -12% 0px' },
     )
-  }
+    io.observe(target)
+    return () => io.disconnect()
+  }, [chapter, step])
+
+  if (!chapter) return null
 
   return (
-    <div className="mb-8 flex items-center md:mb-10" aria-hidden="true">
-      <span className={`h-[2px] w-[4.5rem] md:w-24 ${bars[tone]}`} />
-      <span className={`h-2 w-2 shrink-0 ${bars[tone]}`} />
-      <span className={`h-[2px] flex-1 ${rests[tone]}`} />
+    <div
+      ref={rootRef}
+      className={`journey-rail journey-${chapter.surface}`}
+      style={
+        {
+          '--journey-from': `${from}%`,
+          '--journey-to': `${to}%`,
+          '--journey-color': chapter.color,
+        } as CSSProperties
+      }
+    >
+      <p className="sr-only">{`Chapter ${step} of ${TOTAL}: ${chapter.label}`}</p>
+      <div className="journey-track" aria-hidden="true">
+        <span className="journey-rest" />
+        <span className="journey-fill">
+          <span className="journey-station" />
+        </span>
+      </div>
+      <span className="journey-count font-mono" aria-hidden="true">
+        {counter}
+      </span>
     </div>
   )
 }

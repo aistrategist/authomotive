@@ -397,7 +397,7 @@ export function CapabilitySystem() {
     >
       <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <span ref={ruleRef} className="cap-chapter-rule" aria-hidden="true" />
-        <SignalRail tone="ink" />
+        <SignalRail step={2} />
         <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {capabilitySystem.eyebrow}

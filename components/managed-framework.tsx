@@ -181,7 +181,7 @@ export function ManagedFramework() {
       className="scroll-mt-24 border-b border-border bg-alloy"
     >
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
-        <SignalRail tone="ink" />
+        <SignalRail step={6} />
         <div className="max-w-[46rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             {managedFramework.eyebrow}

@@ -255,7 +255,7 @@ export function IntelligencePreview() {
     >
       <div className="bg-stage">
         <div className="mx-auto max-w-[1280px] px-5 pt-14 pb-16 md:px-8 md:pt-16 md:pb-20 lg:pt-[4.5rem]">
-          <SignalRail tone="proof" />
+          <SignalRail step={4} />
           <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
             <div className="lg:col-span-7">
               <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-proof">

@@ -50,7 +50,7 @@ export function SignalArchitecture() {
       className="scroll-mt-24 border-b border-border bg-paper"
     >
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
-        <SignalRail tone="ink" />
+        <SignalRail step={5} />
         <div className="max-w-[42rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
             THE MANAGED MEASUREMENT LOOP

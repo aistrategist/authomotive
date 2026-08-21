@@ -3192,3 +3192,111 @@ details.disclosure[open] > summary .disclosure-plus {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Journey spine — shared chapter progress rule                        */
+/* ------------------------------------------------------------------ */
+
+.journey-rail {
+  position: relative;
+  height: 8px;
+  margin-bottom: 2rem;
+}
+@media (min-width: 768px) {
+  .journey-rail {
+    margin-bottom: 2.5rem;
+  }
+}
+.journey-track {
+  position: absolute;
+  left: 0;
+  right: 3.35rem;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  pointer-events: none;
+}
+.journey-rest,
+.journey-fill,
+.journey-station {
+  pointer-events: none;
+}
+.journey-rest {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  opacity: 0.15;
+}
+.journey-stage .journey-rest {
+  background: var(--paper);
+  opacity: 0.22;
+}
+.journey-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--journey-to);
+  background: var(--journey-color);
+}
+.journey-station {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  margin-right: -4px;
+  background: var(--journey-color);
+}
+.journey-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: var(--ink);
+  pointer-events: none;
+  user-select: none;
+}
+.journey-stage .journey-count {
+  color: var(--paper);
+}
+@media (max-width: 639px) {
+  .journey-station {
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    margin-right: -5px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .journey-rail.is-pending .journey-fill {
+    width: var(--journey-from);
+  }
+  .journey-rail.is-in .journey-fill {
+    width: var(--journey-to);
+    transition: width 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .journey-rail.is-pending .journey-count {
+    opacity: 0;
+  }
+  .journey-rail.is-in .journey-count {
+    opacity: 1;
+    transition: opacity 0.32s ease 0.12s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-fill {
+    width: var(--journey-to) !important;
+    transition: none !important;
+  }
+  .journey-count {
+    opacity: 1 !important;
+  }
+}
