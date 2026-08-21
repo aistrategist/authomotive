@@ -458,16 +458,16 @@ function PageWireframe({
         width={PAGE_W}
         height={PAGE_H}
         rx="11"
-        fill="rgba(56,52,66,0.92)"
-        stroke="rgba(200,184,255,0.32)"
+        fill="var(--hero-panel-body)"
+        stroke="var(--hero-panel-border)"
         strokeWidth="1.25"
       />
-      <rect width={PAGE_W} height="26" rx="11" fill="rgba(81,72,95,0.90)" />
-      <rect y="13" width={PAGE_W} height="13" fill="rgba(81,72,95,0.90)" />
-      <circle cx="16" cy="13" r="3" fill="rgba(255,252,247,0.35)" />
-      <circle cx="27" cy="13" r="3" fill="rgba(255,252,247,0.22)" />
-      <circle cx="38" cy="13" r="3" fill="rgba(255,252,247,0.14)" />
-      <rect x="52" y="8" width="120" height="9" rx="4" fill="rgba(255,252,247,0.08)" />
+      <rect width={PAGE_W} height="26" rx="11" fill="var(--hero-panel-chrome)" />
+      <rect y="13" width={PAGE_W} height="13" fill="var(--hero-panel-chrome)" />
+      <circle cx="16" cy="13" r="3" fill="rgba(184,193,204,0.42)" />
+      <circle cx="27" cy="13" r="3" fill="rgba(184,193,204,0.28)" />
+      <circle cx="38" cy="13" r="3" fill="rgba(184,193,204,0.16)" />
+      <rect x="52" y="8" width="120" height="9" rx="4" fill="var(--hero-panel-line)" />
 
       <text
         x="12"
@@ -480,27 +480,27 @@ function PageWireframe({
 
       {variant === 'guide' && (
         <>
-          <rect className="hs-skel-block" x="12" y="54" width="92" height="9" rx="2" />
+          <rect className="hs-skel-line" x="12" y="54" width="92" height="9" rx="2" />
           <rect className="hs-skel-block" x="12" y="72" width={INNER} height="6" rx="2" />
           <rect className="hs-skel-block" x="12" y="84" width={INNER - 20} height="6" rx="2" />
           <rect className="hs-skel-block" x="12" y="96" width={INNER - 10} height="6" rx="2" />
           <rect className="hs-skel-block" x="12" y="108" width={INNER - 56} height="6" rx="2" />
-          <rect className="hs-skel-block" x="12" y="122" width={INNER} height="16" rx="3" />
+          <rect className="hs-skel-mass" x="12" y="122" width={INNER} height="16" rx="3" />
         </>
       )}
       {variant === 'vsrp' && (
         <>
-          <rect className="hs-skel-block" x={card1} y="54" width={cardW} height="52" rx="4" />
-          <rect className="hs-skel-block" x={card2} y="54" width={cardW} height="52" rx="4" />
-          <rect className="hs-skel-block" x={card3} y="54" width={cardW} height="52" rx="4" />
+          <rect className="hs-skel-mass" x={card1} y="54" width={cardW} height="52" rx="4" />
+          <rect className="hs-skel-mass" x={card2} y="54" width={cardW} height="52" rx="4" />
+          <rect className="hs-skel-mass" x={card3} y="54" width={cardW} height="52" rx="4" />
           <rect className="hs-skel-block" x="12" y="118" width={INNER - 40} height="6" rx="2" />
           <rect className="hs-skel-block" x="12" y="130" width={INNER - 70} height="6" rx="2" />
         </>
       )}
       {variant === 'vdp' && (
         <>
-          <rect className="hs-skel-block" x="12" y="54" width={INNER} height="64" rx="5" />
-          <rect className="hs-skel-block" x="12" y="128" width="132" height="7" rx="2" />
+          <rect className="hs-skel-mass" x="12" y="54" width={INNER} height="64" rx="5" />
+          <rect className="hs-skel-line" x="12" y="128" width="132" height="7" rx="2" />
           <rect className="hs-skel-block" x="12" y="140" width="184" height="6" rx="2" />
         </>
       )}
@@ -512,8 +512,8 @@ function PageWireframe({
         width="104"
         height="28"
         rx="6"
-        fill="rgba(143,188,245,0.18)"
-        stroke="rgba(143,188,245,0.60)"
+        fill="rgba(143,188,245,0.14)"
+        stroke="rgba(143,188,245,0.72)"
         strokeWidth="1.25"
       />
       <rect className="hs-skel-block" x={CTA_X - 28} y={CTA_Y - 3} width="56" height="6" rx="2" opacity="0.7" />
@@ -933,15 +933,15 @@ export function HeroStage() {
               className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
               transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
             >
-              <circle className="hs-hub-bloom" r="36" fill="#c8b8ff" />
+              <circle className="hs-hub-bloom" r="36" fill="rgba(232,238,245,0.12)" />
               <circle r="22" fill="#b8c1cc" />
               <circle r="22" fill="none" stroke="rgba(255,252,247,0.35)" strokeWidth="1.35" />
               <CarGlyph />
             </g>
 
             <g className="hs-start" transform={`translate(${SEARCH.cx} ${SEARCH.cy})`}>
-              <circle className="hs-convert-disc" r="16" fill="#8fbcf5" />
-              <circle r="16" fill="none" stroke="rgba(6,27,32,0.2)" strokeWidth="1.25" />
+              <circle className="hs-convert-disc" r="16" fill="#b8c1cc" />
+              <circle r="16" fill="none" stroke="rgba(255,252,247,0.28)" strokeWidth="1.25" />
               <SearchGlyph />
             </g>
 
