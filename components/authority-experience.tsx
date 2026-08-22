@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -20,25 +20,29 @@ const lensUi = [
     micro: '01 · SHOPPER',
     main: 'What buyers see',
     short: 'Shopper',
+    mark: '01',
   },
   {
     id: 'discovery' as const,
     micro: '02 · DISCOVERY',
     main: 'What systems read',
     short: 'Discovery',
+    mark: '02',
   },
   {
     id: 'measurable' as const,
     micro: '03 · MEASUREMENT',
     main: 'What dealers know',
     short: 'Measurement',
+    mark: '03',
   },
 ] as const
 
+/** Lens → commercial outcome card beneath the browser */
 const outcomes = [
-  { mark: 'bg-accent', label: 'Discovery earned' },
-  { mark: 'bg-paper', label: 'Buyers guided' },
-  { mark: 'bg-proof', label: 'Actions measured' },
+  { id: 'discovery' as const, mark: 'bg-accent', label: 'Discovery earned' },
+  { id: 'shopper' as const, mark: 'bg-paper', label: 'Buyers guided' },
+  { id: 'measurable' as const, mark: 'bg-proof', label: 'Actions measured' },
 ] as const
 
 const shopperRoute = [
@@ -91,10 +95,10 @@ function pinLabel(n: number) {
   return String(n).padStart(2, '0')
 }
 
-function LensGlyph({ id }: { id: ViewId }) {
+function LensGlyph({ id, className = 'ae-glyph' }: { id: ViewId; className?: string }) {
   if (id === 'shopper') {
     return (
-      <svg className="ae-glyph" viewBox="0 0 20 20" aria-hidden="true">
+      <svg className={className} viewBox="0 0 20 20" aria-hidden="true">
         <circle cx="5" cy="10" r="2.25" fill="currentColor" />
         <path d="M7.5 10h5.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" fill="none" />
         <path d="M13 7.5 16 10l-3 2.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" fill="none" />
@@ -104,7 +108,7 @@ function LensGlyph({ id }: { id: ViewId }) {
   }
   if (id === 'discovery') {
     return (
-      <svg className="ae-glyph" viewBox="0 0 20 20" aria-hidden="true">
+      <svg className={className} viewBox="0 0 20 20" aria-hidden="true">
         <circle cx="4.5" cy="4.5" r="2" fill="currentColor" />
         <circle cx="15.5" cy="4.5" r="2" fill="currentColor" />
         <circle cx="10" cy="15.5" r="2" fill="currentColor" />
@@ -118,7 +122,7 @@ function LensGlyph({ id }: { id: ViewId }) {
     )
   }
   return (
-    <svg className="ae-glyph" viewBox="0 0 20 20" aria-hidden="true">
+    <svg className={className} viewBox="0 0 20 20" aria-hidden="true">
       <path d="M3 14.5 7.5 8l3 3.5L17 4.5" stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="square" />
       <circle cx="17" cy="4.5" r="1.75" fill="currentColor" />
       <path d="M3 16.5h14" stroke="currentColor" strokeWidth="1.25" opacity="0.45" />
@@ -126,43 +130,18 @@ function LensGlyph({ id }: { id: ViewId }) {
   )
 }
 
-type ViewTransitionLike = {
-  ready: Promise<void>
-  finished: Promise<void>
-  skipTransition: () => void
-}
-
-function viewTransitionDoc() {
-  const doc = document as Document & {
-    startViewTransition?: (update: () => void) => ViewTransitionLike
-    activeViewTransition?: ViewTransitionLike | null
-  }
-  return doc
-}
-
-function canUseAperture(layer: HTMLElement | null, tab: HTMLElement | null) {
-  if (typeof document === 'undefined') return false
-  if (typeof viewTransitionDoc().startViewTransition !== 'function') return false
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
-  if (window.innerWidth < 768) return false
-  if (!layer || !tab) return false
-  const layerBox = layer.getBoundingClientRect()
+function apertureGeometry(tab: HTMLElement, workspace: HTMLElement) {
   const tabBox = tab.getBoundingClientRect()
-  return layerBox.width > 8 && layerBox.height > 8 && tabBox.width > 8 && tabBox.height > 8
-}
-
-function apertureGeometry(tab: HTMLElement, layer: HTMLElement) {
-  const tabBox = tab.getBoundingClientRect()
-  const layerBox = layer.getBoundingClientRect()
-  const originX = Math.min(Math.max(tabBox.left + tabBox.width / 2 - layerBox.left, 0), layerBox.width)
+  const box = workspace.getBoundingClientRect()
+  const originX = Math.min(Math.max(tabBox.left + tabBox.width / 2 - box.left, 0), box.width)
   const originY = 0
   const radius = Math.ceil(
     Math.max(
       Math.hypot(originX, originY),
-      Math.hypot(layerBox.width - originX, originY),
-      Math.hypot(originX, layerBox.height - originY),
-      Math.hypot(layerBox.width - originX, layerBox.height - originY),
-    ) + 12,
+      Math.hypot(box.width - originX, originY),
+      Math.hypot(originX, box.height - originY),
+      Math.hypot(box.width - originX, box.height - originY),
+    ) + 16,
   )
   return { originX, originY, radius }
 }
@@ -170,6 +149,7 @@ function apertureGeometry(tab: HTMLElement, layer: HTMLElement) {
 function InspectorShell({
   active,
   lens,
+  mark,
   eyebrow,
   outcomeLabel,
   outcomeValue,
@@ -178,6 +158,7 @@ function InspectorShell({
 }: {
   active: boolean
   lens: ViewId
+  mark: string
   eyebrow: string
   outcomeLabel: string
   outcomeValue: string
@@ -197,6 +178,10 @@ function InspectorShell({
       <div className="ae-inspector-body">
         <span className="ae-inspector-spine" aria-hidden="true" />
         <span className="ae-inspector-packet" aria-hidden="true" />
+        <span className="ae-inspector-mark" aria-hidden="true">
+          <span className="ae-inspector-mark-n font-mono">{mark}</span>
+          <LensGlyph id={lens} className="ae-inspector-mark-glyph" />
+        </span>
         {children}
       </div>
       <div className="ae-outcome">
@@ -214,102 +199,153 @@ export function AuthorityExperience() {
   const rootRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const workspaceRef = useRef<HTMLDivElement>(null)
-  const apertureRef = useRef<HTMLDivElement>(null)
+  const baseRef = useRef<HTMLDivElement>(null)
+  const revealRef = useRef<HTMLDivElement>(null)
+  const sweepRef = useRef<HTMLSpanElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
-  const applyLensRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
-  const playInspectorRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
+  const lensTlRef = useRef<gsap.core.Timeline | null>(null)
+  const runLensRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
   const lensReadyRef = useRef(false)
   const lensPrimedRef = useRef(false)
-  const skipGsapRef = useRef(false)
-  const vtGenRef = useRef(0)
-  const vtClearTimerRef = useRef<number | null>(null)
   const viewRef = useRef(view)
   viewRef.current = view
   const activeIndex = views.findIndex((v) => v.id === view)
-
-  useEffect(() => {
-    return () => {
-      if (vtClearTimerRef.current !== null) {
-        window.clearTimeout(vtClearTimerRef.current)
-        vtClearTimerRef.current = null
-      }
-      document.documentElement.classList.remove('ae-vt-active')
-      skipGsapRef.current = false
-    }
-  }, [])
 
   useGSAP(
     () => {
       const frame = frameRef.current
       const rule = ruleRef.current
       const root = rootRef.current
-      if (!frame || !rule || !root) return
+      const workspace = workspaceRef.current
+      const base = baseRef.current
+      const reveal = revealRef.current
+      const sweep = sweepRef.current
+      if (!frame || !rule || !root || !workspace || !base || !reveal) return
 
-      const pinD = gsap.utils.toArray<HTMLElement>('.ae-pin-d', root)
-      const pinM = gsap.utils.toArray<HTMLElement>('.ae-pin-m', root)
+      const pinD = () => gsap.utils.toArray<HTMLElement>('.ae-pin-d', root)
+      const pinM = () => gsap.utils.toArray<HTMLElement>('.ae-pin-m', root)
 
-      const playInspector = (id: ViewId, instant = false) => {
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const settlePanel = (id: ViewId) => {
         const panel = root.querySelector<HTMLElement>(`.ae-inspector-panel[data-lens="${id}"]`)
         if (!panel) return
         const spine = panel.querySelector<HTMLElement>('.ae-inspector-spine')
         const packet = panel.querySelector<HTMLElement>('.ae-inspector-packet')
         const stations = gsap.utils.toArray<HTMLElement>('.ae-station', panel)
         const outcome = panel.querySelector<HTMLElement>('.ae-outcome')
+        if (spine) gsap.set(spine, { scaleY: 1, transformOrigin: 'top center' })
+        stations.forEach((el) => gsap.set(el, { autoAlpha: 1, y: 0 }))
+        if (outcome) gsap.set(outcome, { autoAlpha: 1 })
+        if (packet) gsap.set(packet, { autoAlpha: 0, clearProps: 'top' })
+      }
 
-        gsap.killTweensOf([spine, packet, ...stations, outcome].filter(Boolean))
+      const clearWillChange = () => {
+        gsap.set([reveal, base, sweep].filter(Boolean), { clearProps: 'willChange' })
+      }
 
-        if (instant || reduced || window.innerWidth < 768) {
-          if (spine) gsap.set(spine, { scaleY: 1, transformOrigin: 'top center' })
-          stations.forEach((el) => gsap.set(el, { autoAlpha: 1, y: 0, scale: 1 }))
-          if (outcome) gsap.set(outcome, { autoAlpha: 1, y: 0 })
-          if (packet) gsap.set(packet, { autoAlpha: 0 })
+      const runLens = (id: ViewId, instant = false) => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const mobile = window.innerWidth < 768
+        const tab = tabRefs.current[views.findIndex((v) => v.id === id)]
+
+        lensTlRef.current?.kill()
+        lensTlRef.current = null
+        gsap.killTweensOf([reveal, base, sweep, ...pinD(), ...pinM()].filter(Boolean))
+
+        base.dataset.lens = id
+        reveal.dataset.lens = id
+        workspace.dataset.lens = id
+        gsap.set(reveal, { clipPath: 'circle(150% at 50% 0%)', autoAlpha: 0 })
+        if (sweep) gsap.set(sweep, { autoAlpha: 0, x: 0, clearProps: 'transform' })
+
+        settlePanel(id)
+        gsap.set(pinD(), { autoAlpha: id === 'discovery' ? 1 : 0 })
+        gsap.set(pinM(), { autoAlpha: id === 'measurable' ? 1 : 0 })
+
+        if (instant || reduced || mobile || !tab) {
+          clearWillChange()
           return
         }
 
-        if (spine) gsap.set(spine, { scaleY: 0, transformOrigin: 'top center' })
-        stations.forEach((el) => gsap.set(el, { autoAlpha: 0, y: 4, scale: 1 }))
-        if (outcome) gsap.set(outcome, { autoAlpha: 0.35, y: 0 })
-        if (packet) gsap.set(packet, { autoAlpha: 0, top: 0 })
+        const { originX, originY, radius } = apertureGeometry(tab, workspace)
+        const origin = `${originX}px ${originY}px`
+        const panel = root.querySelector<HTMLElement>(`.ae-inspector-panel[data-lens="${id}"]`)
+        const spine = panel?.querySelector<HTMLElement>('.ae-inspector-spine')
+        const packet = panel?.querySelector<HTMLElement>('.ae-inspector-packet')
+        const stations = panel ? gsap.utils.toArray<HTMLElement>('.ae-station', panel) : []
+        const outcome = panel?.querySelector<HTMLElement>('.ae-outcome')
 
-        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
-        if (spine) tl.to(spine, { scaleY: 1, duration: 0.26 }, 0)
+        if (spine) gsap.set(spine, { scaleY: 0, transformOrigin: 'top center' })
+        stations.forEach((el) => gsap.set(el, { autoAlpha: 0, y: 2 }))
+        if (outcome) gsap.set(outcome, { autoAlpha: 0.4 })
+        if (packet) gsap.set(packet, { autoAlpha: 0, top: 0 })
+        gsap.set(pinD(), { autoAlpha: 0 })
+        gsap.set(pinM(), { autoAlpha: 0 })
+
+        gsap.set(reveal, {
+          autoAlpha: 1,
+          clipPath: `circle(8px at ${origin})`,
+          willChange: 'clip-path',
+        })
+
+        const tl = gsap.timeline({
+          defaults: { ease: 'power3.out' },
+          onComplete: () => {
+            base.dataset.lens = id
+            gsap.set(reveal, { autoAlpha: 0, clipPath: 'circle(150% at 50% 0%)' })
+            if (sweep) gsap.set(sweep, { autoAlpha: 0 })
+            clearWillChange()
+            lensTlRef.current = null
+          },
+        })
+        lensTlRef.current = tl
+
+        tl.to(
+          reveal,
+          {
+            clipPath: `circle(${radius}px at ${origin})`,
+            duration: 0.4,
+            ease: 'power3.out',
+          },
+          0,
+        )
+
+        if (sweep) {
+          tl.set(sweep, { autoAlpha: 0.9, x: originX - 6, y: 0, willChange: 'transform, opacity' }, 0.02)
+          tl.to(
+            sweep,
+            {
+              y: Math.max(80, workspace.offsetHeight - 24),
+              duration: 0.38,
+              ease: 'power2.inOut',
+            },
+            0.04,
+          )
+          tl.to(sweep, { autoAlpha: 0, duration: 0.12 }, 0.38)
+        }
+
+        if (spine) tl.to(spine, { scaleY: 1, duration: 0.26 }, 0.12)
         stations.forEach((el, i) => {
-          tl.to(el, { autoAlpha: 1, y: 0, scale: 1.04, duration: 0.22 }, 0.08 + i * 0.07)
-          tl.to(el, { scale: 1, duration: 0.12 }, 0.08 + i * 0.07 + 0.22)
+          tl.to(el, { autoAlpha: 1, y: 0, duration: 0.2 }, 0.16 + i * 0.07)
         })
         if (packet && spine) {
           const travel = Math.max(24, spine.offsetHeight - 8)
-          tl.set(packet, { autoAlpha: 1, top: 0 }, 0.12)
-          tl.to(packet, { top: travel, duration: 0.32, ease: 'power2.inOut' }, 0.12)
-          tl.to(packet, { autoAlpha: 0, duration: 0.15 }, 0.4)
+          tl.set(packet, { autoAlpha: 1, top: 0 }, 0.18)
+          tl.to(packet, { top: travel, duration: 0.3, ease: 'power2.inOut' }, 0.18)
+          tl.to(packet, { autoAlpha: 0, duration: 0.12 }, 0.44)
         }
-        if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.2 }, 0.42)
+        if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.18 }, 0.42)
+
+        const pinDelay = 0.22
+        if (id === 'discovery') {
+          tl.to(pinD(), { autoAlpha: 1, duration: 0.22, stagger: 0.05 }, pinDelay)
+        } else if (id === 'measurable') {
+          tl.to(pinM(), { autoAlpha: 1, duration: 0.22, stagger: 0.05 }, pinDelay)
+        }
       }
 
-      const applyLens = (id: ViewId, instant = false) => {
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        const duration = instant || reduced ? 0 : 0.26
-        gsap.killTweensOf([...pinD, ...pinM])
-        gsap.to(pinD, {
-          autoAlpha: id === 'discovery' ? 1 : 0,
-          duration,
-          overwrite: 'auto',
-          ease: 'power2.out',
-        })
-        gsap.to(pinM, {
-          autoAlpha: id === 'measurable' ? 1 : 0,
-          duration,
-          overwrite: 'auto',
-          ease: 'power2.out',
-        })
-        playInspector(id, instant || reduced)
-      }
-
-      applyLensRef.current = applyLens
-      playInspectorRef.current = playInspector
-      applyLens('shopper', true)
+      runLensRef.current = runLens
+      runLens('shopper', true)
       lensReadyRef.current = true
       ScrollTrigger.refresh()
 
@@ -317,7 +353,10 @@ export function AuthorityExperience() {
       if (reduced) {
         gsap.set(frame, { y: 0 })
         gsap.set(rule, { scaleX: 1 })
-        return
+        return () => {
+          lensTlRef.current?.kill()
+          clearWillChange()
+        }
       }
 
       gsap.set(frame, { y: 7 })
@@ -332,119 +371,31 @@ export function AuthorityExperience() {
           gsap.to(rule, { scaleX: 1, duration: 0.6, ease: 'power2.out' })
         },
       })
+
+      return () => {
+        lensTlRef.current?.kill()
+        clearWillChange()
+      }
     },
     { scope: rootRef },
   )
 
   useLayoutEffect(() => {
     if (!lensReadyRef.current) return
-    const instant = !lensPrimedRef.current || skipGsapRef.current
+    const instant = !lensPrimedRef.current
     lensPrimedRef.current = true
-    applyLensRef.current(view, instant)
+    runLensRef.current(view, instant)
   }, [view])
 
   const activate = (id: ViewId, focus = false) => {
     if (id === viewRef.current) return
     viewRef.current = id
-
-    const apply = () => {
-      flushSync(() => {
-        setView(id)
-      })
-      if (focus) {
-        const i = views.findIndex((v) => v.id === id)
-        tabRefs.current[i]?.focus()
-      }
-    }
-
-    const layer = apertureRef.current
-    const nextTab = tabRefs.current[views.findIndex((v) => v.id === id)] ?? null
-    const doc = viewTransitionDoc()
-
-    if (!canUseAperture(layer, nextTab) || !layer || !nextTab || !doc.startViewTransition) {
-      apply()
-      return
-    }
-
-    const previous = doc.activeViewTransition
-    if (previous) {
-      try {
-        previous.skipTransition()
-      } catch {
-        /* already finished */
-      }
-    }
-
-    const token = ++vtGenRef.current
-    skipGsapRef.current = true
-    const root = document.documentElement
-    root.classList.add('ae-vt-active')
-
-    const clearVtChrome = () => {
-      if (token !== vtGenRef.current) return
-      root.classList.remove('ae-vt-active')
-      skipGsapRef.current = false
-      if (vtClearTimerRef.current !== null) {
-        window.clearTimeout(vtClearTimerRef.current)
-        vtClearTimerRef.current = null
-      }
-    }
-
-    try {
-      const vt = doc.startViewTransition(() => {
-        apply()
-        applyLensRef.current(id, true)
-        requestAnimationFrame(() => {
-          if (token !== vtGenRef.current) return
-          playInspectorRef.current(id, false)
-        })
-      })
-
-      void vt.ready
-        .then(() => {
-          if (token !== vtGenRef.current) return
-          const tab = tabRefs.current[views.findIndex((v) => v.id === id)]
-          const aperture = apertureRef.current
-          if (!tab || !aperture) return
-          const { originX, originY, radius } = apertureGeometry(tab, aperture)
-          const origin = `${originX}px ${originY}px`
-          try {
-            root.animate(
-              [
-                { clipPath: `circle(8px at ${origin})` },
-                { clipPath: `circle(${radius}px at ${origin})` },
-              ],
-              {
-                duration: 400,
-                easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-                fill: 'none',
-                pseudoElement: '::view-transition-new(authority-lens-aperture)',
-              },
-            )
-          } catch {
-            /* pseudo-element unavailable */
-          }
-        })
-        .catch(() => {
-          /* skipped */
-        })
-
-      void vt.finished
-        .catch(() => {
-          /* skipped */
-        })
-        .finally(() => {
-          clearVtChrome()
-        })
-      if (vtClearTimerRef.current !== null) {
-        window.clearTimeout(vtClearTimerRef.current)
-      }
-      vtClearTimerRef.current = window.setTimeout(() => {
-        clearVtChrome()
-      }, 700)
-    } catch {
-      clearVtChrome()
-      apply()
+    flushSync(() => {
+      setView(id)
+    })
+    if (focus) {
+      const i = views.findIndex((v) => v.id === id)
+      tabRefs.current[i]?.focus()
     }
   }
 
@@ -552,18 +503,21 @@ export function AuthorityExperience() {
           aria-labelledby={`view-tab-${view}`}
           className="mt-4 md:mt-5"
         >
+          <p className="sr-only">Illustrative example — not a live dealership page.</p>
           <div ref={frameRef} className="ae-browser">
             <span ref={ruleRef} className="ae-frame-rule" aria-hidden="true" />
 
-            <div className="ae-toolbar" aria-hidden="true">
-              <div className="ae-toolbar-lights">
+            <div className="ae-toolbar">
+              <div className="ae-toolbar-lights" aria-hidden="true">
                 <span />
                 <span />
                 <span />
               </div>
-              <div className="ae-toolbar-tab">Family SUV Guide</div>
-              <div className="ae-toolbar-url">
-                <span className="ae-toolbar-lock" aria-hidden="true">
+              <div className="ae-toolbar-tab" aria-hidden="true">
+                Family SUV Guide
+              </div>
+              <div className="ae-toolbar-url" aria-hidden="true">
+                <span className="ae-toolbar-lock">
                   <svg viewBox="0 0 12 12" width="11" height="11">
                     <path
                       d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5M2.5 5.5h7v5h-7z"
@@ -575,22 +529,16 @@ export function AuthorityExperience() {
                 </span>
                 <span className="ae-toolbar-address">dealerwebsite.com/research/three-row-suv-guide</span>
               </div>
-              <div className="ae-toolbar-status">
+              <div className="ae-toolbar-status" aria-hidden="true">
                 <span className="ae-status-chip">ILLUSTRATIVE EXAMPLE</span>
                 <span className="ae-status-note">NOT A LIVE DEALERSHIP PAGE</span>
               </div>
             </div>
 
             <div ref={workspaceRef} className="ae-workspace" data-lens={view}>
-              <div
-                ref={apertureRef}
-                className="ae-lens-aperture-layer"
-                data-lens={view}
-                aria-hidden="true"
-              >
-                <span className="ae-lens-tint" data-lens={view} />
-                <span className="ae-lens-scan" data-lens={view} />
-              </div>
+              <div ref={baseRef} className="ae-lens-base" data-lens={view} aria-hidden="true" />
+              <div ref={revealRef} className="ae-lens-reveal" data-lens={view} aria-hidden="true" />
+              <span ref={sweepRef} className="ae-lens-sweep" aria-hidden="true" />
 
               <article className="ae-page" data-lens={view}>
                 <div>
@@ -614,10 +562,6 @@ export function AuthorityExperience() {
                     budget range, and how much winter capability you actually need. Start with your
                     priorities below and we&apos;ll narrow the field.
                   </p>
-                  <p className="ae-inline ae-inline-d" aria-hidden={view !== 'discovery'}>
-                    <span className="font-semibold">{discoveryPoints[0].label}. </span>
-                    {discoveryPoints[0].detail}
-                  </p>
                 </div>
 
                 <div className="ae-spot mt-5" data-spot="priorities">
@@ -632,10 +576,6 @@ export function AuthorityExperience() {
                       </span>
                     ))}
                   </div>
-                  <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
-                    <span className="font-semibold">{measuredActions[0].action}. </span>
-                    {measuredActions[0].signal}
-                  </p>
                 </div>
 
                 <div className="ae-spot mt-5 grid gap-4 sm:grid-cols-2" data-spot="structure">
@@ -651,10 +591,6 @@ export function AuthorityExperience() {
                       How AWD systems, ground clearance, and heated features compare across the
                       three-row models we carry.
                     </p>
-                    <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
-                      <span className="font-semibold">{measuredActions[1].action}. </span>
-                      {measuredActions[1].signal}
-                    </p>
                   </div>
                   <div className="rounded-lg border border-border bg-paper p-5">
                     <p className="text-base font-semibold text-ink">Budget and ownership guidance</p>
@@ -663,10 +599,6 @@ export function AuthorityExperience() {
                       first winter.
                     </p>
                   </div>
-                  <p className="ae-inline ae-inline-d sm:col-span-2" aria-hidden={view !== 'discovery'}>
-                    <span className="font-semibold">{discoveryPoints[1].label}. </span>
-                    {discoveryPoints[1].detail}
-                  </p>
                 </div>
 
                 <div
@@ -688,14 +620,6 @@ export function AuthorityExperience() {
                       <span aria-hidden="true">→</span>
                     </span>
                   </div>
-                  <p className="ae-inline ae-inline-d" aria-hidden={view !== 'discovery'}>
-                    <span className="font-semibold">{discoveryPoints[2].label}. </span>
-                    {discoveryPoints[2].detail}
-                  </p>
-                  <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
-                    <span className="font-semibold">{measuredActions[2].action}. </span>
-                    {measuredActions[2].signal}
-                  </p>
                 </div>
 
                 <div className="ae-spot mt-4" data-spot="contact">
@@ -705,10 +629,6 @@ export function AuthorityExperience() {
                   <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     Questions remain? Speak with the dealership.
                   </p>
-                  <p className="ae-inline ae-inline-m" aria-hidden={view !== 'measurable'}>
-                    <span className="font-semibold">{measuredActions[3].action}. </span>
-                    {measuredActions[3].signal}
-                  </p>
                 </div>
               </article>
 
@@ -717,6 +637,7 @@ export function AuthorityExperience() {
                   <InspectorShell
                     active={view === 'shopper'}
                     lens="shopper"
+                    mark="01"
                     eyebrow="BUYER PATH"
                     outcomeLabel="DEALER OUTCOME"
                     outcomeValue="LESS WANDERING"
@@ -730,7 +651,7 @@ export function AuthorityExperience() {
                           </span>
                           <div>
                             <p className="text-sm font-semibold text-ink">{row.station}</p>
-                            <p className="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                            <p className="ae-station-detail mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
                               {row.support}
                             </p>
                           </div>
@@ -742,6 +663,7 @@ export function AuthorityExperience() {
                   <InspectorShell
                     active={view === 'discovery'}
                     lens="discovery"
+                    mark="02"
                     eyebrow="DISCOVERY READOUT"
                     outcomeLabel="SYSTEM OUTCOME"
                     outcomeValue="EASIER TO UNDERSTAND"
@@ -755,7 +677,7 @@ export function AuthorityExperience() {
                           </span>
                           <div>
                             <p className="text-sm font-semibold text-ink">{item.label}</p>
-                            <p className="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                            <p className="ae-station-detail mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
                               {item.detail}
                             </p>
                           </div>
@@ -767,12 +689,13 @@ export function AuthorityExperience() {
                   <InspectorShell
                     active={view === 'measurable'}
                     lens="measurable"
+                    mark="03"
                     eyebrow="BUYER SIGNALS"
                     outcomeLabel="DEALER OUTCOME"
                     outcomeValue="INTENT YOU CAN PROVE"
                     label="Buyer signals inspector"
                   >
-                    <ol className="ae-station-list">
+                    <ol className="ae-station-list ae-station-list-measure">
                       {measuredActions.map((row, i) => (
                         <li key={row.action} className="ae-station" data-tone="measurable">
                           <span className="ae-station-mark font-mono" aria-hidden="true">
@@ -780,7 +703,7 @@ export function AuthorityExperience() {
                           </span>
                           <div>
                             <p className="text-sm font-semibold text-ink">{row.action}</p>
-                            <p className="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                            <p className="ae-station-detail mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
                               {row.signal}
                             </p>
                           </div>
@@ -794,16 +717,21 @@ export function AuthorityExperience() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-3 md:grid-cols-3" aria-label="One page, three outcomes">
-          {outcomes.map((item) => (
-            <p
-              key={item.label}
-              className="flex min-h-[72px] items-center gap-3 border border-stage-line bg-stage-elevated px-4 py-3 text-lg font-semibold tracking-tight text-paper"
-            >
-              <span className={`h-3 w-3 shrink-0 ${item.mark}`} aria-hidden="true" />
-              {item.label}
-            </p>
-          ))}
+        <div className="ae-outcomes mt-8 grid gap-3 md:grid-cols-3" aria-label="One page, three outcomes">
+          {outcomes.map((item) => {
+            const mapped = view === item.id
+            return (
+              <p
+                key={item.label}
+                data-lens={item.id}
+                data-active={mapped ? 'true' : 'false'}
+                className="ae-outcome-card flex min-h-[72px] items-center gap-3 border border-stage-line bg-stage-elevated px-4 py-3 text-lg font-semibold tracking-tight text-paper"
+              >
+                <span className={`ae-outcome-station h-3 w-3 shrink-0 ${item.mark}`} aria-hidden="true" />
+                {item.label}
+              </p>
+            )
+          })}
         </div>
 
         <div className="mt-6 border border-stage-line bg-paper px-5 py-5 md:px-6">
