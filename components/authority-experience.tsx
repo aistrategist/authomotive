@@ -49,9 +49,9 @@ const observerFrames = [
   { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'ANSWER FOUND' },
   { lens: 'shopper' as const, spot: 'priorities', station: '02', label: 'NEEDS CLARIFIED' },
   { lens: 'shopper' as const, spot: 'inventory', station: '03', label: 'INVENTORY NEXT' },
-  { lens: 'discovery' as const, spot: 'answer', station: '01', label: 'DIRECT ANSWER' },
+  { lens: 'discovery' as const, spot: 'answer', station: '01', label: 'CRAWLABLE ANSWER' },
   { lens: 'discovery' as const, spot: 'structure', station: '02', label: 'CLEAR STRUCTURE' },
-  { lens: 'discovery' as const, spot: 'inventory', station: '03', label: 'INVENTORY PATH' },
+  { lens: 'discovery' as const, spot: 'inventory', station: '03', label: 'INTERNAL PATH' },
   { lens: 'measurable' as const, spot: 'priorities', station: '01', label: 'PRIORITY SELECT' },
   { lens: 'measurable' as const, spot: 'compare', station: '02', label: 'COMPARISON OPEN' },
   { lens: 'measurable' as const, spot: 'inventory', station: '03', label: 'INVENTORY CLICK' },
@@ -265,14 +265,14 @@ function InspectorShell({
       </div>
       <div className="ae-outcome">
         <div className="ae-outcome-meta">
-          <p className="ae-outcome-eyebrow font-mono font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="ae-outcome-eyebrow font-mono font-medium uppercase tracking-[0.14em]">
             {outcomeLabel}
           </p>
           <p className="ae-outcome-count font-mono" aria-hidden="true">
             {count}
           </p>
         </div>
-        <p className="ae-outcome-value mt-1 font-semibold tracking-tight text-ink">{outcomeValue}</p>
+        <p className="ae-outcome-value mt-1 font-semibold tracking-tight">{outcomeValue}</p>
       </div>
     </div>
   )
@@ -780,7 +780,7 @@ export function AuthorityExperience() {
               </div>
             </div>
 
-            <p className="ae-chrome-note font-mono" aria-hidden="true">
+            <p className="ae-chrome-note font-mono">
               Illustrative example — not a live dealership page.
             </p>
 
@@ -794,6 +794,14 @@ export function AuthorityExperience() {
               <span ref={sweepRef} className="ae-lens-sweep" aria-hidden="true" />
 
               <article className="ae-page" data-lens={view}>
+                <div className="ae-dealer-utility font-mono" aria-hidden="true">
+                  <span>Serving Northeast Ohio</span>
+                  <span className="ae-dealer-utility-sep" aria-hidden="true" />
+                  <span>2026 Buyer Guide</span>
+                  <span className="ae-dealer-utility-sep" aria-hidden="true" />
+                  <span>Updated August 2026</span>
+                </div>
+
                 <header className="ae-dealer-masthead">
                   <div className="ae-dealer-brand">
                     <span className="ae-dealer-monogram font-mono" aria-hidden="true">
@@ -813,27 +821,33 @@ export function AuthorityExperience() {
                   <span className="ae-dealer-inventory">View Inventory</span>
                 </header>
 
-                <p className="ae-breadcrumb font-mono">Research / Family SUVs</p>
-                <h4 className="ae-page-title mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
+                <div className="ae-article-meta font-mono" aria-hidden="true">
+                  <span className="ae-breadcrumb">Research / Family SUVs</span>
+                  <span className="ae-meta-sep" aria-hidden="true" />
+                  <span>8 min read</span>
+                  <span className="ae-meta-sep" aria-hidden="true" />
+                  <span>Buyer guide</span>
+                </div>
+                <h4 className="ae-page-title mt-2 font-semibold tracking-tight text-ink text-balance">
                   {authorityTheater.exampleTopic}
                 </h4>
 
-                <div className="ae-spot mt-4 rounded-lg border-l-4 border-accent bg-porcelain p-5" data-spot="answer">
+                <div className="ae-spot ae-answer-module mt-2.5" data-spot="answer">
                   {framesForSpot('answer', view)}
-                  <p className="text-base font-semibold uppercase tracking-wide text-signal-deep">
+                  <p className="ae-module-label font-semibold uppercase tracking-wide text-signal-deep">
                     The short answer
                   </p>
-                  <p className="mt-2 text-lg leading-relaxed text-ink">
+                  <p className="ae-module-lead mt-1.5 leading-relaxed text-ink">
                     The right three-row SUV depends on how many passengers you carry regularly, your
                     budget range, and how much winter capability you actually need. Start with your
                     priorities below and we&apos;ll narrow the field.
                   </p>
                 </div>
 
-                <div className="ae-spot mt-4" data-spot="priorities">
+                <div className="ae-spot ae-module mt-2.5" data-spot="priorities">
                   {framesForSpot('priorities', view)}
-                  <p className="text-lg font-semibold text-ink">What matters most to your family?</p>
-                  <div className="mt-3 flex flex-wrap gap-2.5">
+                  <p className="ae-module-heading font-semibold text-ink">What matters most to your family?</p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
                     {priorities.map((priority, i) => (
                       <span key={priority} className={`ae-chip ${i === 1 ? 'ae-chip-on' : ''}`}>
                         {priority}
@@ -842,45 +856,52 @@ export function AuthorityExperience() {
                   </div>
                 </div>
 
-                <div className="ae-spot mt-4 grid gap-4 sm:grid-cols-2" data-spot="structure">
+                <div className="ae-spot ae-module mt-2.5 grid gap-2.5 sm:grid-cols-2" data-spot="structure">
                   {framesForSpot('structure', view)}
-                  <div className="ae-spot rounded-lg border border-border bg-paper p-5" data-spot="compare">
+                  <div className="ae-card ae-spot" data-spot="compare">
                     {framesForSpot('compare', view)}
-                    <p className="text-base font-semibold text-ink">Winter driving comparison</p>
-                    <p className="mt-1.5 text-base leading-relaxed text-muted-foreground">
+                    <p className="ae-module-heading font-semibold text-ink">Winter driving comparison</p>
+                    <p className="ae-module-copy mt-1 leading-relaxed text-muted-foreground">
                       How AWD systems, ground clearance, and heated features compare across the
                       three-row models we carry.
                     </p>
                   </div>
-                  <div className="rounded-lg border border-border bg-paper p-5">
-                    <p className="text-base font-semibold text-ink">Budget and ownership guidance</p>
-                    <p className="mt-1.5 text-base leading-relaxed text-muted-foreground">
+                  <div className="ae-card">
+                    <p className="ae-module-heading font-semibold text-ink">Budget and ownership guidance</p>
+                    <p className="ae-module-copy mt-1 leading-relaxed text-muted-foreground">
                       What each trim level adds, and which features families tell us matter after the
                       first winter.
                     </p>
                   </div>
                 </div>
 
-                <div
-                  className="ae-spot ae-inventory-module mt-4 rounded-lg border-2 border-ink border-l-4 border-l-accent bg-porcelain p-5"
-                  data-spot="inventory"
-                >
+                <div className="ae-spot ae-inventory-module ae-module mt-2.5" data-spot="inventory">
                   {framesForSpot('inventory', view)}
                   <div className="ae-inventory-head">
-                    <p className="text-lg font-semibold text-ink text-pretty">
+                    <p className="ae-module-heading font-semibold text-ink text-pretty">
                       See the three-row SUVs that match your priorities
                     </p>
                     <span className="ae-inventory-status font-mono">Matching units available</span>
                   </div>
-                  <span className="ae-fake-action mt-3 inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] border-2 border-ink bg-paper px-4 py-2 text-[15px] font-semibold text-ink">
+                  <ul className="ae-inventory-preview" aria-hidden="true">
+                    <li>
+                      <span className="ae-inventory-model">2026 Trailridge XLE</span>
+                      <span className="ae-inventory-trim">AWD · 3-row · Heated seats</span>
+                    </li>
+                    <li>
+                      <span className="ae-inventory-model">2025 Summit Touring</span>
+                      <span className="ae-inventory-trim">AWD · 7-pass · Tow package</span>
+                    </li>
+                  </ul>
+                  <span className="ae-fake-action mt-2.5 inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] border-2 border-ink bg-paper px-4 py-2 font-semibold text-ink">
                     View Matching Inventory
                     <span aria-hidden="true">→</span>
                   </span>
                 </div>
 
-                <div className="ae-spot mt-4" data-spot="contact">
+                <div className="ae-spot ae-module mt-2.5" data-spot="contact">
                   {framesForSpot('contact', view)}
-                  <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  <p className="ae-contact-note font-mono font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     Questions remain? Speak with the dealership.
                   </p>
                 </div>
@@ -891,7 +912,6 @@ export function AuthorityExperience() {
             <div className="ae-active-result" data-lens={view} aria-hidden="true">
               <span ref={resultRuleRef} className="ae-active-result-rule" aria-hidden="true" />
               <p className="ae-active-result-eyebrow font-mono">ACTIVE RESULT</p>
-              <p className="ae-active-result-desc font-mono">CURRENT DEALER OUTCOME</p>
               <p className="ae-active-result-title">{activeResults[view].title}</p>
               <span className="ae-active-result-station font-mono">{activeResults[view].index}</span>
             </div>
@@ -903,12 +923,12 @@ export function AuthorityExperience() {
               <span className="ae-bridge-station ae-bridge-to" />
             </div>
 
-            <aside className="ae-lens-dock ae-inspector" data-lens={view} aria-label="Authomotive lens readout">
-              <header className="ae-dock-header" aria-hidden="true">
-                <span className="ae-dock-mark font-mono">A</span>
+            <aside className="ae-lens-dock ae-inspector ae-analysis-rail" data-lens={view} aria-label="Authomotive lens readout">
+              <header className="ae-dock-header">
+                <span className="ae-dock-mark font-mono" aria-hidden="true">A</span>
                 <span className="ae-dock-title font-mono">AUTHOMOTIVE LENS</span>
                 <span className="ae-dock-chip font-mono">{observerChip[view]}</span>
-                <span className="ae-dock-num font-mono">{lensUi[activeIndex]!.mark}</span>
+                <span className="ae-dock-num font-mono" aria-hidden="true">{lensUi[activeIndex]!.mark}</span>
               </header>
               <div className="ae-inspector-stack">
                 <InspectorShell
@@ -928,8 +948,8 @@ export function AuthorityExperience() {
                             {pinLabel(i + 1)}
                           </span>
                           <div>
-                            <p className="ae-station-title font-semibold text-ink">{row.station}</p>
-                            <p className="ae-station-detail mt-0.5 text-muted-foreground">
+                            <p className="ae-station-title font-semibold">{row.station}</p>
+                            <p className="ae-station-detail mt-0.5">
                               {row.support}
                             </p>
                           </div>
@@ -955,8 +975,8 @@ export function AuthorityExperience() {
                             {pinLabel(i + 1)}
                           </span>
                           <div>
-                            <p className="ae-station-title font-semibold text-ink">{item.label}</p>
-                            <p className="ae-station-detail mt-0.5 text-muted-foreground">
+                            <p className="ae-station-title font-semibold">{item.label}</p>
+                            <p className="ae-station-detail mt-0.5">
                               {item.detail}
                             </p>
                           </div>
@@ -982,8 +1002,8 @@ export function AuthorityExperience() {
                             {pinLabel(i + 1)}
                           </span>
                           <div>
-                            <p className="ae-station-title font-semibold text-ink">{row.action}</p>
-                            <p className="ae-station-detail mt-0.5 text-muted-foreground">
+                            <p className="ae-station-title font-semibold">{row.action}</p>
+                            <p className="ae-station-detail mt-0.5">
                               {row.signal}
                             </p>
                           </div>
