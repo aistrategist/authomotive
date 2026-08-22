@@ -1,6 +1,14 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
+} from 'react'
 import { flushSync } from 'react-dom'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -13,6 +21,8 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
 type ViewId = 'shopper' | 'discovery' | 'measurable'
 
 const views = authorityTheater.views
+
+const oemTopic = 'Which Northline three-row SUV fits your family?'
 
 const lensUi = [
   {
@@ -38,7 +48,7 @@ const lensUi = [
   },
 ] as const
 
-/** Lens → active dealer result (docked above inspector) */
+/** Lens → active dealer result (opening terminal of the analysis rail) */
 const activeResults: Record<ViewId, { title: string; index: string }> = {
   shopper: { title: 'Buyers guided', index: '01' },
   discovery: { title: 'Discovery earned', index: '02' },
@@ -46,16 +56,58 @@ const activeResults: Record<ViewId, { title: string; index: string }> = {
 }
 
 const observerFrames = [
-  { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'ANSWER FOUND' },
-  { lens: 'shopper' as const, spot: 'priorities', station: '02', label: 'NEEDS CLARIFIED' },
-  { lens: 'shopper' as const, spot: 'inventory', station: '03', label: 'INVENTORY NEXT' },
-  { lens: 'discovery' as const, spot: 'answer', station: '01', label: 'CRAWLABLE ANSWER' },
-  { lens: 'discovery' as const, spot: 'structure', station: '02', label: 'CLEAR STRUCTURE' },
-  { lens: 'discovery' as const, spot: 'inventory', station: '03', label: 'INTERNAL PATH' },
-  { lens: 'measurable' as const, spot: 'priorities', station: '01', label: 'PRIORITY SELECT' },
-  { lens: 'measurable' as const, spot: 'compare', station: '02', label: 'COMPARISON OPEN' },
-  { lens: 'measurable' as const, spot: 'inventory', station: '03', label: 'INVENTORY CLICK' },
-  { lens: 'measurable' as const, spot: 'contact', station: '04', label: 'CONTACT START' },
+  { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'ANSWER FOUND', token: null },
+  { lens: 'shopper' as const, spot: 'priorities', station: '02', label: 'NEEDS CLARIFIED', token: null },
+  { lens: 'shopper' as const, spot: 'inventory', station: '03', label: 'INVENTORY NEXT', token: null },
+  {
+    lens: 'discovery' as const,
+    spot: 'answer',
+    station: '01',
+    label: 'CRAWLABLE ANSWER',
+    token: 'ANSWER',
+  },
+  {
+    lens: 'discovery' as const,
+    spot: 'structure',
+    station: '02',
+    label: 'CLEAR STRUCTURE',
+    token: 'SECTION',
+  },
+  {
+    lens: 'discovery' as const,
+    spot: 'inventory',
+    station: '03',
+    label: 'INTERNAL PATH',
+    token: 'LINK',
+  },
+  {
+    lens: 'measurable' as const,
+    spot: 'priorities',
+    station: '01',
+    label: 'PRIORITY SELECT',
+    token: null,
+  },
+  {
+    lens: 'measurable' as const,
+    spot: 'compare',
+    station: '02',
+    label: 'COMPARISON OPEN',
+    token: null,
+  },
+  {
+    lens: 'measurable' as const,
+    spot: 'inventory',
+    station: '03',
+    label: 'INVENTORY CLICK',
+    token: null,
+  },
+  {
+    lens: 'measurable' as const,
+    spot: 'contact',
+    station: '04',
+    label: 'CONTACT START',
+    token: null,
+  },
 ] as const
 
 const observerChip: Record<ViewId, string> = {
@@ -90,7 +142,7 @@ const discoveryPoints = [
   {
     spot: 'inventory',
     label: 'Inventory pathway',
-    detail: 'Useful research connects to matching vehicles the dealership can sell.',
+    detail: 'Useful research connects to matching vehicles the brand can sell.',
   },
 ] as const
 
@@ -102,17 +154,17 @@ const measuredActions = [
 ] as const
 
 const foundationItems = [
-  { n: '01', label: 'Identity' },
-  { n: '02', label: 'Brands & services' },
-  { n: '03', label: 'Inventory pathways' },
-  { n: '04', label: 'Structured FAQs' },
+  { n: '01', label: 'Identity', tone: 'blue' as const },
+  { n: '02', label: 'Brands & services', tone: 'blue' as const },
+  { n: '03', label: 'Inventory pathways', tone: 'lavender' as const },
+  { n: '04', label: 'Structured FAQs', tone: 'lavender' as const },
 ] as const
 
 const priorities = [
-  'Seating for 7+',
-  'All-wheel drive',
-  'Cargo space',
-  'Fuel efficiency',
+  'Seating',
+  'All-weather capability',
+  'Cargo',
+  'Efficiency',
   'Towing',
 ] as const
 
@@ -155,6 +207,75 @@ function LensGlyph({ id, className = 'ae-glyph' }: { id: ViewId; className?: str
   )
 }
 
+/** Fictional premium three-row SUV silhouette — not a real production model. */
+function NorthlineVehicleProfile({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 420 220"
+      width="420"
+      height="220"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="nl-body" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3a414c" />
+          <stop offset="42%" stopColor="#2a3038" />
+          <stop offset="100%" stopColor="#1c2128" />
+        </linearGradient>
+        <linearGradient id="nl-glass" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#8ea4b8" />
+          <stop offset="100%" stopColor="#5a7086" />
+        </linearGradient>
+        <linearGradient id="nl-hl" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="45%" stopColor="#d7e0ea" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id="nl-ground" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#0f1216" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#0f1216" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="210" cy="196" rx="148" ry="14" fill="url(#nl-ground)" />
+      {/* Body */}
+      <path
+        fill="url(#nl-body)"
+        d="M48 148c8-28 28-52 58-64 22-9 48-14 84-16h78c36 2 62 10 84 28 14 12 28 30 34 48l4 16H48z"
+      />
+      <path
+        fill="url(#nl-body)"
+        d="M62 148h300c2 0 4 2 4 4v18c0 4-3 7-7 7H65c-4 0-7-3-7-7v-18c0-2 2-4 4-4z"
+      />
+      {/* Cabin / glass */}
+      <path
+        fill="url(#nl-glass)"
+        d="M118 88c18-10 42-16 78-16h52c28 1 48 8 64 20l18 22H108l10-26z"
+      />
+      <path
+        fill="none"
+        stroke="#4a5563"
+        strokeWidth="1.5"
+        d="M176 72v52M236 72v52M292 86v38"
+        opacity="0.55"
+      />
+      {/* Highlight */}
+      <path fill="url(#nl-hl)" d="M70 128h280l-8 8H78z" opacity="0.7" />
+      {/* Wheels */}
+      <circle cx="118" cy="172" r="28" fill="#14181e" stroke="#2c333c" strokeWidth="3" />
+      <circle cx="118" cy="172" r="14" fill="#3a434f" />
+      <circle cx="118" cy="172" r="5" fill="#1a1f26" />
+      <circle cx="318" cy="172" r="28" fill="#14181e" stroke="#2c333c" strokeWidth="3" />
+      <circle cx="318" cy="172" r="14" fill="#3a434f" />
+      <circle cx="318" cy="172" r="5" fill="#1a1f26" />
+      {/* Lights */}
+      <path fill="#c8d4e0" d="M56 138h18c2 0 3 1 3 3v6c0 2-1 3-3 3H56z" opacity="0.85" />
+      <path fill="#8a3a3a" d="M348 136h16c2 0 3 1 3 3v8c0 2-1 3-3 3h-16z" opacity="0.7" />
+    </svg>
+  )
+}
+
 function apertureGeometry(tab: HTMLElement, workspace: HTMLElement) {
   const tabBox = tab.getBoundingClientRect()
   const box = workspace.getBoundingClientRect()
@@ -175,11 +296,13 @@ function ObserverFrame({
   lens,
   station,
   label,
+  token,
   active,
 }: {
   lens: ViewId
   station: string
   label: string
+  token: string | null
   active: boolean
 }) {
   return (
@@ -206,6 +329,11 @@ function ObserverFrame({
         <span className="ae-observer-label-text">{label}</span>
         <span className="ae-observer-station">{station}</span>
       </span>
+      {token ? (
+        <span className="ae-observer-token font-mono" aria-hidden="true">
+          {token}
+        </span>
+      ) : null}
     </span>
   )
 }
@@ -219,6 +347,7 @@ function framesForSpot(spot: string, view: ViewId) {
         lens={frame.lens}
         station={frame.station}
         label={frame.label}
+        token={frame.token}
         active={view === frame.lens}
       />
     ))
@@ -278,15 +407,201 @@ function InspectorShell({
   )
 }
 
+type ProjectionGeom = {
+  d: string
+  bracket: { x: number; y1: number; y2: number }
+  source: { x: number; y: number }
+  dest: { x: number; y: number }
+  w: number
+  h: number
+} | null
+
+function AuthorityProjectionPath({
+  stageRef,
+  browserRef,
+  dockRef,
+  view,
+  reduced,
+}: {
+  stageRef: RefObject<HTMLDivElement | null>
+  browserRef: RefObject<HTMLDivElement | null>
+  dockRef: RefObject<HTMLElement | null>
+  view: ViewId
+  reduced: boolean
+}) {
+  const svgRef = useRef<SVGSVGElement>(null)
+  const pathRef = useRef<SVGPathElement>(null)
+  const sourceRef = useRef<SVGCircleElement>(null)
+  const destRef = useRef<SVGCircleElement>(null)
+  const [geom, setGeom] = useState<ProjectionGeom>(null)
+  const pathTlRef = useRef<gsap.core.Timeline | null>(null)
+
+  const measure = useCallback(() => {
+    const stage = stageRef.current
+    const browser = browserRef.current
+    const dock = dockRef.current
+    if (!stage || !browser || !dock) {
+      setGeom(null)
+      return
+    }
+    if (window.innerWidth < 1200) {
+      setGeom(null)
+      return
+    }
+
+    const stageBox = stage.getBoundingClientRect()
+    const browserBox = browser.getBoundingClientRect()
+    const spine = dock.querySelector<HTMLElement>('.ae-inspector-panel[data-active="true"] .ae-inspector-spine')
+    const header = dock.querySelector<HTMLElement>('.ae-dock-header')
+    const destEl = spine ?? header
+    if (!destEl) {
+      setGeom(null)
+      return
+    }
+
+    const frames = Array.from(
+      browser.querySelectorAll<HTMLElement>(`.ae-observer-frame[data-lens="${view}"]`),
+    )
+    if (!frames.length) {
+      setGeom(null)
+      return
+    }
+
+    let top = Infinity
+    let bottom = -Infinity
+    frames.forEach((el) => {
+      const r = el.getBoundingClientRect()
+      top = Math.min(top, r.top)
+      bottom = Math.max(bottom, r.bottom)
+    })
+    if (!Number.isFinite(top) || !Number.isFinite(bottom) || bottom <= top) {
+      setGeom(null)
+      return
+    }
+
+    const destBox = destEl.getBoundingClientRect()
+    const pad = 6
+    const bracketX = browserBox.right - stageBox.left + 2
+    const y1 = top - stageBox.top - pad
+    const y2 = bottom - stageBox.top + pad
+    const midY = (y1 + y2) / 2
+    const destX = destBox.left - stageBox.left + 1
+    const destY = destBox.top - stageBox.top + Math.min(destBox.height * 0.35, 28)
+    const gutterMid = (bracketX + destX) / 2
+
+    const d = [
+      `M ${bracketX} ${y1}`,
+      `L ${bracketX} ${y2}`,
+      `M ${bracketX} ${midY}`,
+      `L ${gutterMid} ${midY}`,
+      `L ${destX} ${destY}`,
+    ].join(' ')
+
+    setGeom({
+      d,
+      bracket: { x: bracketX, y1, y2 },
+      source: { x: bracketX, y: midY },
+      dest: { x: destX, y: destY },
+      w: stageBox.width,
+      h: stageBox.height,
+    })
+  }, [stageRef, browserRef, dockRef, view])
+
+  useLayoutEffect(() => {
+    measure()
+    const stage = stageRef.current
+    let raf = 0
+    let t1 = 0
+    let t2 = 0
+    raf = window.requestAnimationFrame(() => {
+      measure()
+      t1 = window.setTimeout(measure, 80)
+      t2 = window.setTimeout(measure, 360)
+    })
+    if (!stage || typeof ResizeObserver === 'undefined') {
+      return () => {
+        window.cancelAnimationFrame(raf)
+        window.clearTimeout(t1)
+        window.clearTimeout(t2)
+      }
+    }
+    const ro = new ResizeObserver(() => measure())
+    ro.observe(stage)
+    if (browserRef.current) ro.observe(browserRef.current)
+    if (dockRef.current) ro.observe(dockRef.current)
+    return () => {
+      ro.disconnect()
+      window.cancelAnimationFrame(raf)
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+    }
+  }, [measure, stageRef, browserRef, dockRef])
+
+  useLayoutEffect(() => {
+    const path = pathRef.current
+    const source = sourceRef.current
+    const dest = destRef.current
+    pathTlRef.current?.kill()
+    pathTlRef.current = null
+    if (!geom || !path || !source || !dest) return
+
+    const length = path.getTotalLength()
+    if (reduced || window.innerWidth < 1200) {
+      gsap.set(path, { strokeDasharray: length, strokeDashoffset: 0, autoAlpha: 1 })
+      gsap.set([source, dest], { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%' })
+      return
+    }
+
+    gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, autoAlpha: 1 })
+    gsap.set([source, dest], { scale: 0.4, autoAlpha: 0, transformOrigin: '50% 50%' })
+    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+    tl.to(path, { strokeDashoffset: 0, duration: 0.28 }, 0)
+    tl.to(source, { scale: 1, autoAlpha: 1, duration: 0.18 }, 0.04)
+    tl.to(dest, { scale: 1, autoAlpha: 1, duration: 0.18 }, 0.16)
+    pathTlRef.current = tl
+    return () => {
+      tl.kill()
+    }
+  }, [geom, view, reduced])
+
+  if (!geom) return null
+
+  return (
+    <svg
+      ref={svgRef}
+      className="ae-projection"
+      width={geom.w}
+      height={geom.h}
+      viewBox={`0 0 ${geom.w} ${geom.h}`}
+      aria-hidden="true"
+      focusable="false"
+      data-lens={view}
+    >
+      <path
+        ref={pathRef}
+        className="ae-projection-path"
+        d={geom.d}
+        fill="none"
+        strokeWidth="1.5"
+        vectorEffect="non-scaling-stroke"
+      />
+      <circle ref={sourceRef} className="ae-projection-node" cx={geom.source.x} cy={geom.source.y} r="3.5" />
+      <circle ref={destRef} className="ae-projection-node" cx={geom.dest.x} cy={geom.dest.y} r="3.5" />
+    </svg>
+  )
+}
+
 export function AuthorityExperience() {
   const [view, setView] = useState<ViewId>('shopper')
+  const [reducedMotion, setReducedMotion] = useState(false)
   const rootRef = useRef<HTMLElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const workspaceRef = useRef<HTMLDivElement>(null)
   const baseRef = useRef<HTMLDivElement>(null)
   const revealRef = useRef<HTMLDivElement>(null)
   const sweepRef = useRef<HTMLSpanElement>(null)
-  const bridgePacketRef = useRef<HTMLSpanElement>(null)
+  const dockRef = useRef<HTMLElement>(null)
   const resultRuleRef = useRef<HTMLSpanElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
@@ -298,6 +613,14 @@ export function AuthorityExperience() {
   viewRef.current = view
   const activeIndex = views.findIndex((v) => v.id === view)
 
+  useLayoutEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setReducedMotion(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
   useGSAP(
     () => {
       const frame = frameRef.current
@@ -307,7 +630,6 @@ export function AuthorityExperience() {
       const base = baseRef.current
       const reveal = revealRef.current
       const sweep = sweepRef.current
-      const bridgePacket = bridgePacketRef.current
       const resultRule = resultRuleRef.current
       if (!frame || !rule || !root || !workspace || !base || !reveal) return
 
@@ -338,6 +660,7 @@ export function AuthorityExperience() {
             el.querySelector<HTMLElement>('.ae-observer-label'),
             el.querySelector<HTMLElement>('.ae-observer-notch'),
             el.querySelector<HTMLElement>('.ae-observer-reg'),
+            el.querySelector<HTMLElement>('.ae-observer-token'),
             ...gsap.utils.toArray<HTMLElement>('.ae-observer-node', el),
           ].filter((node): node is HTMLElement => node instanceof HTMLElement),
         )
@@ -349,12 +672,14 @@ export function AuthorityExperience() {
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
+          const token = el.querySelector<HTMLElement>('.ae-observer-token')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (live) {
             setIf(el, { autoAlpha: 1 })
             if (ring) setIf(ring, { clipPath: 'inset(0 0 0 0)', opacity: 1 })
             if (corners) setIf(corners, { opacity: 1 })
             if (label) setIf(label, { autoAlpha: 1 })
+            if (token) setIf(token, { autoAlpha: 1 })
             if (nodes.length) setIf(nodes, { opacity: 1, scale: 1 })
           } else {
             setIf(el, { autoAlpha: 0 })
@@ -377,7 +702,6 @@ export function AuthorityExperience() {
         setIf(reveal, { clearProps: 'willChange' })
         setIf(base, { clearProps: 'willChange' })
         setIf(sweep, { clearProps: 'willChange' })
-        setIf(bridgePacket, { clearProps: 'willChange,transform' })
         setIf(resultRule, { clearProps: 'willChange,transform' })
         const parts = frameParts(allFrames())
         if (parts.length) setIf(parts, { clearProps: 'willChange' })
@@ -386,16 +710,13 @@ export function AuthorityExperience() {
       const runLens = (id: ViewId, instant = false) => {
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         const mobile = window.innerWidth < 768
-        const docked = window.innerWidth >= 1200
         const tab = tabRefs.current[views.findIndex((v) => v.id === id)]
 
         lensTlRef.current?.kill()
         lensTlRef.current = null
-        killIf([reveal, base, sweep, bridgePacket, resultRule, ...frameParts(allFrames())])
-        setIf(bridgePacket, { autoAlpha: 0, x: 0, clearProps: 'transform' })
+        killIf([reveal, base, sweep, resultRule, ...frameParts(allFrames())])
         if (resultRule) setIf(resultRule, { scaleX: 1, transformOrigin: 'left center' })
 
-        // 0ms: hide outgoing frames; commit chrome/atmosphere state
         allFrames().forEach((el) => {
           el.dataset.active = 'false'
           setIf(el, { autoAlpha: 0 })
@@ -426,7 +747,6 @@ export function AuthorityExperience() {
         if (spine) setIf(spine, { scaleY: 0, transformOrigin: 'top center' })
         stations.forEach((el) => setIf(el, { autoAlpha: 0, y: 2 }))
         if (outcome) setIf(outcome, { autoAlpha: 0.45 })
-
         if (resultRule) setIf(resultRule, { scaleX: 0, transformOrigin: 'left center' })
 
         liveFrames.forEach((el) => {
@@ -434,11 +754,13 @@ export function AuthorityExperience() {
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
+          const token = el.querySelector<HTMLElement>('.ae-observer-token')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           setIf(el, { autoAlpha: 1 })
           if (ring) setIf(ring, { clipPath: 'inset(0 100% 100% 0)', opacity: 1, willChange: 'clip-path' })
           if (corners) setIf(corners, { opacity: 0 })
           if (label) setIf(label, { autoAlpha: 0 })
+          if (token) setIf(token, { autoAlpha: 0 })
           if (nodes.length) setIf(nodes, { opacity: 0, scale: 0.6 })
         })
 
@@ -455,7 +777,6 @@ export function AuthorityExperience() {
             settleFrames(id)
             setIf(reveal, { autoAlpha: 0, clipPath: 'circle(150% at 50% 0%)' })
             if (sweep) setIf(sweep, { autoAlpha: 0 })
-            setIf(bridgePacket, { autoAlpha: 0, x: 0 })
             clearWillChange()
             lensTlRef.current = null
           },
@@ -466,7 +787,6 @@ export function AuthorityExperience() {
           tl.to(resultRule, { scaleX: 1, duration: 0.18, ease: 'power2.out' }, 0)
         }
 
-        // 0–280ms local aperture (viewport only)
         tl.to(
           reveal,
           {
@@ -477,7 +797,6 @@ export function AuthorityExperience() {
           0,
         )
 
-        // 60–340ms target frames (~45ms stagger)
         liveFrames.forEach((el, i) => {
           const at = 0.06 + i * 0.045
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
@@ -494,8 +813,10 @@ export function AuthorityExperience() {
         liveFrames.forEach((el, i) => {
           const at = 0.12 + i * 0.045
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
+          const token = el.querySelector<HTMLElement>('.ae-observer-token')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (label) tl.to(label, { autoAlpha: 1, duration: 0.16 }, at)
+          if (token) tl.to(token, { autoAlpha: 1, duration: 0.14 }, at + 0.04)
           nodes.forEach((node, j) => {
             tl.to(node, { opacity: 1, scale: 1, duration: 0.14 }, at + j * 0.02)
           })
@@ -506,12 +827,6 @@ export function AuthorityExperience() {
           tl.to(el, { autoAlpha: 1, y: 0, duration: 0.16 }, 0.34 + i * 0.05)
         })
         if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.14 }, 0.42)
-
-        if (docked && bridgePacket) {
-          tl.set(bridgePacket, { autoAlpha: 1, x: 0, willChange: 'transform, opacity' }, 0.26)
-          tl.to(bridgePacket, { x: '100%', duration: 0.2, ease: 'power2.inOut' }, 0.26)
-          tl.to(bridgePacket, { autoAlpha: 0, duration: 0.08 }, 0.44)
-        }
 
         if (sweep) {
           tl.set(
@@ -544,7 +859,7 @@ export function AuthorityExperience() {
         gsap.set(frame, { y: 0 })
         gsap.set(rule, { scaleX: 1 })
         frame.style.boxShadow =
-          '5px 5px 0 0 color-mix(in srgb, var(--ink) 88%, transparent), 0 32px 40px -14px color-mix(in srgb, var(--ink) 20%, transparent)'
+          '6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent), 0 36px 48px -18px color-mix(in srgb, var(--ink) 28%, transparent)'
         return () => {
           lensTlRef.current?.kill()
           clearWillChange()
@@ -566,7 +881,7 @@ export function AuthorityExperience() {
             duration: 0.5,
             ease: 'power2.out',
             boxShadow:
-              '5px 5px 0 0 color-mix(in srgb, var(--ink) 88%, transparent), 0 32px 40px -14px color-mix(in srgb, var(--ink) 20%, transparent)',
+              '6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent), 0 36px 48px -18px color-mix(in srgb, var(--ink) 28%, transparent)',
           })
           gsap.to(rule, { scaleX: 1, duration: 0.55, ease: 'power2.out' })
         },
@@ -703,211 +1018,238 @@ export function AuthorityExperience() {
           aria-labelledby={`view-tab-${view}`}
           className="mt-4 md:mt-5"
         >
-          <p className="sr-only">Illustrative example — not a live dealership page.</p>
-          <div className="ae-instrument-stage" data-lens={view}>
+          <p className="sr-only">Illustrative example — fictional OEM experience.</p>
+          <div ref={stageRef} className="ae-instrument-stage" data-lens={view}>
             <div ref={frameRef} className="ae-browser">
               <span ref={ruleRef} className="ae-frame-rule" aria-hidden="true" />
 
               <div className="ae-chrome" aria-hidden="true">
-              <div className="ae-chrome-tabs">
-                <div className="ae-toolbar-lights">
-                  <span className="ae-light ae-light-close" />
-                  <span className="ae-light ae-light-min" />
-                  <span className="ae-light ae-light-max" />
+                <div className="ae-chrome-tabs">
+                  <div className="ae-toolbar-lights">
+                    <span className="ae-light ae-light-close" />
+                    <span className="ae-light ae-light-min" />
+                    <span className="ae-light ae-light-max" />
+                  </div>
+                  <div className="ae-chrome-tab ae-chrome-tab-active">
+                    <span className="ae-chrome-favicon font-mono">N</span>
+                    <span className="ae-chrome-tab-title">Three-Row SUV Guide | Northline</span>
+                  </div>
+                  <span className="ae-chrome-tab-spacer" />
                 </div>
-                <div className="ae-chrome-tab ae-chrome-tab-active">
-                  <span className="ae-chrome-favicon font-mono">NM</span>
-                  <span className="ae-chrome-tab-title">Three-Row SUV Guide | Northline Motors</span>
-                </div>
-                <span className="ae-chrome-tab-spacer" />
-              </div>
 
-              <div className="ae-chrome-nav">
-                <span className="ae-nav-btn ae-nav-back">
-                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-                    <path d="M7.5 2.5 4 6l3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" />
-                  </svg>
-                </span>
-                <span className="ae-nav-btn ae-nav-forward">
-                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" />
-                  </svg>
-                </span>
-                <span className="ae-nav-btn ae-nav-refresh">
-                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-                    <path d="M6 2.5v2M6 7.5v2M2.5 6H4.5M7.5 6H9.5M3.4 3.4l1.4 1.4M7.2 7.2l1.4 1.4M8.6 3.4 7.2 4.8M4.8 7.2 3.4 8.6" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="square" />
-                  </svg>
-                </span>
-                <div className="ae-chrome-address">
-                  <span className="ae-toolbar-lock">
+                <div className="ae-chrome-nav">
+                  <span className="ae-nav-btn ae-nav-back">
                     <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
                       <path
-                        d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5M2.5 5.5h7v5h-7z"
+                        d="M7.5 2.5 4 6l3.5 3.5"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="1.2"
+                        strokeWidth="1.4"
+                        strokeLinecap="square"
                       />
                     </svg>
                   </span>
-                  <span className="ae-toolbar-address">
-                    northlinemotors.example/research/three-row-suv-guide
+                  <span className="ae-nav-btn ae-nav-forward">
+                    <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
+                      <path
+                        d="M4.5 2.5 8 6l-3.5 3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="square"
+                      />
+                    </svg>
                   </span>
-                </div>
-                <span className="ae-nav-btn ae-nav-bookmark">
-                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-                    <path d="M3 2.5h6v7L6 8 3 9.5z" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="miter" />
-                  </svg>
-                </span>
-                <span className="ae-nav-btn ae-nav-more">
-                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-                    <circle cx="3" cy="6" r="0.9" fill="currentColor" />
-                    <circle cx="6" cy="6" r="0.9" fill="currentColor" />
-                    <circle cx="9" cy="6" r="0.9" fill="currentColor" />
-                  </svg>
-                </span>
-                <span className="ae-status-chip">DEMO DEALERSHIP</span>
-              </div>
-
-              <div className="ae-chrome-mobile">
-                <div className="ae-toolbar-lights">
-                  <span className="ae-light ae-light-close" />
-                  <span className="ae-light ae-light-min" />
-                  <span className="ae-light ae-light-max" />
-                </div>
-                <span className="ae-chrome-favicon font-mono">NM</span>
-                <span className="ae-chrome-mobile-domain">northlinemotors.example</span>
-                <span className="ae-status-chip">DEMO DEALERSHIP</span>
-              </div>
-            </div>
-
-            <p className="ae-chrome-note font-mono">
-              Illustrative example — not a live dealership page.
-            </p>
-
-            <div ref={workspaceRef} className="ae-workspace" data-lens={view}>
-              <span className="ae-scroll-rail" aria-hidden="true">
-                <span className="ae-scroll-track" />
-                <span className="ae-scroll-thumb" />
-              </span>
-              <div ref={baseRef} className="ae-lens-base" data-lens={view} aria-hidden="true" />
-              <div ref={revealRef} className="ae-lens-reveal" data-lens={view} aria-hidden="true" />
-              <span ref={sweepRef} className="ae-lens-sweep" aria-hidden="true" />
-
-              <article className="ae-page" data-lens={view}>
-                <div className="ae-dealer-utility font-mono" aria-hidden="true">
-                  <span>Serving Northeast Ohio</span>
-                  <span className="ae-dealer-utility-sep" aria-hidden="true" />
-                  <span>2026 Buyer Guide</span>
-                  <span className="ae-dealer-utility-sep" aria-hidden="true" />
-                  <span>Updated August 2026</span>
-                </div>
-
-                <header className="ae-dealer-masthead">
-                  <div className="ae-dealer-brand">
-                    <span className="ae-dealer-monogram font-mono" aria-hidden="true">
-                      NM
+                  <span className="ae-nav-btn ae-nav-refresh">
+                    <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
+                      <path
+                        d="M6 2.5v2M6 7.5v2M2.5 6H4.5M7.5 6H9.5M3.4 3.4l1.4 1.4M7.2 7.2l1.4 1.4M8.6 3.4 7.2 4.8M4.8 7.2 3.4 8.6"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.1"
+                        strokeLinecap="square"
+                      />
+                    </svg>
+                  </span>
+                  <div className="ae-chrome-address">
+                    <span className="ae-toolbar-lock">
+                      <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
+                        <path
+                          d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5M2.5 5.5h7v5h-7z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.2"
+                        />
+                      </svg>
                     </span>
-                    <div className="ae-dealer-brand-copy">
-                      <span className="ae-dealer-wordmark font-mono">NORTHLINE MOTORS</span>
-                      <span className="ae-dealer-label font-mono">RESEARCH CENTER</span>
-                    </div>
+                    <span className="ae-toolbar-address">
+                      northline.example/vehicles/suvs/three-row-guide
+                    </span>
                   </div>
-                  <nav className="ae-dealer-nav" aria-hidden="true">
-                    <span className="ae-dealer-nav-item ae-dealer-nav-wide">New Vehicles</span>
-                    <span className="ae-dealer-nav-item ae-dealer-nav-wide">Used Vehicles</span>
-                    <span className="ae-dealer-nav-item">Research</span>
-                    <span className="ae-dealer-nav-item ae-dealer-nav-wide">Service</span>
-                  </nav>
-                  <span className="ae-dealer-inventory">View Inventory</span>
-                </header>
-
-                <div className="ae-article-meta font-mono" aria-hidden="true">
-                  <span className="ae-breadcrumb">Research / Family SUVs</span>
-                  <span className="ae-meta-sep" aria-hidden="true" />
-                  <span>8 min read</span>
-                  <span className="ae-meta-sep" aria-hidden="true" />
-                  <span>Buyer guide</span>
-                </div>
-                <h4 className="ae-page-title mt-2 font-semibold tracking-tight text-ink text-balance">
-                  {authorityTheater.exampleTopic}
-                </h4>
-
-                <div className="ae-spot ae-answer-module mt-2.5" data-spot="answer">
-                  {framesForSpot('answer', view)}
-                  <p className="ae-module-label font-semibold uppercase tracking-wide text-signal-deep">
-                    The short answer
-                  </p>
-                  <p className="ae-module-lead mt-1.5 leading-relaxed text-ink">
-                    The right three-row SUV depends on how many passengers you carry regularly, your
-                    budget range, and how much winter capability you actually need. Start with your
-                    priorities below and we&apos;ll narrow the field.
-                  </p>
-                </div>
-
-                <div className="ae-spot ae-module mt-2.5" data-spot="priorities">
-                  {framesForSpot('priorities', view)}
-                  <p className="ae-module-heading font-semibold text-ink">What matters most to your family?</p>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
-                    {priorities.map((priority, i) => (
-                      <span key={priority} className={`ae-chip ${i === 1 ? 'ae-chip-on' : ''}`}>
-                        {priority}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="ae-spot ae-module mt-2.5 grid gap-2.5 sm:grid-cols-2" data-spot="structure">
-                  {framesForSpot('structure', view)}
-                  <div className="ae-card ae-spot" data-spot="compare">
-                    {framesForSpot('compare', view)}
-                    <p className="ae-module-heading font-semibold text-ink">Winter driving comparison</p>
-                    <p className="ae-module-copy mt-1 leading-relaxed text-muted-foreground">
-                      How AWD systems, ground clearance, and heated features compare across the
-                      three-row models we carry.
-                    </p>
-                  </div>
-                  <div className="ae-card">
-                    <p className="ae-module-heading font-semibold text-ink">Budget and ownership guidance</p>
-                    <p className="ae-module-copy mt-1 leading-relaxed text-muted-foreground">
-                      What each trim level adds, and which features families tell us matter after the
-                      first winter.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="ae-spot ae-inventory-module ae-module mt-2.5" data-spot="inventory">
-                  {framesForSpot('inventory', view)}
-                  <div className="ae-inventory-head">
-                    <p className="ae-module-heading font-semibold text-ink text-pretty">
-                      See the three-row SUVs that match your priorities
-                    </p>
-                    <span className="ae-inventory-status font-mono">Matching units available</span>
-                  </div>
-                  <ul className="ae-inventory-preview" aria-hidden="true">
-                    <li>
-                      <span className="ae-inventory-model">2026 Trailridge XLE</span>
-                      <span className="ae-inventory-trim">AWD · 3-row · Heated seats</span>
-                    </li>
-                    <li>
-                      <span className="ae-inventory-model">2025 Summit Touring</span>
-                      <span className="ae-inventory-trim">AWD · 7-pass · Tow package</span>
-                    </li>
-                  </ul>
-                  <span className="ae-fake-action mt-2.5 inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] border-2 border-ink bg-paper px-4 py-2 font-semibold text-ink">
-                    View Matching Inventory
-                    <span aria-hidden="true">→</span>
+                  <span className="ae-nav-btn ae-nav-bookmark">
+                    <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
+                      <path
+                        d="M3 2.5h6v7L6 8 3 9.5z"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                        strokeLinejoin="miter"
+                      />
+                    </svg>
                   </span>
+                  <span className="ae-nav-btn ae-nav-more">
+                    <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
+                      <circle cx="3" cy="6" r="0.9" fill="currentColor" />
+                      <circle cx="6" cy="6" r="0.9" fill="currentColor" />
+                      <circle cx="9" cy="6" r="0.9" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <span className="ae-status-chip">ILLUSTRATIVE OEM EXPERIENCE</span>
                 </div>
 
-                <div className="ae-spot ae-module mt-2.5" data-spot="contact">
-                  {framesForSpot('contact', view)}
-                  <p className="ae-contact-note font-mono font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                    Questions remain? Speak with the dealership.
-                  </p>
+                <div className="ae-chrome-mobile">
+                  <div className="ae-toolbar-lights">
+                    <span className="ae-light ae-light-close" />
+                    <span className="ae-light ae-light-min" />
+                    <span className="ae-light ae-light-max" />
+                  </div>
+                  <span className="ae-chrome-favicon font-mono">N</span>
+                  <span className="ae-chrome-mobile-domain">northline.example</span>
+                  <span className="ae-status-chip">OEM</span>
                 </div>
-              </article>
+              </div>
+
+              <p className="ae-chrome-note font-mono">
+                Illustrative example — fictional OEM experience.
+              </p>
+
+              <div ref={workspaceRef} className="ae-workspace" data-lens={view}>
+                <span className="ae-scroll-rail" aria-hidden="true">
+                  <span className="ae-scroll-track" />
+                  <span className="ae-scroll-thumb" />
+                </span>
+                <div ref={baseRef} className="ae-lens-base" data-lens={view} aria-hidden="true" />
+                <div ref={revealRef} className="ae-lens-reveal" data-lens={view} aria-hidden="true" />
+                <span ref={sweepRef} className="ae-lens-sweep" aria-hidden="true" />
+
+                <div className="ae-oem-viewport">
+                  <article className="ae-page ae-oem-page" data-lens={view}>
+                    <header className="ae-oem-masthead" aria-hidden="true">
+                      <div className="ae-oem-brand">
+                        <span className="ae-oem-wordmark font-mono">NORTHLINE</span>
+                        <span className="ae-oem-market font-mono">NORTHLINE USA</span>
+                      </div>
+                      <nav className="ae-oem-nav">
+                        <span className="ae-oem-nav-item">Vehicles</span>
+                        <span className="ae-oem-nav-item ae-oem-nav-wide">Shopping Tools</span>
+                        <span className="ae-oem-nav-item">Owners</span>
+                        <span className="ae-oem-nav-item">Discover</span>
+                      </nav>
+                      <span className="ae-oem-find">Find Inventory</span>
+                    </header>
+
+                    <div className="ae-oem-utility font-mono" aria-hidden="true">
+                      <span>2026 BUYER GUIDE</span>
+                      <span className="ae-oem-utility-sep" />
+                      <span>UPDATED AUGUST 2026</span>
+                      <span className="ae-oem-utility-sep" />
+                      <span>FAMILY SUV RESEARCH</span>
+                    </div>
+
+                    <div className="ae-oem-hero">
+                      <div className="ae-oem-hero-copy">
+                        <p className="ae-oem-eyebrow font-mono">THREE-ROW SUV GUIDE</p>
+                        <h4 className="ae-page-title font-semibold tracking-tight text-balance">
+                          {oemTopic}
+                        </h4>
+                        <div className="ae-spot ae-answer-module" data-spot="answer">
+                          {framesForSpot('answer', view)}
+                          <p className="ae-module-label font-semibold uppercase tracking-wide">
+                            The short answer
+                          </p>
+                          <p className="ae-module-lead mt-1.5 leading-relaxed">
+                            The right Northline three-row SUV depends on how many passengers you
+                            carry regularly, your budget range, and how much all-weather capability
+                            you actually need. Start with your priorities below and we&apos;ll
+                            narrow the field.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="ae-oem-hero-visual" aria-hidden="true">
+                        <NorthlineVehicleProfile className="ae-oem-vehicle" />
+                        <span className="ae-oem-model-note font-mono">THREE-ROW FAMILY SUV</span>
+                      </div>
+                    </div>
+
+                    <div className="ae-spot ae-module ae-decision" data-spot="priorities">
+                      {framesForSpot('priorities', view)}
+                      <p className="ae-module-heading font-semibold">What matters most to your family?</p>
+                      <div className="ae-decision-row" aria-hidden="true">
+                        {priorities.map((priority, i) => (
+                          <span key={priority} className={`ae-chip ${i === 1 ? 'ae-chip-on' : ''}`}>
+                            {priority}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="ae-spot ae-module ae-compare-grid" data-spot="structure">
+                      {framesForSpot('structure', view)}
+                      <div className="ae-card ae-spot" data-spot="compare">
+                        {framesForSpot('compare', view)}
+                        <p className="ae-module-heading font-semibold">Winter capability</p>
+                        <p className="ae-module-copy mt-1 leading-relaxed">
+                          How all-weather systems, ground clearance, and heated features compare
+                          across the three-row lineup.
+                        </p>
+                        <span className="ae-card-affordance" aria-hidden="true">
+                          Compare →
+                        </span>
+                      </div>
+                      <div className="ae-card">
+                        <p className="ae-module-heading font-semibold">Budget and ownership</p>
+                        <p className="ae-module-copy mt-1 leading-relaxed">
+                          What each trim level adds, and which features families value after the
+                          first winter.
+                        </p>
+                        <span className="ae-card-affordance" aria-hidden="true">
+                          Explore →
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="ae-spot ae-inventory-module ae-module" data-spot="inventory">
+                      {framesForSpot('inventory', view)}
+                      <div className="ae-inventory-head">
+                        <p className="ae-module-heading font-semibold text-pretty">
+                          Matching three-row SUVs
+                        </p>
+                        <span className="ae-inventory-status font-mono">Inventory available</span>
+                      </div>
+                      <span className="ae-fake-action ae-oem-inventory-cta inline-flex min-h-[40px] shrink-0 items-center gap-2 font-semibold">
+                        View Matching Inventory
+                        <span aria-hidden="true">→</span>
+                      </span>
+                    </div>
+
+                    <div className="ae-spot ae-module ae-contact" data-spot="contact">
+                      {framesForSpot('contact', view)}
+                      <p className="ae-contact-note font-mono font-medium uppercase tracking-[0.12em]">
+                        Questions remain? Speak with a Northline specialist.
+                      </p>
+                    </div>
+                  </article>
+                </div>
+              </div>
             </div>
-          </div>
+
+            <AuthorityProjectionPath
+              stageRef={stageRef}
+              browserRef={frameRef}
+              dockRef={dockRef}
+              view={view}
+              reduced={reducedMotion}
+            />
 
             <div className="ae-active-result" data-lens={view} aria-hidden="true">
               <span ref={resultRuleRef} className="ae-active-result-rule" aria-hidden="true" />
@@ -916,19 +1258,21 @@ export function AuthorityExperience() {
               <span className="ae-active-result-station font-mono">{activeResults[view].index}</span>
             </div>
 
-            <div className="ae-signal-bridge" aria-hidden="true">
-              <span className="ae-bridge-station ae-bridge-from" />
-              <span className="ae-bridge-line" />
-              <span ref={bridgePacketRef} className="ae-bridge-packet" />
-              <span className="ae-bridge-station ae-bridge-to" />
-            </div>
-
-            <aside className="ae-lens-dock ae-inspector ae-analysis-rail" data-lens={view} aria-label="Authomotive lens readout">
+            <aside
+              ref={dockRef}
+              className="ae-lens-dock ae-inspector ae-analysis-rail"
+              data-lens={view}
+              aria-label="Authomotive lens readout"
+            >
               <header className="ae-dock-header">
-                <span className="ae-dock-mark font-mono" aria-hidden="true">A</span>
+                <span className="ae-dock-mark font-mono" aria-hidden="true">
+                  A
+                </span>
                 <span className="ae-dock-title font-mono">AUTHOMOTIVE LENS</span>
                 <span className="ae-dock-chip font-mono">{observerChip[view]}</span>
-                <span className="ae-dock-num font-mono" aria-hidden="true">{lensUi[activeIndex]!.mark}</span>
+                <span className="ae-dock-num font-mono" aria-hidden="true">
+                  {lensUi[activeIndex]!.mark}
+                </span>
               </header>
               <div className="ae-inspector-stack">
                 <InspectorShell
@@ -941,102 +1285,92 @@ export function AuthorityExperience() {
                   outcomeValue="LESS WANDERING"
                   label="Buyer path inspector"
                 >
-                    <ol className="ae-station-list">
-                      {shopperRoute.map((row, i) => (
-                        <li key={row.station} className="ae-station" data-tone="shopper">
-                          <span className="ae-station-mark font-mono" aria-hidden="true">
-                            {pinLabel(i + 1)}
-                          </span>
-                          <div>
-                            <p className="ae-station-title font-semibold">{row.station}</p>
-                            <p className="ae-station-detail mt-0.5">
-                              {row.support}
-                            </p>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                  </InspectorShell>
+                  <ol className="ae-station-list">
+                    {shopperRoute.map((row, i) => (
+                      <li key={row.station} className="ae-station" data-tone="shopper">
+                        <span className="ae-station-mark font-mono" aria-hidden="true">
+                          {pinLabel(i + 1)}
+                        </span>
+                        <div>
+                          <p className="ae-station-title font-semibold">{row.station}</p>
+                          <p className="ae-station-detail mt-0.5">{row.support}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </InspectorShell>
 
-                  <InspectorShell
-                    active={view === 'discovery'}
-                    lens="discovery"
-                    mark="02"
-                    eyebrow="DISCOVERY READOUT"
-                    count={outcomeCount.discovery}
-                    outcomeLabel="SYSTEM OUTCOME"
-                    outcomeValue="EASIER TO UNDERSTAND"
-                    label="Discovery readout inspector"
-                  >
-                    <ol className="ae-station-list">
-                      {discoveryPoints.map((item, i) => (
-                        <li key={item.label} className="ae-station" data-tone="discovery">
-                          <span className="ae-station-mark font-mono" aria-hidden="true">
-                            {pinLabel(i + 1)}
-                          </span>
-                          <div>
-                            <p className="ae-station-title font-semibold">{item.label}</p>
-                            <p className="ae-station-detail mt-0.5">
-                              {item.detail}
-                            </p>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                  </InspectorShell>
+                <InspectorShell
+                  active={view === 'discovery'}
+                  lens="discovery"
+                  mark="02"
+                  eyebrow="DISCOVERY READOUT"
+                  count={outcomeCount.discovery}
+                  outcomeLabel="SYSTEM OUTCOME"
+                  outcomeValue="EASIER TO UNDERSTAND"
+                  label="Discovery readout inspector"
+                >
+                  <ol className="ae-station-list">
+                    {discoveryPoints.map((item, i) => (
+                      <li key={item.label} className="ae-station" data-tone="discovery">
+                        <span className="ae-station-mark font-mono" aria-hidden="true">
+                          {pinLabel(i + 1)}
+                        </span>
+                        <div>
+                          <p className="ae-station-title font-semibold">{item.label}</p>
+                          <p className="ae-station-detail mt-0.5">{item.detail}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </InspectorShell>
 
-                  <InspectorShell
-                    active={view === 'measurable'}
-                    lens="measurable"
-                    mark="03"
-                    eyebrow="BUYER SIGNALS"
-                    count={outcomeCount.measurable}
-                    outcomeLabel="DEALER OUTCOME"
-                    outcomeValue="INTENT YOU CAN PROVE"
-                    label="Buyer signals inspector"
-                  >
-                    <ol className="ae-station-list ae-station-list-measure">
-                      {measuredActions.map((row, i) => (
-                        <li key={row.action} className="ae-station" data-tone="measurable">
-                          <span className="ae-station-mark font-mono" aria-hidden="true">
-                            {pinLabel(i + 1)}
-                          </span>
-                          <div>
-                            <p className="ae-station-title font-semibold">{row.action}</p>
-                            <p className="ae-station-detail mt-0.5">
-                              {row.signal}
-                            </p>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                  </InspectorShell>
-                </div>
-              </aside>
+                <InspectorShell
+                  active={view === 'measurable'}
+                  lens="measurable"
+                  mark="03"
+                  eyebrow="BUYER SIGNALS"
+                  count={outcomeCount.measurable}
+                  outcomeLabel="DEALER OUTCOME"
+                  outcomeValue="INTENT YOU CAN PROVE"
+                  label="Buyer signals inspector"
+                >
+                  <ol className="ae-station-list ae-station-list-measure">
+                    {measuredActions.map((row, i) => (
+                      <li key={row.action} className="ae-station" data-tone="measurable">
+                        <span className="ae-station-mark font-mono" aria-hidden="true">
+                          {pinLabel(i + 1)}
+                        </span>
+                        <div>
+                          <p className="ae-station-title font-semibold">{row.action}</p>
+                          <p className="ae-station-detail mt-0.5">{row.signal}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </InspectorShell>
+              </div>
+            </aside>
           </div>
         </div>
 
-        <div className="mt-6 border border-stage-line bg-paper px-5 py-5 md:px-6">
-          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-signal-deep md:text-xs">
-            {aiDiscovery.eyebrow}
-          </p>
-          <p className="mt-2 max-w-[40rem] text-base font-semibold leading-snug text-ink md:text-lg text-pretty">
+        <div className="ae-foundation">
+          <p className="ae-foundation-eyebrow font-mono">{aiDiscovery.eyebrow}</p>
+          <h3 className="ae-foundation-title font-semibold tracking-tight text-pretty">
             {aiDiscovery.headline}
-          </p>
-          <ul
-            className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-            aria-label="AI Discovery page contents"
-          >
+          </h3>
+          <span className="ae-foundation-rule" aria-hidden="true" />
+          <ul className="ae-foundation-stations" aria-label="AI Discovery page contents">
             {foundationItems.map((item) => (
-              <li key={item.n} className="flex items-center gap-2.5 bg-porcelain px-3 py-3">
-                <span className="font-mono text-[0.6875rem] font-bold text-signal-deep" aria-hidden="true">
+              <li key={item.n} className="ae-foundation-station" data-tone={item.tone}>
+                <span className="ae-foundation-n font-mono" aria-hidden="true">
                   {item.n}
                 </span>
-                <span className="text-sm font-semibold text-ink">{item.label}</span>
+                <span className="ae-foundation-label">{item.label}</span>
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          <p className="ae-foundation-note">
             Included with every engagement and reviewed monthly. It organizes verified first-party
             information. It does not guarantee citations or control what any AI platform says.
           </p>

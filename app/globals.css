@@ -721,12 +721,12 @@
 .ae-browser {
   position: relative;
   border: 2px solid var(--ink);
-  border-radius: 11px;
-  background: var(--paper);
+  border-radius: 10px;
+  background: #9aa3ad;
   box-shadow:
-    5px 5px 0 0 color-mix(in srgb, var(--ink) 88%, transparent),
-    0 32px 40px -14px color-mix(in srgb, var(--ink) 20%, transparent),
-    inset 0 1px 0 color-mix(in srgb, var(--paper) 72%, transparent);
+    6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent),
+    0 36px 48px -18px color-mix(in srgb, var(--ink) 28%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 55%, transparent);
   overflow: hidden;
   isolation: isolate;
 }
@@ -735,7 +735,7 @@
   position: absolute;
   inset: 0 0 auto;
   height: 1px;
-  background: color-mix(in srgb, var(--paper) 80%, transparent);
+  background: color-mix(in srgb, #ffffff 70%, transparent);
   pointer-events: none;
   z-index: 4;
 }
@@ -744,7 +744,7 @@
   position: absolute;
   inset: auto 0 0;
   height: 1px;
-  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
   pointer-events: none;
   z-index: 4;
 }
@@ -762,12 +762,8 @@
 .ae-chrome {
   position: relative;
   z-index: 3;
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, var(--border));
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--alloy) 82%, #c8cdd4) 0%,
-    color-mix(in srgb, var(--alloy) 94%, var(--paper)) 100%
-  );
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  background: linear-gradient(180deg, #b7bec7 0%, #a8b0ba 100%);
   color: var(--ink);
   pointer-events: none;
   user-select: none;
@@ -796,13 +792,13 @@
 .ae-chrome-note {
   display: block;
   margin: 0;
-  padding: 0.22rem 0.65rem 0.3rem;
-  font-size: 0.6875rem;
+  padding: 0.2rem 0.65rem 0.28rem;
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   color: #5c6774;
-  border-bottom: 1px solid var(--border);
-  background: var(--paper);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  background: #e8ebef;
 }
 .ae-toolbar-lights {
   display: flex;
@@ -829,30 +825,36 @@
   align-items: center;
   gap: 0.35rem;
   min-width: 0;
-  max-width: 18rem;
-  padding: 0.22rem 0.55rem;
-  border: 1px solid color-mix(in srgb, var(--ink) 14%, var(--border));
-  border-bottom-color: transparent;
-  border-radius: 6px 6px 0 0;
-  background: var(--paper);
-  font-size: 0.6875rem;
+  max-width: 17rem;
+  padding: 0.28rem 0.55rem 0.32rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  background: #e4e8ed;
+  font-size: 0.625rem;
   font-weight: 600;
   line-height: 1.25;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 1;
 }
 .ae-chrome-tab-active {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--paper) 80%, transparent);
+  background: #f2f4f7;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 90%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
 }
 .ae-chrome-favicon {
   display: inline-flex;
-  width: 1rem;
-  height: 1rem;
+  width: 0.9rem;
+  height: 0.9rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--accent-deep) 45%, transparent);
-  background: color-mix(in srgb, var(--accent-soft) 55%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  background: #1c2128;
   font-size: 0.5rem;
   font-weight: 700;
-  color: var(--accent-deep);
+  color: #f4f6f8;
   flex-shrink: 0;
 }
 .ae-chrome-tab-title {
@@ -885,13 +887,13 @@
   flex: 1;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.3rem 0.6rem;
-  border: 1px solid color-mix(in srgb, var(--ink) 12%, var(--border));
+  padding: 0.28rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
   border-radius: 999px;
-  background: var(--paper);
+  background: #fbfcfd;
   box-shadow: inset 0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent);
   font-family: var(--font-geist-mono, ui-monospace, monospace);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   line-height: 1.25;
   color: var(--ink);
 }
@@ -909,13 +911,17 @@
 .ae-status-chip {
   flex-shrink: 0;
   font-family: var(--font-geist-mono, ui-monospace, monospace);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  padding: 0.24rem 0.45rem;
+  letter-spacing: 0.08em;
+  padding: 0.22rem 0.4rem;
   border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-  background: var(--paper);
+  background: #f2f4f7;
   color: var(--ink);
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .ae-scroll-rail {
   position: absolute;
@@ -944,260 +950,329 @@
   border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 .ae-dealer-utility {
+  display: none;
+}
+.ae-oem-viewport {
+  container-name: northline-site;
+  container-type: inline-size;
+  position: relative;
+  z-index: 3;
+  min-width: 0;
+}
+.ae-oem-page {
+  background:
+    linear-gradient(180deg, #eef1f5 0%, #f7f8fa 42%, #fbfbfc 100%);
+  padding: 0 0 0.55rem;
+}
+.ae-oem-masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.75rem;
+  padding: 0.55rem 0.85rem;
+  background: #151a21;
+  color: #f4f6f8;
+}
+.ae-oem-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  min-width: 0;
+  margin-right: auto;
+}
+.ae-oem-wordmark {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.1;
+  color: #ffffff;
+}
+.ae-oem-market {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, #ffffff 55%, transparent);
+}
+.ae-oem-nav {
+  display: none;
+  align-items: center;
+  gap: 0.7rem;
+}
+.ae-oem-nav-item {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: color-mix(in srgb, #ffffff 78%, transparent);
+  white-space: nowrap;
+}
+.ae-oem-find {
+  padding: 0.28rem 0.55rem;
+  border: 1px solid color-mix(in srgb, #ffffff 55%, transparent);
+  border-radius: 2px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.ae-oem-utility {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.3rem 0.45rem;
-  padding-bottom: 0.3rem;
+  padding: 0.35rem 0.85rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  background: #dfe4ea;
   font-size: 0.625rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--ink) 58%, transparent);
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
 }
-.ae-dealer-utility-sep {
+.ae-oem-utility-sep {
   width: 3px;
   height: 3px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--ink) 28%, transparent);
 }
-.ae-dealer-masthead {
+.ae-oem-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.45rem 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem 0.5rem;
+  background:
+    linear-gradient(135deg, #d8dee8 0%, #eef1f5 48%, #f7f8fa 100%);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
 }
-.ae-dealer-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-width: 0;
-}
-.ae-dealer-monogram {
-  display: inline-flex;
-  width: 1.65rem;
-  height: 1.65rem;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--ink);
-  background: var(--paper);
+.ae-oem-eyebrow {
+  margin: 0 0 0.35rem;
   font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
-  flex-shrink: 0;
+  letter-spacing: 0.14em;
+  color: var(--signal-deep);
 }
-.ae-dealer-brand-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
+.ae-oem-hero-copy {
   min-width: 0;
 }
-.ae-dealer-wordmark {
-  font-size: 0.6875rem;
+.ae-oem-hero-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.ae-oem-vehicle {
+  width: 100%;
+  max-width: 20rem;
+  height: auto;
+  display: block;
+}
+.ae-oem-model-note {
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  line-height: 1.1;
-  color: var(--ink);
-}
-.ae-dealer-label {
-  font-size: 0.5625rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: var(--muted-foreground);
-}
-.ae-dealer-nav {
-  display: none;
-  align-items: center;
-  gap: 0.65rem;
-  justify-self: end;
-}
-.ae-dealer-nav-item {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  color: color-mix(in srgb, var(--ink) 72%, transparent);
-  white-space: nowrap;
-}
-.ae-dealer-inventory {
-  justify-self: end;
-  padding: 0.3rem 0.6rem;
-  border: 2px solid var(--ink);
-  border-radius: 4px;
-  background: var(--paper);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--ink);
-  white-space: nowrap;
-}
-.ae-article-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.5rem;
-  margin-top: 0.5rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--muted-foreground);
-}
-.ae-meta-sep {
-  width: 3px;
-  height: 3px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--ink) 24%, transparent);
-}
-.ae-breadcrumb {
-  color: var(--muted-foreground);
+  color: color-mix(in srgb, var(--ink) 48%, transparent);
 }
 .ae-page-title {
-  font-size: clamp(1.75rem, 2.4vw, 2.125rem);
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.5rem, 4.2cqi, 2rem);
   line-height: 1.15;
+  color: var(--ink);
 }
 .ae-module {
   position: relative;
+  margin: 0.55rem 0.85rem;
 }
 .ae-answer-module {
-  border-left: 4px solid var(--accent);
-  background: color-mix(in srgb, var(--porcelain) 88%, var(--paper));
-  border-radius: 8px;
-  padding: 0.7rem 0.8rem;
+  position: relative;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, #ffffff 72%, transparent);
+  border-radius: 0 6px 6px 0;
+  padding: 0.55rem 0.7rem;
+  margin-top: 0.35rem;
 }
 .ae-module-label {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.3;
+  color: var(--signal-deep);
 }
 .ae-module-lead {
-  font-size: 1.0625rem;
+  font-size: 0.9375rem;
   line-height: 1.45;
+  color: var(--ink);
 }
 .ae-module-heading {
-  font-size: 1.0625rem;
-  line-height: 1.3;
-}
-.ae-module-copy {
   font-size: 0.9375rem;
-  line-height: 1.45;
-}
-.ae-card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--paper);
-  padding: 0.7rem 0.8rem;
-}
-.ae-contact-note {
-  font-size: 0.6875rem;
-  line-height: 1.35;
-}
-.ae-inventory-module {
-  border: 2px solid var(--ink);
-  border-left: 4px solid var(--accent);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--porcelain) 88%, var(--paper));
-  padding: 0.7rem 0.8rem;
-}
-.ae-inventory-preview {
-  margin: 0.5rem 0 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.28rem;
-}
-.ae-inventory-preview li {
-  display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
-  padding: 0.38rem 0.5rem;
-  border: 1px solid color-mix(in srgb, var(--ink) 12%, var(--border));
-  border-radius: 6px;
-  background: var(--paper);
-}
-.ae-inventory-model {
-  font-size: 0.9375rem;
-  font-weight: 600;
   line-height: 1.3;
   color: var(--ink);
 }
-.ae-inventory-trim {
-  font-size: 0.8125rem;
+.ae-module-copy {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--muted-foreground);
+}
+.ae-decision-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+.ae-compare-grid {
+  display: grid;
+  gap: 0.45rem;
+}
+.ae-card {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, #ffffff 88%, transparent);
+  padding: 0.6rem 0.7rem 0.55rem;
+}
+.ae-card-affordance {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
+  pointer-events: none;
+}
+.ae-contact-note {
+  font-size: 0.625rem;
   line-height: 1.35;
   color: var(--muted-foreground);
 }
-.ae-fake-action {
-  font-size: 0.9375rem;
+.ae-inventory-module {
+  margin: 0.55rem 0.85rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  background: #2a323c;
+  padding: 0.7rem 0.8rem;
+  color: #f4f6f8;
+}
+.ae-inventory-module .ae-module-heading {
+  color: #f4f6f8;
 }
 .ae-inventory-head {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 .ae-inventory-status {
   display: inline-flex;
   align-self: flex-start;
-  padding: 0.14rem 0.38rem;
-  border: 1px solid color-mix(in srgb, var(--accent-deep) 35%, transparent);
-  background: color-mix(in srgb, var(--accent-soft) 45%, var(--paper));
-  font-size: 0.625rem;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid color-mix(in srgb, #ffffff 28%, transparent);
+  background: color-mix(in srgb, #ffffff 8%, transparent);
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--accent-deep);
+  color: color-mix(in srgb, #ffffff 82%, transparent);
 }
+.ae-oem-inventory-cta {
+  margin-top: 0.55rem;
+  padding: 0.4rem 0.75rem;
+  border: 2px solid #f4f6f8;
+  border-radius: 4px;
+  background: transparent;
+  color: #f4f6f8;
+  font-size: 0.875rem;
+  cursor: default;
+  pointer-events: none;
+}
+.ae-fake-action {
+  font-size: 0.875rem;
+  cursor: default;
+  pointer-events: none;
+}
+
+@container northline-site (min-width: 520px) {
+  .ae-oem-nav {
+    display: flex;
+  }
+  .ae-oem-hero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: end;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem 0.55rem;
+  }
+  .ae-page-title {
+    font-size: clamp(1.65rem, 3.6cqi, 2.05rem);
+  }
+  .ae-module-lead {
+    font-size: 1rem;
+  }
+  .ae-module-heading {
+    font-size: 1rem;
+  }
+  .ae-compare-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ae-oem-vehicle {
+    max-width: 100%;
+  }
+}
+
+@container northline-site (max-width: 519px) {
+  .ae-oem-nav-wide {
+    display: none;
+  }
+  .ae-oem-masthead {
+    padding: 0.45rem 0.65rem;
+  }
+  .ae-oem-utility,
+  .ae-module,
+  .ae-inventory-module {
+    margin-left: 0.65rem;
+    margin-right: 0.65rem;
+  }
+  .ae-oem-hero {
+    padding: 0.65rem;
+  }
+}
+
 .ae-instrument-stage {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: 1rem;
   min-width: 0;
 }
-.ae-signal-bridge {
+.ae-projection {
   display: none;
-  position: relative;
-  width: 1.125rem;
-  flex-shrink: 0;
-  align-self: stretch;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  z-index: 5;
+  overflow: visible;
 }
-.ae-bridge-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  background: color-mix(in srgb, var(--stage-foreground) 18%, transparent);
-  transform: translateY(-50%);
+.ae-projection-path {
+  stroke: color-mix(in srgb, var(--accent) 55%, var(--stage-foreground));
 }
-.ae-bridge-station {
-  position: absolute;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border: 1px solid color-mix(in srgb, var(--stage-foreground) 35%, transparent);
-  background: var(--stage);
-  transform: translateY(-50%);
-  z-index: 1;
+.ae-instrument-stage[data-lens='measurable'] .ae-projection-path {
+  stroke: color-mix(in srgb, var(--proof) 58%, var(--stage-foreground));
 }
-.ae-bridge-from {
-  left: 0;
+.ae-projection-node {
+  fill: color-mix(in srgb, var(--accent) 70%, var(--stage-foreground));
+  stroke: color-mix(in srgb, var(--stage-foreground) 35%, transparent);
+  stroke-width: 1;
 }
-.ae-bridge-to {
-  right: 0;
+.ae-instrument-stage[data-lens='measurable'] .ae-projection-node {
+  fill: color-mix(in srgb, var(--proof) 72%, var(--stage-foreground));
 }
+.ae-signal-bridge {
+  display: none !important;
+}
+.ae-bridge-line,
+.ae-bridge-station,
+.ae-bridge-from,
+.ae-bridge-to,
 .ae-bridge-packet {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 7px;
-  height: 7px;
-  margin-top: -3.5px;
-  background: var(--accent);
-  border: 1px solid var(--accent-deep);
-  opacity: 0;
-  z-index: 2;
-  pointer-events: none;
+  display: none !important;
 }
-.ae-instrument-stage[data-lens='measurable'] .ae-bridge-packet {
-  background: var(--proof);
-  border-color: var(--proof-deep);
+.ae-page {
+  position: relative;
+  z-index: 3;
+  min-width: 0;
+  padding: 0;
 }
 .ae-lens-dock {
   position: relative;
@@ -1358,7 +1433,7 @@
   position: relative;
   z-index: 3;
   min-width: 0;
-  padding: 0.85rem 1.35rem 1rem 0.9rem;
+  padding: 0;
 }
 .ae-lens-dock.ae-inspector {
   z-index: auto;
@@ -1631,6 +1706,89 @@
 .ae-active-result[data-lens='measurable'] .ae-active-result-station {
   color: color-mix(in srgb, var(--proof) 62%, transparent);
 }
+.ae-foundation {
+  margin-top: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+.ae-foundation-eyebrow {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--accent) 72%, var(--stage-muted));
+}
+.ae-foundation-title {
+  margin: 0.45rem 0 0;
+  max-width: 40rem;
+  font-size: clamp(1.125rem, 2vw, 1.35rem);
+  line-height: 1.3;
+  color: var(--stage-foreground);
+}
+.ae-foundation-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 0.85rem 0 0.9rem;
+  background: color-mix(in srgb, var(--stage-foreground) 18%, transparent);
+}
+.ae-foundation-stations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ae-foundation-station {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--stage-foreground) 14%, transparent);
+}
+.ae-foundation-n {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.ae-foundation-station[data-tone='lavender'] .ae-foundation-n {
+  color: var(--proof);
+}
+.ae-foundation-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--stage-foreground);
+}
+.ae-foundation-note {
+  margin: 0.85rem 0 0;
+  max-width: 42rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--on-ink-muted);
+}
+@media (min-width: 768px) {
+  .ae-foundation-stations {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem 1.25rem;
+  }
+}
+.ae-observer-token {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.3rem;
+  z-index: 2;
+  padding: 0.08rem 0.28rem;
+  border: 1px solid color-mix(in srgb, var(--accent-deep) 40%, transparent);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent-deep);
+  pointer-events: none;
+}
 .ae-spot {
   position: relative;
 }
@@ -1893,17 +2051,18 @@
 }
 .ae-chip {
   cursor: default;
-  border-radius: 999px;
-  border: 2px solid var(--border);
-  background: var(--paper);
-  padding: 0.45rem 0.85rem;
-  font-size: 0.9375rem;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  background: color-mix(in srgb, #ffffff 80%, transparent);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--ink);
 }
 .ae-chip-on {
   border-color: var(--accent-deep);
-  background: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 55%, #ffffff);
+  box-shadow: inset 0 -2px 0 0 var(--accent-deep);
 }
 .ae-fake-action {
   cursor: default;
@@ -1915,16 +2074,12 @@
     min-height: 72px;
     padding: 0.7rem 0.85rem;
   }
-  .ae-dealer-nav {
-    display: flex;
-  }
-  .ae-dealer-masthead {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-  }
   .ae-chrome-tab,
-  .ae-chrome-address,
+  .ae-chrome-address {
+    font-size: 0.625rem;
+  }
   .ae-status-chip {
-    font-size: 0.6875rem;
+    font-size: 0.5625rem;
   }
   .ae-tab-inner {
     justify-content: flex-start;
@@ -1948,9 +2103,6 @@
   }
   .ae-chrome-note {
     display: block;
-  }
-  .ae-page {
-    padding: 0.8rem 1.25rem 0.95rem 0.85rem;
   }
   .ae-inspector-mark {
     display: flex;
@@ -1986,7 +2138,7 @@
 @media (min-width: 1200px) {
   .ae-instrument-stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 1.125rem minmax(280px, 21.4375rem);
+    grid-template-columns: minmax(0, 1fr) minmax(1.25rem, 1.75rem) minmax(280px, 21.4375rem);
     grid-template-rows: auto 1fr;
     column-gap: 0;
     row-gap: 0.75rem;
@@ -1997,19 +2149,16 @@
     grid-row: 1 / 3;
     align-self: stretch;
   }
+  .ae-projection {
+    display: block;
+    grid-column: 1 / 4;
+    grid-row: 1 / 3;
+  }
   .ae-active-result {
     grid-column: 3;
     grid-row: 1;
     align-self: start;
     width: 100%;
-  }
-  .ae-signal-bridge {
-    display: flex;
-    grid-column: 2;
-    grid-row: 2;
-    margin-top: 0;
-    align-self: center;
-    min-height: 4rem;
   }
   .ae-lens-dock {
     grid-column: 3;
@@ -2024,11 +2173,8 @@
   .ae-inspector-panel {
     padding: 0.65rem 0 0.75rem;
   }
-  .ae-page {
-    padding: 0.65rem 1.15rem 0.75rem 0.8rem;
-  }
   .ae-chrome-note {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
   }
   .ae-station-title {
     font-size: 1.0625rem;
@@ -2046,7 +2192,7 @@
   .ae-observer-reg {
     display: none;
   }
-  .ae-dealer-nav-wide {
+  .ae-oem-nav-wide {
     display: none;
   }
 }
@@ -2071,22 +2217,6 @@
     color: var(--ink);
   }
   .ae-scroll-rail {
-    display: none;
-  }
-  .ae-dealer-masthead {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-  .ae-dealer-nav {
-    display: none;
-  }
-  .ae-dealer-inventory {
-    font-size: 0.625rem;
-    padding: 0.22rem 0.45rem;
-  }
-  .ae-dealer-wordmark {
-    font-size: 0.5625rem;
-  }
-  .ae-dealer-label {
     display: none;
   }
 }
@@ -4673,11 +4803,11 @@ details.disclosure[open] > summary .disclosure-plus {
     margin-top: 1.125rem;
   }
   #authority-experiences .ae-page {
-    padding: 0.65rem 0.65rem 0.75rem;
+    padding: 0;
   }
-  #authority-experiences .ae-page > .ae-page-title {
-    font-size: 1.28rem;
-    line-height: 1.22;
+  #authority-experiences .ae-page-title {
+    font-size: 1.35rem;
+    line-height: 1.2;
   }
   #authority-experiences .ae-spot {
     margin-top: 0.45rem;
@@ -4800,9 +4930,15 @@ details.disclosure[open] > summary .disclosure-plus {
   #authority-experiences .ae-active-result-station {
     font-size: 1.5rem;
   }
-  #authority-experiences .mt-6.border {
-    margin-top: 0.875rem;
-    padding: 0.75rem 0.85rem;
+  #authority-experiences .ae-foundation {
+    margin-top: 1.125rem;
+  }
+  #authority-experiences .ae-foundation-stations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 0.75rem;
+  }
+  #authority-experiences .ae-foundation-title {
+    font-size: 1.0625rem;
   }
   #authority-experiences .mt-8.flex {
     margin-top: 1.125rem;
