@@ -38,12 +38,37 @@ const lensUi = [
   },
 ] as const
 
-/** Lens → commercial outcome card beneath the browser */
+/** Lens → commercial outcome card beneath the browser (order matches tabs) */
 const outcomes = [
-  { id: 'discovery' as const, mark: 'bg-accent', label: 'Discovery earned' },
   { id: 'shopper' as const, mark: 'bg-paper', label: 'Buyers guided' },
+  { id: 'discovery' as const, mark: 'bg-accent', label: 'Discovery earned' },
   { id: 'measurable' as const, mark: 'bg-proof', label: 'Actions measured' },
 ] as const
+
+const observerFrames = [
+  { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'ANSWER FOUND' },
+  { lens: 'shopper' as const, spot: 'priorities', station: '02', label: 'NEEDS CLARIFIED' },
+  { lens: 'shopper' as const, spot: 'inventory', station: '03', label: 'INVENTORY NEXT' },
+  { lens: 'discovery' as const, spot: 'answer', station: '01', label: 'DIRECT ANSWER' },
+  { lens: 'discovery' as const, spot: 'structure', station: '02', label: 'CLEAR STRUCTURE' },
+  { lens: 'discovery' as const, spot: 'inventory', station: '03', label: 'INVENTORY PATH' },
+  { lens: 'measurable' as const, spot: 'priorities', station: '01', label: 'PRIORITY SELECT' },
+  { lens: 'measurable' as const, spot: 'compare', station: '02', label: 'COMPARISON OPEN' },
+  { lens: 'measurable' as const, spot: 'inventory', station: '03', label: 'INVENTORY CLICK' },
+  { lens: 'measurable' as const, spot: 'contact', station: '04', label: 'CONTACT START' },
+] as const
+
+const observerChip: Record<ViewId, string> = {
+  shopper: 'SHOPPER VIEW',
+  discovery: 'SEARCH + AI VIEW',
+  measurable: 'SIGNAL VIEW',
+}
+
+const outcomeCount: Record<ViewId, string> = {
+  shopper: '3 DECISION STEPS',
+  discovery: '3 READABLE ELEMENTS',
+  measurable: '4 CAPTURED ACTIONS',
+}
 
 const shopperRoute = [
   { station: 'Question answered', support: 'Family-fit guidance' },
@@ -146,11 +171,66 @@ function apertureGeometry(tab: HTMLElement, workspace: HTMLElement) {
   return { originX, originY, radius }
 }
 
+function ObserverFrame({
+  lens,
+  station,
+  label,
+  active,
+}: {
+  lens: ViewId
+  station: string
+  label: string
+  active: boolean
+}) {
+  return (
+    <span
+      className="ae-observer-frame"
+      data-lens={lens}
+      data-active={active ? 'true' : 'false'}
+      aria-hidden="true"
+    >
+      <span className="ae-observer-tint" />
+      <span className="ae-observer-ring" />
+      <span className="ae-observer-corners" />
+      {lens === 'shopper' ? <span className="ae-observer-notch" /> : null}
+      {lens === 'discovery' ? <span className="ae-observer-reg" /> : null}
+      {lens === 'measurable' ? (
+        <>
+          <span className="ae-observer-node ae-observer-node-tl" />
+          <span className="ae-observer-node ae-observer-node-tr" />
+          <span className="ae-observer-node ae-observer-node-bl" />
+          <span className="ae-observer-node ae-observer-node-br" />
+        </>
+      ) : null}
+      <span className="ae-observer-label font-mono">
+        <span className="ae-observer-label-text">{label}</span>
+        <span className="ae-observer-station">{station}</span>
+      </span>
+    </span>
+  )
+}
+
+function framesForSpot(spot: string, view: ViewId) {
+  return observerFrames
+    .filter((frame) => frame.spot === spot)
+    .map((frame) => (
+      <ObserverFrame
+        key={`${frame.lens}-${frame.spot}-${frame.station}`}
+        lens={frame.lens}
+        station={frame.station}
+        label={frame.label}
+        active={view === frame.lens}
+      />
+    ))
+}
+
 function InspectorShell({
   active,
   lens,
   mark,
   eyebrow,
+  chip,
+  count,
   outcomeLabel,
   outcomeValue,
   children,
@@ -160,6 +240,8 @@ function InspectorShell({
   lens: ViewId
   mark: string
   eyebrow: string
+  chip: string
+  count: string
   outcomeLabel: string
   outcomeValue: string
   children: ReactNode
@@ -174,7 +256,12 @@ function InspectorShell({
       inert={!active ? true : undefined}
       aria-label={label}
     >
-      <p className="ae-inspector-eyebrow font-mono">{eyebrow}</p>
+      <div className="ae-inspector-head">
+        <p className="ae-inspector-eyebrow font-mono">{eyebrow}</p>
+        <span className="ae-observer-chip font-mono" aria-hidden="true">
+          {chip}
+        </span>
+      </div>
       <div className="ae-inspector-body">
         <span className="ae-inspector-spine" aria-hidden="true" />
         <span className="ae-inspector-packet" aria-hidden="true" />
@@ -185,9 +272,14 @@ function InspectorShell({
         {children}
       </div>
       <div className="ae-outcome">
-        <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-          {outcomeLabel}
-        </p>
+        <div className="ae-outcome-meta">
+          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            {outcomeLabel}
+          </p>
+          <p className="ae-outcome-count font-mono" aria-hidden="true">
+            {count}
+          </p>
+        </div>
         <p className="mt-1 text-base font-semibold tracking-tight text-ink">{outcomeValue}</p>
       </div>
     </div>
@@ -225,6 +317,29 @@ export function AuthorityExperience() {
 
       const pinD = () => gsap.utils.toArray<HTMLElement>('.ae-pin-d', root)
       const pinM = () => gsap.utils.toArray<HTMLElement>('.ae-pin-m', root)
+      const allFrames = () => gsap.utils.toArray<HTMLElement>('.ae-observer-frame', root)
+      const framesFor = (id: ViewId) =>
+        gsap.utils.toArray<HTMLElement>(`.ae-observer-frame[data-lens="${id}"]`, root)
+
+      const settleFrames = (id: ViewId) => {
+        allFrames().forEach((el) => {
+          const live = el.dataset.lens === id
+          el.dataset.active = live ? 'true' : 'false'
+          const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
+          const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
+          const label = el.querySelector<HTMLElement>('.ae-observer-label')
+          const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
+          if (live) {
+            gsap.set(el, { autoAlpha: 1 })
+            if (ring) gsap.set(ring, { clipPath: 'inset(0 0 0 0)', opacity: 1 })
+            if (corners) gsap.set(corners, { opacity: 1 })
+            if (label) gsap.set(label, { autoAlpha: 1 })
+            nodes.forEach((n) => gsap.set(n, { opacity: 1, scale: 1 }))
+          } else {
+            gsap.set(el, { autoAlpha: 0 })
+          }
+        })
+      }
 
       const settlePanel = (id: ViewId) => {
         const panel = root.querySelector<HTMLElement>(`.ae-inspector-panel[data-lens="${id}"]`)
@@ -240,7 +355,13 @@ export function AuthorityExperience() {
       }
 
       const clearWillChange = () => {
-        gsap.set([reveal, base, sweep].filter(Boolean), { clearProps: 'willChange' })
+        const frameParts = allFrames().flatMap((el) => [
+          el,
+          el.querySelector('.ae-observer-ring'),
+          el.querySelector('.ae-observer-corners'),
+          el.querySelector('.ae-observer-label'),
+        ])
+        gsap.set([reveal, base, sweep, ...frameParts].filter(Boolean), { clearProps: 'willChange' })
       }
 
       const runLens = (id: ViewId, instant = false) => {
@@ -250,7 +371,21 @@ export function AuthorityExperience() {
 
         lensTlRef.current?.kill()
         lensTlRef.current = null
-        gsap.killTweensOf([reveal, base, sweep, ...pinD(), ...pinM()].filter(Boolean))
+        const frameBits = allFrames().flatMap((el) => [
+          el,
+          ...gsap.utils.toArray<HTMLElement>(
+            '.ae-observer-ring, .ae-observer-corners, .ae-observer-label, .ae-observer-node',
+            el,
+          ),
+        ])
+        gsap.killTweensOf([reveal, base, sweep, ...pinD(), ...pinM(), ...frameBits].filter(Boolean))
+        clearWillChange()
+
+        // 0ms: hide outgoing frames; commit chrome/atmosphere state
+        allFrames().forEach((el) => {
+          el.dataset.active = 'false'
+          gsap.set(el, { autoAlpha: 0 })
+        })
 
         base.dataset.lens = id
         reveal.dataset.lens = id
@@ -259,10 +394,11 @@ export function AuthorityExperience() {
         if (sweep) gsap.set(sweep, { autoAlpha: 0, x: 0, clearProps: 'transform' })
 
         settlePanel(id)
-        gsap.set(pinD(), { autoAlpha: id === 'discovery' ? 1 : 0 })
-        gsap.set(pinM(), { autoAlpha: id === 'measurable' ? 1 : 0 })
+        gsap.set(pinD(), { autoAlpha: 0 })
+        gsap.set(pinM(), { autoAlpha: 0 })
 
         if (instant || reduced || mobile || !tab) {
+          settleFrames(id)
           clearWillChange()
           return
         }
@@ -274,13 +410,25 @@ export function AuthorityExperience() {
         const packet = panel?.querySelector<HTMLElement>('.ae-inspector-packet')
         const stations = panel ? gsap.utils.toArray<HTMLElement>('.ae-station', panel) : []
         const outcome = panel?.querySelector<HTMLElement>('.ae-outcome')
+        const liveFrames = framesFor(id)
 
         if (spine) gsap.set(spine, { scaleY: 0, transformOrigin: 'top center' })
         stations.forEach((el) => gsap.set(el, { autoAlpha: 0, y: 2 }))
-        if (outcome) gsap.set(outcome, { autoAlpha: 0.4 })
+        if (outcome) gsap.set(outcome, { autoAlpha: 0.45 })
         if (packet) gsap.set(packet, { autoAlpha: 0, top: 0 })
-        gsap.set(pinD(), { autoAlpha: 0 })
-        gsap.set(pinM(), { autoAlpha: 0 })
+
+        liveFrames.forEach((el) => {
+          el.dataset.active = 'true'
+          const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
+          const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
+          const label = el.querySelector<HTMLElement>('.ae-observer-label')
+          const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
+          gsap.set(el, { autoAlpha: 1 })
+          if (ring) gsap.set(ring, { clipPath: 'inset(0 100% 100% 0)', opacity: 1, willChange: 'clip-path' })
+          if (corners) gsap.set(corners, { opacity: 0 })
+          if (label) gsap.set(label, { autoAlpha: 0 })
+          nodes.forEach((n) => gsap.set(n, { opacity: 0, scale: 0.6 }))
+        })
 
         gsap.set(reveal, {
           autoAlpha: 1,
@@ -292,6 +440,7 @@ export function AuthorityExperience() {
           defaults: { ease: 'power3.out' },
           onComplete: () => {
             base.dataset.lens = id
+            settleFrames(id)
             gsap.set(reveal, { autoAlpha: 0, clipPath: 'circle(150% at 50% 0%)' })
             if (sweep) gsap.set(sweep, { autoAlpha: 0 })
             clearWillChange()
@@ -300,48 +449,73 @@ export function AuthorityExperience() {
         })
         lensTlRef.current = tl
 
+        // 0–280ms local aperture
         tl.to(
           reveal,
           {
             clipPath: `circle(${radius}px at ${origin})`,
-            duration: 0.4,
+            duration: 0.28,
             ease: 'power3.out',
           },
           0,
         )
 
-        if (sweep) {
-          tl.set(sweep, { autoAlpha: 0.9, x: originX - 6, y: 0, willChange: 'transform, opacity' }, 0.02)
-          tl.to(
-            sweep,
-            {
-              y: Math.max(80, workspace.offsetHeight - 24),
-              duration: 0.38,
-              ease: 'power2.inOut',
-            },
-            0.04,
-          )
-          tl.to(sweep, { autoAlpha: 0, duration: 0.12 }, 0.38)
-        }
+        // 60–300ms target frames (~45ms stagger)
+        liveFrames.forEach((el, i) => {
+          const at = 0.06 + i * 0.045
+          const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
+          const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
+          if (ring) {
+            tl.to(ring, { clipPath: 'inset(0 0 0 0)', duration: 0.22, ease: 'power2.out' }, at)
+          }
+          if (corners) {
+            tl.to(corners, { opacity: 1, duration: 0.18 }, at + 0.04)
+          }
+        })
 
-        if (spine) tl.to(spine, { scaleY: 1, duration: 0.26 }, 0.12)
+        // 120–360ms stations / labels / inspector route
+        liveFrames.forEach((el, i) => {
+          const at = 0.12 + i * 0.045
+          const label = el.querySelector<HTMLElement>('.ae-observer-label')
+          const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
+          if (label) tl.to(label, { autoAlpha: 1, duration: 0.16 }, at)
+          nodes.forEach((n, ni) => {
+            tl.to(n, { opacity: 1, scale: 1, duration: 0.14 }, at + ni * 0.02)
+          })
+        })
+
+        if (spine) tl.to(spine, { scaleY: 1, duration: 0.22 }, 0.12)
         stations.forEach((el, i) => {
-          tl.to(el, { autoAlpha: 1, y: 0, duration: 0.2 }, 0.16 + i * 0.07)
+          tl.to(el, { autoAlpha: 1, y: 0, duration: 0.16 }, 0.14 + i * 0.05)
         })
         if (packet && spine) {
           const travel = Math.max(24, spine.offsetHeight - 8)
-          tl.set(packet, { autoAlpha: 1, top: 0 }, 0.18)
-          tl.to(packet, { top: travel, duration: 0.3, ease: 'power2.inOut' }, 0.18)
-          tl.to(packet, { autoAlpha: 0, duration: 0.12 }, 0.44)
+          tl.set(packet, { autoAlpha: 0.85, top: 0 }, 0.16)
+          tl.to(packet, { top: travel, duration: 0.22, ease: 'power2.inOut' }, 0.16)
+          tl.to(packet, { autoAlpha: 0, duration: 0.1 }, 0.36)
         }
-        if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.18 }, 0.42)
+        if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.14 }, 0.34)
 
-        const pinDelay = 0.22
-        if (id === 'discovery') {
-          tl.to(pinD(), { autoAlpha: 1, duration: 0.22, stagger: 0.05 }, pinDelay)
-        } else if (id === 'measurable') {
-          tl.to(pinM(), { autoAlpha: 1, duration: 0.22, stagger: 0.05 }, pinDelay)
+        // Subtle sweep; clear by ~500ms
+        if (sweep) {
+          tl.set(
+            sweep,
+            { autoAlpha: 0.35, x: originX - 4, y: 0, willChange: 'transform, opacity' },
+            0.36,
+          )
+          tl.to(
+            sweep,
+            {
+              y: Math.max(64, workspace.offsetHeight * 0.55),
+              duration: 0.12,
+              ease: 'power2.inOut',
+            },
+            0.36,
+          )
+          tl.to(sweep, { autoAlpha: 0, duration: 0.08 }, 0.46)
         }
+
+        tl.set({}, {}, 0.5)
       }
 
       runLensRef.current = runLens
@@ -551,9 +725,7 @@ export function AuthorityExperience() {
                 </div>
 
                 <div className="ae-spot mt-5 rounded-lg border-l-4 border-accent bg-porcelain p-5" data-spot="answer">
-                  <span className="ae-pin ae-pin-d" aria-hidden="true">
-                    {pinLabel(1)}
-                  </span>
+                  {framesForSpot('answer', view)}
                   <p className="text-base font-semibold uppercase tracking-wide text-signal-deep">
                     The short answer
                   </p>
@@ -565,9 +737,7 @@ export function AuthorityExperience() {
                 </div>
 
                 <div className="ae-spot mt-5" data-spot="priorities">
-                  <span className="ae-pin ae-pin-m" aria-hidden="true">
-                    {pinLabel(1)}
-                  </span>
+                  {framesForSpot('priorities', view)}
                   <p className="text-lg font-semibold text-ink">What matters most to your family?</p>
                   <div className="mt-3 flex flex-wrap gap-2.5">
                     {priorities.map((priority, i) => (
@@ -579,13 +749,9 @@ export function AuthorityExperience() {
                 </div>
 
                 <div className="ae-spot mt-5 grid gap-4 sm:grid-cols-2" data-spot="structure">
-                  <span className="ae-pin ae-pin-d" aria-hidden="true">
-                    {pinLabel(2)}
-                  </span>
+                  {framesForSpot('structure', view)}
                   <div className="ae-spot rounded-lg border border-border bg-paper p-5" data-spot="compare">
-                    <span className="ae-pin ae-pin-m" aria-hidden="true">
-                      {pinLabel(2)}
-                    </span>
+                    {framesForSpot('compare', view)}
                     <p className="text-base font-semibold text-ink">Winter driving comparison</p>
                     <p className="mt-1.5 text-base leading-relaxed text-muted-foreground">
                       How AWD systems, ground clearance, and heated features compare across the
@@ -605,12 +771,7 @@ export function AuthorityExperience() {
                   className="ae-spot mt-5 rounded-lg border-2 border-ink bg-porcelain p-5"
                   data-spot="inventory"
                 >
-                  <span className="ae-pin ae-pin-d" aria-hidden="true">
-                    {pinLabel(3)}
-                  </span>
-                  <span className="ae-pin ae-pin-m" aria-hidden="true">
-                    {pinLabel(3)}
-                  </span>
+                  {framesForSpot('inventory', view)}
                   <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                     <p className="text-lg font-semibold text-ink text-pretty">
                       See the three-row SUVs that match your priorities
@@ -623,9 +784,7 @@ export function AuthorityExperience() {
                 </div>
 
                 <div className="ae-spot mt-4" data-spot="contact">
-                  <span className="ae-pin ae-pin-m" aria-hidden="true">
-                    {pinLabel(4)}
-                  </span>
+                  {framesForSpot('contact', view)}
                   <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     Questions remain? Speak with the dealership.
                   </p>
@@ -639,6 +798,8 @@ export function AuthorityExperience() {
                     lens="shopper"
                     mark="01"
                     eyebrow="BUYER PATH"
+                    chip={observerChip.shopper}
+                    count={outcomeCount.shopper}
                     outcomeLabel="DEALER OUTCOME"
                     outcomeValue="LESS WANDERING"
                     label="Buyer path inspector"
@@ -665,6 +826,8 @@ export function AuthorityExperience() {
                     lens="discovery"
                     mark="02"
                     eyebrow="DISCOVERY READOUT"
+                    chip={observerChip.discovery}
+                    count={outcomeCount.discovery}
                     outcomeLabel="SYSTEM OUTCOME"
                     outcomeValue="EASIER TO UNDERSTAND"
                     label="Discovery readout inspector"
@@ -691,6 +854,8 @@ export function AuthorityExperience() {
                     lens="measurable"
                     mark="03"
                     eyebrow="BUYER SIGNALS"
+                    chip={observerChip.measurable}
+                    count={outcomeCount.measurable}
                     outcomeLabel="DEALER OUTCOME"
                     outcomeValue="INTENT YOU CAN PROVE"
                     label="Buyer signals inspector"
