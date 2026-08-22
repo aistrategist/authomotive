@@ -944,7 +944,7 @@
   min-width: 0;
 }
 .ae-inspector-eyebrow {
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--signal-deep);
@@ -952,13 +952,16 @@
 }
 .ae-observer-chip {
   flex: 0 0 auto;
+  min-width: 7.35rem;
+  min-height: 1.375rem;
   white-space: nowrap;
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-  background: color-mix(in srgb, var(--paper) 70%, transparent);
-  padding: 0.12rem 0.35rem;
-  font-size: 0.4375rem;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  padding: 0.25rem 0.45rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  line-height: 0.875rem;
   color: var(--ink);
 }
 .ae-inspector-panel[data-lens='discovery'] .ae-observer-chip {
@@ -1043,27 +1046,35 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.65rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .ae-station {
   display: grid;
-  grid-template-columns: 1.35rem minmax(0, 1fr);
-  gap: 0.45rem;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.5rem;
   align-items: start;
 }
 .ae-station-mark {
   display: inline-flex;
-  width: 1.35rem;
-  height: 1.35rem;
+  width: 1.5rem;
+  height: 1.5rem;
   align-items: center;
   justify-content: center;
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
   font-weight: 700;
   background: var(--ink);
   color: var(--paper);
+}
+.ae-station-title {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+.ae-station-detail {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 .ae-station[data-tone='shopper'] .ae-station-mark {
   background: var(--accent-deep);
@@ -1083,13 +1094,20 @@
   border-left: 3px solid var(--accent-deep);
   background: var(--paper);
 }
+.ae-outcome-eyebrow {
+  font-size: 0.6875rem;
+}
 .ae-outcome-count {
   margin-top: 0;
-  font-size: 0.5rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--muted-foreground);
   white-space: nowrap;
+}
+.ae-outcome-value {
+  font-size: 1.125rem;
+  line-height: 1.3;
 }
 .ae-outcome-meta {
   display: flex;
@@ -1251,24 +1269,25 @@
   align-items: center;
   gap: 0.3rem;
   max-width: calc(100% - 0.7rem);
-  padding: 0.12rem 0.28rem;
-  font-size: 0.5rem;
+  padding: 0.14rem 0.32rem;
+  font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+  background: var(--paper);
 }
 .ae-observer-station {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.05rem;
-  height: 1.05rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
   padding: 0 0.15rem;
-  font-size: 0.5rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -1492,6 +1511,12 @@
   }
   .ae-page {
     padding: 1.25rem 1.35rem 1.4rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .ae-workspace {
+    grid-template-columns: minmax(0, 1fr) 21.4375rem;
   }
 }
 
@@ -4128,17 +4153,31 @@ details.disclosure[open] > summary .disclosure-plus {
     display: none;
   }
   #authority-experiences .ae-observer-label {
-    font-size: 0.4375rem;
-    padding: 0.08rem 0.22rem;
+    font-size: 0.625rem;
+    padding: 0.1rem 0.28rem;
     left: 0.3rem;
     max-width: calc(100% - 0.5rem);
   }
+  #authority-experiences .ae-observer-station {
+    min-width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.625rem;
+  }
   #authority-experiences .ae-observer-chip {
-    max-width: 7.5rem;
-    font-size: 0.4375rem;
+    min-width: 6.75rem;
+    font-size: 0.625rem;
+    line-height: 0.875rem;
+    min-height: 1.375rem;
   }
   #authority-experiences .ae-outcome-count {
-    font-size: 0.5rem;
+    font-size: 0.625rem;
+  }
+  #authority-experiences .ae-station-title {
+    font-size: 0.9375rem;
+  }
+  #authority-experiences .ae-station-detail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
   #authority-experiences .ae-station-list {
     display: grid;
@@ -4159,8 +4198,8 @@ details.disclosure[open] > summary .disclosure-plus {
     display: none;
   }
   #authority-experiences .ae-station .text-sm {
-    font-size: 0.75rem;
-    line-height: 1.25;
+    font-size: 0.9375rem;
+    line-height: 1.35;
   }
   #authority-experiences .ae-outcome {
     margin-top: 0.45rem;

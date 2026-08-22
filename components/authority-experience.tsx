@@ -273,14 +273,14 @@ function InspectorShell({
       </div>
       <div className="ae-outcome">
         <div className="ae-outcome-meta">
-          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="ae-outcome-eyebrow font-mono font-medium uppercase tracking-[0.14em] text-muted-foreground">
             {outcomeLabel}
           </p>
           <p className="ae-outcome-count font-mono" aria-hidden="true">
             {count}
           </p>
         </div>
-        <p className="mt-1 text-base font-semibold tracking-tight text-ink">{outcomeValue}</p>
+        <p className="ae-outcome-value mt-1 font-semibold tracking-tight text-ink">{outcomeValue}</p>
       </div>
     </div>
   )
@@ -315,11 +315,31 @@ export function AuthorityExperience() {
       const sweep = sweepRef.current
       if (!frame || !rule || !root || !workspace || !base || !reveal) return
 
-      const pinD = () => gsap.utils.toArray<HTMLElement>('.ae-pin-d', root)
-      const pinM = () => gsap.utils.toArray<HTMLElement>('.ae-pin-m', root)
       const allFrames = () => gsap.utils.toArray<HTMLElement>('.ae-observer-frame', root)
       const framesFor = (id: ViewId) =>
         gsap.utils.toArray<HTMLElement>(`.ae-observer-frame[data-lens="${id}"]`, root)
+
+      const asTargets = (els: (Element | null | undefined)[]) =>
+        els.filter((el): el is HTMLElement => el instanceof HTMLElement)
+
+      const setIf = (els: gsap.TweenTarget, vars: gsap.TweenVars) => {
+        const targets = gsap.utils.toArray(els)
+        if (targets.length) gsap.set(targets, vars)
+      }
+
+      const killIf = (els: (Element | null | undefined)[]) => {
+        const targets = asTargets(els)
+        if (targets.length) gsap.killTweensOf(targets)
+      }
+
+      const frameParts = (frames: HTMLElement[]) =>
+        frames.flatMap((el) => [
+          el,
+          el.querySelector<HTMLElement>('.ae-observer-ring'),
+          el.querySelector<HTMLElement>('.ae-observer-corners'),
+          el.querySelector<HTMLElement>('.ae-observer-label'),
+          ...gsap.utils.toArray<HTMLElement>('.ae-observer-node', el),
+        ])
 
       const settleFrames = (id: ViewId) => {
         allFrames().forEach((el) => {
@@ -330,13 +350,13 @@ export function AuthorityExperience() {
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (live) {
-            gsap.set(el, { autoAlpha: 1 })
-            if (ring) gsap.set(ring, { clipPath: 'inset(0 0 0 0)', opacity: 1 })
-            if (corners) gsap.set(corners, { opacity: 1 })
-            if (label) gsap.set(label, { autoAlpha: 1 })
-            nodes.forEach((n) => gsap.set(n, { opacity: 1, scale: 1 }))
+            setIf(el, { autoAlpha: 1 })
+            if (ring) setIf(ring, { clipPath: 'inset(0 0 0 0)', opacity: 1 })
+            if (corners) setIf(corners, { opacity: 1 })
+            if (label) setIf(label, { autoAlpha: 1 })
+            if (nodes.length) setIf(nodes, { opacity: 1, scale: 1 })
           } else {
-            gsap.set(el, { autoAlpha: 0 })
+            setIf(el, { autoAlpha: 0 })
           }
         })
       }
@@ -348,20 +368,14 @@ export function AuthorityExperience() {
         const packet = panel.querySelector<HTMLElement>('.ae-inspector-packet')
         const stations = gsap.utils.toArray<HTMLElement>('.ae-station', panel)
         const outcome = panel.querySelector<HTMLElement>('.ae-outcome')
-        if (spine) gsap.set(spine, { scaleY: 1, transformOrigin: 'top center' })
-        stations.forEach((el) => gsap.set(el, { autoAlpha: 1, y: 0 }))
-        if (outcome) gsap.set(outcome, { autoAlpha: 1 })
-        if (packet) gsap.set(packet, { autoAlpha: 0, clearProps: 'top' })
+        if (spine) setIf(spine, { scaleY: 1, transformOrigin: 'top center' })
+        stations.forEach((el) => setIf(el, { autoAlpha: 1, y: 0 }))
+        if (outcome) setIf(outcome, { autoAlpha: 1 })
+        if (packet) setIf(packet, { autoAlpha: 0, clearProps: 'top' })
       }
 
       const clearWillChange = () => {
-        const frameParts = allFrames().flatMap((el) => [
-          el,
-          el.querySelector('.ae-observer-ring'),
-          el.querySelector('.ae-observer-corners'),
-          el.querySelector('.ae-observer-label'),
-        ])
-        gsap.set([reveal, base, sweep, ...frameParts].filter(Boolean), { clearProps: 'willChange' })
+        setIf(asTargets([reveal, base, sweep, ...frameParts(allFrames())]), { clearProps: 'willChange' })
       }
 
       const runLens = (id: ViewId, instant = false) => {
@@ -371,31 +385,21 @@ export function AuthorityExperience() {
 
         lensTlRef.current?.kill()
         lensTlRef.current = null
-        const frameBits = allFrames().flatMap((el) => [
-          el,
-          ...gsap.utils.toArray<HTMLElement>(
-            '.ae-observer-ring, .ae-observer-corners, .ae-observer-label, .ae-observer-node',
-            el,
-          ),
-        ])
-        gsap.killTweensOf([reveal, base, sweep, ...pinD(), ...pinM(), ...frameBits].filter(Boolean))
-        clearWillChange()
+        killIf([reveal, base, sweep, ...frameParts(allFrames())])
 
         // 0ms: hide outgoing frames; commit chrome/atmosphere state
         allFrames().forEach((el) => {
           el.dataset.active = 'false'
-          gsap.set(el, { autoAlpha: 0 })
+          setIf(el, { autoAlpha: 0 })
         })
 
         base.dataset.lens = id
         reveal.dataset.lens = id
         workspace.dataset.lens = id
-        gsap.set(reveal, { clipPath: 'circle(150% at 50% 0%)', autoAlpha: 0 })
-        if (sweep) gsap.set(sweep, { autoAlpha: 0, x: 0, clearProps: 'transform' })
+        setIf(reveal, { clipPath: 'circle(150% at 50% 0%)', autoAlpha: 0 })
+        if (sweep) setIf(sweep, { autoAlpha: 0, x: 0, clearProps: 'transform' })
 
         settlePanel(id)
-        gsap.set(pinD(), { autoAlpha: 0 })
-        gsap.set(pinM(), { autoAlpha: 0 })
 
         if (instant || reduced || mobile || !tab) {
           settleFrames(id)
@@ -412,10 +416,10 @@ export function AuthorityExperience() {
         const outcome = panel?.querySelector<HTMLElement>('.ae-outcome')
         const liveFrames = framesFor(id)
 
-        if (spine) gsap.set(spine, { scaleY: 0, transformOrigin: 'top center' })
-        stations.forEach((el) => gsap.set(el, { autoAlpha: 0, y: 2 }))
-        if (outcome) gsap.set(outcome, { autoAlpha: 0.45 })
-        if (packet) gsap.set(packet, { autoAlpha: 0, top: 0 })
+        if (spine) setIf(spine, { scaleY: 0, transformOrigin: 'top center' })
+        stations.forEach((el) => setIf(el, { autoAlpha: 0, y: 2 }))
+        if (outcome) setIf(outcome, { autoAlpha: 0.45 })
+        if (packet) setIf(packet, { autoAlpha: 0, top: 0 })
 
         liveFrames.forEach((el) => {
           el.dataset.active = 'true'
@@ -423,14 +427,14 @@ export function AuthorityExperience() {
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
-          gsap.set(el, { autoAlpha: 1 })
-          if (ring) gsap.set(ring, { clipPath: 'inset(0 100% 100% 0)', opacity: 1, willChange: 'clip-path' })
-          if (corners) gsap.set(corners, { opacity: 0 })
-          if (label) gsap.set(label, { autoAlpha: 0 })
-          nodes.forEach((n) => gsap.set(n, { opacity: 0, scale: 0.6 }))
+          setIf(el, { autoAlpha: 1 })
+          if (ring) setIf(ring, { clipPath: 'inset(0 100% 100% 0)', opacity: 1, willChange: 'clip-path' })
+          if (corners) setIf(corners, { opacity: 0 })
+          if (label) setIf(label, { autoAlpha: 0 })
+          if (nodes.length) setIf(nodes, { opacity: 0, scale: 0.6 })
         })
 
-        gsap.set(reveal, {
+        setIf(reveal, {
           autoAlpha: 1,
           clipPath: `circle(8px at ${origin})`,
           willChange: 'clip-path',
@@ -441,8 +445,8 @@ export function AuthorityExperience() {
           onComplete: () => {
             base.dataset.lens = id
             settleFrames(id)
-            gsap.set(reveal, { autoAlpha: 0, clipPath: 'circle(150% at 50% 0%)' })
-            if (sweep) gsap.set(sweep, { autoAlpha: 0 })
+            setIf(reveal, { autoAlpha: 0, clipPath: 'circle(150% at 50% 0%)' })
+            if (sweep) setIf(sweep, { autoAlpha: 0 })
             clearWillChange()
             lensTlRef.current = null
           },
@@ -465,10 +469,11 @@ export function AuthorityExperience() {
           const at = 0.06 + i * 0.045
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
+          const lens = el.dataset.lens
           if (ring) {
             tl.to(ring, { clipPath: 'inset(0 0 0 0)', duration: 0.22, ease: 'power2.out' }, at)
           }
-          if (corners) {
+          if (corners && lens !== 'shopper') {
             tl.to(corners, { opacity: 1, duration: 0.18 }, at + 0.04)
           }
         })
@@ -479,9 +484,9 @@ export function AuthorityExperience() {
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (label) tl.to(label, { autoAlpha: 1, duration: 0.16 }, at)
-          nodes.forEach((n, ni) => {
-            tl.to(n, { opacity: 1, scale: 1, duration: 0.14 }, at + ni * 0.02)
-          })
+          if (nodes.length) {
+            tl.to(nodes, { opacity: 1, scale: 1, duration: 0.14, stagger: 0.02 }, at)
+          }
         })
 
         if (spine) tl.to(spine, { scaleY: 1, duration: 0.22 }, 0.12)
@@ -515,7 +520,7 @@ export function AuthorityExperience() {
           tl.to(sweep, { autoAlpha: 0, duration: 0.08 }, 0.46)
         }
 
-        tl.set({}, {}, 0.5)
+        tl.add(clearWillChange, 0.68)
       }
 
       runLensRef.current = runLens
@@ -811,8 +816,8 @@ export function AuthorityExperience() {
                             {pinLabel(i + 1)}
                           </span>
                           <div>
-                            <p className="text-sm font-semibold text-ink">{row.station}</p>
-                            <p className="ae-station-detail mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                            <p className="ae-station-title font-semibold text-ink">{row.station}</p>
+                            <p className="ae-station-detail mt-0.5 text-muted-foreground">
                               {row.support}
                             </p>
                           </div>
@@ -839,8 +844,8 @@ export function AuthorityExperience() {
                             {pinLabel(i + 1)}
                           </span>
                           <div>
-                            <p className="text-sm font-semibold text-ink">{item.label}</p>
-                            <p className="ae-station-detail mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                            <p className="ae-station-title font-semibold text-ink">{item.label}</p>
+                            <p className="ae-station-detail mt-0.5 text-muted-foreground">
                               {item.detail}
                             </p>
                           </div>
@@ -867,8 +872,8 @@ export function AuthorityExperience() {
                             {pinLabel(i + 1)}
                           </span>
                           <div>
-                            <p className="text-sm font-semibold text-ink">{row.action}</p>
-                            <p className="ae-station-detail mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                            <p className="ae-station-title font-semibold text-ink">{row.action}</p>
+                            <p className="ae-station-detail mt-0.5 text-muted-foreground">
                               {row.signal}
                             </p>
                           </div>
