@@ -10,6 +10,7 @@ import {
   type RefObject,
 } from 'react'
 import { flushSync } from 'react-dom'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -56,56 +57,56 @@ const activeResults: Record<ViewId, { title: string; index: string }> = {
 }
 
 const observerFrames = [
-  { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'ANSWER FOUND', token: null },
-  { lens: 'shopper' as const, spot: 'priorities', station: '02', label: 'NEEDS CLARIFIED', token: null },
-  { lens: 'shopper' as const, spot: 'inventory', station: '03', label: 'INVENTORY NEXT', token: null },
+  { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'DECISION SUPPORT', token: null },
+  { lens: 'shopper' as const, spot: 'priorities', station: '02', label: 'DECISION SUPPORT', token: null },
+  { lens: 'shopper' as const, spot: 'inventory', station: '03', label: 'DECISION SUPPORT', token: null },
   {
     lens: 'discovery' as const,
     spot: 'answer',
     station: '01',
-    label: 'CRAWLABLE ANSWER',
+    label: 'CRAWLER READ',
     token: 'ANSWER',
   },
   {
     lens: 'discovery' as const,
     spot: 'structure',
     station: '02',
-    label: 'CLEAR STRUCTURE',
+    label: 'CRAWLER READ',
     token: 'SECTION',
   },
   {
     lens: 'discovery' as const,
     spot: 'inventory',
     station: '03',
-    label: 'INTERNAL PATH',
+    label: 'CRAWLER READ',
     token: 'LINK',
   },
   {
     lens: 'measurable' as const,
     spot: 'priorities',
     station: '01',
-    label: 'PRIORITY SELECT',
+    label: 'SIGNAL CAPTURE',
     token: null,
   },
   {
     lens: 'measurable' as const,
     spot: 'compare',
     station: '02',
-    label: 'COMPARISON OPEN',
+    label: 'SIGNAL CAPTURE',
     token: null,
   },
   {
     lens: 'measurable' as const,
     spot: 'inventory',
     station: '03',
-    label: 'INVENTORY CLICK',
+    label: 'SIGNAL CAPTURE',
     token: null,
   },
   {
     lens: 'measurable' as const,
     spot: 'contact',
     station: '04',
-    label: 'CONTACT START',
+    label: 'SIGNAL CAPTURE',
     token: null,
   },
 ] as const
@@ -118,39 +119,52 @@ const observerChip: Record<ViewId, string> = {
 
 const outcomeCount: Record<ViewId, string> = {
   shopper: '3 DECISION STEPS',
-  discovery: '3 READABLE ELEMENTS',
-  measurable: '4 CAPTURED ACTIONS',
+  discovery: '3 INTERPRETABLE LAYERS',
+  measurable: '4 CONNECTED ACTIONS',
 }
 
 const shopperRoute = [
-  { station: 'Question answered', support: 'Family-fit guidance' },
-  { station: 'Needs clarified', support: 'Priorities made clear' },
-  { station: 'Inventory reached', support: 'Matching vehicles next' },
+  {
+    station: 'Question answered',
+    detail: 'Helps shoppers understand which version fits.',
+  },
+  {
+    station: 'Priorities clarified',
+    detail: 'Reduces aimless model-page wandering.',
+  },
+  {
+    station: 'Matching inventory',
+    detail: 'Creates a confident next step toward available vehicles.',
+  },
 ] as const
+
+const shopperFlow = ['Question answered', 'Priorities clarified', 'Matching inventory'] as const
 
 const discoveryPoints = [
   {
-    spot: 'answer',
-    label: 'Direct answer',
-    detail: 'The buyer question is answered plainly near the top, in crawlable HTML.',
+    label: 'Crawlable answer',
+    detail: 'The question and direct answer sit in server-rendered HTML.',
   },
   {
-    spot: 'structure',
-    label: 'Clear structure',
-    detail: 'Headings, comparisons, and FAQs are organized so search and AI systems can trust the page.',
+    label: 'Entities and structure',
+    detail: 'Headings and structured data name the topic and source.',
   },
   {
-    spot: 'inventory',
-    label: 'Inventory pathway',
-    detail: 'Useful research connects to matching vehicles the brand can sell.',
+    label: 'Internal pathway',
+    detail: 'Research links through to a matching inventory query.',
   },
 ] as const
 
+const discoveryHeading = '<h1>Which three-row SUV fits your family?</h1>'
+const discoveryEntities = ['Article', 'Three-row SUV', 'Family needs'] as const
+const discoveryJsonLd = '{ "@type": "Article", "about": "Three-row SUVs" }'
+const discoveryInventoryPath = '/inventory/suv?seating=7&awd=true'
+
 const measuredActions = [
-  { spot: 'priorities', action: 'Priority selected', signal: 'Which needs get chosen' },
-  { spot: 'compare', action: 'Comparison opened', signal: 'Which decisions get weighed' },
-  { spot: 'inventory', action: 'Inventory clicked', signal: 'Research moving to vehicles' },
-  { spot: 'contact', action: 'Contact started', signal: 'High-intent contact' },
+  { action: 'Priority selected', detail: 'Which needs shoppers actively choose.', event: 'priority_select' },
+  { action: 'Comparison opened', detail: 'Which decision content gets attention.', event: 'comparison_open' },
+  { action: 'Inventory clicked', detail: 'Research moving into vehicle shopping.', event: 'inventory_click' },
+  { action: 'Contact started', detail: 'The step from research into lead behavior.', event: 'contact_start' },
 ] as const
 
 const foundationItems = [
@@ -207,75 +221,6 @@ function LensGlyph({ id, className = 'ae-glyph' }: { id: ViewId; className?: str
   )
 }
 
-/** Fictional premium three-row SUV silhouette — not a real production model. */
-function NorthlineVehicleProfile({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 420 220"
-      width="420"
-      height="220"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <defs>
-        <linearGradient id="nl-body" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#3a414c" />
-          <stop offset="42%" stopColor="#2a3038" />
-          <stop offset="100%" stopColor="#1c2128" />
-        </linearGradient>
-        <linearGradient id="nl-glass" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#8ea4b8" />
-          <stop offset="100%" stopColor="#5a7086" />
-        </linearGradient>
-        <linearGradient id="nl-hl" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="45%" stopColor="#d7e0ea" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id="nl-ground" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#0f1216" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#0f1216" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <ellipse cx="210" cy="196" rx="148" ry="14" fill="url(#nl-ground)" />
-      {/* Body */}
-      <path
-        fill="url(#nl-body)"
-        d="M48 148c8-28 28-52 58-64 22-9 48-14 84-16h78c36 2 62 10 84 28 14 12 28 30 34 48l4 16H48z"
-      />
-      <path
-        fill="url(#nl-body)"
-        d="M62 148h300c2 0 4 2 4 4v18c0 4-3 7-7 7H65c-4 0-7-3-7-7v-18c0-2 2-4 4-4z"
-      />
-      {/* Cabin / glass */}
-      <path
-        fill="url(#nl-glass)"
-        d="M118 88c18-10 42-16 78-16h52c28 1 48 8 64 20l18 22H108l10-26z"
-      />
-      <path
-        fill="none"
-        stroke="#4a5563"
-        strokeWidth="1.5"
-        d="M176 72v52M236 72v52M292 86v38"
-        opacity="0.55"
-      />
-      {/* Highlight */}
-      <path fill="url(#nl-hl)" d="M70 128h280l-8 8H78z" opacity="0.7" />
-      {/* Wheels */}
-      <circle cx="118" cy="172" r="28" fill="#14181e" stroke="#2c333c" strokeWidth="3" />
-      <circle cx="118" cy="172" r="14" fill="#3a434f" />
-      <circle cx="118" cy="172" r="5" fill="#1a1f26" />
-      <circle cx="318" cy="172" r="28" fill="#14181e" stroke="#2c333c" strokeWidth="3" />
-      <circle cx="318" cy="172" r="14" fill="#3a434f" />
-      <circle cx="318" cy="172" r="5" fill="#1a1f26" />
-      {/* Lights */}
-      <path fill="#c8d4e0" d="M56 138h18c2 0 3 1 3 3v6c0 2-1 3-3 3H56z" opacity="0.85" />
-      <path fill="#8a3a3a" d="M348 136h16c2 0 3 1 3 3v8c0 2-1 3-3 3h-16z" opacity="0.7" />
-    </svg>
-  )
-}
-
 function apertureGeometry(tab: HTMLElement, workspace: HTMLElement) {
   const tabBox = tab.getBoundingClientRect()
   const box = workspace.getBoundingClientRect()
@@ -309,6 +254,7 @@ function ObserverFrame({
     <span
       className="ae-observer-frame"
       data-lens={lens}
+      data-station={station}
       data-active={active ? 'true' : 'false'}
       aria-hidden="true"
     >
@@ -361,6 +307,8 @@ function InspectorShell({
   count,
   outcomeLabel,
   outcomeValue,
+  outcomeNote,
+  evidence,
   children,
   label,
 }: {
@@ -371,6 +319,8 @@ function InspectorShell({
   count: string
   outcomeLabel: string
   outcomeValue: string
+  outcomeNote: string
+  evidence?: ReactNode
   children: ReactNode
   label: string
 }) {
@@ -392,6 +342,7 @@ function InspectorShell({
         </span>
         {children}
       </div>
+      <div className="ae-evidence">{evidence}</div>
       <div className="ae-outcome">
         <div className="ae-outcome-meta">
           <p className="ae-outcome-eyebrow font-mono font-medium uppercase tracking-[0.14em]">
@@ -402,16 +353,23 @@ function InspectorShell({
           </p>
         </div>
         <p className="ae-outcome-value mt-1 font-semibold tracking-tight">{outcomeValue}</p>
+        <p className="ae-outcome-note mt-1">{outcomeNote}</p>
       </div>
     </div>
   )
 }
 
-type ProjectionGeom = {
+type ConnectorRoute = {
+  station: string
   d: string
-  bracket: { x: number; y1: number; y2: number }
-  source: { x: number; y: number }
-  dest: { x: number; y: number }
+  sx: number
+  sy: number
+  dx: number
+  dy: number
+}
+
+type ProjectionGeom = {
+  routes: ConnectorRoute[]
   w: number
   h: number
 } | null
@@ -430,9 +388,6 @@ function AuthorityProjectionPath({
   reduced: boolean
 }) {
   const svgRef = useRef<SVGSVGElement>(null)
-  const pathRef = useRef<SVGPathElement>(null)
-  const sourceRef = useRef<SVGCircleElement>(null)
-  const destRef = useRef<SVGCircleElement>(null)
   const [geom, setGeom] = useState<ProjectionGeom>(null)
   const pathTlRef = useRef<gsap.core.Timeline | null>(null)
 
@@ -449,12 +404,8 @@ function AuthorityProjectionPath({
       return
     }
 
-    const stageBox = stage.getBoundingClientRect()
-    const browserBox = browser.getBoundingClientRect()
-    const spine = dock.querySelector<HTMLElement>('.ae-inspector-panel[data-active="true"] .ae-inspector-spine')
-    const header = dock.querySelector<HTMLElement>('.ae-dock-header')
-    const destEl = spine ?? header
-    if (!destEl) {
+    const panel = dock.querySelector<HTMLElement>(`.ae-inspector-panel[data-lens="${view}"]`)
+    if (!panel) {
       setGeom(null)
       return
     }
@@ -467,44 +418,54 @@ function AuthorityProjectionPath({
       return
     }
 
-    let top = Infinity
-    let bottom = -Infinity
-    frames.forEach((el) => {
-      const r = el.getBoundingClientRect()
-      top = Math.min(top, r.top)
-      bottom = Math.max(bottom, r.bottom)
-    })
-    if (!Number.isFinite(top) || !Number.isFinite(bottom) || bottom <= top) {
+    const stageBox = stage.getBoundingClientRect()
+    const browserBox = browser.getBoundingClientRect()
+
+    /** Frames and rail stations share one top-to-bottom order, so paired lanes never cross. */
+    const pairs = frames
+      .map((frame) => {
+        const station = frame.dataset.station
+        if (!station) return null
+        const target = panel.querySelector<HTMLElement>(`.ae-station-mark[data-station="${station}"]`)
+        if (!target) return null
+        const frameBox = frame.getBoundingClientRect()
+        const targetBox = target.getBoundingClientRect()
+        if (frameBox.height <= 0 || targetBox.height <= 0) return null
+        return {
+          station,
+          sy: frameBox.top + frameBox.height / 2 - stageBox.top,
+          dx: targetBox.left - stageBox.left,
+          dy: targetBox.top + targetBox.height / 2 - stageBox.top,
+        }
+      })
+      .filter((pair): pair is NonNullable<typeof pair> => pair !== null)
+
+    if (!pairs.length) {
       setGeom(null)
       return
     }
 
-    const destBox = destEl.getBoundingClientRect()
-    const pad = 6
-    const bracketX = browserBox.right - stageBox.left + 2
-    const y1 = top - stageBox.top - pad
-    const y2 = bottom - stageBox.top + pad
-    const midY = (y1 + y2) / 2
-    const destX = destBox.left - stageBox.left + 1
-    const destY = destBox.top - stageBox.top + Math.min(destBox.height * 0.35, 28)
-    const gutterMid = (bracketX + destX) / 2
+    const sx = browserBox.right - stageBox.left
+    const gutterEnd = Math.min(...pairs.map((pair) => pair.dx))
+    const span = gutterEnd - sx
+    if (span < 14) {
+      setGeom(null)
+      return
+    }
 
-    const d = [
-      `M ${bracketX} ${y1}`,
-      `L ${bracketX} ${y2}`,
-      `M ${bracketX} ${midY}`,
-      `L ${gutterMid} ${midY}`,
-      `L ${destX} ${destY}`,
-    ].join(' ')
-
-    setGeom({
-      d,
-      bracket: { x: bracketX, y1, y2 },
-      source: { x: bracketX, y: midY },
-      dest: { x: destX, y: destY },
-      w: stageBox.width,
-      h: stageBox.height,
+    const routes = pairs.map((pair, i) => {
+      const lane = sx + (span * (i + 1)) / (pairs.length + 1)
+      return {
+        station: pair.station,
+        sx,
+        sy: pair.sy,
+        dx: pair.dx - 1,
+        dy: pair.dy,
+        d: `M ${sx} ${pair.sy} H ${lane} V ${pair.dy} H ${pair.dx - 1}`,
+      }
     })
+
+    setGeom({ routes, w: stageBox.width, h: stageBox.height })
   }, [stageRef, browserRef, dockRef, view])
 
   useLayoutEffect(() => {
@@ -538,26 +499,35 @@ function AuthorityProjectionPath({
   }, [measure, stageRef, browserRef, dockRef])
 
   useLayoutEffect(() => {
-    const path = pathRef.current
-    const source = sourceRef.current
-    const dest = destRef.current
+    const svg = svgRef.current
     pathTlRef.current?.kill()
     pathTlRef.current = null
-    if (!geom || !path || !source || !dest) return
+    if (!geom || !svg) return
 
-    const length = path.getTotalLength()
+    const paths = Array.from(svg.querySelectorAll<SVGPathElement>('.ae-route-path'))
+    const ports = Array.from(svg.querySelectorAll<SVGElement>('.ae-route-port'))
+    if (!paths.length) return
+
     if (reduced || window.innerWidth < 1200) {
-      gsap.set(path, { strokeDasharray: length, strokeDashoffset: 0, autoAlpha: 1 })
-      gsap.set([source, dest], { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%' })
+      paths.forEach((path) => {
+        gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0, autoAlpha: 1 })
+      })
+      if (ports.length) gsap.set(ports, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%' })
       return
     }
 
-    gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, autoAlpha: 1 })
-    gsap.set([source, dest], { scale: 0.4, autoAlpha: 0, transformOrigin: '50% 50%' })
     const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
-    tl.to(path, { strokeDashoffset: 0, duration: 0.28 }, 0)
-    tl.to(source, { scale: 1, autoAlpha: 1, duration: 0.18 }, 0.04)
-    tl.to(dest, { scale: 1, autoAlpha: 1, duration: 0.18 }, 0.16)
+    paths.forEach((path, i) => {
+      const length = path.getTotalLength()
+      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, autoAlpha: 1 })
+      tl.to(path, { strokeDashoffset: 0, duration: 0.28 }, i * 0.04)
+    })
+    if (ports.length) {
+      gsap.set(ports, { scale: 0.4, autoAlpha: 0, transformOrigin: '50% 50%' })
+      ports.forEach((port, i) => {
+        tl.to(port, { scale: 1, autoAlpha: 1, duration: 0.16 }, 0.06 + i * 0.03)
+      })
+    }
     pathTlRef.current = tl
     return () => {
       tl.kill()
@@ -577,16 +547,26 @@ function AuthorityProjectionPath({
       focusable="false"
       data-lens={view}
     >
-      <path
-        ref={pathRef}
-        className="ae-projection-path"
-        d={geom.d}
-        fill="none"
-        strokeWidth="1.5"
-        vectorEffect="non-scaling-stroke"
-      />
-      <circle ref={sourceRef} className="ae-projection-node" cx={geom.source.x} cy={geom.source.y} r="3.5" />
-      <circle ref={destRef} className="ae-projection-node" cx={geom.dest.x} cy={geom.dest.y} r="3.5" />
+                  {geom.routes.map((route, i) => (
+        <g key={route.station} data-route-index={i}>
+          <path
+            className="ae-route-path ae-projection-path"
+            data-route-index={i}
+            d={route.d}
+            fill="none"
+            strokeWidth="1.25"
+            vectorEffect="non-scaling-stroke"
+          />
+          <rect
+            className="ae-route-port ae-route-source"
+            x={route.sx - 2.5}
+            y={route.sy - 2.5}
+            width="5"
+            height="5"
+          />
+          <circle className="ae-route-port ae-route-dest" cx={route.dx} cy={route.dy} r="3.2" />
+        </g>
+      ))}
     </svg>
   )
 }
@@ -601,6 +581,7 @@ export function AuthorityExperience() {
   const baseRef = useRef<HTMLDivElement>(null)
   const revealRef = useRef<HTMLDivElement>(null)
   const sweepRef = useRef<HTMLSpanElement>(null)
+  const photoRef = useRef<HTMLElement>(null)
   const dockRef = useRef<HTMLElement>(null)
   const resultRuleRef = useRef<HTMLSpanElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
@@ -631,6 +612,7 @@ export function AuthorityExperience() {
       const reveal = revealRef.current
       const sweep = sweepRef.current
       const resultRule = resultRuleRef.current
+      const photo = photoRef.current
       if (!frame || !rule || !root || !workspace || !base || !reveal) return
 
       const allFrames = () => gsap.utils.toArray<HTMLElement>('.ae-observer-frame', root)
@@ -655,6 +637,7 @@ export function AuthorityExperience() {
         frames.flatMap((el) =>
           [
             el,
+            el.querySelector<HTMLElement>('.ae-observer-tint'),
             el.querySelector<HTMLElement>('.ae-observer-ring'),
             el.querySelector<HTMLElement>('.ae-observer-corners'),
             el.querySelector<HTMLElement>('.ae-observer-label'),
@@ -669,6 +652,7 @@ export function AuthorityExperience() {
         allFrames().forEach((el) => {
           const live = el.dataset.lens === id
           el.dataset.active = live ? 'true' : 'false'
+          const tint = el.querySelector<HTMLElement>('.ae-observer-tint')
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
@@ -676,6 +660,7 @@ export function AuthorityExperience() {
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (live) {
             setIf(el, { autoAlpha: 1 })
+            if (tint) setIf(tint, { autoAlpha: 1 })
             if (ring) setIf(ring, { clipPath: 'inset(0 0 0 0)', opacity: 1 })
             if (corners) setIf(corners, { opacity: 1 })
             if (label) setIf(label, { autoAlpha: 1 })
@@ -692,9 +677,11 @@ export function AuthorityExperience() {
         if (!panel) return
         const spine = panel.querySelector<HTMLElement>('.ae-inspector-spine')
         const stations = gsap.utils.toArray<HTMLElement>('.ae-station', panel)
+        const evidence = panel.querySelector<HTMLElement>('.ae-evidence')
         const outcome = panel.querySelector<HTMLElement>('.ae-outcome')
         if (spine) setIf(spine, { scaleY: 1, transformOrigin: 'top center' })
         stations.forEach((el) => setIf(el, { autoAlpha: 1, y: 0 }))
+        if (evidence) setIf(evidence, { autoAlpha: 1 })
         if (outcome) setIf(outcome, { autoAlpha: 1 })
       }
 
@@ -741,22 +728,26 @@ export function AuthorityExperience() {
         const panel = root.querySelector<HTMLElement>(`.ae-inspector-panel[data-lens="${id}"]`)
         const spine = panel?.querySelector<HTMLElement>('.ae-inspector-spine')
         const stations = panel ? gsap.utils.toArray<HTMLElement>('.ae-station', panel) : []
+        const evidence = panel?.querySelector<HTMLElement>('.ae-evidence')
         const outcome = panel?.querySelector<HTMLElement>('.ae-outcome')
         const liveFrames = framesFor(id)
 
         if (spine) setIf(spine, { scaleY: 0, transformOrigin: 'top center' })
         stations.forEach((el) => setIf(el, { autoAlpha: 0, y: 2 }))
+        if (evidence) setIf(evidence, { autoAlpha: 0 })
         if (outcome) setIf(outcome, { autoAlpha: 0.45 })
         if (resultRule) setIf(resultRule, { scaleX: 0, transformOrigin: 'left center' })
 
         liveFrames.forEach((el) => {
           el.dataset.active = 'true'
+          const tint = el.querySelector<HTMLElement>('.ae-observer-tint')
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
           const token = el.querySelector<HTMLElement>('.ae-observer-token')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           setIf(el, { autoAlpha: 1 })
+          if (tint) setIf(tint, { autoAlpha: 0 })
           if (ring) setIf(ring, { clipPath: 'inset(0 100% 100% 0)', opacity: 1, willChange: 'clip-path' })
           if (corners) setIf(corners, { opacity: 0 })
           if (label) setIf(label, { autoAlpha: 0 })
@@ -799,11 +790,15 @@ export function AuthorityExperience() {
 
         liveFrames.forEach((el, i) => {
           const at = 0.06 + i * 0.045
+          const tint = el.querySelector<HTMLElement>('.ae-observer-tint')
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const lens = el.dataset.lens
+          if (tint) {
+            tl.to(tint, { autoAlpha: 1, duration: 0.18, ease: 'power1.out' }, at)
+          }
           if (ring) {
-            tl.to(ring, { clipPath: 'inset(0 0 0 0)', duration: 0.22, ease: 'power2.out' }, at)
+            tl.to(ring, { clipPath: 'inset(0 0 0 0)', duration: 0.2, ease: 'power2.out' }, at)
           }
           if (corners && lens !== 'shopper') {
             tl.to(corners, { opacity: 1, duration: 0.18 }, at + 0.04)
@@ -826,6 +821,7 @@ export function AuthorityExperience() {
         stations.forEach((el, i) => {
           tl.to(el, { autoAlpha: 1, y: 0, duration: 0.16 }, 0.34 + i * 0.05)
         })
+        if (evidence) tl.to(evidence, { autoAlpha: 1, duration: 0.16 }, 0.44)
         if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.14 }, 0.42)
 
         if (sweep) {
@@ -858,8 +854,9 @@ export function AuthorityExperience() {
       if (reduced) {
         gsap.set(frame, { y: 0 })
         gsap.set(rule, { scaleX: 1 })
+        if (photo) gsap.set(photo, { clipPath: 'inset(0% 0% 0% 0%)', y: 0 })
         frame.style.boxShadow =
-          '6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent), 0 36px 48px -18px color-mix(in srgb, var(--ink) 28%, transparent)'
+          '6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent), 0 40px 56px -20px color-mix(in srgb, var(--ink) 32%, transparent)'
         return () => {
           lensTlRef.current?.kill()
           clearWillChange()
@@ -868,6 +865,13 @@ export function AuthorityExperience() {
 
       gsap.set(frame, { y: 6 })
       gsap.set(rule, { scaleX: 0, transformOrigin: 'left center' })
+      if (photo) {
+        gsap.set(photo, {
+          clipPath: 'inset(0% 0% 100% 0%)',
+          y: 6,
+          willChange: 'clip-path, transform',
+        })
+      }
       frame.style.boxShadow =
         '4px 4px 0 0 color-mix(in srgb, var(--ink) 70%, transparent), 0 12px 24px -8px color-mix(in srgb, var(--ink) 14%, transparent)'
 
@@ -881,9 +885,20 @@ export function AuthorityExperience() {
             duration: 0.5,
             ease: 'power2.out',
             boxShadow:
-              '6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent), 0 36px 48px -18px color-mix(in srgb, var(--ink) 28%, transparent)',
+              '6px 8px 0 0 color-mix(in srgb, var(--ink) 82%, transparent), 0 40px 56px -20px color-mix(in srgb, var(--ink) 32%, transparent)',
           })
           gsap.to(rule, { scaleX: 1, duration: 0.55, ease: 'power2.out' })
+          if (photo) {
+            gsap.to(photo, {
+              clipPath: 'inset(0% 0% 0% 0%)',
+              y: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              onComplete: () => {
+                gsap.set(photo, { clearProps: 'willChange' })
+              },
+            })
+          }
         },
       })
 
@@ -1175,10 +1190,21 @@ export function AuthorityExperience() {
                           </p>
                         </div>
                       </div>
-                      <div className="ae-oem-hero-visual" aria-hidden="true">
-                        <NorthlineVehicleProfile className="ae-oem-vehicle" />
-                        <span className="ae-oem-model-note font-mono">THREE-ROW FAMILY SUV</span>
-                      </div>
+                      <figure ref={photoRef} className="ae-oem-hero-visual ae-oem-photo" aria-hidden="true">
+                        <Image
+                          className="ae-oem-photo-img"
+                          src="/images/northline-family-suv.webp"
+                          alt=""
+                          fill
+                          priority={false}
+                          sizes="(min-width: 1200px) 26vw, (min-width: 768px) 34vw, 88vw"
+                        />
+                        <span className="ae-oem-photo-veil" aria-hidden="true" />
+                        <span className="ae-oem-photo-frame" aria-hidden="true" />
+                        <figcaption className="ae-oem-photo-label font-mono" aria-hidden="true">
+                          FAMILY SUV RESEARCH
+                        </figcaption>
+                      </figure>
                     </div>
 
                     <div className="ae-spot ae-module ae-decision" data-spot="priorities">
@@ -1279,21 +1305,39 @@ export function AuthorityExperience() {
                   active={view === 'shopper'}
                   lens="shopper"
                   mark="01"
-                  eyebrow="BUYER PATH"
+                  eyebrow="BUYER DECISION PATH"
                   count={outcomeCount.shopper}
-                  outcomeLabel="DEALER OUTCOME"
-                  outcomeValue="LESS WANDERING"
-                  label="Buyer path inspector"
+                  outcomeLabel="DEALER VALUE"
+                  outcomeValue="Less wandering, stronger inventory intent"
+                  outcomeNote="A clearer next step toward available vehicles."
+                  label="Buyer decision path inspector"
+                  evidence={
+                    <div className="ae-artifact">
+                      <p className="ae-artifact-heading font-mono">DECISION SEQUENCE</p>
+                      <ol className="ae-flow" aria-label="Buyer decision path order">
+                        {shopperFlow.map((step) => (
+                          <li key={step} className="ae-flow-step">
+                            <span className="ae-flow-dot" aria-hidden="true" />
+                            <span className="ae-flow-label">{step}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  }
                 >
                   <ol className="ae-station-list">
                     {shopperRoute.map((row, i) => (
                       <li key={row.station} className="ae-station" data-tone="shopper">
-                        <span className="ae-station-mark font-mono" aria-hidden="true">
+                        <span
+                          className="ae-station-mark font-mono"
+                          data-station={pinLabel(i + 1)}
+                          aria-hidden="true"
+                        >
                           {pinLabel(i + 1)}
                         </span>
                         <div>
                           <p className="ae-station-title font-semibold">{row.station}</p>
-                          <p className="ae-station-detail mt-0.5">{row.support}</p>
+                          <p className="ae-station-detail mt-0.5">{row.detail}</p>
                         </div>
                       </li>
                     ))}
@@ -1304,16 +1348,49 @@ export function AuthorityExperience() {
                   active={view === 'discovery'}
                   lens="discovery"
                   mark="02"
-                  eyebrow="DISCOVERY READOUT"
+                  eyebrow="SEARCH + AI INTERPRETATION"
                   count={outcomeCount.discovery}
                   outcomeLabel="SYSTEM OUTCOME"
-                  outcomeValue="EASIER TO UNDERSTAND"
-                  label="Discovery readout inspector"
+                  outcomeValue="EASIER TO PARSE AND RETRIEVE"
+                  outcomeNote="Structured information can improve clarity; it does not guarantee rankings or AI citations."
+                  label="Search and AI interpretation inspector"
+                  evidence={
+                    <div className="ae-artifact ae-semantic">
+                      <p className="ae-artifact-heading font-mono">SEMANTIC READOUT</p>
+                      <pre className="ae-code">
+                        <code>{discoveryHeading}</code>
+                      </pre>
+                      <span className="ae-path-strip font-mono">
+                        {discoveryEntities.map((node, n) => (
+                          <span key={node} className="ae-path-node">
+                            {node}
+                            {n < discoveryEntities.length - 1 ? (
+                              <span className="ae-path-arrow" aria-hidden="true">
+                                →
+                              </span>
+                            ) : null}
+                          </span>
+                        ))}
+                      </span>
+                      <pre className="ae-code ae-code-json">
+                        <code>{discoveryJsonLd}</code>
+                      </pre>
+                      <code className="ae-event ae-path-code font-mono">{discoveryInventoryPath}</code>
+                      <p className="ae-artifact-note">
+                        Illustrative semantic readout. Structured information can improve clarity; it
+                        does not guarantee rankings or AI citations.
+                      </p>
+                    </div>
+                  }
                 >
                   <ol className="ae-station-list">
                     {discoveryPoints.map((item, i) => (
                       <li key={item.label} className="ae-station" data-tone="discovery">
-                        <span className="ae-station-mark font-mono" aria-hidden="true">
+                        <span
+                          className="ae-station-mark font-mono"
+                          data-station={pinLabel(i + 1)}
+                          aria-hidden="true"
+                        >
                           {pinLabel(i + 1)}
                         </span>
                         <div>
@@ -1329,21 +1406,43 @@ export function AuthorityExperience() {
                   active={view === 'measurable'}
                   lens="measurable"
                   mark="03"
-                  eyebrow="BUYER SIGNALS"
+                  eyebrow="CONNECTED BUYER SIGNALS"
                   count={outcomeCount.measurable}
-                  outcomeLabel="DEALER OUTCOME"
-                  outcomeValue="INTENT YOU CAN PROVE"
-                  label="Buyer signals inspector"
+                  outcomeLabel="DEALER VALUE"
+                  outcomeValue="Intent you can explain"
+                  outcomeNote="See which research actions precede inventory and contact intent."
+                  label="Connected buyer signals inspector"
+                  evidence={
+                    <div className="ae-artifact ae-report">
+                      <p className="ae-artifact-heading font-mono">
+                        ILLUSTRATIVE EVENT STREAM — NOT LIVE DEALERSHIP DATA
+                      </p>
+                      <ol className="ae-stream" aria-label="Illustrative event stream">
+                        {measuredActions.map((row, i) => (
+                          <li key={row.event} className="ae-stream-row">
+                            <span className="ae-stream-n font-mono">{pinLabel(i + 1)}</span>
+                            <span className="ae-stream-title">{row.action}</span>
+                            <code className="ae-stream-event font-mono">{row.event}</code>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  }
                 >
                   <ol className="ae-station-list ae-station-list-measure">
                     {measuredActions.map((row, i) => (
                       <li key={row.action} className="ae-station" data-tone="measurable">
-                        <span className="ae-station-mark font-mono" aria-hidden="true">
+                        <span
+                          className="ae-station-mark font-mono"
+                          data-station={pinLabel(i + 1)}
+                          aria-hidden="true"
+                        >
                           {pinLabel(i + 1)}
                         </span>
                         <div>
                           <p className="ae-station-title font-semibold">{row.action}</p>
-                          <p className="ae-station-detail mt-0.5">{row.signal}</p>
+                          <p className="ae-station-detail mt-0.5">{row.detail}</p>
+                          <code className="ae-event font-mono">{row.event}</code>
                         </div>
                       </li>
                     ))}

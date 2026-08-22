@@ -970,7 +970,8 @@
   align-items: center;
   gap: 0.45rem 0.75rem;
   padding: 0.55rem 0.85rem;
-  background: #151a21;
+  background: linear-gradient(180deg, #1b222b 0%, #12171e 100%);
+  box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.09);
   color: #f4f6f8;
 }
 .ae-oem-brand {
@@ -1051,24 +1052,52 @@
   min-width: 0;
 }
 .ae-oem-hero-visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.25rem;
+  position: relative;
   min-width: 0;
+  margin: 0;
+  align-self: end;
 }
-.ae-oem-vehicle {
-  width: 100%;
-  max-width: 20rem;
-  height: auto;
-  display: block;
+.ae-oem-photo {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #c9d1da;
+  border-radius: 3px;
 }
-.ae-oem-model-note {
-  font-size: 0.5625rem;
+.ae-oem-photo-img {
+  object-fit: cover;
+  object-position: 50% 58%;
+  filter: saturate(0.86) contrast(1.04) brightness(0.98);
+}
+.ae-oem-photo-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(0deg, rgba(18, 26, 37, 0.44) 0%, rgba(18, 26, 37, 0) 44%),
+    linear-gradient(205deg, rgba(28, 42, 60, 0.16) 0%, rgba(28, 42, 60, 0) 46%);
+}
+.ae-oem-photo-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.32),
+    inset 0 0 0 2px rgba(21, 26, 33, 0.16);
+}
+.ae-oem-photo-label {
+  position: absolute;
+  left: 0.4rem;
+  bottom: 0.4rem;
+  z-index: 2;
+  padding: 0.12rem 0.34rem;
+  background: rgba(15, 20, 27, 0.78);
+  color: #f1f4f7;
+  font-size: 0.5rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: color-mix(in srgb, var(--ink) 48%, transparent);
+  pointer-events: none;
 }
 .ae-page-title {
   margin: 0 0 0.55rem;
@@ -1187,10 +1216,10 @@
     display: flex;
   }
   .ae-oem-hero {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    align-items: end;
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+    align-items: stretch;
     gap: 0.85rem;
-    padding: 0.85rem 1rem 0.55rem;
+    padding: 0.75rem 1rem 0.5rem;
   }
   .ae-page-title {
     font-size: clamp(1.65rem, 3.6cqi, 2.05rem);
@@ -1204,14 +1233,38 @@
   .ae-compare-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .ae-oem-vehicle {
-    max-width: 100%;
+  .ae-oem-hero-visual {
+    align-self: stretch;
+    margin: 0 -1rem 0 0;
+  }
+  .ae-oem-photo {
+    height: 100%;
+    min-height: 12rem;
+    aspect-ratio: auto;
+    border-radius: 3px 0 0 0;
   }
 }
 
 @container northline-site (max-width: 519px) {
   .ae-oem-nav-wide {
     display: none;
+  }
+  .ae-oem-hero {
+    grid-template-columns: minmax(0, 1.25fr) minmax(5.75rem, 0.7fr);
+    align-items: stretch;
+    gap: 0.45rem;
+    padding: 0.5rem 0.65rem 0.4rem;
+  }
+  .ae-oem-hero-visual {
+    align-self: stretch;
+    margin: 0 -0.65rem 0 0;
+  }
+  .ae-oem-photo {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0;
   }
   .ae-oem-masthead {
     padding: 0.45rem 0.65rem;
@@ -1244,19 +1297,26 @@
   z-index: 5;
   overflow: visible;
 }
-.ae-projection-path {
-  stroke: color-mix(in srgb, var(--accent) 55%, var(--stage-foreground));
+.ae-route-path {
+  stroke: color-mix(in srgb, var(--accent) 58%, var(--stage-foreground));
+  opacity: 0.66;
 }
-.ae-instrument-stage[data-lens='measurable'] .ae-projection-path {
-  stroke: color-mix(in srgb, var(--proof) 58%, var(--stage-foreground));
+.ae-route-source {
+  fill: color-mix(in srgb, var(--accent) 72%, var(--stage-foreground));
 }
-.ae-projection-node {
-  fill: color-mix(in srgb, var(--accent) 70%, var(--stage-foreground));
-  stroke: color-mix(in srgb, var(--stage-foreground) 35%, transparent);
-  stroke-width: 1;
+.ae-route-dest {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 72%, var(--stage-foreground));
+  stroke-width: 1.25;
 }
-.ae-instrument-stage[data-lens='measurable'] .ae-projection-node {
-  fill: color-mix(in srgb, var(--proof) 72%, var(--stage-foreground));
+.ae-instrument-stage[data-lens='measurable'] .ae-route-path {
+  stroke: color-mix(in srgb, var(--proof) 60%, var(--stage-foreground));
+}
+.ae-instrument-stage[data-lens='measurable'] .ae-route-source {
+  fill: color-mix(in srgb, var(--proof) 74%, var(--stage-foreground));
+}
+.ae-instrument-stage[data-lens='measurable'] .ae-route-dest {
+  stroke: color-mix(in srgb, var(--proof) 74%, var(--stage-foreground));
 }
 .ae-signal-bridge {
   display: none !important;
@@ -1533,7 +1593,7 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1622,6 +1682,256 @@
 }
 .ae-inspector-panel[data-lens='measurable'] .ae-outcome-count {
   color: color-mix(in srgb, var(--proof) 72%, var(--stage-muted));
+}
+.ae-outcome-note {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--on-ink-muted);
+}
+
+/* Lens evidence — benefit chips, markup examples and the reporting artifact */
+.ae-benefit {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.28rem;
+  padding: 0.08rem 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--accent) 82%, var(--stage-foreground));
+}
+.ae-code {
+  display: block;
+  margin: 0.3rem 0 0;
+  padding: 0.28rem 0.4rem;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--stage-foreground) 7%, transparent);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--stage-foreground) 90%, transparent);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ae-evidence-pack {
+  display: none;
+}
+.ae-code-json {
+  border-left-color: color-mix(in srgb, var(--accent-deep) 60%, transparent);
+}
+.ae-entity-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+}
+.ae-entity {
+  padding: 0.08rem 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--stage-foreground) 6%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--stage-foreground) 90%, transparent);
+}
+.ae-path-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--stage-foreground) 88%, transparent);
+}
+.ae-path-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.ae-path-arrow {
+  color: color-mix(in srgb, var(--accent) 78%, transparent);
+}
+.ae-event {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.08rem 0.32rem;
+  border: 1px solid color-mix(in srgb, var(--proof) 40%, transparent);
+  background: color-mix(in srgb, var(--stage-foreground) 7%, transparent);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--proof) 85%, var(--stage-foreground));
+  overflow-wrap: anywhere;
+}
+.ae-inspector-panel[data-lens='measurable'] .ae-benefit {
+  border-color: color-mix(in srgb, var(--proof) 45%, transparent);
+  color: color-mix(in srgb, var(--proof) 82%, var(--stage-foreground));
+}
+.ae-evidence {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+}
+.ae-artifact {
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, var(--stage-foreground) 14%, transparent);
+}
+.ae-artifact-heading {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--stage-muted);
+}
+.ae-artifact-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--on-ink-muted);
+}
+.ae-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.5rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ae-flow-step {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--stage-foreground) 88%, transparent);
+}
+.ae-flow-step + .ae-flow-step::before {
+  content: '';
+  width: 0.75rem;
+  height: 1px;
+  margin-right: 0.1rem;
+  background: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.ae-flow-dot {
+  width: 5px;
+  height: 5px;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  background: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.ae-report-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ae-report-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  padding-left: 0.4rem;
+  border-left: 2px solid color-mix(in srgb, var(--proof) 45%, transparent);
+}
+.ae-report-n {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--stage-foreground);
+}
+.ae-report-label {
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: var(--on-ink-muted);
+}
+.ae-report-chart {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.35rem;
+  height: 2.5rem;
+  margin-top: 0.55rem;
+  padding-top: 0.15rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--stage-foreground) 18%, transparent);
+}
+.ae-report-col {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 0.15rem;
+  height: 100%;
+  min-width: 0;
+}
+.ae-report-bar {
+  background: color-mix(in srgb, var(--proof) 42%, transparent);
+  border-top: 2px solid color-mix(in srgb, var(--proof) 78%, transparent);
+}
+.ae-report-bar[data-step='1'] {
+  height: 40%;
+}
+.ae-report-bar[data-step='2'] {
+  height: 58%;
+}
+.ae-report-bar[data-step='3'] {
+  height: 76%;
+}
+.ae-report-bar[data-step='4'] {
+  height: 94%;
+}
+.ae-report-tick {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--stage-muted);
+}
+.ae-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ae-stream-row {
+  display: grid;
+  grid-template-columns: 1.35rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.ae-stream-n {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--proof) 78%, var(--stage-foreground));
+}
+.ae-stream-title {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--stage-foreground);
+}
+.ae-stream-event,
+.ae-path-code {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.08rem 0.32rem;
+  border: 1px solid color-mix(in srgb, var(--proof) 36%, transparent);
+  background: color-mix(in srgb, var(--stage-foreground) 6%, transparent);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--proof) 82%, var(--stage-foreground));
+  overflow-wrap: anywhere;
+}
+.ae-path-code {
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+  color: color-mix(in srgb, var(--accent) 82%, var(--stage-foreground));
 }
 .ae-active-result {
   position: relative;
@@ -1779,7 +2089,7 @@
   position: absolute;
   right: 0.4rem;
   bottom: 0.3rem;
-  z-index: 2;
+  z-index: 7;
   padding: 0.08rem 0.28rem;
   border: 1px solid color-mix(in srgb, var(--accent-deep) 40%, transparent);
   background: color-mix(in srgb, var(--paper) 92%, transparent);
@@ -1792,10 +2102,11 @@
 .ae-spot {
   position: relative;
 }
+/* No z-index here on purpose: the frame must not form a stacking context, so the
+   gray field can sit under OEM copy while borders and labels stay above it. */
 .ae-observer-frame {
   position: absolute;
   inset: -3px;
-  z-index: 4;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -1804,21 +2115,40 @@
   opacity: 1;
   visibility: visible;
 }
+/* Observed content sits above the gray field so OEM copy never washes out. */
+.ae-spot > :not(.ae-observer-frame) {
+  position: relative;
+  z-index: 5;
+}
 .ae-observer-tint {
   position: absolute;
   inset: 0;
+  z-index: 1;
   border-radius: inherit;
   pointer-events: none;
+  background: rgba(148, 158, 168, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+[data-spot='inventory'] > .ae-observer-frame > .ae-observer-tint {
+  background: rgba(214, 222, 232, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 .ae-observer-ring {
   position: absolute;
   inset: 0;
+  z-index: 6;
   pointer-events: none;
   box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--ink) 24%, transparent);
+  box-shadow: inset 2px 0 0 0 currentColor;
+}
+[data-spot='inventory'] > .ae-observer-frame > .ae-observer-ring {
+  border-color: color-mix(in srgb, #ffffff 34%, transparent);
 }
 .ae-observer-corners {
   position: absolute;
   inset: 0;
+  z-index: 6;
   pointer-events: none;
 }
 .ae-observer-corners::before,
@@ -1845,6 +2175,7 @@
 .ae-observer-frame::after {
   content: '';
   position: absolute;
+  z-index: 6;
   width: 10px;
   height: 10px;
   border-style: solid;
@@ -1875,18 +2206,19 @@
   width: 9px;
   height: 9px;
 }
-.ae-observer-frame[data-lens='shopper'] .ae-observer-corners {
-  display: none;
+.ae-observer-frame[data-lens='shopper'] .ae-observer-ring {
+  border: 2px solid var(--ink);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
 }
 .ae-observer-frame[data-lens='shopper']::before,
 .ae-observer-frame[data-lens='shopper']::after {
-  display: none;
+  opacity: 0.95;
 }
 .ae-observer-label {
   position: absolute;
   top: -1px;
   left: 0.45rem;
-  z-index: 2;
+  z-index: 7;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -1915,6 +2247,7 @@
 }
 .ae-observer-notch {
   position: absolute;
+  z-index: 7;
   top: 50%;
   left: -1px;
   width: 3px;
@@ -1925,6 +2258,7 @@
 }
 .ae-observer-reg {
   position: absolute;
+  z-index: 6;
   left: 0.55rem;
   right: 0.55rem;
   bottom: 0.4rem;
@@ -1934,6 +2268,7 @@
 }
 .ae-observer-node {
   position: absolute;
+  z-index: 7;
   width: 5px;
   height: 5px;
   background: var(--proof);
@@ -1961,17 +2296,6 @@
 .ae-observer-frame[data-lens='shopper'] {
   color: var(--ink);
 }
-.ae-observer-frame[data-lens='shopper'] .ae-observer-ring {
-  border: none;
-  border-radius: 0;
-  box-shadow:
-    inset 12px 12px 0 -10px color-mix(in srgb, var(--ink) 42%, transparent),
-    inset -12px -12px 0 -10px color-mix(in srgb, var(--ink) 42%, transparent);
-}
-.ae-observer-frame[data-lens='shopper'] .ae-observer-tint {
-  background: color-mix(in srgb, var(--accent) 4%, transparent);
-  border-radius: 2px;
-}
 .ae-observer-frame[data-lens='shopper'] .ae-observer-label {
   background: var(--paper);
   color: var(--ink);
@@ -1987,11 +2311,7 @@
   color: var(--accent-deep);
 }
 .ae-observer-frame[data-lens='discovery'] .ae-observer-ring {
-  border: 1px solid color-mix(in srgb, var(--accent-deep) 70%, transparent);
-  border-radius: 0;
-}
-.ae-observer-frame[data-lens='discovery'] .ae-observer-tint {
-  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  border-color: color-mix(in srgb, var(--accent-deep) 52%, transparent);
 }
 .ae-observer-frame[data-lens='discovery'] .ae-observer-label {
   background: var(--paper);
@@ -2009,11 +2329,7 @@
   color: var(--proof-deep);
 }
 .ae-observer-frame[data-lens='measurable'] .ae-observer-ring {
-  border: 1px solid color-mix(in srgb, var(--proof-deep) 65%, transparent);
-  border-radius: 0;
-}
-.ae-observer-frame[data-lens='measurable'] .ae-observer-tint {
-  background: color-mix(in srgb, var(--proof) 5%, transparent);
+  border-color: color-mix(in srgb, var(--proof-deep) 50%, transparent);
 }
 .ae-observer-frame[data-lens='measurable'] .ae-observer-label {
   background: var(--paper);
@@ -2112,6 +2428,20 @@
   }
 }
 
+@media (max-width: 1199px) {
+  #authority-experiences .ae-inline-proof {
+    display: none;
+  }
+  #authority-experiences .ae-evidence-pack {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+  #authority-experiences .ae-artifact-note-wide {
+    display: none;
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1199px) {
   #authority-experiences .ae-station-list {
     display: grid;
@@ -2136,12 +2466,19 @@
 }
 
 @media (min-width: 1200px) {
+  #authority-experiences > div {
+    padding-top: 4.25rem;
+    padding-bottom: 4.25rem;
+  }
+  .ae-foundation {
+    margin-top: 1.25rem;
+  }
   .ae-instrument-stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(1.25rem, 1.75rem) minmax(280px, 21.4375rem);
+    grid-template-columns: minmax(0, 1fr) minmax(2rem, 2.5rem) minmax(280px, 21.4375rem);
     grid-template-rows: auto 1fr;
     column-gap: 0;
-    row-gap: 0.75rem;
+    row-gap: 0.5rem;
     align-items: start;
   }
   .ae-browser {
@@ -2164,14 +2501,30 @@
     grid-column: 3;
     grid-row: 2;
     margin-top: 0;
-    align-self: start;
+    align-self: stretch;
     min-height: 0;
   }
   .ae-inspector-stack {
+    flex: 1;
     min-height: 0;
   }
   .ae-inspector-panel {
-    padding: 0.65rem 0 0.75rem;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    height: 100%;
+    min-height: 0;
+    padding: 0.6rem 0 0.5rem;
+  }
+  .ae-inspector-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-top: 0.4rem;
+    padding-bottom: 0.5rem;
+  }
+  .ae-inspector-body > .ae-station-list {
+    flex: 1;
+    justify-content: space-between;
   }
   .ae-chrome-note {
     font-size: 0.625rem;
@@ -2180,11 +2533,19 @@
     font-size: 1.0625rem;
   }
   .ae-station-detail {
-    font-size: 0.9375rem;
-    line-height: 1.45;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+  .ae-outcome {
+    margin-top: 0.45rem;
+    padding-top: 0.5rem;
   }
   .ae-outcome-value {
-    font-size: 1.3125rem;
+    font-size: 1.25rem;
+  }
+  .ae-report-chart {
+    height: 2.15rem;
+    margin-top: 0.4rem;
   }
 }
 
@@ -2218,6 +2579,32 @@
   }
   .ae-scroll-rail {
     display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .ae-report-stats {
+    gap: 0.3rem;
+  }
+  .ae-report-n {
+    font-size: 0.9375rem;
+  }
+  .ae-report-label {
+    font-size: 0.625rem;
+  }
+  .ae-code,
+  .ae-event {
+    font-size: 0.6875rem;
+  }
+  #authority-experiences .ae-benefit {
+    letter-spacing: 0.06em;
+    padding: 0.06rem 0.22rem;
+  }
+  #authority-experiences .ae-entity {
+    font-size: 0.625rem;
+  }
+  #authority-experiences .ae-oem-photo {
+    max-height: 7.25rem;
   }
 }
 
@@ -4796,8 +5183,8 @@ details.disclosure[open] > summary .disclosure-plus {
 
 @media (max-width: 767px) {
   #authority-experiences > div {
-    padding-top: 1.875rem;
-    padding-bottom: 1.875rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
   #authority-experiences .ae-tablist {
     margin-top: 1.125rem;
@@ -4893,6 +5280,45 @@ details.disclosure[open] > summary .disclosure-plus {
   }
   #authority-experiences .ae-station-detail {
     display: none;
+  }
+  #authority-experiences .ae-flow-label {
+    font-size: 0.75rem;
+  }
+  #authority-experiences .ae-stream-title {
+    font-size: 0.8125rem;
+  }
+  #authority-experiences .ae-inspector-panel[data-lens='shopper'] .ae-artifact {
+    display: none;
+  }
+  #authority-experiences .ae-artifact-note {
+    display: none;
+  }
+  #authority-experiences .ae-semantic .ae-path-strip {
+    margin-top: 0.25rem;
+  }
+  #authority-experiences .ae-oem-photo {
+    max-height: none;
+  }
+  #authority-experiences .ae-report-chart {
+    display: none;
+  }
+  #authority-experiences .ae-evidence-pack {
+    gap: 0.25rem;
+    margin-top: 0.3rem;
+  }
+  #authority-experiences .ae-evidence-pack .ae-code {
+    margin-top: 0;
+    padding: 0.2rem 0.35rem;
+    font-size: 0.625rem;
+    line-height: 1.3;
+  }
+  #authority-experiences .ae-card {
+    padding: 0.45rem 0.55rem 0.4rem;
+  }
+  #authority-experiences .ae-module,
+  #authority-experiences .ae-inventory-module {
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
   }
   #authority-experiences .ae-station .text-sm {
     font-size: 0.9375rem;
