@@ -1025,10 +1025,160 @@
   letter-spacing: 0.08em;
   color: var(--accent-deep);
 }
+.ae-instrument-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  min-width: 0;
+}
+.ae-signal-bridge {
+  display: none;
+  position: relative;
+  width: 1.125rem;
+  flex-shrink: 0;
+  align-self: stretch;
+  pointer-events: none;
+}
+.ae-bridge-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+  transform: translateY(-50%);
+}
+.ae-bridge-station {
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+.ae-bridge-from {
+  left: 0;
+}
+.ae-bridge-to {
+  right: 0;
+}
+.ae-bridge-packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  background: var(--accent);
+  border: 1px solid var(--accent-deep);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.ae-instrument-stage[data-lens='measurable'] .ae-bridge-packet {
+  background: var(--proof);
+  border-color: var(--proof-deep);
+}
+.ae-lens-dock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--porcelain) 62%, var(--paper));
+  box-shadow:
+    4px 4px 0 0 color-mix(in srgb, var(--ink) 78%, transparent),
+    0 22px 38px -16px color-mix(in srgb, var(--ink) 18%, transparent);
+  overflow: hidden;
+}
+.ae-lens-dock::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-deep);
+  pointer-events: none;
+  z-index: 2;
+}
+.ae-lens-dock[data-lens='measurable']::before {
+  height: 4px;
+  background: var(--proof-deep);
+}
+.ae-dock-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.65rem 0.45rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--paper);
+  min-width: 0;
+}
+.ae-dock-mark {
+  display: inline-flex;
+  width: 1.15rem;
+  height: 1.15rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--ink);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ae-dock-title {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ae-dock-chip {
+  margin-left: auto;
+  min-width: 6.75rem;
+  min-height: 1.375rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 0.875rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+.ae-lens-dock[data-lens='discovery'] .ae-dock-chip {
+  border-color: color-mix(in srgb, var(--accent-deep) 40%, transparent);
+  color: var(--accent-deep);
+}
+.ae-lens-dock[data-lens='measurable'] .ae-dock-chip {
+  border-color: color-mix(in srgb, var(--proof-deep) 40%, transparent);
+  color: var(--proof-deep);
+}
+.ae-dock-num {
+  display: inline-flex;
+  width: 1.25rem;
+  height: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  background: var(--accent-deep);
+  color: var(--paper);
+  flex-shrink: 0;
+}
+.ae-lens-dock[data-lens='measurable'] .ae-dock-num {
+  background: var(--proof-deep);
+}
 .ae-workspace {
   position: relative;
-  display: grid;
-  gap: 0;
+  display: block;
   background: var(--paper);
   overflow: hidden;
   isolation: isolate;
@@ -1101,14 +1251,11 @@
   position: relative;
   z-index: 3;
   min-width: 0;
-  padding: 0.95rem 0.9rem 1.1rem;
+  padding: 0.85rem 1.35rem 1rem 0.9rem;
 }
-.ae-inspector {
-  position: relative;
-  z-index: 3;
-  min-width: 0;
-  border-top: 1px solid var(--border);
-  background: color-mix(in srgb, var(--porcelain) 70%, var(--paper));
+.ae-lens-dock.ae-inspector {
+  z-index: auto;
+  border-top: 0;
 }
 .ae-inspector[data-lens='shopper'] {
   background: color-mix(in srgb, var(--accent-soft) 42%, var(--paper));
@@ -1152,43 +1299,13 @@
   visibility: visible;
   pointer-events: auto;
 }
-.ae-inspector-head {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-width: 0;
-}
 .ae-inspector-eyebrow {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--signal-deep);
   white-space: nowrap;
-}
-.ae-observer-chip {
-  flex: 0 0 auto;
-  min-width: 7.35rem;
-  min-height: 1.375rem;
-  white-space: nowrap;
-  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  padding: 0.25rem 0.45rem;
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 0.875rem;
-  color: var(--ink);
-}
-.ae-inspector-panel[data-lens='discovery'] .ae-observer-chip {
-  border-color: color-mix(in srgb, var(--accent-deep) 40%, transparent);
-  color: var(--accent-deep);
-}
-.ae-inspector-panel[data-lens='measurable'] .ae-inspector-eyebrow,
-.ae-inspector-panel[data-lens='measurable'] .ae-observer-chip {
-  color: var(--proof-deep);
-}
-.ae-inspector-panel[data-lens='measurable'] .ae-observer-chip {
-  border-color: color-mix(in srgb, var(--proof-deep) 40%, transparent);
+  margin-bottom: 0.45rem;
 }
 .ae-inspector-panel[data-lens='measurable'] .ae-inspector-eyebrow {
   color: var(--proof-deep);
@@ -1238,23 +1355,6 @@
 }
 .ae-inspector-panel[data-lens='measurable'] .ae-inspector-spine {
   background: color-mix(in srgb, var(--proof-deep) 55%, transparent);
-}
-.ae-inspector-packet {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 8px;
-  height: 8px;
-  margin-left: -1px;
-  background: var(--accent);
-  border: 1px solid var(--accent-deep);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 2;
-}
-.ae-inspector-panel[data-lens='measurable'] .ae-inspector-packet {
-  background: var(--proof);
-  border-color: var(--proof-deep);
 }
 .ae-station-list {
   position: relative;
@@ -1692,26 +1792,15 @@
   .ae-dealer-nav {
     display: flex;
   }
-  .ae-workspace {
-    grid-template-columns: minmax(0, 1.05fr) minmax(15.5rem, 0.38fr);
-    align-items: stretch;
-  }
   .ae-page {
-    padding: 0.85rem 1rem 1rem;
-    border-right: 1px solid var(--border);
-  }
-  .ae-inspector {
-    border-top: 0;
-    display: flex;
-    flex-direction: column;
+    padding: 0.8rem 1.25rem 0.95rem 0.85rem;
   }
   .ae-inspector-stack {
     flex: 1;
-    min-height: 100%;
+    min-height: 0;
   }
   .ae-inspector-panel {
-    height: 100%;
-    padding: 1rem 0.95rem 1.1rem;
+    padding: 0.75rem 0.85rem 0.9rem;
   }
   .ae-inspector-mark {
     display: flex;
@@ -1721,28 +1810,60 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .ae-workspace {
-    grid-template-columns: minmax(0, 0.74fr) minmax(16.5rem, 0.26fr);
+@media (min-width: 768px) and (max-width: 1199px) {
+  #authority-experiences .ae-station-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+  #authority-experiences .ae-station-list-measure {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #authority-experiences .ae-station-detail {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .ae-instrument-stage {
+    --ae-chrome-stack: 5.75rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.125rem 21.4375rem;
+    column-gap: 0;
+    row-gap: 0;
+    align-items: stretch;
+    gap: 0;
+  }
+  .ae-browser {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .ae-signal-bridge {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: var(--ae-chrome-stack);
+    align-self: stretch;
+  }
+  .ae-lens-dock {
+    grid-column: 3;
+    grid-row: 1;
+    margin-top: var(--ae-chrome-stack);
+    align-self: stretch;
+    min-height: 0;
+  }
+  .ae-inspector-stack {
+    flex: 1;
+    min-height: 0;
+  }
+  .ae-inspector-panel {
+    height: 100%;
+    padding: 0.75rem 0.85rem 0.9rem;
   }
   .ae-page {
-    padding: 0.9rem 1.05rem 1.05rem;
-  }
-  .ae-dealer-nav-wide {
-    display: inline;
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .ae-nav-bookmark,
-  .ae-nav-more {
-    display: none;
-  }
-}
-
-@media (min-width: 1280px) {
-  .ae-workspace {
-    grid-template-columns: minmax(0, 1fr) 21.4375rem;
+    padding: 0.85rem 1.35rem 1rem 0.9rem;
   }
 }
 
@@ -4399,7 +4520,6 @@ details.disclosure[open] > summary .disclosure-plus {
     padding-left: 0;
   }
   #authority-experiences .ae-inspector-spine,
-  #authority-experiences .ae-inspector-packet,
   #authority-experiences .ae-inspector-mark,
   #authority-experiences .ae-lens-reveal,
   #authority-experiences .ae-lens-sweep,
@@ -4437,6 +4557,10 @@ details.disclosure[open] > summary .disclosure-plus {
     font-size: 0.625rem;
     line-height: 0.875rem;
     min-height: 1.375rem;
+  }
+  #authority-experiences .ae-dock-chip {
+    min-width: 5.75rem;
+    font-size: 0.5625rem;
   }
   #authority-experiences .ae-outcome-count {
     font-size: 0.625rem;
