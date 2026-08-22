@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -13,7 +13,27 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
 type ViewId = 'shopper' | 'discovery' | 'measurable'
 
 const views = authorityTheater.views
-const lensCaptions = ['Shopper', 'Discovery', 'Measurement'] as const
+
+const lensUi = [
+  {
+    id: 'shopper' as const,
+    micro: '01 · SHOPPER',
+    main: 'What buyers see',
+    short: 'Shopper',
+  },
+  {
+    id: 'discovery' as const,
+    micro: '02 · DISCOVERY',
+    main: 'What systems read',
+    short: 'Discovery',
+  },
+  {
+    id: 'measurable' as const,
+    micro: '03 · MEASUREMENT',
+    main: 'What dealers know',
+    short: 'Measurement',
+  },
+] as const
 
 const outcomes = [
   { mark: 'bg-accent', label: 'Discovery earned' },
@@ -21,10 +41,16 @@ const outcomes = [
   { mark: 'bg-proof', label: 'Actions measured' },
 ] as const
 
+const shopperRoute = [
+  { station: 'Question answered', support: 'Family-fit guidance' },
+  { station: 'Needs clarified', support: 'Priorities made clear' },
+  { station: 'Inventory reached', support: 'Matching vehicles next' },
+] as const
+
 const discoveryPoints = [
   {
     spot: 'answer',
-    label: 'A direct answer',
+    label: 'Direct answer',
     detail: 'The buyer question is answered plainly near the top, in crawlable HTML.',
   },
   {
@@ -34,7 +60,7 @@ const discoveryPoints = [
   },
   {
     spot: 'inventory',
-    label: 'A path to inventory',
+    label: 'Inventory pathway',
     detail: 'Useful research connects to matching vehicles the dealership can sell.',
   },
 ] as const
@@ -42,8 +68,8 @@ const discoveryPoints = [
 const measuredActions = [
   { spot: 'priorities', action: 'Priority selected', signal: 'Which needs get chosen' },
   { spot: 'compare', action: 'Comparison opened', signal: 'Which decisions get weighed' },
-  { spot: 'inventory', action: 'Inventory pathway clicked', signal: 'Research moving to vehicles' },
-  { spot: 'contact', action: 'Form or call started', signal: 'High-intent contact' },
+  { spot: 'inventory', action: 'Inventory clicked', signal: 'Research moving to vehicles' },
+  { spot: 'contact', action: 'Contact started', signal: 'High-intent contact' },
 ] as const
 
 const foundationItems = [
@@ -63,6 +89,41 @@ const priorities = [
 
 function pinLabel(n: number) {
   return String(n).padStart(2, '0')
+}
+
+function LensGlyph({ id }: { id: ViewId }) {
+  if (id === 'shopper') {
+    return (
+      <svg className="ae-glyph" viewBox="0 0 20 20" aria-hidden="true">
+        <circle cx="5" cy="10" r="2.25" fill="currentColor" />
+        <path d="M7.5 10h5.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" fill="none" />
+        <path d="M13 7.5 16 10l-3 2.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" fill="none" />
+        <circle cx="5" cy="10" r="5.5" stroke="currentColor" strokeWidth="1.25" fill="none" opacity="0.45" />
+      </svg>
+    )
+  }
+  if (id === 'discovery') {
+    return (
+      <svg className="ae-glyph" viewBox="0 0 20 20" aria-hidden="true">
+        <circle cx="4.5" cy="4.5" r="2" fill="currentColor" />
+        <circle cx="15.5" cy="4.5" r="2" fill="currentColor" />
+        <circle cx="10" cy="15.5" r="2" fill="currentColor" />
+        <path
+          d="M5.8 5.8 8.8 13.2M14.2 5.8 11.2 13.2M6.5 4.5h7"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          fill="none"
+        />
+      </svg>
+    )
+  }
+  return (
+    <svg className="ae-glyph" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M3 14.5 7.5 8l3 3.5L17 4.5" stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="square" />
+      <circle cx="17" cy="4.5" r="1.75" fill="currentColor" />
+      <path d="M3 16.5h14" stroke="currentColor" strokeWidth="1.25" opacity="0.45" />
+    </svg>
+  )
 }
 
 type ViewTransitionLike = {
@@ -106,14 +167,58 @@ function apertureGeometry(tab: HTMLElement, layer: HTMLElement) {
   return { originX, originY, radius }
 }
 
+function InspectorShell({
+  active,
+  lens,
+  eyebrow,
+  outcomeLabel,
+  outcomeValue,
+  children,
+  label,
+}: {
+  active: boolean
+  lens: ViewId
+  eyebrow: string
+  outcomeLabel: string
+  outcomeValue: string
+  children: ReactNode
+  label: string
+}) {
+  return (
+    <div
+      className="ae-inspector-panel"
+      data-lens={lens}
+      data-active={active ? 'true' : 'false'}
+      aria-hidden={!active}
+      inert={!active ? true : undefined}
+      aria-label={label}
+    >
+      <p className="ae-inspector-eyebrow font-mono">{eyebrow}</p>
+      <div className="ae-inspector-body">
+        <span className="ae-inspector-spine" aria-hidden="true" />
+        <span className="ae-inspector-packet" aria-hidden="true" />
+        {children}
+      </div>
+      <div className="ae-outcome">
+        <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          {outcomeLabel}
+        </p>
+        <p className="mt-1 text-base font-semibold tracking-tight text-ink">{outcomeValue}</p>
+      </div>
+    </div>
+  )
+}
+
 export function AuthorityExperience() {
   const [view, setView] = useState<ViewId>('shopper')
   const rootRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
-  const stageRef = useRef<HTMLDivElement>(null)
+  const workspaceRef = useRef<HTMLDivElement>(null)
+  const apertureRef = useRef<HTMLDivElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const applyLensRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
+  const playInspectorRef = useRef<(id: ViewId, instant?: boolean) => void>(() => {})
   const lensReadyRef = useRef(false)
   const lensPrimedRef = useRef(false)
   const skipGsapRef = useRef(false)
@@ -138,20 +243,55 @@ export function AuthorityExperience() {
     () => {
       const frame = frameRef.current
       const rule = ruleRef.current
-      if (!frame || !rule) return
-
       const root = rootRef.current
+      if (!frame || !rule || !root) return
+
       const pinD = gsap.utils.toArray<HTMLElement>('.ae-pin-d', root)
       const pinM = gsap.utils.toArray<HTMLElement>('.ae-pin-m', root)
-      const railIdle = gsap.utils.toArray<HTMLElement>('.ae-rail-idle', root)
-      const railD = gsap.utils.toArray<HTMLElement>('.ae-rail-d', root)
-      const railM = gsap.utils.toArray<HTMLElement>('.ae-rail-m', root)
-      const layers = [...pinD, ...pinM, ...railIdle, ...railD, ...railM]
+
+      const playInspector = (id: ViewId, instant = false) => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const panel = root.querySelector<HTMLElement>(`.ae-inspector-panel[data-lens="${id}"]`)
+        if (!panel) return
+        const spine = panel.querySelector<HTMLElement>('.ae-inspector-spine')
+        const packet = panel.querySelector<HTMLElement>('.ae-inspector-packet')
+        const stations = gsap.utils.toArray<HTMLElement>('.ae-station', panel)
+        const outcome = panel.querySelector<HTMLElement>('.ae-outcome')
+
+        gsap.killTweensOf([spine, packet, ...stations, outcome].filter(Boolean))
+
+        if (instant || reduced || window.innerWidth < 768) {
+          if (spine) gsap.set(spine, { scaleY: 1, transformOrigin: 'top center' })
+          stations.forEach((el) => gsap.set(el, { autoAlpha: 1, y: 0, scale: 1 }))
+          if (outcome) gsap.set(outcome, { autoAlpha: 1, y: 0 })
+          if (packet) gsap.set(packet, { autoAlpha: 0 })
+          return
+        }
+
+        if (spine) gsap.set(spine, { scaleY: 0, transformOrigin: 'top center' })
+        stations.forEach((el) => gsap.set(el, { autoAlpha: 0, y: 4, scale: 1 }))
+        if (outcome) gsap.set(outcome, { autoAlpha: 0.35, y: 0 })
+        if (packet) gsap.set(packet, { autoAlpha: 0, top: 0 })
+
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+        if (spine) tl.to(spine, { scaleY: 1, duration: 0.26 }, 0)
+        stations.forEach((el, i) => {
+          tl.to(el, { autoAlpha: 1, y: 0, scale: 1.04, duration: 0.22 }, 0.08 + i * 0.07)
+          tl.to(el, { scale: 1, duration: 0.12 }, 0.08 + i * 0.07 + 0.22)
+        })
+        if (packet && spine) {
+          const travel = Math.max(24, spine.offsetHeight - 8)
+          tl.set(packet, { autoAlpha: 1, top: 0 }, 0.12)
+          tl.to(packet, { top: travel, duration: 0.32, ease: 'power2.inOut' }, 0.12)
+          tl.to(packet, { autoAlpha: 0, duration: 0.15 }, 0.4)
+        }
+        if (outcome) tl.to(outcome, { autoAlpha: 1, duration: 0.2 }, 0.42)
+      }
 
       const applyLens = (id: ViewId, instant = false) => {
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        const duration = instant || reduced ? 0 : 0.3
-        gsap.killTweensOf(layers)
+        const duration = instant || reduced ? 0 : 0.26
+        gsap.killTweensOf([...pinD, ...pinM])
         gsap.to(pinD, {
           autoAlpha: id === 'discovery' ? 1 : 0,
           duration,
@@ -164,30 +304,11 @@ export function AuthorityExperience() {
           overwrite: 'auto',
           ease: 'power2.out',
         })
-        gsap.to(railIdle, {
-          autoAlpha: id === 'shopper' ? 1 : 0,
-          y: id === 'shopper' ? 0 : 4,
-          duration,
-          overwrite: 'auto',
-          ease: 'power2.out',
-        })
-        gsap.to(railD, {
-          autoAlpha: id === 'discovery' ? 1 : 0,
-          y: id === 'discovery' ? 0 : 4,
-          duration,
-          overwrite: 'auto',
-          ease: 'power2.out',
-        })
-        gsap.to(railM, {
-          autoAlpha: id === 'measurable' ? 1 : 0,
-          y: id === 'measurable' ? 0 : 4,
-          duration,
-          overwrite: 'auto',
-          ease: 'power2.out',
-        })
+        playInspector(id, instant || reduced)
       }
 
       applyLensRef.current = applyLens
+      playInspectorRef.current = playInspector
       applyLens('shopper', true)
       lensReadyRef.current = true
       ScrollTrigger.refresh()
@@ -236,7 +357,7 @@ export function AuthorityExperience() {
       }
     }
 
-    const layer = stageRef.current
+    const layer = apertureRef.current
     const nextTab = tabRefs.current[views.findIndex((v) => v.id === id)] ?? null
     const doc = viewTransitionDoc()
 
@@ -273,15 +394,19 @@ export function AuthorityExperience() {
       const vt = doc.startViewTransition(() => {
         apply()
         applyLensRef.current(id, true)
+        requestAnimationFrame(() => {
+          if (token !== vtGenRef.current) return
+          playInspectorRef.current(id, false)
+        })
       })
 
       void vt.ready
         .then(() => {
           if (token !== vtGenRef.current) return
           const tab = tabRefs.current[views.findIndex((v) => v.id === id)]
-          const stage = stageRef.current
-          if (!tab || !stage) return
-          const { originX, originY, radius } = apertureGeometry(tab, stage)
+          const aperture = apertureRef.current
+          if (!tab || !aperture) return
+          const { originX, originY, radius } = apertureGeometry(tab, aperture)
           const origin = `${originX}px ${originY}px`
           try {
             root.animate(
@@ -290,10 +415,10 @@ export function AuthorityExperience() {
                 { clipPath: `circle(${radius}px at ${origin})` },
               ],
               {
-                duration: 420,
+                duration: 400,
                 easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
                 fill: 'none',
-                pseudoElement: '::view-transition-new(authority-lens-layer)',
+                pseudoElement: '::view-transition-new(authority-lens-aperture)',
               },
             )
           } catch {
@@ -301,7 +426,7 @@ export function AuthorityExperience() {
           }
         })
         .catch(() => {
-          /* skipped or unsupported pseudo */
+          /* skipped */
         })
 
       void vt.finished
@@ -362,57 +487,61 @@ export function AuthorityExperience() {
         <div
           role="tablist"
           aria-label="Authority Experience views"
-          className="ae-tablist mt-8 grid grid-cols-3 gap-2 md:mt-10 md:flex md:flex-wrap md:gap-3"
+          className="ae-tablist mt-8 grid grid-cols-3 gap-2 md:mt-9 md:gap-3"
         >
-          {views.map((v, i) => {
-            const selected = view === v.id
+          {lensUi.map((lens, i) => {
+            const selected = view === lens.id
             return (
               <button
-                key={v.id}
+                key={lens.id}
                 ref={(el) => {
                   tabRefs.current[i] = el
                 }}
                 type="button"
                 role="tab"
-                id={`view-tab-${v.id}`}
-                aria-label={v.label}
+                id={`view-tab-${lens.id}`}
+                aria-label={views[i]!.label}
                 aria-selected={selected}
                 aria-controls="authority-view-panel"
                 tabIndex={selected ? 0 : -1}
-                onClick={() => activate(v.id as ViewId)}
+                data-lens={lens.id}
+                data-active={selected ? 'true' : 'false'}
+                onClick={() => activate(lens.id)}
                 onKeyDown={(event) => onTabKeyDown(event, i)}
-                className={`ae-tab relative flex min-h-11 items-center justify-center gap-2 rounded-lg border-2 px-2 py-2 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:min-h-[52px] md:justify-start md:gap-3 md:px-6 md:py-3 md:text-left md:text-base ${
-                  selected
-                    ? 'border-lime bg-transparent text-ink'
-                    : 'border-stage-line bg-stage-elevated text-stage-foreground hover:border-stage-muted'
-                }`}
+                className="ae-tab"
               >
-                {selected ? <span className="ae-tab-indicator" aria-hidden="true" /> : null}
-                <span className="relative z-[1] md:hidden" aria-hidden="true">
-                  <span className="font-mono text-[0.6875rem] font-bold">0{i + 1}</span>{' '}
-                  {lensCaptions[i]}
+                <span className="ae-tab-fill" aria-hidden="true" />
+                <span className="ae-tab-station" aria-hidden="true" />
+                <span className="ae-tab-inner">
+                  <LensGlyph id={lens.id} />
+                  <span className="ae-tab-copy">
+                    <span className="ae-tab-micro font-mono" aria-hidden="true">
+                      {lens.micro}
+                    </span>
+                    <span className="ae-tab-main md:hidden" aria-hidden="true">
+                      {lens.short}
+                    </span>
+                    <span className="ae-tab-main hidden md:inline" aria-hidden="true">
+                      {lens.main}
+                    </span>
+                    <span
+                      className={`ae-tab-active font-mono ${selected ? 'is-on' : ''}`}
+                      aria-hidden="true"
+                    >
+                      ACTIVE LENS
+                    </span>
+                  </span>
                 </span>
-                <span
-                  className={`relative z-[1] hidden font-mono text-xs font-bold md:inline ${selected ? 'text-signal-deep' : 'text-fog'}`}
-                  aria-hidden="true"
-                >
-                  0{i + 1}
-                </span>
-                <span className="relative z-[1] hidden md:inline">{v.label}</span>
               </button>
             )
           })}
         </div>
 
-        <div className="mt-4 hidden items-center gap-0 md:flex" aria-hidden="true">
-          {views.map((v, i) => (
-            <div key={v.id} className="flex flex-1 items-center">
-              <span
-                className={`ae-dot h-2 w-2 rounded-full ${
-                  i === activeIndex ? 'bg-lime' : 'bg-stage-line'
-                }`}
-              />
-              {i < views.length - 1 && <span className="h-px flex-1 bg-stage-line" />}
+        <div className="ae-lens-route mt-3 hidden md:grid" aria-hidden="true">
+          {lensUi.map((lens, i) => (
+            <div key={lens.id} className="ae-lens-route-seg">
+              <span className={`ae-dot ${i === activeIndex ? 'is-on' : ''}`} />
+              {i < lensUi.length - 1 ? <span className="ae-lens-route-line" /> : null}
             </div>
           ))}
         </div>
@@ -421,16 +550,48 @@ export function AuthorityExperience() {
           role="tabpanel"
           id="authority-view-panel"
           aria-labelledby={`view-tab-${view}`}
-          className="mt-4"
+          className="mt-4 md:mt-5"
         >
-          <div ref={frameRef} className="ae-frame">
+          <div ref={frameRef} className="ae-browser">
             <span ref={ruleRef} className="ae-frame-rule" aria-hidden="true" />
-            <p className="mb-5 inline-block rounded-full border border-border bg-porcelain px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground">
-              Illustrative example — not a live dealership page
-            </p>
 
-            <div ref={stageRef} className="ae-stage">
-              <span className="ae-lens-tint" data-lens={view} aria-hidden="true" />
+            <div className="ae-toolbar" aria-hidden="true">
+              <div className="ae-toolbar-lights">
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="ae-toolbar-tab">Family SUV Guide</div>
+              <div className="ae-toolbar-url">
+                <span className="ae-toolbar-lock" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" width="11" height="11">
+                    <path
+                      d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5M2.5 5.5h7v5h-7z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                    />
+                  </svg>
+                </span>
+                <span className="ae-toolbar-address">dealerwebsite.com/research/three-row-suv-guide</span>
+              </div>
+              <div className="ae-toolbar-status">
+                <span className="ae-status-chip">ILLUSTRATIVE EXAMPLE</span>
+                <span className="ae-status-note">NOT A LIVE DEALERSHIP PAGE</span>
+              </div>
+            </div>
+
+            <div ref={workspaceRef} className="ae-workspace" data-lens={view}>
+              <div
+                ref={apertureRef}
+                className="ae-lens-aperture-layer"
+                data-lens={view}
+                aria-hidden="true"
+              >
+                <span className="ae-lens-tint" data-lens={view} />
+                <span className="ae-lens-scan" data-lens={view} />
+              </div>
+
               <article className="ae-page" data-lens={view}>
                 <div>
                   <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
@@ -551,53 +712,83 @@ export function AuthorityExperience() {
                 </div>
               </article>
 
-              <aside className="ae-rail" data-lens={view} aria-hidden={view === 'shopper'}>
-                <p
-                  className="ae-rail-idle font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-fog"
-                  aria-hidden={view !== 'shopper'}
-                >
-                  Shopper lens — the page as published.
-                </p>
-                <ol
-                  className="ae-rail-panel ae-rail-d"
-                  aria-label="How discovery systems read this page"
-                  aria-hidden={view !== 'discovery'}
-                  inert={view !== 'discovery'}
-                >
-                  {discoveryPoints.map((item, i) => (
-                    <li key={item.label} className="ae-rail-item">
-                      <span className="font-mono text-[0.6875rem] font-bold text-signal-deep" aria-hidden="true">
-                        {pinLabel(i + 1)}
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-ink">{item.label}</p>
-                        <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted-foreground">
-                          {item.detail}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <ol
-                  className="ae-rail-panel ae-rail-m"
-                  aria-label="Measured actions on this page"
-                  aria-hidden={view !== 'measurable'}
-                  inert={view !== 'measurable'}
-                >
-                  {measuredActions.map((row, i) => (
-                    <li key={row.action} className="ae-rail-item">
-                      <span className="font-mono text-[0.6875rem] font-bold text-proof-deep" aria-hidden="true">
-                        {pinLabel(i + 1)}
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-ink">{row.action}</p>
-                        <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted-foreground">
-                          {row.signal}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
+              <aside className="ae-inspector" data-lens={view}>
+                <div className="ae-inspector-stack">
+                  <InspectorShell
+                    active={view === 'shopper'}
+                    lens="shopper"
+                    eyebrow="BUYER PATH"
+                    outcomeLabel="DEALER OUTCOME"
+                    outcomeValue="LESS WANDERING"
+                    label="Buyer path inspector"
+                  >
+                    <ol className="ae-station-list">
+                      {shopperRoute.map((row, i) => (
+                        <li key={row.station} className="ae-station" data-tone="shopper">
+                          <span className="ae-station-mark font-mono" aria-hidden="true">
+                            {pinLabel(i + 1)}
+                          </span>
+                          <div>
+                            <p className="text-sm font-semibold text-ink">{row.station}</p>
+                            <p className="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                              {row.support}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </InspectorShell>
+
+                  <InspectorShell
+                    active={view === 'discovery'}
+                    lens="discovery"
+                    eyebrow="DISCOVERY READOUT"
+                    outcomeLabel="SYSTEM OUTCOME"
+                    outcomeValue="EASIER TO UNDERSTAND"
+                    label="Discovery readout inspector"
+                  >
+                    <ol className="ae-station-list">
+                      {discoveryPoints.map((item, i) => (
+                        <li key={item.label} className="ae-station" data-tone="discovery">
+                          <span className="ae-station-mark font-mono" aria-hidden="true">
+                            {pinLabel(i + 1)}
+                          </span>
+                          <div>
+                            <p className="text-sm font-semibold text-ink">{item.label}</p>
+                            <p className="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                              {item.detail}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </InspectorShell>
+
+                  <InspectorShell
+                    active={view === 'measurable'}
+                    lens="measurable"
+                    eyebrow="BUYER SIGNALS"
+                    outcomeLabel="DEALER OUTCOME"
+                    outcomeValue="INTENT YOU CAN PROVE"
+                    label="Buyer signals inspector"
+                  >
+                    <ol className="ae-station-list">
+                      {measuredActions.map((row, i) => (
+                        <li key={row.action} className="ae-station" data-tone="measurable">
+                          <span className="ae-station-mark font-mono" aria-hidden="true">
+                            {pinLabel(i + 1)}
+                          </span>
+                          <div>
+                            <p className="text-sm font-semibold text-ink">{row.action}</p>
+                            <p className="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">
+                              {row.signal}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </InspectorShell>
+                </div>
               </aside>
             </div>
           </div>
