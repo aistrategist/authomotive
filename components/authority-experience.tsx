@@ -532,22 +532,32 @@ export function AuthorityExperience() {
       if (reduced) {
         gsap.set(frame, { y: 0 })
         gsap.set(rule, { scaleX: 1 })
+        frame.style.boxShadow =
+          '5px 5px 0 0 color-mix(in srgb, var(--ink) 88%, transparent), 0 32px 40px -14px color-mix(in srgb, var(--ink) 20%, transparent)'
         return () => {
           lensTlRef.current?.kill()
           clearWillChange()
         }
       }
 
-      gsap.set(frame, { y: 7 })
+      gsap.set(frame, { y: 6 })
       gsap.set(rule, { scaleX: 0, transformOrigin: 'left center' })
+      frame.style.boxShadow =
+        '4px 4px 0 0 color-mix(in srgb, var(--ink) 70%, transparent), 0 12px 24px -8px color-mix(in srgb, var(--ink) 14%, transparent)'
 
       ScrollTrigger.create({
         trigger: frame,
         start: 'top 82%',
         once: true,
         onEnter: () => {
-          gsap.to(frame, { y: 0, duration: 0.55, ease: 'power2.out' })
-          gsap.to(rule, { scaleX: 1, duration: 0.6, ease: 'power2.out' })
+          gsap.to(frame, {
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            boxShadow:
+              '5px 5px 0 0 color-mix(in srgb, var(--ink) 88%, transparent), 0 32px 40px -14px color-mix(in srgb, var(--ink) 20%, transparent)',
+          })
+          gsap.to(rule, { scaleX: 1, duration: 0.55, ease: 'power2.out' })
         },
       })
 
@@ -686,50 +696,117 @@ export function AuthorityExperience() {
           <div ref={frameRef} className="ae-browser">
             <span ref={ruleRef} className="ae-frame-rule" aria-hidden="true" />
 
-            <div className="ae-toolbar">
-              <div className="ae-toolbar-lights" aria-hidden="true">
-                <span />
-                <span />
-                <span />
+            <div className="ae-chrome" aria-hidden="true">
+              <div className="ae-chrome-tabs">
+                <div className="ae-toolbar-lights">
+                  <span className="ae-light ae-light-close" />
+                  <span className="ae-light ae-light-min" />
+                  <span className="ae-light ae-light-max" />
+                </div>
+                <div className="ae-chrome-tab ae-chrome-tab-active">
+                  <span className="ae-chrome-favicon font-mono">NM</span>
+                  <span className="ae-chrome-tab-title">Three-Row SUV Guide | Northline Motors</span>
+                </div>
+                <span className="ae-chrome-tab-spacer" />
               </div>
-              <div className="ae-toolbar-tab" aria-hidden="true">
-                Family SUV Guide
-              </div>
-              <div className="ae-toolbar-url" aria-hidden="true">
-                <span className="ae-toolbar-lock">
-                  <svg viewBox="0 0 12 12" width="11" height="11">
-                    <path
-                      d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5M2.5 5.5h7v5h-7z"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                    />
+
+              <div className="ae-chrome-nav">
+                <span className="ae-nav-btn ae-nav-back">
+                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+                    <path d="M7.5 2.5 4 6l3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" />
                   </svg>
                 </span>
-                <span className="ae-toolbar-address">dealerwebsite.com/research/three-row-suv-guide</span>
+                <span className="ae-nav-btn ae-nav-forward">
+                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" />
+                  </svg>
+                </span>
+                <span className="ae-nav-btn ae-nav-refresh">
+                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+                    <path d="M6 2.5v2M6 7.5v2M2.5 6H4.5M7.5 6H9.5M3.4 3.4l1.4 1.4M7.2 7.2l1.4 1.4M8.6 3.4 7.2 4.8M4.8 7.2 3.4 8.6" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="square" />
+                  </svg>
+                </span>
+                <div className="ae-chrome-address">
+                  <span className="ae-toolbar-lock">
+                    <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
+                      <path
+                        d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5M2.5 5.5h7v5h-7z"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      />
+                    </svg>
+                  </span>
+                  <span className="ae-toolbar-address">
+                    northlinemotors.example/research/three-row-suv-guide
+                  </span>
+                </div>
+                <span className="ae-nav-btn ae-nav-bookmark">
+                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+                    <path d="M3 2.5h6v7L6 8 3 9.5z" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="miter" />
+                  </svg>
+                </span>
+                <span className="ae-nav-btn ae-nav-more">
+                  <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+                    <circle cx="3" cy="6" r="0.9" fill="currentColor" />
+                    <circle cx="6" cy="6" r="0.9" fill="currentColor" />
+                    <circle cx="9" cy="6" r="0.9" fill="currentColor" />
+                  </svg>
+                </span>
+                <span className="ae-status-chip">DEMO DEALERSHIP</span>
               </div>
-              <div className="ae-toolbar-status" aria-hidden="true">
-                <span className="ae-status-chip">ILLUSTRATIVE EXAMPLE</span>
-                <span className="ae-status-note">NOT A LIVE DEALERSHIP PAGE</span>
+
+              <div className="ae-chrome-mobile">
+                <div className="ae-toolbar-lights">
+                  <span className="ae-light ae-light-close" />
+                  <span className="ae-light ae-light-min" />
+                  <span className="ae-light ae-light-max" />
+                </div>
+                <span className="ae-chrome-favicon font-mono">NM</span>
+                <span className="ae-chrome-mobile-domain">northlinemotors.example</span>
+                <span className="ae-status-chip">DEMO DEALERSHIP</span>
               </div>
             </div>
 
+            <p className="ae-chrome-note font-mono" aria-hidden="true">
+              Illustrative example — not a live dealership page.
+            </p>
+
             <div ref={workspaceRef} className="ae-workspace" data-lens={view}>
+              <span className="ae-scroll-rail" aria-hidden="true">
+                <span className="ae-scroll-track" />
+                <span className="ae-scroll-thumb" />
+              </span>
               <div ref={baseRef} className="ae-lens-base" data-lens={view} aria-hidden="true" />
               <div ref={revealRef} className="ae-lens-reveal" data-lens={view} aria-hidden="true" />
               <span ref={sweepRef} className="ae-lens-sweep" aria-hidden="true" />
 
               <article className="ae-page" data-lens={view}>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-wider text-signal-deep">
-                    Dealership research guide
-                  </p>
-                  <h4 className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
-                    {authorityTheater.exampleTopic}
-                  </h4>
-                </div>
+                <header className="ae-dealer-masthead">
+                  <div className="ae-dealer-brand">
+                    <span className="ae-dealer-monogram font-mono" aria-hidden="true">
+                      NM
+                    </span>
+                    <div className="ae-dealer-brand-copy">
+                      <span className="ae-dealer-wordmark font-mono">NORTHLINE MOTORS</span>
+                      <span className="ae-dealer-label font-mono">RESEARCH CENTER</span>
+                    </div>
+                  </div>
+                  <nav className="ae-dealer-nav" aria-hidden="true">
+                    <span className="ae-dealer-nav-item ae-dealer-nav-wide">New Vehicles</span>
+                    <span className="ae-dealer-nav-item ae-dealer-nav-wide">Used Vehicles</span>
+                    <span className="ae-dealer-nav-item">Research</span>
+                    <span className="ae-dealer-nav-item ae-dealer-nav-wide">Service</span>
+                  </nav>
+                  <span className="ae-dealer-inventory">View Inventory</span>
+                </header>
 
-                <div className="ae-spot mt-5 rounded-lg border-l-4 border-accent bg-porcelain p-5" data-spot="answer">
+                <p className="ae-breadcrumb font-mono">Research / Family SUVs</p>
+                <h4 className="ae-page-title mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl text-balance">
+                  {authorityTheater.exampleTopic}
+                </h4>
+
+                <div className="ae-spot mt-4 rounded-lg border-l-4 border-accent bg-porcelain p-5" data-spot="answer">
                   {framesForSpot('answer', view)}
                   <p className="text-base font-semibold uppercase tracking-wide text-signal-deep">
                     The short answer
@@ -741,7 +818,7 @@ export function AuthorityExperience() {
                   </p>
                 </div>
 
-                <div className="ae-spot mt-5" data-spot="priorities">
+                <div className="ae-spot mt-4" data-spot="priorities">
                   {framesForSpot('priorities', view)}
                   <p className="text-lg font-semibold text-ink">What matters most to your family?</p>
                   <div className="mt-3 flex flex-wrap gap-2.5">
@@ -753,7 +830,7 @@ export function AuthorityExperience() {
                   </div>
                 </div>
 
-                <div className="ae-spot mt-5 grid gap-4 sm:grid-cols-2" data-spot="structure">
+                <div className="ae-spot mt-4 grid gap-4 sm:grid-cols-2" data-spot="structure">
                   {framesForSpot('structure', view)}
                   <div className="ae-spot rounded-lg border border-border bg-paper p-5" data-spot="compare">
                     {framesForSpot('compare', view)}
@@ -773,19 +850,20 @@ export function AuthorityExperience() {
                 </div>
 
                 <div
-                  className="ae-spot mt-5 rounded-lg border-2 border-ink bg-porcelain p-5"
+                  className="ae-spot ae-inventory-module mt-4 rounded-lg border-2 border-ink border-l-4 border-l-accent bg-porcelain p-5"
                   data-spot="inventory"
                 >
                   {framesForSpot('inventory', view)}
-                  <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                  <div className="ae-inventory-head">
                     <p className="text-lg font-semibold text-ink text-pretty">
                       See the three-row SUVs that match your priorities
                     </p>
-                    <span className="ae-fake-action inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] border-2 border-ink bg-paper px-4 py-2 text-[15px] font-semibold text-ink">
-                      View Matching Inventory
-                      <span aria-hidden="true">→</span>
-                    </span>
+                    <span className="ae-inventory-status font-mono">Matching units available</span>
                   </div>
+                  <span className="ae-fake-action mt-3 inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] border-2 border-ink bg-paper px-4 py-2 text-[15px] font-semibold text-ink">
+                    View Matching Inventory
+                    <span aria-hidden="true">→</span>
+                  </span>
                 </div>
 
                 <div className="ae-spot mt-4" data-spot="contact">

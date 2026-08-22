@@ -721,9 +721,22 @@
 .ae-browser {
   position: relative;
   border: 2px solid var(--ink);
+  border-radius: 11px;
   background: var(--paper);
-  box-shadow: 6px 6px 0 0 var(--stage-elevated);
+  box-shadow:
+    5px 5px 0 0 color-mix(in srgb, var(--ink) 88%, transparent),
+    0 32px 40px -14px color-mix(in srgb, var(--ink) 20%, transparent);
   overflow: hidden;
+  isolation: isolate;
+}
+.ae-browser::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: color-mix(in srgb, var(--paper) 65%, transparent);
+  pointer-events: none;
+  z-index: 4;
 }
 .ae-frame-rule {
   position: absolute;
@@ -734,45 +747,139 @@
   background: var(--accent);
   transform-origin: left center;
   pointer-events: none;
-  z-index: 3;
+  z-index: 5;
 }
-.ae-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem 0.75rem;
-  padding: 0.55rem 0.75rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--alloy);
+.ae-chrome {
+  position: relative;
+  z-index: 3;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, var(--border));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--alloy) 88%, var(--paper)) 0%,
+    color-mix(in srgb, var(--alloy) 96%, var(--paper)) 100%
+  );
   color: var(--ink);
   pointer-events: none;
   user-select: none;
 }
-.ae-toolbar-lights {
+.ae-chrome-tabs,
+.ae-chrome-nav {
   display: flex;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
 }
-.ae-toolbar-lights span {
-  width: 8px;
-  height: 8px;
-  background: var(--stage-line);
+.ae-chrome-tabs {
+  padding: 0.45rem 0.65rem 0.35rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, var(--border));
 }
-.ae-toolbar-tab {
-  font-size: 0.75rem;
+.ae-chrome-nav {
+  padding: 0.35rem 0.65rem 0.45rem;
+}
+.ae-chrome-mobile {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.55rem;
+  min-width: 0;
+}
+.ae-chrome-note {
+  display: none;
+  margin: 0;
+  padding: 0.25rem 0.65rem 0.35rem;
+  font-size: 0.5625rem;
   font-weight: 600;
-  padding: 0.2rem 0.55rem;
-  border: 1px solid var(--border);
+  letter-spacing: 0.06em;
+  color: #5c6774;
+  border-bottom: 1px solid var(--border);
   background: var(--paper);
 }
-.ae-toolbar-url {
-  display: none;
+.ae-toolbar-lights {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+.ae-light {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.ae-light-close {
+  background: #ff5f57;
+}
+.ae-light-min {
+  background: #febc2e;
+}
+.ae-light-max {
+  background: #28c840;
+}
+.ae-chrome-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  max-width: 18rem;
+  padding: 0.22rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, var(--border));
+  border-bottom-color: transparent;
+  border-radius: 6px 6px 0 0;
+  background: var(--paper);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.ae-chrome-tab-active {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--paper) 80%, transparent);
+}
+.ae-chrome-favicon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--accent-deep) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 55%, var(--paper));
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: var(--accent-deep);
+  flex-shrink: 0;
+}
+.ae-chrome-tab-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ae-chrome-tab-spacer {
+  flex: 1;
+  min-width: 1.5rem;
+  height: 1px;
+  margin-left: 0.25rem;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.ae-nav-btn {
+  display: inline-flex;
+  width: 1.35rem;
+  height: 1.35rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, var(--border));
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--paper) 88%, var(--alloy));
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
+  flex-shrink: 0;
+}
+.ae-chrome-address {
+  display: flex;
   min-width: 0;
   flex: 1;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.25rem 0.55rem;
-  border: 1px solid var(--border);
+  padding: 0.28rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, var(--border));
+  border-radius: 999px;
   background: var(--paper);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent);
   font-family: var(--font-geist-mono, ui-monospace, monospace);
   font-size: 0.6875rem;
   color: var(--ink);
@@ -780,35 +887,143 @@
 .ae-toolbar-lock {
   display: inline-flex;
   color: var(--accent-deep);
+  flex-shrink: 0;
 }
 .ae-toolbar-address {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.ae-toolbar-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.55rem;
-  margin-left: auto;
+  min-width: 0;
 }
 .ae-status-chip {
+  flex-shrink: 0;
   font-family: var(--font-geist-mono, ui-monospace, monospace);
   font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  padding: 0.2rem 0.45rem;
-  border: 1px solid var(--ink);
+  padding: 0.22rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
   background: var(--paper);
   color: var(--ink);
 }
-.ae-status-note {
-  font-family: var(--font-geist-mono, ui-monospace, monospace);
+.ae-scroll-rail {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.35rem;
+  bottom: 0.65rem;
+  z-index: 2;
+  width: 8px;
+  pointer-events: none;
+}
+.ae-scroll-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 8%, var(--porcelain));
+}
+.ae-scroll-thumb {
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  top: 8%;
+  height: 25%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 28%, var(--alloy));
+}
+.ae-dealer-masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--border);
+}
+.ae-dealer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.ae-dealer-monogram {
+  display: inline-flex;
+  width: 1.65rem;
+  height: 1.65rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  flex-shrink: 0;
+}
+.ae-dealer-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+.ae-dealer-wordmark {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.ae-dealer-label {
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--muted-foreground);
+}
+.ae-dealer-nav {
+  display: none;
+  align-items: center;
+  gap: 0.65rem;
+  justify-self: end;
+}
+.ae-dealer-nav-item {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
+  white-space: nowrap;
+}
+.ae-dealer-inventory {
+  justify-self: end;
+  padding: 0.28rem 0.55rem;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.ae-breadcrumb {
+  margin-top: 0.55rem;
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #5c6774;
+  color: var(--muted-foreground);
+}
+.ae-inventory-module {
+  border-left-width: 4px !important;
+  border-left-color: var(--accent) !important;
+}
+.ae-inventory-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.ae-inventory-status {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--accent-deep) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--paper));
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-deep);
 }
 .ae-workspace {
   position: relative;
@@ -1468,12 +1683,13 @@
     width: 1.15rem;
     height: 1.15rem;
   }
-  .ae-toolbar {
-    flex-wrap: nowrap;
-    gap: 0.65rem;
-    padding: 0.65rem 0.9rem;
+  .ae-chrome-note {
+    display: block;
   }
-  .ae-toolbar-url {
+  .ae-dealer-masthead {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+  .ae-dealer-nav {
     display: flex;
   }
   .ae-workspace {
@@ -1481,7 +1697,7 @@
     align-items: stretch;
   }
   .ae-page {
-    padding: 1.15rem 1.15rem 1.25rem;
+    padding: 0.85rem 1rem 1rem;
     border-right: 1px solid var(--border);
   }
   .ae-inspector {
@@ -1510,7 +1726,17 @@
     grid-template-columns: minmax(0, 0.74fr) minmax(16.5rem, 0.26fr);
   }
   .ae-page {
-    padding: 1.25rem 1.35rem 1.4rem;
+    padding: 0.9rem 1.05rem 1.05rem;
+  }
+  .ae-dealer-nav-wide {
+    display: inline;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .ae-nav-bookmark,
+  .ae-nav-more {
+    display: none;
   }
 }
 
@@ -1522,6 +1748,49 @@
 
 @media (max-width: 1023px) {
   .ae-observer-reg {
+    display: none;
+  }
+  .ae-dealer-nav-wide {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .ae-chrome-tabs,
+  .ae-chrome-nav {
+    display: none;
+  }
+  .ae-chrome-mobile {
+    display: flex;
+  }
+  .ae-chrome-mobile-domain {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-geist-mono, ui-monospace, monospace);
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .ae-scroll-rail {
+    display: none;
+  }
+  .ae-dealer-masthead {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .ae-dealer-nav {
+    display: none;
+  }
+  .ae-dealer-inventory {
+    font-size: 0.625rem;
+    padding: 0.22rem 0.45rem;
+  }
+  .ae-dealer-wordmark {
+    font-size: 0.5625rem;
+  }
+  .ae-dealer-label {
     display: none;
   }
 }
@@ -4111,7 +4380,7 @@ details.disclosure[open] > summary .disclosure-plus {
   #authority-experiences .ae-page {
     padding: 0.65rem 0.65rem 0.75rem;
   }
-  #authority-experiences .ae-page > div:first-child h4 {
+  #authority-experiences .ae-page > .ae-page-title {
     font-size: 1.28rem;
     line-height: 1.22;
   }
@@ -4208,11 +4477,9 @@ details.disclosure[open] > summary .disclosure-plus {
   #authority-experiences .ae-outcome .text-base {
     font-size: 0.9375rem;
   }
-  #authority-experiences .ae-toolbar {
-    padding: 0.4rem 0.55rem;
-  }
-  #authority-experiences .ae-status-note {
-    font-size: 0.625rem;
+  #authority-experiences .ae-chrome-mobile .ae-status-chip {
+    font-size: 0.5rem;
+    padding: 0.15rem 0.3rem;
   }
   #authority-experiences .ae-outcomes {
     margin-top: 0.875rem;
