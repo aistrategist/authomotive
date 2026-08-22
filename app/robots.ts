@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next'
-import { getSiteUrl, isProductionDeployment } from '@/lib/site-url'
+import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
 
 export default function robots(): MetadataRoute.Robots {
-  // Preview deployments must never be indexed.
-  if (!isProductionDeployment()) {
+  // Until SITE_URL points at the live www origin, keep every host closed.
+  if (!isPubliclyIndexable()) {
     return {
       rules: { userAgent: '*', disallow: '/' },
     }

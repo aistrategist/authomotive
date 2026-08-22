@@ -2,13 +2,14 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { AnchorScroll } from '@/components/anchor-scroll'
-import { getSiteUrl, isProductionDeployment } from '@/lib/site-url'
+import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
 import './globals.css'
 
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
 
 const siteUrl = getSiteUrl()
+const allowIndexing = isPubliclyIndexable()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  robots: isProductionDeployment()
+  robots: allowIndexing
     ? { index: true, follow: true }
     : { index: false, follow: false },
   openGraph: {

@@ -1,7 +1,12 @@
 import type { MetadataRoute } from 'next'
-import { getSiteUrl } from '@/lib/site-url'
+import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Do not advertise Vercel preview/staging or non-indexable routes.
+  if (!isPubliclyIndexable()) {
+    return []
+  }
+
   const siteUrl = getSiteUrl()
   return [
     {
