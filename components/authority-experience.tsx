@@ -261,25 +261,11 @@ function ObserverFrame({
       <span className="ae-observer-tint" />
       <span className="ae-observer-ring" />
       <span className="ae-observer-corners" />
-      {lens === 'shopper' ? <span className="ae-observer-notch" /> : null}
-      {lens === 'discovery' ? <span className="ae-observer-reg" /> : null}
-      {lens === 'measurable' ? (
-        <>
-          <span className="ae-observer-node ae-observer-node-tl" />
-          <span className="ae-observer-node ae-observer-node-tr" />
-          <span className="ae-observer-node ae-observer-node-bl" />
-          <span className="ae-observer-node ae-observer-node-br" />
-        </>
-      ) : null}
       <span className="ae-observer-label font-mono">
         <span className="ae-observer-label-text">{label}</span>
+        {token ? <span className="ae-observer-token font-mono">{token}</span> : null}
         <span className="ae-observer-station">{station}</span>
       </span>
-      {token ? (
-        <span className="ae-observer-token font-mono" aria-hidden="true">
-          {token}
-        </span>
-      ) : null}
     </span>
   )
 }
@@ -445,23 +431,25 @@ function AuthorityProjectionPath({
       return
     }
 
-    const sx = browserBox.right - stageBox.left
-    const gutterEnd = Math.min(...pairs.map((pair) => pair.dx))
+    const sx = browserBox.right - stageBox.left + 8
+    const destPad = 14
+    const gutterEnd = Math.min(...pairs.map((pair) => pair.dx)) - destPad
     const span = gutterEnd - sx
-    if (span < 14) {
+    if (span < 22) {
       setGeom(null)
       return
     }
 
     const routes = pairs.map((pair, i) => {
       const lane = sx + (span * (i + 1)) / (pairs.length + 1)
+      const dx = pair.dx - destPad
       return {
         station: pair.station,
         sx,
         sy: pair.sy,
-        dx: pair.dx - 1,
+        dx,
         dy: pair.dy,
-        d: `M ${sx} ${pair.sy} H ${lane} V ${pair.dy} H ${pair.dx - 1}`,
+        d: `M ${sx} ${pair.sy} H ${lane} V ${pair.dy} H ${dx}`,
       }
     })
 
@@ -641,10 +629,6 @@ export function AuthorityExperience() {
             el.querySelector<HTMLElement>('.ae-observer-ring'),
             el.querySelector<HTMLElement>('.ae-observer-corners'),
             el.querySelector<HTMLElement>('.ae-observer-label'),
-            el.querySelector<HTMLElement>('.ae-observer-notch'),
-            el.querySelector<HTMLElement>('.ae-observer-reg'),
-            el.querySelector<HTMLElement>('.ae-observer-token'),
-            ...gsap.utils.toArray<HTMLElement>('.ae-observer-node', el),
           ].filter((node): node is HTMLElement => node instanceof HTMLElement),
         )
 
@@ -656,16 +640,12 @@ export function AuthorityExperience() {
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
-          const token = el.querySelector<HTMLElement>('.ae-observer-token')
-          const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (live) {
             setIf(el, { autoAlpha: 1 })
             if (tint) setIf(tint, { autoAlpha: 1 })
             if (ring) setIf(ring, { clipPath: 'inset(0 0 0 0)', opacity: 1 })
             if (corners) setIf(corners, { opacity: 1 })
             if (label) setIf(label, { autoAlpha: 1 })
-            if (token) setIf(token, { autoAlpha: 1 })
-            if (nodes.length) setIf(nodes, { opacity: 1, scale: 1 })
           } else {
             setIf(el, { autoAlpha: 0 })
           }
@@ -744,15 +724,11 @@ export function AuthorityExperience() {
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
-          const token = el.querySelector<HTMLElement>('.ae-observer-token')
-          const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           setIf(el, { autoAlpha: 1 })
           if (tint) setIf(tint, { autoAlpha: 0 })
           if (ring) setIf(ring, { clipPath: 'inset(0 100% 100% 0)', opacity: 1, willChange: 'clip-path' })
           if (corners) setIf(corners, { opacity: 0 })
           if (label) setIf(label, { autoAlpha: 0 })
-          if (token) setIf(token, { autoAlpha: 0 })
-          if (nodes.length) setIf(nodes, { opacity: 0, scale: 0.6 })
         })
 
         setIf(reveal, {
@@ -793,14 +769,13 @@ export function AuthorityExperience() {
           const tint = el.querySelector<HTMLElement>('.ae-observer-tint')
           const ring = el.querySelector<HTMLElement>('.ae-observer-ring')
           const corners = el.querySelector<HTMLElement>('.ae-observer-corners')
-          const lens = el.dataset.lens
           if (tint) {
             tl.to(tint, { autoAlpha: 1, duration: 0.18, ease: 'power1.out' }, at)
           }
           if (ring) {
             tl.to(ring, { clipPath: 'inset(0 0 0 0)', duration: 0.2, ease: 'power2.out' }, at)
           }
-          if (corners && lens !== 'shopper') {
+          if (corners) {
             tl.to(corners, { opacity: 1, duration: 0.18 }, at + 0.04)
           }
         })
@@ -808,13 +783,7 @@ export function AuthorityExperience() {
         liveFrames.forEach((el, i) => {
           const at = 0.12 + i * 0.045
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
-          const token = el.querySelector<HTMLElement>('.ae-observer-token')
-          const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (label) tl.to(label, { autoAlpha: 1, duration: 0.16 }, at)
-          if (token) tl.to(token, { autoAlpha: 1, duration: 0.14 }, at + 0.04)
-          nodes.forEach((node, j) => {
-            tl.to(node, { opacity: 1, scale: 1, duration: 0.14 }, at + j * 0.02)
-          })
         })
 
         if (spine) tl.to(spine, { scaleY: 1, duration: 0.22 }, 0.32)
