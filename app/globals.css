@@ -138,6 +138,8 @@
   --action-deep: #a45118;
   --action-foreground: #061b20;
   --conversion: var(--action);
+  /* Journey titles on paper/alloy — burnt orange, ≥4.5:1 on light surfaces */
+  --journey-title: #954a15;
 
   /* Neutral content surfaces */
   --paper: #fffcf7;
@@ -3267,7 +3269,7 @@ details.disclosure[open] > summary .disclosure-plus {
   font-weight: 600;
   letter-spacing: 0.06em;
   line-height: 1.2;
-  color: var(--action);
+  color: var(--journey-title);
 }
 .journey-count {
   flex-shrink: 0;
@@ -3277,6 +3279,9 @@ details.disclosure[open] > summary .disclosure-plus {
   line-height: 1;
   color: var(--ink);
   user-select: none;
+}
+.journey-stage .journey-title {
+  color: var(--action);
 }
 .journey-stage .journey-count {
   color: var(--paper);

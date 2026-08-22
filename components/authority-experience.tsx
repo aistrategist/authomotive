@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { flushSync } from 'react-dom'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -118,9 +118,21 @@ export function AuthorityExperience() {
   const lensPrimedRef = useRef(false)
   const skipGsapRef = useRef(false)
   const vtGenRef = useRef(0)
+  const vtClearTimerRef = useRef<number | null>(null)
   const viewRef = useRef(view)
   viewRef.current = view
   const activeIndex = views.findIndex((v) => v.id === view)
+
+  useEffect(() => {
+    return () => {
+      if (vtClearTimerRef.current !== null) {
+        window.clearTimeout(vtClearTimerRef.current)
+        vtClearTimerRef.current = null
+      }
+      document.documentElement.classList.remove('ae-vt-active')
+      skipGsapRef.current = false
+    }
+  }, [])
 
   useGSAP(
     () => {
@@ -247,6 +259,16 @@ export function AuthorityExperience() {
     const root = document.documentElement
     root.classList.add('ae-vt-active')
 
+    const clearVtChrome = () => {
+      if (token !== vtGenRef.current) return
+      root.classList.remove('ae-vt-active')
+      skipGsapRef.current = false
+      if (vtClearTimerRef.current !== null) {
+        window.clearTimeout(vtClearTimerRef.current)
+        vtClearTimerRef.current = null
+      }
+    }
+
     try {
       const vt = doc.startViewTransition(() => {
         apply()
@@ -268,10 +290,10 @@ export function AuthorityExperience() {
                 { clipPath: `circle(${radius}px at ${origin})` },
               ],
               {
-              duration: 420,
-              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-              fill: 'none',
-              pseudoElement: '::view-transition-new(authority-lens-layer)',
+                duration: 420,
+                easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                fill: 'none',
+                pseudoElement: '::view-transition-new(authority-lens-layer)',
               },
             )
           } catch {
@@ -287,18 +309,16 @@ export function AuthorityExperience() {
           /* skipped */
         })
         .finally(() => {
-          if (token !== vtGenRef.current) return
-          root.classList.remove('ae-vt-active')
-          skipGsapRef.current = false
+          clearVtChrome()
         })
-      window.setTimeout(() => {
-        if (token !== vtGenRef.current) return
-        root.classList.remove('ae-vt-active')
-        skipGsapRef.current = false
+      if (vtClearTimerRef.current !== null) {
+        window.clearTimeout(vtClearTimerRef.current)
+      }
+      vtClearTimerRef.current = window.setTimeout(() => {
+        clearVtChrome()
       }, 700)
     } catch {
-      root.classList.remove('ae-vt-active')
-      skipGsapRef.current = false
+      clearVtChrome()
       apply()
     }
   }

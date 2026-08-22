@@ -160,6 +160,8 @@ export function IntelligencePreview() {
       steps.forEach((el) => el.classList.remove('is-on'))
       nodes.forEach((el) => el.classList.remove('is-on'))
 
+      const delayed: gsap.core.Tween[] = []
+
       ScrollTrigger.create({
         trigger: frame,
         start: 'top 82%',
@@ -167,7 +169,7 @@ export function IntelligencePreview() {
         onEnter: () => {
           gsap.to(rule, { scaleX: 1, duration: 0.55, ease: 'power2.out', overwrite: 'auto' })
           beats().forEach((el, i) => {
-            gsap.delayedCall(0.12 + i * 0.3, () => el.classList.add('is-on'))
+            delayed.push(gsap.delayedCall(0.12 + i * 0.3, () => el.classList.add('is-on')))
           })
         },
       })
@@ -192,10 +194,12 @@ export function IntelligencePreview() {
                 packet.classList.add('is-settled')
                 gsap.to(packet, { autoAlpha: 0, duration: 0.2, overwrite: 'auto' })
                 steps.forEach((el, i) => {
-                  gsap.delayedCall(0.04 + i * 0.3, () => {
-                    el.classList.add('is-on')
-                    nodes[i]?.classList.add('is-on')
-                  })
+                  delayed.push(
+                    gsap.delayedCall(0.04 + i * 0.3, () => {
+                      el.classList.add('is-on')
+                      nodes[i]?.classList.add('is-on')
+                    }),
+                  )
                 })
               },
             },
@@ -204,6 +208,9 @@ export function IntelligencePreview() {
       })
 
       ScrollTrigger.refresh()
+      return () => {
+        delayed.forEach((call) => call.kill())
+      }
     },
     { scope: rootRef },
   )
