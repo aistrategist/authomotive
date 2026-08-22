@@ -38,12 +38,12 @@ const lensUi = [
   },
 ] as const
 
-/** Lens → commercial outcome card beneath the browser (order matches tabs) */
-const outcomes = [
-  { id: 'shopper' as const, mark: 'bg-paper', label: 'Buyers guided' },
-  { id: 'discovery' as const, mark: 'bg-accent', label: 'Discovery earned' },
-  { id: 'measurable' as const, mark: 'bg-proof', label: 'Actions measured' },
-] as const
+/** Lens → active dealer result (docked above inspector) */
+const activeResults: Record<ViewId, { title: string; index: string }> = {
+  shopper: { title: 'Buyers guided', index: '01' },
+  discovery: { title: 'Discovery earned', index: '02' },
+  measurable: { title: 'Actions measured', index: '03' },
+}
 
 const observerFrames = [
   { lens: 'shopper' as const, spot: 'answer', station: '01', label: 'ANSWER FOUND' },
@@ -287,6 +287,7 @@ export function AuthorityExperience() {
   const revealRef = useRef<HTMLDivElement>(null)
   const sweepRef = useRef<HTMLSpanElement>(null)
   const bridgePacketRef = useRef<HTMLSpanElement>(null)
+  const resultRuleRef = useRef<HTMLSpanElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const lensTlRef = useRef<gsap.core.Timeline | null>(null)
@@ -307,6 +308,7 @@ export function AuthorityExperience() {
       const reveal = revealRef.current
       const sweep = sweepRef.current
       const bridgePacket = bridgePacketRef.current
+      const resultRule = resultRuleRef.current
       if (!frame || !rule || !root || !workspace || !base || !reveal) return
 
       const allFrames = () => gsap.utils.toArray<HTMLElement>('.ae-observer-frame', root)
@@ -318,7 +320,7 @@ export function AuthorityExperience() {
 
       const setIf = (target: gsap.TweenTarget | null | undefined, vars: gsap.TweenVars) => {
         if (!target) return
-        const targets = gsap.utils.toArray(target)
+        const targets = asTargets(gsap.utils.toArray(target))
         if (targets.length) gsap.set(targets, vars)
       }
 
@@ -376,6 +378,7 @@ export function AuthorityExperience() {
         setIf(base, { clearProps: 'willChange' })
         setIf(sweep, { clearProps: 'willChange' })
         setIf(bridgePacket, { clearProps: 'willChange,transform' })
+        setIf(resultRule, { clearProps: 'willChange,transform' })
         const parts = frameParts(allFrames())
         if (parts.length) setIf(parts, { clearProps: 'willChange' })
       }
@@ -388,8 +391,9 @@ export function AuthorityExperience() {
 
         lensTlRef.current?.kill()
         lensTlRef.current = null
-        killIf([reveal, base, sweep, bridgePacket, ...frameParts(allFrames())])
+        killIf([reveal, base, sweep, bridgePacket, resultRule, ...frameParts(allFrames())])
         setIf(bridgePacket, { autoAlpha: 0, x: 0, clearProps: 'transform' })
+        if (resultRule) setIf(resultRule, { scaleX: 1, transformOrigin: 'left center' })
 
         // 0ms: hide outgoing frames; commit chrome/atmosphere state
         allFrames().forEach((el) => {
@@ -422,6 +426,8 @@ export function AuthorityExperience() {
         if (spine) setIf(spine, { scaleY: 0, transformOrigin: 'top center' })
         stations.forEach((el) => setIf(el, { autoAlpha: 0, y: 2 }))
         if (outcome) setIf(outcome, { autoAlpha: 0.45 })
+
+        if (resultRule) setIf(resultRule, { scaleX: 0, transformOrigin: 'left center' })
 
         liveFrames.forEach((el) => {
           el.dataset.active = 'true'
@@ -456,6 +462,10 @@ export function AuthorityExperience() {
         })
         lensTlRef.current = tl
 
+        if (resultRule) {
+          tl.to(resultRule, { scaleX: 1, duration: 0.18, ease: 'power2.out' }, 0)
+        }
+
         // 0–280ms local aperture (viewport only)
         tl.to(
           reveal,
@@ -486,9 +496,9 @@ export function AuthorityExperience() {
           const label = el.querySelector<HTMLElement>('.ae-observer-label')
           const nodes = gsap.utils.toArray<HTMLElement>('.ae-observer-node', el)
           if (label) tl.to(label, { autoAlpha: 1, duration: 0.16 }, at)
-          if (nodes.length) {
-            tl.to(nodes, { opacity: 1, scale: 1, duration: 0.14, stagger: 0.02 }, at)
-          }
+          nodes.forEach((node, j) => {
+            tl.to(node, { opacity: 1, scale: 1, duration: 0.14 }, at + j * 0.02)
+          })
         })
 
         if (spine) tl.to(spine, { scaleY: 1, duration: 0.22 }, 0.32)
@@ -878,6 +888,14 @@ export function AuthorityExperience() {
             </div>
           </div>
 
+            <div className="ae-active-result" data-lens={view} aria-hidden="true">
+              <span ref={resultRuleRef} className="ae-active-result-rule" aria-hidden="true" />
+              <p className="ae-active-result-eyebrow font-mono">ACTIVE RESULT</p>
+              <p className="ae-active-result-desc font-mono">CURRENT DEALER OUTCOME</p>
+              <p className="ae-active-result-title">{activeResults[view].title}</p>
+              <span className="ae-active-result-station font-mono">{activeResults[view].index}</span>
+            </div>
+
             <div className="ae-signal-bridge" aria-hidden="true">
               <span className="ae-bridge-station ae-bridge-from" />
               <span className="ae-bridge-line" />
@@ -976,23 +994,6 @@ export function AuthorityExperience() {
                 </div>
               </aside>
           </div>
-        </div>
-
-        <div className="ae-outcomes mt-8 grid gap-3 md:grid-cols-3" aria-label="One page, three outcomes">
-          {outcomes.map((item) => {
-            const mapped = view === item.id
-            return (
-              <p
-                key={item.label}
-                data-lens={item.id}
-                data-active={mapped ? 'true' : 'false'}
-                className="ae-outcome-card flex min-h-[72px] items-center gap-3 border border-stage-line bg-stage-elevated px-4 py-3 text-lg font-semibold tracking-tight text-paper"
-              >
-                <span className={`ae-outcome-station h-3 w-3 shrink-0 ${item.mark}`} aria-hidden="true" />
-                {item.label}
-              </p>
-            )
-          })}
         </div>
 
         <div className="mt-6 border border-stage-line bg-paper px-5 py-5 md:px-6">
