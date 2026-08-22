@@ -69,7 +69,7 @@ export function ExecutiveCharts() {
 
   return (
     <div ref={rootRef} className="flex flex-col gap-4">
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="ri-kpis grid grid-cols-3 gap-2 sm:gap-3">
         {[
           { value: '+18%', label: 'Research visibility' },
           { value: '2', label: 'Authority Experiences launched' },
@@ -82,7 +82,7 @@ export function ExecutiveCharts() {
         ))}
       </div>
 
-      <div className="grid gap-6 rounded-lg border border-border p-5 sm:grid-cols-2 md:p-6">
+      <div className="ri-chart-pair grid gap-4 rounded-lg border border-border p-4 sm:grid-cols-2 sm:gap-6 md:p-6">
         <TimeSeriesChart
           values={mom}
           labels={['M1', 'M2', 'M3', 'M4', 'M5', 'M6']}
@@ -120,7 +120,7 @@ function TimeSeriesChart({
   return (
     <div>
       <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">{title}</p>
-      <div className="relative mt-3 h-36" role="img" aria-label={`${title} illustrative trend`}>
+      <div className="ri-chart-plot relative mt-3 h-36" role="img" aria-label={`${title} illustrative trend`}>
         <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
           <path d={area} className="fill-proof/20" />
           <polyline

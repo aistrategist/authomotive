@@ -28,14 +28,17 @@ const views = reporting.views
 const storyBeats = [
   {
     eyebrow: 'What changed',
+    ledger: 'What changed',
     body: 'Non-branded research visibility improved, and inventory-pathway clicks rose.',
   },
   {
     eyebrow: 'Why it changed',
+    ledger: 'What contributed',
     body: 'Two Authority Experiences launched last period, with cleaner pathway tracking.',
   },
   {
     eyebrow: 'What comes next',
+    ledger: 'What comes next',
     body: 'Expand the winter-driving cluster and close the mobile form-start gap.',
   },
 ] as const
@@ -59,14 +62,15 @@ function ExecutiveSummary() {
         </p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="ri-beats grid gap-3 md:grid-cols-3">
         {storyBeats.map((item, i) => (
           <article key={item.eyebrow} className="ri-beat border-2 border-ink bg-paper p-4 md:p-5">
             <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-proof-deep">
               <span className="ri-beat-index" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              {item.eyebrow}
+              <span className="md:hidden">{item.ledger}</span>
+              <span className="hidden md:inline">{item.eyebrow}</span>
             </p>
             <p className="mt-2 text-base font-semibold leading-snug text-ink md:text-lg text-pretty">
               {item.body}
@@ -278,11 +282,16 @@ export function IntelligencePreview() {
       <div className="relative z-[1] mx-auto max-w-[1280px] -mt-10 px-5 pb-14 md:-mt-12 md:px-8 md:pb-16">
         <div ref={frameRef} className="ri-frame overflow-hidden rounded-[8px] border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--color-ink)]">
           <span ref={ruleRef} className="ri-frame-rule" aria-hidden="true" />
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink bg-ink px-6 py-4">
+          <div className="ri-chrome flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink bg-ink px-6 py-4">
             <div className="flex flex-wrap items-center gap-4">
-              <p className="text-lg font-semibold text-porcelain">Authomotive Intelligence</p>
+              <p className="ri-chrome-title text-lg font-semibold text-porcelain">Authomotive Intelligence</p>
               <span className="hidden h-6 w-px bg-stage-line md:block" aria-hidden="true" />
-              <div role="tablist" aria-label="Reporting modes" aria-orientation="horizontal" className="flex gap-1.5">
+              <div
+                role="tablist"
+                aria-label="Reporting modes"
+                aria-orientation="horizontal"
+                className="ri-mode-tabs flex gap-1.5"
+              >
                 {modes.map((m, i) => {
                   const selected = mode === m
                   return (
@@ -315,7 +324,7 @@ export function IntelligencePreview() {
                 })}
               </div>
             </div>
-            <span className="rounded-full border border-stage-line bg-stage-deep px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-stage-muted">
+            <span className="ri-disclaimer rounded-full border border-stage-line bg-stage-deep px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-stage-muted">
               {reporting.disclaimer}
             </span>
           </div>
@@ -344,7 +353,7 @@ export function IntelligencePreview() {
                 role="tablist"
                 aria-label="Report views"
                 aria-orientation="vertical"
-                className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-porcelain/50 p-3 lg:w-72 lg:flex-col lg:border-b-0 lg:border-r lg:p-4"
+                className="ri-view-tabs flex shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-porcelain/50 p-3 lg:w-72 lg:flex-col lg:border-b-0 lg:border-r lg:p-4"
               >
                 {views.map((v, i) => {
                   const selected = view === v
@@ -362,7 +371,7 @@ export function IntelligencePreview() {
                       tabIndex={selected ? 0 : -1}
                       onClick={() => activateView(v)}
                       onKeyDown={(event) => onViewKeyDown(event, i)}
-                      className={`ri-tab flex min-h-[48px] shrink-0 items-center gap-3 whitespace-nowrap rounded-md px-4 py-3 text-left text-base font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-proof-deep ${
+                      className={`ri-tab flex min-h-[48px] shrink-0 items-center gap-3 rounded-md px-4 py-3 text-left text-base font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-proof-deep lg:whitespace-nowrap ${
                         selected
                           ? 'bg-stage-elevated font-semibold text-stage-foreground'
                           : 'text-muted-foreground'
@@ -410,7 +419,7 @@ export function IntelligencePreview() {
                 <p className="mt-3 text-base leading-relaxed text-muted-foreground text-pretty md:text-[0.9375rem]">
                   {reporting.evidence.observed.context}
                 </p>
-                <dl className="mt-4 grid gap-3 sm:grid-cols-3">
+                <dl className="ri-observed-metrics mt-4 grid grid-cols-3 gap-2 sm:gap-3">
                   {reporting.evidence.observed.metrics.map((metric) => (
                     <div
                       key={metric.id}

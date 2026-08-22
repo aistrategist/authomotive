@@ -3114,31 +3114,6 @@ details.disclosure[open] > summary .disclosure-plus {
 /* Capabilities — one system bus                                       */
 /* ------------------------------------------------------------------ */
 
-#capabilities .cap-chapter-rule {
-  position: absolute;
-  left: 1.25rem;
-  right: 1.25rem;
-  top: 0;
-  height: 2px;
-  background: var(--ink);
-  transform-origin: left center;
-  pointer-events: none;
-}
-@media (min-width: 768px) {
-  #capabilities .cap-chapter-rule {
-    left: 2rem;
-    right: 2rem;
-  }
-  #capabilities .cap-head-row {
-    padding: 0.75rem 1.75rem;
-  }
-}
-@media (min-width: 1024px) {
-  #capabilities .cap-chapter-rule {
-    left: 0;
-    right: 0;
-  }
-}
 #capabilities .job-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -3204,6 +3179,11 @@ details.disclosure[open] > summary .disclosure-plus {
   min-width: 0;
   padding: 0.75rem 1.5rem;
 }
+@media (min-width: 768px) {
+  #capabilities .cap-head-row {
+    padding: 0.75rem 1.75rem;
+  }
+}
 #capabilities .cap-ill-bar {
   transform-box: fill-box;
   transform-origin: bottom;
@@ -3248,7 +3228,6 @@ details.disclosure[open] > summary .disclosure-plus {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  #capabilities .cap-chapter-rule,
   #capabilities .cap-bus-spine,
   #capabilities .cap-bus-branch {
     transform: none !important;
@@ -3271,6 +3250,37 @@ details.disclosure[open] > summary .disclosure-plus {
   height: 8px;
   margin-bottom: 2rem;
 }
+.journey-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 0.4rem);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+.journey-title {
+  min-width: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  color: var(--action);
+}
+.journey-count {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: var(--ink);
+  user-select: none;
+}
+.journey-stage .journey-count {
+  color: var(--paper);
+}
 @media (min-width: 768px) {
   .journey-rail {
     margin-bottom: 2.5rem;
@@ -3279,7 +3289,7 @@ details.disclosure[open] > summary .disclosure-plus {
 .journey-track {
   position: absolute;
   left: 0;
-  right: 3.35rem;
+  right: 0;
   top: 50%;
   height: 2px;
   margin-top: -1px;
@@ -3318,24 +3328,6 @@ details.disclosure[open] > summary .disclosure-plus {
   margin-right: -4px;
   background: var(--journey-color);
 }
-.journey-count {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  color: var(--ink);
-  pointer-events: none;
-  user-select: none;
-}
-.journey-stage .journey-count {
-  color: var(--paper);
-}
 @media (max-width: 639px) {
   .journey-station {
     width: 10px;
@@ -3352,12 +3344,14 @@ details.disclosure[open] > summary .disclosure-plus {
     width: var(--journey-to);
     transition: width 0.52s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .journey-rail.is-pending .journey-count {
+  .journey-rail.is-pending .journey-count,
+  .journey-rail.is-pending .journey-title {
     opacity: 0;
   }
-  .journey-rail.is-in .journey-count {
+  .journey-rail.is-in .journey-count,
+  .journey-rail.is-in .journey-title {
     opacity: 1;
-    transition: opacity 0.32s ease 0.12s;
+    transition: opacity 0.16s ease;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -3365,7 +3359,205 @@ details.disclosure[open] > summary .disclosure-plus {
     width: var(--journey-to) !important;
     transition: none !important;
   }
-  .journey-count {
+  .journey-count,
+  .journey-title {
     opacity: 1 !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile density — Authority + Reporting below 768                    */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 767px) {
+  #authority-experiences > div {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  #authority-experiences .ae-tablist {
+    margin-top: 1.25rem;
+  }
+  #authority-experiences .ae-frame {
+    padding: 0.85rem;
+  }
+  #authority-experiences .ae-frame > p {
+    margin-bottom: 0.75rem;
+    padding: 0.3rem 0.7rem;
+  }
+  #authority-experiences .ae-page > div:first-child h4 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+  #authority-experiences .ae-spot {
+    margin-top: 0.7rem;
+  }
+  #authority-experiences .ae-spot.rounded-lg,
+  #authority-experiences .ae-spot .rounded-lg {
+    padding: 0.8rem;
+  }
+  #authority-experiences .ae-page [data-spot='answer'] p.text-lg {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  #authority-experiences .ae-inline {
+    margin-top: 0.4rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  #authority-experiences .mt-8.grid {
+    margin-top: 1.25rem;
+    gap: 0.45rem;
+  }
+  #authority-experiences .mt-8.grid > p {
+    min-height: 48px;
+    padding: 0.55rem 0.8rem;
+    font-size: 1rem;
+  }
+  #authority-experiences .mt-6.border {
+    margin-top: 1rem;
+    padding: 0.85rem 0.9rem;
+  }
+  #authority-experiences .mt-8.flex {
+    margin-top: 1.25rem;
+    gap: 1rem;
+  }
+  #authority-experiences .ae-chip {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  #reporting > .bg-stage > div {
+    padding-top: 2.5rem;
+    padding-bottom: 2.25rem;
+  }
+  #reporting .relative.z-\[1\] {
+    margin-top: -1.75rem;
+    padding-bottom: 2rem;
+  }
+  #reporting .ri-chrome {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 0.4rem;
+    padding: 0.75rem;
+  }
+  #reporting .ri-chrome > div:first-child {
+    display: contents;
+  }
+  #reporting .ri-chrome-title {
+    grid-column: 1 / -1;
+    font-size: 1rem;
+  }
+  #reporting .ri-mode-tabs {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+  #reporting .ri-mode-tabs .ri-tab {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  #reporting .ri-disclaimer {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  #reporting .ri-view-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    overflow: visible;
+    padding: 0.6rem;
+  }
+  #reporting .ri-view-tabs [role='tab']:first-child {
+    grid-column: 1 / -1;
+  }
+  #reporting .ri-view-tabs .ri-tab {
+    min-height: 44px;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.8125rem;
+    white-space: normal;
+  }
+  #reporting #mode-panel-matrix,
+  #reporting #report-panel {
+    padding: 0.85rem;
+  }
+  #reporting .ri-beats {
+    gap: 0;
+  }
+  #reporting .ri-beat {
+    display: grid;
+    grid-template-columns: 1.7rem minmax(0, 1fr);
+    gap: 0.15rem 0.55rem;
+    border-width: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--proof-deep) 32%, transparent);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0.65rem 0;
+  }
+  #reporting .ri-beat.is-on {
+    background: transparent;
+    box-shadow: none;
+  }
+  #reporting .ri-beat p:first-child {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  #reporting .ri-beat p:last-child {
+    grid-column: 2;
+    margin-top: 0.15rem;
+    font-size: 0.9375rem;
+  }
+  #reporting .ri-chart-plot {
+    height: 5.5rem;
+  }
+  #reporting .ri-proof {
+    padding-top: 0;
+  }
+  #reporting .ri-proof > p {
+    padding: 0.75rem 0.85rem 0;
+  }
+  #reporting .ri-proof-split {
+    padding: 0.75rem 0.85rem 0.9rem;
+  }
+  #reporting .ri-bridge {
+    height: 0.65rem;
+    margin: 0.1rem 0 0.1rem 0.35rem;
+  }
+  #reporting .ri-observed h3,
+  #reporting .ri-decision h3 {
+    font-size: 1.35rem;
+  }
+  #reporting .ri-decision {
+    padding-top: 0.25rem;
+  }
+  #reporting .ri-kpis > div {
+    padding: 0.5rem 0.4rem;
+  }
+  #reporting .ri-kpis .font-mono {
+    font-size: 1.05rem;
+  }
+  #reporting .ri-observed-metrics > div {
+    padding: 0.5rem 0.35rem;
+  }
+  #reporting .ri-observed-metrics dd {
+    font-size: 0.95rem;
+  }
+  #reporting blockquote {
+    margin-top: 1rem;
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  #reporting .ri-beat {
+    background: transparent;
+    box-shadow: none;
   }
 }

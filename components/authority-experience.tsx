@@ -13,6 +13,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
 type ViewId = 'shopper' | 'discovery' | 'measurable'
 
 const views = authorityTheater.views
+const lensCaptions = ['Shopper', 'Discovery', 'Measurement'] as const
 
 const outcomes = [
   { mark: 'bg-accent', label: 'Discovery earned' },
@@ -341,7 +342,7 @@ export function AuthorityExperience() {
         <div
           role="tablist"
           aria-label="Authority Experience views"
-          className="mt-8 flex flex-wrap gap-3 md:mt-10"
+          className="ae-tablist mt-8 grid grid-cols-3 gap-2 md:mt-10 md:flex md:flex-wrap md:gap-3"
         >
           {views.map((v, i) => {
             const selected = view === v.id
@@ -354,25 +355,30 @@ export function AuthorityExperience() {
                 type="button"
                 role="tab"
                 id={`view-tab-${v.id}`}
+                aria-label={v.label}
                 aria-selected={selected}
                 aria-controls="authority-view-panel"
                 tabIndex={selected ? 0 : -1}
                 onClick={() => activate(v.id as ViewId)}
                 onKeyDown={(event) => onTabKeyDown(event, i)}
-                className={`ae-tab relative flex min-h-[52px] items-center gap-3 rounded-lg border-2 px-5 py-3 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:px-6 ${
+                className={`ae-tab relative flex min-h-11 items-center justify-center gap-2 rounded-lg border-2 px-2 py-2 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime md:min-h-[52px] md:justify-start md:gap-3 md:px-6 md:py-3 md:text-left md:text-base ${
                   selected
                     ? 'border-lime bg-transparent text-ink'
                     : 'border-stage-line bg-stage-elevated text-stage-foreground hover:border-stage-muted'
                 }`}
               >
                 {selected ? <span className="ae-tab-indicator" aria-hidden="true" /> : null}
+                <span className="relative z-[1] md:hidden" aria-hidden="true">
+                  <span className="font-mono text-[0.6875rem] font-bold">0{i + 1}</span>{' '}
+                  {lensCaptions[i]}
+                </span>
                 <span
-                  className={`relative z-[1] font-mono text-xs font-bold ${selected ? 'text-signal-deep' : 'text-fog'}`}
+                  className={`relative z-[1] hidden font-mono text-xs font-bold md:inline ${selected ? 'text-signal-deep' : 'text-fog'}`}
                   aria-hidden="true"
                 >
                   0{i + 1}
                 </span>
-                <span className="relative z-[1]">{v.label}</span>
+                <span className="relative z-[1] hidden md:inline">{v.label}</span>
               </button>
             )
           })}

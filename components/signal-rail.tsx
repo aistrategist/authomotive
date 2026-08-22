@@ -7,6 +7,7 @@ const TOTAL = 7
 const chapters = [
   {
     step: 1,
+    title: 'Turn Questions Into Inventory',
     label: 'Buyer Questions to Inventory',
     anchors: ['platforms'],
     color: 'var(--accent)',
@@ -14,6 +15,7 @@ const chapters = [
   },
   {
     step: 2,
+    title: 'Connect The Whole System',
     label: 'One System · Three Jobs',
     anchors: ['capabilities'],
     color: 'var(--ink)',
@@ -21,6 +23,7 @@ const chapters = [
   },
   {
     step: 3,
+    title: 'Guide Better Buyer Decisions',
     label: 'Authority Experience',
     anchors: ['authority-experiences'],
     color: 'var(--accent)',
@@ -28,6 +31,7 @@ const chapters = [
   },
   {
     step: 4,
+    title: 'Know What Changed',
     label: 'Intelligence',
     anchors: ['reporting'],
     color: 'var(--proof)',
@@ -35,6 +39,7 @@ const chapters = [
   },
   {
     step: 5,
+    title: 'Track What Matters',
     label: 'Measurement',
     anchors: ['measurement', 'how-it-works'],
     color: 'var(--ink)',
@@ -42,6 +47,7 @@ const chapters = [
   },
   {
     step: 6,
+    title: 'Decide What Comes Next',
     label: 'Engagement',
     anchors: ['engagement'],
     color: 'var(--ink)',
@@ -49,6 +55,7 @@ const chapters = [
   },
   {
     step: 7,
+    title: 'Find Your Opportunity',
     label: 'Opportunity Review',
     anchors: ['opportunity-review'],
     color: 'var(--action)',
@@ -107,15 +114,16 @@ export function SignalRail({ step }: { step: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) {
       }
     >
       <p className="sr-only">{`Chapter ${step} of ${TOTAL}: ${chapter.label}`}</p>
+      <div className="journey-meta" aria-hidden="true">
+        <span className="journey-title font-mono">{chapter.title}</span>
+        <span className="journey-count font-mono">{counter}</span>
+      </div>
       <div className="journey-track" aria-hidden="true">
         <span className="journey-rest" />
         <span className="journey-fill">
           <span className="journey-station" />
         </span>
       </div>
-      <span className="journey-count font-mono" aria-hidden="true">
-        {counter}
-      </span>
     </div>
   )
 }

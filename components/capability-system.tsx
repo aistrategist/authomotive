@@ -174,7 +174,6 @@ export function CapabilitySystem() {
   const rootRef = useRef<HTMLElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
-  const ruleRef = useRef<HTMLSpanElement>(null)
   const spineRef = useRef<HTMLSpanElement>(null)
   const branchRef = useRef<HTMLSpanElement>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
@@ -201,10 +200,9 @@ export function CapabilitySystem() {
       const root = rootRef.current
       const stage = stageRef.current
       const panel = panelRef.current
-      const rule = ruleRef.current
       const spine = spineRef.current
       const branch = branchRef.current
-      if (!root || !stage || !panel || !rule || !spine || !branch) return
+      if (!root || !stage || !panel || !spine || !branch) return
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       const played = playedRef.current
@@ -300,7 +298,6 @@ export function CapabilitySystem() {
       }
 
       const complete = () => {
-        gsap.set(rule, { scaleX: 1 })
         gsap.set(spine, { scaleX: 1, scaleY: 1 })
         gsap.set(branch, { scaleY: 1 })
         layoutBus(0)
@@ -316,7 +313,6 @@ export function CapabilitySystem() {
         return () => window.removeEventListener('resize', onResize)
       }
 
-      gsap.set(rule, { scaleX: 0, transformOrigin: 'left center' })
       const stackedNow = window.matchMedia('(max-width: 1023px)').matches
       if (stackedNow) gsap.set(spine, { scaleX: 1, scaleY: 0, transformOrigin: 'top center' })
       else gsap.set(spine, { scaleX: 0, scaleY: 1, transformOrigin: 'left center' })
@@ -330,13 +326,12 @@ export function CapabilitySystem() {
         onEnter: () => {
           const vertical = window.matchMedia('(max-width: 1023px)').matches
           const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
-          tl.to(rule, { scaleX: 1, duration: 0.4 }, 0)
-          tl.to(spine, vertical ? { scaleY: 1, duration: 0.45 } : { scaleX: 1, duration: 0.45 }, 0.08)
+          tl.to(spine, vertical ? { scaleY: 1, duration: 0.45 } : { scaleX: 1, duration: 0.45 }, 0)
           tl.add(() => {
             layoutBus(0)
             playIllustration(jobs[0]!.id)
-          }, 0.5)
-          tl.to(branch, { scaleY: 1, duration: 0.28 }, 0.52)
+          }, 0.42)
+          tl.to(branch, { scaleY: 1, duration: 0.28 }, 0.44)
         },
       })
 
@@ -396,7 +391,6 @@ export function CapabilitySystem() {
       className="relative scroll-mt-24 border-b border-border bg-paper"
     >
       <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
-        <span ref={ruleRef} className="cap-chapter-rule" aria-hidden="true" />
         <SignalRail step={2} />
         <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
