@@ -254,7 +254,7 @@ export function LocalityModule() {
         Market movement
       </p>
       <p className="mt-0.5 text-sm font-semibold text-ink md:text-base">Locality</p>
-      <p className="ri-module-ask">Where should we push next?</p>
+      <p className="ri-module-ask">Where is local momentum strongest?</p>
       <ul className="ri-markets" aria-label="Locality strength by market">
         {markets.map((market) => (
           <li key={market.name} className={`ri-market${market.hot ? ' is-hot' : ''}`}>

@@ -306,7 +306,7 @@ export const reporting = {
       popout: {
         changed: 'North-side produced the strongest local visibility signal this period.',
         why: 'Market-level reporting shows where dealership visibility is strengthening and where opportunity remains.',
-        next: 'Protect North-side momentum while investigating East corridor as the clearest expansion opportunity in this sample.',
+        next: 'Compare North-side with the other observed market areas and identify which owned pages, local signals, and discovery pathways are contributing to the difference.',
       },
     },
   ],
