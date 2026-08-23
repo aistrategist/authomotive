@@ -3879,7 +3879,7 @@ html {
 }
 
 .hs-traveler {
-  /* offset-path + offset-distance driven in JS (speed variance + thinking pauses) */
+  /* Path is JS; distance is a WAAPI ride so the soar stays compositor-smooth */
   opacity: 0;
   overflow: visible;
   will-change: offset-distance, opacity;

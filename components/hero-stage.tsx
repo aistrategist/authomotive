@@ -296,7 +296,29 @@ function makeTravelerDomCache(): TravelerDomCache {
   }
 }
 
-/** Write only attributes that actually changed. offsetDistance is the per-frame value. */
+function animationTimeMs(value: Animation['currentTime']) {
+  if (typeof value === 'number') return value
+  if (value && typeof value === 'object' && 'value' in value) return Number(value.value) || 0
+  return 0
+}
+
+function progressFromRide(anim: Animation) {
+  return Math.max(0, Math.min(1, animationTimeMs(anim.currentTime) / BASE_JOURNEY_MS))
+}
+
+/** Compositor-owned ride — browser interpolates offset-distance between frames. */
+function attachOffsetRide(g: SVGGElement, progress: number, playbackRate: number) {
+  const anim = g.animate([{ offsetDistance: '0%' }, { offsetDistance: '100%' }], {
+    duration: BASE_JOURNEY_MS,
+    easing: 'linear',
+    fill: 'forwards',
+  })
+  anim.playbackRate = Math.max(0.05, playbackRate)
+  anim.currentTime = Math.max(0, Math.min(BASE_JOURNEY_MS, progress * BASE_JOURNEY_MS))
+  return anim
+}
+
+/** Write only attributes that actually changed. Distance is skipped while a WAAPI ride is playing. */
 function applyTravelerDom(
   g: SVGGElement | null,
   cache: TravelerDomCache,
@@ -306,6 +328,7 @@ function applyTravelerDom(
     thinking: boolean
     branch: BranchId
     atNode: boolean
+    pinDistance?: boolean
   },
 ) {
   if (!g) return
@@ -314,10 +337,12 @@ function applyTravelerDom(
     g.style.offsetPath = offsetPath
     cache.offsetPath = offsetPath
   }
-  const offsetDistance = `${(live.progress * 100).toFixed(2)}%`
-  if (cache.offsetDistance !== offsetDistance) {
-    g.style.offsetDistance = offsetDistance
-    cache.offsetDistance = offsetDistance
+  if (live.pinDistance) {
+    const offsetDistance = `${live.progress * 100}%`
+    if (cache.offsetDistance !== offsetDistance) {
+      g.style.offsetDistance = offsetDistance
+      cache.offsetDistance = offsetDistance
+    }
   }
   const opacity = String(live.opacity)
   if (cache.opacity !== opacity) {
@@ -584,6 +609,7 @@ export function HeroStage() {
         thinking: false,
         branch: lead.branch,
         atNode: false,
+        pinDistance: true,
       })
       return
     }
@@ -596,6 +622,7 @@ export function HeroStage() {
       thinking: false,
       branch: first.branch,
       atNode: false,
+      pinDistance: true,
     })
 
     let raf = 0
@@ -604,6 +631,32 @@ export function HeroStage() {
     let last = performance.now()
     let running = false
     let waveAligned = false
+    const rides = Object.fromEntries(CHANNEL_IDS.map((id) => [id, null])) as Record<
+      ChannelId,
+      Animation | null
+    >
+
+    const cancelRide = (id: ChannelId) => {
+      const ride = rides[id]
+      if (!ride) return
+      ride.cancel()
+      rides[id] = null
+    }
+
+    const ensureRide = (id: ChannelId, t: (typeof simRef.current.travelers)[ChannelId]) => {
+      const g = nodes[id]
+      if (!g || typeof g.animate !== 'function') return null
+      const existing = rides[id]
+      if (existing && existing.playState !== 'idle') return existing
+      existing?.cancel()
+      const ride = attachOffsetRide(g, t.progress, t.speed * BASE_JOURNEY_MS)
+      rides[id] = ride
+      return ride
+    }
+
+    const pauseRides = () => {
+      for (const id of CHANNEL_IDS) rides[id]?.pause()
+    }
 
     const tick = (now: number) => {
       if (!running) return
@@ -627,12 +680,14 @@ export function HeroStage() {
           now < t.waitUntil || (!t.started && now < simRef.current.spawnLockUntil)
 
         if (waitingToSpawn) {
+          cancelRide(ch.id)
           applyTravelerDom(nodes[ch.id], travelerDom[ch.id], {
             progress: t.progress,
             opacity: 0,
             thinking: false,
             branch: t.branch,
             atNode: false,
+            pinDistance: true,
           })
           nextTips[ch.id] = {}
           nextFlashes[ch.id] = null
@@ -672,8 +727,16 @@ export function HeroStage() {
           }
         }
 
-        if (!t.thinking && now >= t.resumeAt) {
-          t.progress = Math.min(1, t.progress + t.speed * dt)
+        if (t.thinking || now < t.resumeAt) {
+          rides[ch.id]?.pause()
+        } else if (t.progress < 1) {
+          const ride = ensureRide(ch.id, t)
+          if (ride) {
+            if (ride.playState === 'paused') ride.play()
+            t.progress = progressFromRide(ride)
+          } else {
+            t.progress = Math.min(1, t.progress + t.speed * dt)
+          }
         }
 
         const thresholds = TIP_THRESHOLDS[t.branch]
@@ -724,19 +787,23 @@ export function HeroStage() {
           thinking: t.thinking,
           branch: t.branch,
           atNode,
+          pinDistance: !rides[ch.id],
         }
 
         if (t.progress >= 1) {
           const holdUntil = Math.max(convertHoldUntil, t.flashUntil, t.tipAnchorUntil)
           if (now < holdUntil) {
+            rides[ch.id]?.pause()
             live = {
               progress: 1,
               opacity: 0.55,
               thinking: false,
               branch: t.branch,
               atNode,
+              pinDistance: true,
             }
           } else {
+            cancelRide(ch.id)
             t.branch = pickBranch(t.branch)
             t.speed = rollSpeed(ch)
             t.progress = 0
@@ -757,6 +824,7 @@ export function HeroStage() {
               thinking: false,
               branch: t.branch,
               atNode: false,
+              pinDistance: true,
             }
           }
         }
@@ -807,6 +875,7 @@ export function HeroStage() {
       running = false
       cancelAnimationFrame(raf)
       cancelDeferredStart()
+      pauseRides()
     }
 
     const scheduleStart = () => {
@@ -845,6 +914,7 @@ export function HeroStage() {
 
     return () => {
       stop()
+      for (const id of CHANNEL_IDS) cancelRide(id)
       io.disconnect()
       document.removeEventListener('visibilitychange', onVis)
     }
