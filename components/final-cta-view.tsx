@@ -11,9 +11,9 @@ const inputClasses =
 const labelClasses = 'text-sm font-semibold text-stage-foreground'
 
 const reviewAreas: { id: FinalScopeId; mark: string; label: string }[] = [
-  { id: 'authority', mark: 'bg-accent', label: 'Authority content' },
-  { id: 'intelligence', mark: 'bg-proof', label: 'Intelligence and reporting' },
-  { id: 'measurement', mark: 'bg-paper', label: 'Measurement gaps' },
+  { id: 'authority', mark: 'bg-accent', label: 'Buyer research content' },
+  { id: 'intelligence', mark: 'bg-proof', label: 'Monthly reporting & strategy' },
+  { id: 'measurement', mark: 'bg-paper', label: 'Event tracking gaps' },
 ]
 
 const concernToScopes: Record<string, FinalScopeId[] | 'neutral' | 'all'> = {
@@ -21,7 +21,7 @@ const concernToScopes: Record<string, FinalScopeId[] | 'neutral' | 'all'> = {
   'Our AI discovery foundation is unclear': ['authority'],
   'We cannot clearly explain performance': ['intelligence'],
   'Important buyer actions are not being tracked': ['measurement'],
-  'We need the complete framework': 'all',
+  'We need help across research, tracking, and reporting': 'all',
   'I am not sure yet': 'neutral',
 }
 

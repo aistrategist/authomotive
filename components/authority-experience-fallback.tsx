@@ -86,7 +86,7 @@ export function AuthorityExperienceFallback() {
         <p className="ae-lens-cue font-mono">{authorityTheater.lensCue}</p>
         <div
           role="tablist"
-          aria-label="Authority Experience views"
+          aria-label="Buyer research page views"
           className="ae-tablist mt-2.5 grid grid-cols-3 gap-3 md:mt-3 md:gap-4"
         >
           {lensUi.map((lens) => {

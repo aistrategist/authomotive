@@ -167,7 +167,7 @@ const discoveryPoints = [
     detail: 'Headings and structured data name the topic and source.',
   },
   {
-    label: 'Internal pathway',
+    label: 'Link to inventory',
     detail: 'Research links through to a matching inventory query.',
   },
 ] as const
@@ -1055,7 +1055,7 @@ export function AuthorityExperience() {
         <p className="ae-lens-cue font-mono">{authorityTheater.lensCue}</p>
         <div
           role="tablist"
-          aria-label="Authority Experience views"
+          aria-label="Buyer research page views"
           className="ae-tablist mt-2.5 grid grid-cols-3 gap-3 md:mt-3 md:gap-4"
         >
           {lensUi.map((lens, i) => {
@@ -1538,12 +1538,12 @@ export function AuthorityExperience() {
                 <InspectorShell
                   active={view === 'measurable'}
                   lens="measurable"
-                  eyebrow="CONNECTED BUYER SIGNALS"
+                  eyebrow="CONNECTED BUYER ACTIONS"
                   count={outcomeCount.measurable}
                   outcomeLabel="DEALER VALUE"
                   outcomeValue="Intent you can explain"
                   outcomeNote="See which research actions precede inventory and contact intent."
-                  label="Connected buyer signals inspector"
+                  label="Connected buyer actions inspector"
                   evidence={
                     <div className="ae-artifact ae-report">
                       <p className="ae-artifact-heading font-mono">

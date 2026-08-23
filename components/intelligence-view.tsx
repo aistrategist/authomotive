@@ -112,7 +112,7 @@ export function IntelligenceFrame({
           <p className="ri-exec-label font-mono">{reporting.executive.label}</p>
           <p className="ri-exec-copy">{reporting.executive.body}</p>
         </div>
-        <ul className="ri-kpis" aria-label="Monthly signals">
+        <ul className="ri-kpis" aria-label="Monthly results">
           {reporting.metrics.map((metric) => {
             const selected = activeId === metric.id
             return (

@@ -17,7 +17,7 @@ const chapters = [
   {
     step: 2,
     title: 'Connect The Whole System',
-    label: 'One System · Three Jobs',
+    label: 'One Connected Buyer System · Three Jobs',
     anchors: ['capabilities'],
     color: 'var(--proof-deep)',
     rest: 'color-mix(in srgb, var(--proof) 28%, #fff)',
@@ -26,7 +26,7 @@ const chapters = [
   {
     step: 3,
     title: 'Guide Better Buyer Decisions',
-    label: 'Authority Experience',
+    label: 'Buyer Research Page',
     anchors: ['authority-experiences'],
     color: 'var(--accent)',
     rest: 'var(--alloy)',
@@ -35,7 +35,7 @@ const chapters = [
   {
     step: 4,
     title: 'Know What Changed',
-    label: 'Intelligence',
+    label: 'Monthly Performance Review',
     anchors: ['reporting'],
     color: 'var(--proof)',
     rest: 'var(--action-soft)',
@@ -44,7 +44,7 @@ const chapters = [
   {
     step: 5,
     title: 'Track What Matters',
-    label: 'Measurement',
+    label: 'Event Tracking',
     anchors: ['measurement', 'how-it-works'],
     color: 'var(--action)',
     rest: 'var(--ink)',

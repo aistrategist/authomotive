@@ -43,11 +43,11 @@ export function IntelligencePreview() {
         <div className="ri-sources mt-4">
           <Disclosure title="Where the underlying data comes from">
             <p className="text-base leading-relaxed text-muted-foreground">
-              {reporting.sourcesLine} The reporting framework can draw from Google Search Console,
+              {reporting.sourcesLine} The monthly report can draw from Google Search Console,
               GA4, Semrush or DataForSEO, identifiable AI referral traffic, observed AI and AI
               Overview visibility, geographic and locality performance, page and query movement,
-              engagement behavior, GTM and custom-event data, inventory-pathway actions, and
-              advertising measurement signals. Not every AI answer or anonymous AI-assisted journey
+              engagement behavior, GTM and custom-event data, inventory actions, and
+              advertising measurement events. Not every AI answer or anonymous AI-assisted journey
               can be observed. We report the identifiable referrals and observed visibility
               footprint, not complete AI attribution.
             </p>

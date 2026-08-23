@@ -19,7 +19,7 @@ const CONCERN_OPTIONS = new Set([
   'We cannot clearly explain performance',
   'Important buyer actions are not being tracked',
   'Our AI discovery foundation is unclear',
-  'We need the complete framework',
+  'We need help across research, tracking, and reporting',
   'I am not sure yet',
 ])
 

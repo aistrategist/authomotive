@@ -8,14 +8,14 @@ export const siteConfig = {
 export const cta = {
   offer: 'Authomotive Opportunity Review',
   primary: 'Request My Opportunity Review',
-  secondary: 'See the Authority System',
+  secondary: 'See the Connected Buyer System',
 }
 
 export const navLinks = [
   { label: 'What We Build', href: '#capabilities' },
-  { label: 'Authority Experiences', href: '#authority-experiences' },
+  { label: 'Research Pages', href: '#authority-experiences' },
   { label: 'Reporting', href: '#reporting' },
-  { label: 'Measurement', href: '#measurement' },
+  { label: 'Event Tracking', href: '#measurement' },
   { label: 'How It Works', href: '#how-it-works' },
 ] as const
 
@@ -27,7 +27,7 @@ export const hero = {
   supporting:
     'Build better paths from shopper questions to inventory, measure what happens next, and use the evidence to decide what to improve.',
   primaryCta: 'Request My Opportunity Review',
-  secondaryCta: 'See the Authority System',
+  secondaryCta: 'See the Connected Buyer System',
   confidence: 'Works with the dealership website, agency, and vendor stack you already have.',
   question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
   outcomes: [
@@ -53,15 +53,15 @@ export const discoveryToInventory = {
   eyebrow: 'KEEP THE PLATFORM · ADD THE STRATEGY',
   headline: 'Turn the website you already have into a connected buyer system.',
   supporting:
-    'We build dealership-owned content for search, AI, and local discovery, connect it to inventory and buyer actions, then measure the signals that help decide what we improve next.',
+    'We build dealership-owned content for search, AI, and local discovery, connect it to inventory and buyer actions, then measure the actions that help decide what we improve next.',
   platforms: {
     lockup: ['Platform', 'Strategy', 'Layer'] as const,
     line: 'Your website, agency, and vendors stay.',
   },
   disciplines: [
-    { id: 'seo', label: 'SEO', line: 'Get found for the question.', tone: 'accent' },
-    { id: 'aeo', label: 'AEO', line: 'Be the answer AI can trust.', tone: 'proof' },
-    { id: 'geo', label: 'GEO', line: 'Show up where they are.', tone: 'action' },
+    { id: 'seo', label: 'SEARCH', line: 'Get found for the question.', tone: 'accent' },
+    { id: 'aeo', label: 'AI', line: 'Give AI clear, trustworthy answers.', tone: 'proof' },
+    { id: 'geo', label: 'LOCAL', line: 'Get discovered by nearby shoppers.', tone: 'action' },
   ] as const,
   events: [
     { id: 'vsrp', label: 'VSRP', parent: 'seo' },
@@ -98,6 +98,7 @@ export const industryGap = {
 export interface Capability {
   id: string
   verb: string
+  name: string
   brandedName: string
   line: string
   proofs: [string, string]
@@ -106,16 +107,17 @@ export interface Capability {
 }
 
 export const capabilitySystem = {
-  eyebrow: 'ONE AUTHORITY SYSTEM · THREE JOBS',
+  eyebrow: 'ONE CONNECTED BUYER SYSTEM · THREE JOBS',
   headline: 'Follow the buyer through the system.',
   supporting:
-    'Research creates new discovery opportunities. Shopper actions show what they care about. Verified signals show what happened next—and help decide what Authomotive improves next.',
+    'Research creates new discovery opportunities. Shopper actions show what they care about. Tracked buyer actions show what happened next—and help decide what Authomotive improves next.',
   motto: 'DISCOVERY · ACTION · EVIDENCE',
   capabilities: [
     {
       id: 'get-found',
       verb: 'DISCOVERY',
-      brandedName: 'Authority Experiences',
+      name: 'Buyer Research Pages',
+      brandedName: 'AUTHORITY EXPERIENCES',
       line: 'Dealership-owned research answers real shopper questions, earns search and AI discovery, and gives buyers a useful path into inventory.',
       proofs: ['Earn the question.', 'Guide the buyer toward inventory.'],
       nextLabel: 'See one in action',
@@ -124,7 +126,8 @@ export const capabilitySystem = {
     {
       id: 'track-matters',
       verb: 'ACTION',
-      brandedName: 'Signal Architecture',
+      name: 'Event Tracking & QA',
+      brandedName: 'SIGNAL ARCHITECTURE',
       line: 'Comparisons, inventory clicks, calls, forms, and retail actions become trackable events instead of disappearing between tools.',
       proofs: ['Capture meaningful buyer actions.', 'Verify the events before reporting.'],
       nextLabel: 'See what gets tracked',
@@ -133,20 +136,21 @@ export const capabilitySystem = {
     {
       id: 'know-working',
       verb: 'EVIDENCE',
-      brandedName: 'Authomotive Intelligence',
-      line: 'Verified buyer signals are read together to show what changed, what likely contributed, and what deserves attention next.',
-      proofs: ['One connected monthly read.', 'Improve from evidence, not guesswork.'],
-      nextLabel: 'See the monthly read',
+      name: 'Monthly Performance Review',
+      brandedName: 'AUTHOMOTIVE INTELLIGENCE',
+      line: 'Verified buyer actions are read together to show what changed, what likely contributed, and what deserves attention next.',
+      proofs: ['One connected monthly review.', 'Improve from evidence, not guesswork.'],
+      nextLabel: 'See the monthly review',
       nextHref: '#reporting',
     },
   ] satisfies Capability[],
 }
 
 export const authorityTheater = {
-  eyebrow: 'AUTHORITY EXPERIENCES · ONE PAGE · THREE LENSES',
+  eyebrow: 'AUTHORITY EXPERIENCES · BUYER RESEARCH PAGES',
   headline: 'See the same page through the shopper, discovery, and measurement lens.',
   supporting:
-    'Choose a lens below to see how one Authority Experience helps a buyer make a decision, gives search and AI clearer information to understand, and captures the actions the dealership can measure. Those signals help us decide what to strengthen, expand, or build next.',
+    'Choose a lens below to see how one buyer research page helps a buyer make a decision, gives search and AI clearer information to understand, and captures the actions the dealership can measure. Those actions help us decide what to strengthen, expand, or build next.',
   lensCue: 'SELECT A LENS TO EXPLORE ↓',
   lensRead: 'One page. Three jobs. One measurable path from discovery to buyer action.',
   exampleTopic: 'Which Three-Row SUV Is Right for My Family?',
@@ -178,13 +182,13 @@ export const aiDiscovery = {
 }
 
 export const reporting = {
-  eyebrow: 'AUTHOMOTIVE INTELLIGENCE · ONE MONTHLY TRUTH',
+  eyebrow: 'AUTHOMOTIVE INTELLIGENCE · MONTHLY PERFORMANCE REVIEW',
   headline: 'See what changed. Understand what likely contributed. Decide what comes next.',
   supporting:
-    'Each month we read the dealership signals that matter: search and AI discovery, traffic mix, VSRP and VDP activity, leads, and local market movement. Then we explain what changed, what likely contributed, and what deserves attention next.',
-  product: 'Authomotive Intelligence',
-  sampleEyebrow: 'ILLUSTRATIVE INTELLIGENCE · SAMPLE DATA',
-  reportKind: 'Monthly read',
+    'Each month we review the dealership results that matter: search and AI discovery, traffic mix, VSRP and VDP activity, leads, and local market movement. Then we explain what changed, what likely contributed, and what deserves attention next.',
+  product: 'Monthly Performance Review',
+  sampleEyebrow: 'AUTHOMOTIVE INTELLIGENCE · SAMPLE DATA',
+  reportKind: 'Monthly review',
   period: 'July 14 – August 10, 2026',
   executive: {
     label: 'EXECUTIVE SUMMARY',
@@ -347,10 +351,10 @@ export const fieldProof = {
 } as const
 
 export const measurement = {
-  eyebrow: 'ASC · SIGNAL ARCHITECTURE',
+  eyebrow: 'SIGNAL ARCHITECTURE · EVENT TRACKING & QA',
   headline: 'Make sure the actions that matter actually show up.',
   supporting:
-    'We structure and verify calls, forms, inventory, retail, and exposed vendor events—so reporting is built on signals we can trust.',
+    'We structure and verify calls, forms, inventory, retail, and exposed vendor events—so reporting is built on events we can trust.',
   stack: 'GTM · GA4 · ASC · QA · REPORTING',
   principle: 'No exposed signal? We don\u2019t invent one.',
   payoff:
@@ -388,7 +392,7 @@ export const measurement = {
         { key: 'item_category', value: 'used' },
       ],
       meaning:
-        'A shopper interacted with dealership inventory results. We confirm that inventory activity is captured consistently and available as a usable reporting signal.',
+        'A shopper interacted with dealership inventory results. We confirm that inventory activity is captured consistently and available as a usable reporting event.',
       path: 'select_item · WEBSITE → GA4 → REPORT',
     },
     {
@@ -420,7 +424,7 @@ export const measurement = {
         { key: 'event_action_result', value: 'success' },
       ],
       meaning:
-        'A shopper interacted with an Authority Experience. We instrument that action so movement from research toward inventory can appear clearly in reporting.',
+        'A shopper interacted with a buyer research page. We instrument that action so movement from research toward inventory can appear clearly in reporting.',
       path: 'asc_cta_interaction · AUTHORITY → GTM → GA4 → REPORT',
     },
     {
@@ -491,7 +495,7 @@ export const measurement = {
   cycle: [
     { id: 'define', n: '01', label: 'Define', lead: 'Name the actions that matter.' },
     { id: 'implement', n: '02', label: 'Implement', lead: 'Build the GTM + GA4 event structure.' },
-    { id: 'verify', n: '03', label: 'Verify', lead: 'Confirm available signals fire correctly.' },
+    { id: 'verify', n: '03', label: 'Verify', lead: 'Confirm available events fire correctly.' },
     { id: 'report', n: '04', label: 'Report', lead: 'Use verified events in the monthly read.' },
   ],
   handoffLabel: 'NEXT · THE WORKING RELATIONSHIP',
@@ -558,7 +562,7 @@ export const managedFramework = {
     {
       id: 'read',
       verb: 'READ',
-      line: 'Connect discovery, inventory, and buyer signals.',
+      line: 'Connect discovery, inventory, and buyer actions.',
     },
     {
       id: 'decide',
@@ -574,7 +578,7 @@ export const managedFramework = {
   works: [
     {
       id: 'authority',
-      label: 'Authority Experiences',
+      label: 'Buyer Research Pages',
       tone: 'accent',
       move: 'Expand the page that earned the question. Retire the one that did not.',
     },
@@ -586,19 +590,19 @@ export const managedFramework = {
     },
     {
       id: 'discovery',
-      label: 'AI Discovery',
+      label: 'AI Discovery Page',
       tone: 'action',
       move: 'Keep the owned source accurate so search and AI have one place to trust.',
     },
     {
       id: 'measurement',
-      label: 'Connected measurement',
+      label: 'Event Tracking',
       tone: 'proof',
       move: 'Attach the event before the next launch. Read what shoppers actually did.',
     },
     {
       id: 'intelligence',
-      label: 'Monthly intelligence',
+      label: 'Monthly Performance Review',
       tone: 'action',
       move: 'What changed, what likely contributed, and what we build next.',
     },
@@ -612,7 +616,7 @@ export const managedFramework = {
       'Advertising and technology vendors',
     ],
     supporting:
-      'Authomotive adds the authority, measurement and decision-making layer. It does not require the dealership to replace the partners or platforms already supporting the business.',
+      'Authomotive adds the research, measurement, and decision-making layer. It does not require the dealership to replace the partners or platforms already supporting the business.',
   },
   fit:
     'A strong fit for dealerships that know the website should be producing more, but cannot yet connect content, visibility, inventory movement, and buyer behavior into one accountable plan.',
@@ -643,7 +647,7 @@ export const finalCta = {
     'We cannot clearly explain performance',
     'Important buyer actions are not being tracked',
     'Our AI discovery foundation is unclear',
-    'We need the complete framework',
+    'We need help across research, tracking, and reporting',
     'I am not sure yet',
   ],
   submitLabel: 'Request My Opportunity Review',

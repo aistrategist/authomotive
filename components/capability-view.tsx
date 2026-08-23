@@ -147,7 +147,8 @@ export function CapabilityView({
                 </div>
                 <div className="cap-card">
                   <p className="cap-card-verb">{job.verb}</p>
-                  <h3 className="cap-card-name">{job.brandedName}</h3>
+                  <h3 className="cap-card-name">{job.name}</h3>
+                  <p className="cap-card-brand font-mono">{job.brandedName}</p>
                   <p className="cap-card-line">{job.line}</p>
                   <ul className="cap-proofs">
                     {job.proofs.map((proof) => (

@@ -19,7 +19,7 @@ const CTA_Y = 166
 const INNER = PAGE_W - 24
 
 const PAGES = [
-  { id: 'guide' as const, x: 58, y: 6, label: 'AUTHORITY GUIDE' },
+  { id: 'guide' as const, x: 58, y: 6, label: 'RESEARCH GUIDE' },
   { id: 'vsrp' as const, x: 322, y: 48, label: 'VSRP' },
   { id: 'vdp' as const, x: 58, y: 214, label: 'VDP' },
 ]
@@ -41,7 +41,7 @@ const STAGE_WAYPOINTS = [
     id: 'guide',
     cx: PAGES[0].x + CTA_X,
     cy: PAGES[0].y + CTA_Y,
-    tip: 'Authority Guide',
+    tip: 'Research Guide',
     ...tipPct(PAGES[0].x + CTA_X, PAGES[0].y + CTA_Y),
   },
   {
@@ -1195,7 +1195,7 @@ export function HeroStage() {
     <div ref={rootRef} className="hero-stage relative mx-auto w-full max-w-[580px] overflow-visible lg:max-w-none">
       <p className="sr-only">
         Animated conversion map: website visitors from Search, AI, and Local follow a trail
-        through an authority guide, VSRP, and VDP, then convert via phone, form, or lead.
+        through a research guide, VSRP, and VDP, then convert via phone, form, or lead.
         Visitors vary in pace and occasionally pause as if thinking.
       </p>
 
