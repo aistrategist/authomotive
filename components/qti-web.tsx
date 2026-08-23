@@ -190,6 +190,11 @@ export function QtiWeb() {
       </svg>
 
       <div className="qti-web-row" data-row="platforms">
+        <p className="qti-web-strategy">
+          {discoveryToInventory.platforms.lockup.map((word) => (
+            <span key={word}>{word}</span>
+          ))}
+        </p>
         <div
           className="qti-web-site"
           data-node="site"

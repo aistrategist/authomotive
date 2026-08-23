@@ -55,6 +55,7 @@ export const discoveryToInventory = {
   supporting:
     'Shoppers still start with a need. We strengthen the website you already have for search, AI, and local discovery, then connect that discovery to inventory and measurable buyer actions.',
   platforms: {
+    lockup: ['Content', 'Strategy'] as const,
     line: 'Your website, agency, and vendors stay.',
   },
   disciplines: [

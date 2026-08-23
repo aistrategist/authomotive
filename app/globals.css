@@ -988,6 +988,20 @@ html {
 }
 .qti-web-row[data-row='platforms'] {
   justify-items: center;
+  justify-content: center;
+}
+.qti-web-strategy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 1.65rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--ink);
 }
 .qti-web-row[data-row='disciplines'] {
   grid-template-columns: 1fr;
@@ -1008,7 +1022,7 @@ html {
   background: var(--paper);
 }
 .qti-web-site {
-  width: min(100%, 44rem);
+  width: 100%;
   padding: 1.15rem 1.2rem 1.2rem;
   background-color: #fff;
   background-image:
@@ -1130,6 +1144,20 @@ html {
 .qti-web-chip:hover,
 .qti-web-event:hover {
   box-shadow: 4px 4px 0 0 var(--ink);
+}
+@media (min-width: 768px) {
+  .qti-web-row[data-row='platforms'] {
+    grid-template-columns: auto minmax(0, 44rem);
+    justify-content: center;
+    justify-items: stretch;
+    align-items: center;
+    column-gap: 1.15rem;
+  }
+  .qti-web-strategy {
+    align-items: flex-start;
+    margin: 0;
+    font-size: 1.85rem;
+  }
 }
 @media (min-width: 640px) {
   .qti-web-row[data-row='disciplines'] {
