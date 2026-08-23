@@ -151,7 +151,7 @@ const TRAIL_SEGMENTS = [
 const CHANNELS = [
   { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: 'var(--accent)', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
   { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: 'var(--porcelain)', r: 6, startDelayMs: 900, speedBias: 0.88, face: 2, lane: -10 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof)', r: 6, startDelayMs: 1800, speedBias: 1.32, face: 1, lane: 10 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof)', r: 6, startDelayMs: 1800, speedBias: 1.32, face: 1, lane: 0 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']

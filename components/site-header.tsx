@@ -81,96 +81,66 @@ export function SiteHeader() {
     }
   }, [])
 
-  // One active nav item from a viewport band. Hero, platforms, interludes,
-  // and the Opportunity Review clear the state instead of leaving a false hit.
+  // Square under the current chapter. A line just below the header, not a
+  // thin IO band — late-swapped sections (Authority) stay trackable, and the
+  // Request button never gets a spy mark.
   useEffect(() => {
-    const navOrder = [
-      'capabilities',
-      'authority-experiences',
-      'reporting',
-      'measurement',
-      'how-it-works',
+    const chapters = [
+      { href: '#capabilities', id: 'capabilities' },
+      { href: '#authority-experiences', id: 'authority-experiences' },
+      { href: '#reporting', id: 'reporting' },
+      { href: '#measurement', id: 'measurement' },
+      { href: '#how-it-works', id: 'engagement' },
     ] as const
-    const clearIds = new Set(['top', 'platforms', 'opportunity-review', 'clear'])
-    const sources = new Map<Element, { key: string; ratio: number }>()
+    const line = 96
+    let ticking = false
 
-    function spyKey(el: Element) {
-      if (el.id && (navOrder as readonly string[]).includes(el.id)) return el.id
-      if (el.id && clearIds.has(el.id)) return el.id
-      return el.getAttribute('data-spy') || el.id
-    }
-
-    function pick() {
-      const ratios = new Map<string, number>()
-      for (const { key, ratio } of sources.values()) {
-        ratios.set(key, Math.max(ratios.get(key) ?? 0, ratio))
-      }
-
+    function apply() {
+      ticking = false
       const header = headerRef.current
-      const atForm = (ratios.get('opportunity-review') ?? 0) > 0.12
-      header?.classList.toggle('is-cta-rest', atForm)
-      header?.querySelectorAll('.header-cta').forEach((el) => {
+      if (!header) return
+
+      const form = document.getElementById('opportunity-review')
+      const atForm = Boolean(form && form.getBoundingClientRect().top < window.innerHeight * 0.42)
+      header.classList.toggle('is-cta-rest', atForm)
+      header.querySelectorAll('.header-cta').forEach((el) => {
         el.classList.toggle('is-rest', atForm)
       })
-      if (atForm) {
-        if (header) header.dataset.active = ''
-        header?.querySelectorAll<HTMLAnchorElement>('.header-nav-link[aria-current]').forEach((el) => {
-          el.removeAttribute('aria-current')
-        })
-        return
-      }
 
-      let clearScore = 0
-      for (const id of clearIds) {
-        clearScore = Math.max(clearScore, ratios.get(id) ?? 0)
-      }
-
-      let best: string | null = null
-      let bestRatio = 0
-      for (const id of navOrder) {
-        const r = ratios.get(id) ?? 0
-        if (r > bestRatio) {
-          bestRatio = r
-          best = id
+      let next = ''
+      if (!atForm) {
+        for (const chapter of chapters) {
+          const el = document.getElementById(chapter.id)
+          if (el && el.getBoundingClientRect().top <= line) next = chapter.href
         }
+        const first = document.getElementById('capabilities')
+        if (first && first.getBoundingClientRect().top > line) next = ''
       }
 
-      const next = !best || bestRatio < 0.1 || clearScore > bestRatio + 0.04 ? '' : `#${best}`
-      if (header) header.dataset.active = next
-      header?.querySelectorAll<HTMLAnchorElement>('.header-nav-link').forEach((el) => {
+      if (header.dataset.active === next) return
+      header.dataset.active = next
+      header.querySelectorAll<HTMLAnchorElement>('.header-nav-link').forEach((el) => {
         const href = el.getAttribute('href')
         if (next && href === next) el.setAttribute('aria-current', 'true')
         else el.removeAttribute('aria-current')
       })
     }
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const key = spyKey(entry.target)
-          if (!key) continue
-          sources.set(entry.target, {
-            key,
-            ratio: entry.isIntersecting ? entry.intersectionRatio : 0,
-          })
-        }
-        pick()
-      },
-      {
-        root: null,
-        rootMargin: '-22% 0px -58% 0px',
-        threshold: [0, 0.08, 0.16, 0.28, 0.45, 0.7, 1],
-      },
-    )
-
-    const nodes: Element[] = []
-    for (const id of [...navOrder, 'top', 'platforms', 'opportunity-review']) {
-      const el = document.getElementById(id)
-      if (el) nodes.push(el)
+    function onScroll() {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(apply)
     }
-    document.querySelectorAll('[data-spy]').forEach((el) => nodes.push(el))
-    nodes.forEach((el) => io.observe(el))
-    return () => io.disconnect()
+
+    apply()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    window.addEventListener('hashchange', apply)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('hashchange', apply)
+    }
   }, [])
 
   const closeMenu = useCallback(() => {
