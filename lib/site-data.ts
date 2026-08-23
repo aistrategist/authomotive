@@ -333,18 +333,17 @@ export const reporting = {
 }
 
 export const fieldProof = {
-  eyebrow: 'PROOF FROM THE FIELD',
-  sub: 'OBSERVED DEALERSHIP RESULT',
-  headline: 'Research content can become a measurable discovery asset.',
-  supporting:
-    'In one dealership example, a research page upgrade was followed by materially higher search visibility, clicks, and identifiable AI discovery in the next 28-day period. We treat results like these as evidence to investigate—not proof of a single cause.',
+  stamp: 'ANONYMOUS DEALERSHIP · OBSERVED RESULT',
+  headline: '28 days after a research content upgrade',
   metrics: [
     { id: 'clicks', value: '+89%', label: 'Web clicks', tone: 'accent' },
     { id: 'impressions', value: '+93%', label: 'Web impressions', tone: 'proof' },
     { id: 'ai', value: '+286%', label: 'AI impressions', tone: 'action' },
   ],
-  source:
-    'Observed 28-day comparison · Google Search Console + AI discovery reporting · dealership anonymized',
+  context: 'Research page',
+  period: '28-DAY BEFORE / AFTER',
+  method:
+    'Google Search Console + AI discovery reporting · observational result, not an attribution claim',
 } as const
 
 export const measurement = {

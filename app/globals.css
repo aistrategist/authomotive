@@ -6285,80 +6285,66 @@ details.disclosure[open] > summary .disclosure-plus {
 }
 
 /* ------------------------------------------------------------------ */
-/* Field proof — CTA-orange callout aligned to the Intelligence frame    */
+/* Field proof — result callout sitting on the orange field              */
 /* ------------------------------------------------------------------ */
 
 .fp-band {
   position: relative;
   border-bottom: 2px solid var(--ink);
-  background-color: var(--action-hover);
+  background-color: var(--action);
   background-image:
-    radial-gradient(ellipse 820px 460px at 4% -10%, var(--action-muted) 0%, transparent 58%),
-    radial-gradient(ellipse 640px 400px at 98% 110%, var(--action-strong) 0%, transparent 56%),
-    radial-gradient(ellipse 520px 280px at 48% 88%, var(--action) 0%, transparent 52%),
-    linear-gradient(158deg, var(--action-hover) 0%, var(--action) 38%, var(--action-strong) 100%);
+    radial-gradient(ellipse 900px 520px at 8% -8%, var(--action-muted) 0%, transparent 58%),
+    radial-gradient(ellipse 720px 420px at 96% 108%, var(--action-hover) 0%, transparent 56%),
+    radial-gradient(ellipse 480px 260px at 52% 40%, color-mix(in srgb, var(--paper) 55%, var(--action)) 0%, transparent 62%),
+    linear-gradient(168deg, var(--action) 0%, var(--action-hover) 72%, var(--action) 100%);
+}
+.fp-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(6, 27, 32, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(6, 27, 32, 0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 86% 80% at 50% 40%, #000 18%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 86% 80% at 50% 40%, #000 18%, transparent 78%);
+}
+.fp-band > * {
+  position: relative;
+  z-index: 1;
 }
 .fp-wrap {
   max-width: 1280px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 1.65rem;
 }
-.fp-shell {
-  position: relative;
-  padding: 1.4rem 1.25rem 1.45rem;
-  border: 2px solid var(--ink);
-  border-radius: 8px;
-  background: var(--action-muted);
-  box-shadow: 8px 8px 0 0 var(--action-deep);
-}
-.fp-rule {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -2px;
-  height: 4px;
-  border-radius: 8px 8px 0 0;
-  background: var(--action-deep);
-}
-.fp-eyebrow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 0.55rem;
+.fp-stamp {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.8125rem;
   font-weight: 750;
-  letter-spacing: 0.08em;
-  line-height: 1.25;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
   text-transform: uppercase;
   color: var(--action-deep);
 }
-.fp-eyebrow-dot {
-  font-weight: 700;
-  color: var(--ink);
-}
 .fp-title {
-  margin: 0.65rem 0 0;
-  max-width: 42rem;
-  font-size: 1.7rem;
+  margin: 0.45rem 0 0;
+  max-width: 36rem;
+  padding-left: 0.85rem;
+  border-left: 4px solid var(--ink);
+  font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.2;
   color: var(--ink);
   text-wrap: balance;
-}
-.fp-copy {
-  margin: 0.55rem 0 0;
-  max-width: 46rem;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: var(--ink);
-  text-wrap: pretty;
 }
 .fp-strip {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  margin: 1rem 0 0;
+  margin: 0.85rem 0 0;
   padding: 0;
   list-style: none;
   overflow: hidden;
@@ -6405,27 +6391,73 @@ details.disclosure[open] > summary .disclosure-plus {
   line-height: 1.25;
   color: var(--ink);
 }
-.fp-source {
+.fp-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
   margin: 0.75rem 0 0;
-  font-size: 0.625rem;
+}
+.fp-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.5rem;
+  margin: 0;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.45;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.fp-period {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--ink);
+  background: color-mix(in oklch, var(--action) 34%, var(--paper));
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.fp-method {
+  margin: 0;
+  max-width: 46rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
   color: var(--action-deep);
 }
 @media (min-width: 768px) {
   .fp-wrap {
     padding: 1.8rem 2rem 2rem;
   }
-  .fp-shell {
-    padding: 1.6rem 1.7rem 1.65rem;
-  }
-  .fp-eyebrow {
-    font-size: 1.125rem;
-    letter-spacing: 0.1em;
+  .fp-stamp {
+    font-size: 0.9375rem;
+    letter-spacing: 0.12em;
   }
   .fp-title {
-    font-size: 2.15rem;
+    font-size: 1.45rem;
+  }
+  .fp-foot {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+  }
+  .fp-context {
+    font-size: 0.9375rem;
+  }
+  .fp-period {
+    font-size: 0.75rem;
+  }
+  .fp-method {
+    max-width: 24rem;
+    font-size: 0.8125rem;
+    text-align: right;
   }
   .fp-strip {
     grid-template-columns: repeat(3, minmax(0, 1fr));
