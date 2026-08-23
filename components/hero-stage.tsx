@@ -4,7 +4,7 @@
  * HeroStage — treasure-map journey (hard-tuned cubic Béziers from blue sketch).
  * Main sweep: Search → Guide → deep dip → VSRP → leftward lower sweep → VDP
  * → car junction disc → Phone / Form / Lead fan-out (matched lime discs).
- * Five website-visitor glyphs (Search / AI / Local) with pace variance + thinking pauses.
+ * Three website-visitor glyphs (Search / AI / Local) with pace variance + thinking pauses.
  */
 
 import { useEffect, useRef, useState } from 'react'
@@ -146,13 +146,11 @@ const TRAIL_SEGMENTS = [
   { id: 'lead', tone: 'e', d: `M375 335${BRANCH_PATHS.lead}` },
 ] as const
 
-/** Five website visitors — Search, AI, and Local channels */
+/** Three website visitors — Search, AI, and Local. Stagger keeps the origin from swarming. */
 const CHANNELS = [
   { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: 'var(--accent)', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof)', r: 6, startDelayMs: 0, speedBias: 1.32, face: 1, lane: 10 },
-  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: 'var(--porcelain)', r: 6, startDelayMs: 0, speedBias: 0.88, face: 2, lane: -10 },
-  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: 'var(--accent-mid)', r: 5.5, startDelayMs: 0, speedBias: 0.64, face: 1, lane: 6 },
-  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof-soft)', r: 5.5, startDelayMs: 0, speedBias: 0.5, face: 2, lane: -6 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: 'var(--porcelain)', r: 6, startDelayMs: 900, speedBias: 0.88, face: 2, lane: -10 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof)', r: 6, startDelayMs: 1800, speedBias: 1.32, face: 1, lane: 10 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -190,9 +188,9 @@ const THINK_MIN_MS = 480
 const THINK_MAX_MS = 860
 const THINK_COOLDOWN_MS = 2200
 const THINK_FADE_MS = 140
-/** Target share of active travelers paused in a “thinking” state */
-const THINK_TARGET_RATIO = 0.16
-/** One visitor leaves the origin before the next fades in */
+/** At most one traveler may think at a time — three glyphs already read as busy. */
+const MAX_THINKING = 1
+/** On respawn, keep the origin from stacking travelers that finish together. */
 const SPAWN_GAP_MS = 1750
 
 function pickBranch(exclude?: BranchId): BranchId {
@@ -280,9 +278,28 @@ function uiChanged(a: UiSnap, b: UiSnap) {
   return false
 }
 
+type TravelerDomCache = {
+  offsetPath: string
+  offsetDistance: string
+  opacity: string
+  thinking: boolean
+  atNode: boolean
+}
+
+function makeTravelerDomCache(): TravelerDomCache {
+  return {
+    offsetPath: '',
+    offsetDistance: '',
+    opacity: '',
+    thinking: false,
+    atNode: false,
+  }
+}
+
+/** Write only attributes that actually changed. offsetDistance is the per-frame value. */
 function applyTravelerDom(
   g: SVGGElement | null,
-  steer: SVGGElement | null,
+  cache: TravelerDomCache,
   live: {
     progress: number
     opacity: number
@@ -292,12 +309,29 @@ function applyTravelerDom(
   },
 ) {
   if (!g) return
-  g.style.offsetPath = OFFSET_PATH[live.branch]
-  g.style.offsetDistance = `${(live.progress * 100).toFixed(2)}%`
-  g.style.opacity = String(live.opacity)
-  g.classList.toggle('is-thinking', live.thinking)
-  g.classList.toggle('is-node', live.atNode)
-  if (steer) steer.style.transform = 'rotate(0deg)'
+  const offsetPath = OFFSET_PATH[live.branch]
+  if (cache.offsetPath !== offsetPath) {
+    g.style.offsetPath = offsetPath
+    cache.offsetPath = offsetPath
+  }
+  const offsetDistance = `${(live.progress * 100).toFixed(2)}%`
+  if (cache.offsetDistance !== offsetDistance) {
+    g.style.offsetDistance = offsetDistance
+    cache.offsetDistance = offsetDistance
+  }
+  const opacity = String(live.opacity)
+  if (cache.opacity !== opacity) {
+    g.style.opacity = opacity
+    cache.opacity = opacity
+  }
+  if (cache.thinking !== live.thinking) {
+    g.classList.toggle('is-thinking', live.thinking)
+    cache.thinking = live.thinking
+  }
+  if (cache.atNode !== live.atNode) {
+    g.classList.toggle('is-node', live.atNode)
+    cache.atNode = live.atNode
+  }
 }
 
 const INK = 'var(--ink)'
@@ -500,7 +534,6 @@ export function HeroStage() {
   }))
 
   const travelerEls = useRef(emptyChannelMap<SVGGElement | null>(null))
-  const steerEls = useRef(emptyChannelMap<SVGGElement | null>(null))
   const uiRef = useRef(ui)
   uiRef.current = ui
 
@@ -518,7 +551,10 @@ export function HeroStage() {
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     simRef.current.reduced = reduced
-    const nodes = { g: travelerEls.current, steer: steerEls.current }
+    const nodes = travelerEls.current
+    const travelerDom = Object.fromEntries(
+      CHANNEL_IDS.map((id) => [id, makeTravelerDomCache()]),
+    ) as Record<ChannelId, TravelerDomCache>
 
     for (const ch of CHANNELS) {
       const t = simRef.current.travelers[ch.id]
@@ -542,7 +578,7 @@ export function HeroStage() {
         branch,
       })
       const lead = simRef.current.travelers.seo
-      applyTravelerDom(nodes.g.seo, nodes.steer.seo, {
+      applyTravelerDom(nodes.seo, travelerDom.seo, {
         progress: 1,
         opacity: 0.9,
         thinking: false,
@@ -554,8 +590,7 @@ export function HeroStage() {
 
     const first = simRef.current.travelers.seo
     first.started = true
-    simRef.current.spawnLockUntil = performance.now() + SPAWN_GAP_MS
-    applyTravelerDom(nodes.g.seo, nodes.steer.seo, {
+    applyTravelerDom(nodes.seo, travelerDom.seo, {
       progress: 0,
       opacity: 0.92,
       thinking: false,
@@ -564,8 +599,11 @@ export function HeroStage() {
     })
 
     let raf = 0
+    let idleId = 0
+    let startRaf = 0
     let last = performance.now()
     let running = false
+    let waveAligned = false
 
     const tick = (now: number) => {
       if (!running) return
@@ -589,7 +627,7 @@ export function HeroStage() {
           now < t.waitUntil || (!t.started && now < simRef.current.spawnLockUntil)
 
         if (waitingToSpawn) {
-          applyTravelerDom(nodes.g[ch.id], nodes.steer[ch.id], {
+          applyTravelerDom(nodes[ch.id], travelerDom[ch.id], {
             progress: t.progress,
             opacity: 0,
             thinking: false,
@@ -609,7 +647,6 @@ export function HeroStage() {
           t.fired = { guide: false, vsrp: false, vdp: false, convert: false }
           t.tipUntil = {}
           t.thinking = false
-          simRef.current.spawnLockUntil = now + SPAWN_GAP_MS
         }
 
         if (t.thinking) {
@@ -625,7 +662,7 @@ export function HeroStage() {
           t.progress < 0.88 &&
           now >= t.cooldownUntil &&
           now >= t.resumeAt &&
-          thinkingCount / CHANNELS.length < THINK_TARGET_RATIO + 0.05
+          thinkingCount < MAX_THINKING
         ) {
           const startChance = (dt / 1000) * 0.35
           if (Math.random() < startChance) {
@@ -707,6 +744,7 @@ export function HeroStage() {
             t.thinking = false
             t.resumeAt = 0
             t.waitUntil = now + rand(280, 640)
+            simRef.current.spawnLockUntil = now + SPAWN_GAP_MS
             t.fired = { guide: false, vsrp: false, vdp: false, convert: false }
             t.tipUntil = {}
             t.flashTip = null
@@ -723,7 +761,7 @@ export function HeroStage() {
           }
         }
 
-        applyTravelerDom(nodes.g[ch.id], nodes.steer[ch.id], live)
+        applyTravelerDom(nodes[ch.id], travelerDom[ch.id], live)
       }
 
       const nextUi: UiSnap = {
@@ -740,35 +778,70 @@ export function HeroStage() {
       raf = requestAnimationFrame(tick)
     }
 
+    const cancelDeferredStart = () => {
+      if (idleId && typeof cancelIdleCallback === 'function') {
+        cancelIdleCallback(idleId)
+        idleId = 0
+      }
+      if (startRaf) {
+        cancelAnimationFrame(startRaf)
+        startRaf = 0
+      }
+    }
+
     const start = () => {
       if (running) return
       running = true
       last = performance.now()
+      if (!waveAligned) {
+        waveAligned = true
+        for (const ch of CHANNELS) {
+          const t = simRef.current.travelers[ch.id]
+          if (!t.started) t.waitUntil = last + ch.startDelayMs
+        }
+      }
       raf = requestAnimationFrame(tick)
     }
+
     const stop = () => {
       running = false
       cancelAnimationFrame(raf)
+      cancelDeferredStart()
+    }
+
+    const scheduleStart = () => {
+      if (running || document.hidden || idleId || startRaf) return
+      const begin = () => {
+        idleId = 0
+        startRaf = 0
+        if (!document.hidden) start()
+      }
+      if (typeof requestIdleCallback === 'function') {
+        idleId = requestIdleCallback(begin, { timeout: 400 })
+      } else {
+        startRaf = requestAnimationFrame(() => {
+          startRaf = requestAnimationFrame(begin)
+        })
+      }
     }
 
     const onVis = () => {
       if (document.hidden) stop()
-      else start()
+      else scheduleStart()
     }
 
     const root = travelerEls.current.seo?.ownerSVGElement?.closest('.hero-stage') ?? null
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting && !document.hidden) start()
+        if (entry?.isIntersecting && !document.hidden) scheduleStart()
         else stop()
       },
       { rootMargin: '80px' },
     )
     if (root) io.observe(root)
-    else start()
+    if (!document.hidden) scheduleStart()
 
     document.addEventListener('visibilitychange', onVis)
-    if (!document.hidden) start()
 
     return () => {
       stop()
@@ -1012,9 +1085,6 @@ export function HeroStage() {
                 style={{ offsetRotate: '0deg' }}
               >
                 <g
-                  ref={(el) => {
-                    steerEls.current[ch.id] = el
-                  }}
                   className="hs-packet-steer"
                   transform={`translate(0 ${ch.lane})`}
                 >

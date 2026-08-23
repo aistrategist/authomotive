@@ -3945,8 +3945,7 @@ html {
   }
 }
 
-.hs-traveler-seo .hs-visitor,
-.hs-traveler-seo2 .hs-visitor {
+.hs-traveler-seo .hs-visitor {
   filter: drop-shadow(0 1px 0.6px rgba(143, 188, 245, 0.28));
 }
 
@@ -3954,8 +3953,7 @@ html {
   filter: drop-shadow(0 1px 0.6px rgba(255, 252, 247, 0.28));
 }
 
-.hs-traveler-geo .hs-visitor,
-.hs-traveler-geo2 .hs-visitor {
+.hs-traveler-geo .hs-visitor {
   filter: drop-shadow(0 1px 0.6px rgba(200, 184, 255, 0.28));
 }
 
