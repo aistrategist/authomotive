@@ -3314,7 +3314,7 @@ html {
 }
 .ma-inspector {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr;
   flex: 1;
   width: 100%;
   min-width: 0;
@@ -3339,22 +3339,22 @@ html {
 }
 .ma-inspector-label {
   margin: 0;
-  font-size: var(--type-card-title);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
   line-height: 1.25;
-  color: var(--porcelain);
+  color: color-mix(in srgb, var(--porcelain) 78%, var(--stage-muted));
 }
 .ma-meaning {
-  margin: 0.75rem 0 0;
-  max-width: 36ch;
+  margin: 0.7rem 0 0;
+  max-width: 34ch;
   font-size: var(--type-callout);
   font-weight: 500;
   line-height: 1.45;
   color: var(--stage-foreground);
 }
 .ma-tech {
-  margin: 0;
+  margin: 0.9rem 0 0;
   overflow-wrap: anywhere;
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
@@ -3365,7 +3365,8 @@ html {
 @media (min-width: 1024px) {
   .ma-inspector-body {
     justify-content: center;
-    padding-block: 0;
+    /* Optical lift: a mathematically centered stack reads a little low. */
+    padding-block: 0 1.15rem;
   }
 }
 .ma-params {

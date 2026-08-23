@@ -298,8 +298,8 @@ function Inspector({ row }: { row: MeasureEvent }) {
       <div className="ma-inspector-body">
         <p className="ma-inspector-label">{row.action}</p>
         <p className="ma-meaning text-pretty">{row.meaning}</p>
+        <p className="ma-tech font-mono">{row.path}</p>
       </div>
-      <p className="ma-tech font-mono">{row.path}</p>
     </div>
   )
 }

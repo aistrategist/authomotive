@@ -18,7 +18,7 @@ export function Hero() {
               <span className="block text-proof">Guide buyers. </span>
               <span className="block text-action">Prove what works.</span>
             </h1>
-            <p className="hero-enter hero-enter-3 mt-4 max-w-[30rem] text-[0.95rem] leading-snug text-[color:var(--on-ink-muted)] md:text-base">
+            <p className="hero-enter hero-enter-3 mt-4 max-w-[33rem] text-[0.95rem] leading-snug text-[color:var(--on-ink-muted)] md:text-base">
               {hero.supporting}
             </p>
             <div className="hero-enter hero-enter-4 mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
