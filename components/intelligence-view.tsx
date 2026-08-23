@@ -123,11 +123,16 @@ export function IntelligenceFrame({
                   aria-controls={INSIGHT_ID}
                   aria-label={`View insight for ${metric.label}`}
                   onClick={onSelect ? () => onSelect(metric.id) : undefined}
+                  data-tone={metric.tone}
                   className={`ri-kpi-tile${selected ? ' is-on' : ''}`}
                 >
                   <span className="ri-kpi-cat font-mono">{metric.category}</span>
                   <span className="ri-kpi-name">{metric.label}</span>
-                  <span className="ri-kpi-value font-mono">{metric.value}</span>
+                  <span
+                    className={`ri-kpi-value font-mono${metric.value.startsWith('+') ? ' is-up' : ''}`}
+                  >
+                    {metric.value}
+                  </span>
                   <span className="ri-kpi-note">{metric.note}</span>
                   <span className="ri-kpi-cue" aria-hidden="true">
                     i

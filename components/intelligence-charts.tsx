@@ -1,3 +1,5 @@
+import { Fragment } from 'react'
+
 const months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'] as const
 
 const mixSeries = [
@@ -213,15 +215,25 @@ export function InventoryLeadModule() {
       <p className="ri-module-ask">Are shoppers reaching vehicles?</p>
       <ol className="ri-flow" aria-label="Inventory-to-lead pathway: 2,980 VSRP results, 1,640 VDP views, 860 leads">
         {pathway.map((step, i) => (
-          <li key={step.id} className="ri-flow-step">
-            <span className="ri-flow-value font-mono">{step.value.toLocaleString()}</span>
-            <span className="ri-flow-label">{step.label}</span>
+          <Fragment key={step.id}>
+            <li className="ri-flow-step">
+              <span className="ri-flow-value font-mono">{step.value.toLocaleString()}</span>
+              <span className="ri-flow-label">{step.label}</span>
+            </li>
             {i < pathway.length - 1 ? (
-              <span className="ri-flow-arrow" aria-hidden="true">
-                →
-              </span>
+              <li className="ri-flow-join" aria-hidden="true">
+                <svg className="ri-flow-arrow" viewBox="0 0 16 16" width="14" height="14">
+                  <path
+                    d="M2.5 8h11M9.5 4.5 13.5 8l-4 3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="square"
+                  />
+                </svg>
+              </li>
             ) : null}
-          </li>
+          </Fragment>
         ))}
       </ol>
     </div>

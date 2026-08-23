@@ -5284,15 +5284,14 @@ details.disclosure[open] > summary .disclosure-plus {
   box-shadow: 2px 2px 0 0 color-mix(in srgb, var(--ink) 22%, transparent);
   transition: box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
 }
-#reporting .ri-kpi-tile:hover,
-#reporting .ri-kpi-tile:focus-visible {
+#reporting .ri-kpi-tile:hover:not(.is-on),
+#reporting .ri-kpi-tile:focus-visible:not(.is-on) {
   background-color: var(--porcelain);
   box-shadow: 2px 2px 0 0 var(--ink);
 }
 #reporting .ri-kpi-tile.is-on {
-  background-color: var(--proof-softest);
   border-color: var(--ink);
-  box-shadow: 2px 2px 0 0 var(--proof);
+  box-shadow: 3px 3px 0 0 var(--ink);
 }
 #reporting .ri-kpi-tile.is-on::before {
   content: '';
@@ -5300,8 +5299,33 @@ details.disclosure[open] > summary .disclosure-plus {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 3px;
-  background: var(--proof);
+  width: 5px;
+  background: var(--ink);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='accent'] {
+  background-color: color-mix(in oklch, var(--accent) 34%, var(--paper));
+  box-shadow: 3px 3px 0 0 var(--accent-deep);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='accent']::before {
+  background: var(--accent-deep);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='proof'] {
+  background-color: color-mix(in oklch, var(--proof) 34%, var(--paper));
+  box-shadow: 3px 3px 0 0 var(--proof-deep);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='proof']::before {
+  background: var(--proof-deep);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='action'] {
+  background-color: color-mix(in oklch, var(--action) 34%, var(--paper));
+  box-shadow: 3px 3px 0 0 var(--action-deep);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='action']::before {
+  background: var(--action-deep);
+}
+#reporting .ri-kpi-tile.is-on[data-tone='ink'] {
+  background-color: color-mix(in oklch, var(--ink) 12%, var(--paper));
+  box-shadow: 3px 3px 0 0 var(--ink);
 }
 #reporting .ri-kpi-tile:focus-visible {
   outline: 2px solid var(--proof);
@@ -5330,6 +5354,9 @@ details.disclosure[open] > summary .disclosure-plus {
   line-height: 1.05;
   color: var(--ink);
 }
+#reporting .ri-kpi-value.is-up {
+  color: #1a7043;
+}
 #reporting .ri-kpi-note {
   margin-top: 0.18rem;
   font-size: 0.6875rem;
@@ -5354,12 +5381,15 @@ details.disclosure[open] > summary .disclosure-plus {
   color: color-mix(in srgb, var(--ink) 72%, transparent);
   transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
 }
-#reporting .ri-kpi-tile:hover .ri-kpi-cue,
-#reporting .ri-kpi-tile:focus-visible .ri-kpi-cue,
-#reporting .ri-kpi-tile.is-on .ri-kpi-cue {
-  border-color: var(--proof-deep);
-  background: var(--proof);
+#reporting .ri-kpi-tile:hover:not(.is-on) .ri-kpi-cue,
+#reporting .ri-kpi-tile:focus-visible:not(.is-on) .ri-kpi-cue {
+  border-color: var(--ink);
   color: var(--ink);
+}
+#reporting .ri-kpi-tile.is-on .ri-kpi-cue {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
 }
 #reporting .ri-exec {
   padding: 0.05rem 0.1rem 0.7rem;
@@ -5474,20 +5504,27 @@ details.disclosure[open] > summary .disclosure-plus {
 }
 #reporting .ri-flow {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.15rem;
+  align-items: stretch;
+  width: 100%;
   margin: 0.85rem 0 0;
   padding: 0;
   list-style: none;
 }
+#reporting .ri-flow > * {
+  margin: 0;
+  padding: 0;
+}
 #reporting .ri-flow-step {
-  position: relative;
   display: flex;
-  flex: 1;
+  flex: 0 0 auto;
   flex-direction: column;
-  min-width: 0;
-  padding-right: 0.7rem;
+}
+#reporting .ri-flow-join {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
 }
 #reporting .ri-flow-value {
   font-size: 1.05rem;
@@ -5505,10 +5542,8 @@ details.disclosure[open] > summary .disclosure-plus {
   color: color-mix(in srgb, var(--ink) 62%, transparent);
 }
 #reporting .ri-flow-arrow {
-  position: absolute;
-  top: 0.15rem;
-  right: 0;
-  font-size: 0.8rem;
+  display: block;
+  flex: 0 0 auto;
   color: color-mix(in srgb, var(--ink) 42%, transparent);
 }
 #reporting .ri-markets {
