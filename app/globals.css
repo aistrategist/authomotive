@@ -948,16 +948,16 @@ html {
 .qti-web-site {
   width: min(100%, 44rem);
   padding: 1.15rem 1.2rem 1.2rem;
-  background-color: var(--paper);
+  background-color: #fff;
   background-image:
-    radial-gradient(ellipse 58% 120% at 8% 50%, color-mix(in srgb, var(--accent) 52%, transparent), transparent 72%),
-    radial-gradient(ellipse 62% 120% at 50% 50%, color-mix(in srgb, var(--proof) 50%, transparent), transparent 72%),
-    radial-gradient(ellipse 58% 120% at 92% 50%, color-mix(in srgb, var(--action) 54%, transparent), transparent 72%),
+    radial-gradient(ellipse 58% 120% at 8% 50%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%),
+    radial-gradient(ellipse 62% 120% at 50% 50%, color-mix(in srgb, var(--proof) 14%, transparent), transparent 72%),
+    radial-gradient(ellipse 58% 120% at 92% 50%, color-mix(in srgb, var(--action) 16%, transparent), transparent 72%),
     linear-gradient(
       118deg,
-      color-mix(in srgb, var(--accent-muted) 78%, var(--paper)) 0%,
-      color-mix(in srgb, var(--proof) 42%, var(--paper)) 50%,
-      color-mix(in srgb, var(--action-muted) 86%, var(--paper)) 100%
+      color-mix(in srgb, var(--accent-muted) 20%, #fff) 0%,
+      color-mix(in srgb, var(--proof) 10%, #fff) 50%,
+      color-mix(in srgb, var(--action-muted) 22%, #fff) 100%
     );
 }
 .qti-web-site:hover,
@@ -1000,13 +1000,13 @@ html {
   padding: 0.85rem 0.95rem 0.95rem;
 }
 .qti-web-chip[data-tone='accent'] {
-  background: color-mix(in srgb, var(--accent) 46%, var(--paper));
+  background: color-mix(in srgb, var(--accent) 16%, #fff);
 }
 .qti-web-chip[data-tone='proof'] {
-  background: color-mix(in srgb, var(--proof) 50%, var(--paper));
+  background: color-mix(in srgb, var(--proof) 16%, #fff);
 }
 .qti-web-chip[data-tone='action'] {
-  background: color-mix(in srgb, var(--action) 54%, var(--paper));
+  background: color-mix(in srgb, var(--action) 18%, #fff);
 }
 .qti-web-chip-label {
   font-family: var(--font-mono);
@@ -1044,15 +1044,15 @@ html {
   text-transform: uppercase;
 }
 .qti-web-event[data-tone='accent'] {
-  background: color-mix(in srgb, var(--accent) 46%, var(--paper));
+  background: color-mix(in srgb, var(--accent) 16%, #fff);
   color: var(--accent-dark);
 }
 .qti-web-event[data-tone='proof'] {
-  background: color-mix(in srgb, var(--proof) 50%, var(--paper));
+  background: color-mix(in srgb, var(--proof) 16%, #fff);
   color: var(--proof-deep);
 }
 .qti-web-event[data-tone='action'] {
-  background: color-mix(in srgb, var(--action) 54%, var(--paper));
+  background: color-mix(in srgb, var(--action) 18%, #fff);
   color: var(--action-deep);
 }
 .qti-web-site:hover,
