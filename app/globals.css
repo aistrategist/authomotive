@@ -3229,11 +3229,17 @@ html {
   border-bottom: 1px solid color-mix(in srgb, var(--stage-line) 70%, transparent);
   transition: background-color 0.16s ease, box-shadow 0.16s ease;
 }
-.ma-line code {
+.ma-line .ma-moment {
   color: var(--porcelain);
 }
-.ma-line.is-on code {
+.ma-line.is-on .ma-moment {
   color: var(--action);
+}
+.ma-line code {
+  color: var(--stage-muted);
+}
+.ma-line.is-on code {
+  color: color-mix(in srgb, var(--action) 62%, var(--stage-muted));
 }
 .ma-line:hover,
 .ma-line:focus-visible {
@@ -3281,9 +3287,38 @@ html {
 .ma-inspector {
   border-top: 1px solid var(--stage-line);
 }
+.ma-read {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.7rem 0.9rem;
+}
+.ma-read dt {
+  margin: 0;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--action);
+}
+.ma-read dd {
+  margin: 0.22rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--porcelain);
+}
+.ma-tech {
+  margin: 0;
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stage-muted);
+}
 @media (min-width: 1024px) {
   .ma-inspector {
     border-top: 0;
+  }
+  .ma-read {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 .ma-params {

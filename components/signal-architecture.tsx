@@ -13,6 +13,8 @@ type MeasureEvent = (typeof measurement.events)[number]
 
 const stream = [...measurement.events].sort((a, b) => b.stamp.localeCompare(a.stamp))
 const hitTotal = String(stream.length).padStart(2, '0')
+const INSPECTOR_ID = 'ma-inspector'
+const DEFAULT_HIT = measurement.events.find((row) => row.id === 'campaign')?.id ?? stream[0]!.id
 
 function hitIndex(row: MeasureEvent) {
   const chronological = [...measurement.events].sort((a, b) => a.stamp.localeCompare(b.stamp))
@@ -20,13 +22,13 @@ function hitIndex(row: MeasureEvent) {
 }
 
 export function SignalArchitecture() {
-  const [openId, setOpenId] = useState<string | null>(stream[0]?.id ?? null)
+  const [openId, setOpenId] = useState<string>(DEFAULT_HIT)
   const rootRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const streamRef = useRef<HTMLDivElement>(null)
   const scanRef = useRef<HTMLSpanElement>(null)
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
-  const selected = stream.find((row) => row.id === openId) ?? null
+  const selected = stream.find((row) => row.id === openId) ?? stream.find((row) => row.id === DEFAULT_HIT) ?? stream[0]!
 
   useGSAP(
     () => {
@@ -91,15 +93,6 @@ export function SignalArchitecture() {
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        if (!openId) return
-        event.preventDefault()
-        const id = openId
-        setOpenId(null)
-        triggerRefs.current[id]?.focus()
-        return
-      }
-
       const inConsole = frameRef.current?.contains(document.activeElement)
       if (!inConsole) return
 
@@ -115,22 +108,14 @@ export function SignalArchitecture() {
       }
     }
 
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node
-      if (frameRef.current?.contains(target)) return
-      setOpenId(null)
-    }
-
     document.addEventListener('keydown', onKeyDown)
-    document.addEventListener('pointerdown', onPointerDown)
     return () => {
       document.removeEventListener('keydown', onKeyDown)
-      document.removeEventListener('pointerdown', onPointerDown)
     }
   }, [openId])
 
-  const toggle = (id: string) => {
-    setOpenId((current) => (current === id ? null : id))
+  const selectHit = (id: string) => {
+    setOpenId(id)
   }
 
   return (
@@ -154,9 +139,14 @@ export function SignalArchitecture() {
               {measurement.headline}
             </h2>
           </div>
-          <p className="lede text-lg leading-relaxed text-stage-muted md:text-xl text-pretty lg:col-span-5 lg:pb-1">
-            {measurement.supporting}
-          </p>
+          <div className="lg:col-span-5 lg:pb-1">
+            <p className="lede text-lg leading-relaxed text-stage-muted md:text-xl text-pretty">
+              {measurement.supporting}
+            </p>
+            <p className="mt-2.5 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-stage-muted md:text-xs">
+              {measurement.stack}
+            </p>
+          </div>
         </div>
 
         <div ref={frameRef} className="ma-console mt-10 md:mt-12">
@@ -196,7 +186,7 @@ export function SignalArchitecture() {
                       row={row}
                       index={hitIndex(row)}
                       selected={openId === row.id}
-                      onToggle={() => toggle(row.id)}
+                      onSelect={() => selectHit(row.id)}
                       buttonRef={(el) => {
                         triggerRefs.current[row.id] = el
                       }}
@@ -206,14 +196,8 @@ export function SignalArchitecture() {
               </ul>
             </div>
 
-            <aside className="ma-dock lg:col-span-5" aria-live="polite">
-              {selected ? (
-                <Inspector row={selected} />
-              ) : (
-                <p className="hidden px-5 py-8 font-mono text-xs uppercase tracking-[0.14em] text-stage-muted lg:block">
-                  Select a hit to inspect
-                </p>
-              )}
+            <aside className="ma-dock lg:col-span-5">
+              <Inspector row={selected} />
             </aside>
           </div>
         </div>
@@ -221,7 +205,7 @@ export function SignalArchitecture() {
         <ol
           id="how-it-works"
           className="ma-cycle mt-8 grid scroll-mt-24 gap-px sm:grid-cols-2 lg:grid-cols-4"
-          aria-label="Observe, connect, improve, report"
+          aria-label="Observe, connect, understand, decide"
         >
           {measurement.cycle.map((stage) => (
             <li key={stage.id} className="ma-cell px-4 py-3">
@@ -235,7 +219,11 @@ export function SignalArchitecture() {
           ))}
         </ol>
 
-        <div className="mt-8 flex flex-col items-start gap-2">
+        <p className="mt-6 max-w-3xl text-lg font-semibold leading-snug text-porcelain text-pretty md:text-xl">
+          {measurement.payoff}
+        </p>
+
+        <div className="mt-6 flex flex-col items-start gap-2">
           <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-action md:text-xs">
             {measurement.handoffLabel}
           </p>
@@ -258,21 +246,23 @@ function StreamRow({
   row,
   index,
   selected,
-  onToggle,
+  onSelect,
   buttonRef,
 }: {
   row: MeasureEvent
   index: string
   selected: boolean
-  onToggle: () => void
+  onSelect: () => void
   buttonRef: (el: HTMLButtonElement | null) => void
 }) {
   return (
     <button
       ref={buttonRef}
       type="button"
-      aria-expanded={selected}
-      onClick={onToggle}
+      aria-pressed={selected}
+      aria-controls={INSPECTOR_ID}
+      aria-label={`View signal details for ${row.action}`}
+      onClick={onSelect}
       className={`ma-line ma-cols w-full px-4 py-2.5 text-left md:items-baseline md:px-5 ${
         selected ? 'is-on' : ''
       }`}
@@ -280,8 +270,8 @@ function StreamRow({
       <span className="font-mono text-[0.6875rem] tabular-nums text-stage-muted">{index}</span>
       <span className="font-mono text-[0.6875rem] tabular-nums text-stage-muted">{row.stamp}</span>
       <span className="min-w-0">
-        <code className="font-mono text-sm">{row.event}</code>
-        <span className="mt-0.5 block text-sm text-porcelain">{row.action}</span>
+        <span className="ma-moment block text-sm font-semibold text-porcelain">{row.action}</span>
+        <code className="mt-0.5 block font-mono text-xs">{row.event}</code>
       </span>
       <span className={`ma-kind is-${row.kind.toLowerCase()}`}>{row.kind}</span>
       <span className="font-mono text-[0.625rem] uppercase tracking-[0.1em] text-stage-muted md:text-right">
@@ -293,39 +283,32 @@ function StreamRow({
 
 function Inspector({ row }: { row: MeasureEvent }) {
   return (
-    <div className="ma-inspector px-4 py-4 md:px-5 md:py-5">
-      <div className="flex flex-wrap items-center gap-2">
-        <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-action">{row.event}</p>
-        <span className={`ma-kind is-${row.kind.toLowerCase()}`}>{row.kind}</span>
-      </div>
-      <p className="mt-1 text-base font-semibold text-porcelain">{row.action}</p>
-
-      <p className="mt-5 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-stage-muted">
-        Parameters
+    <div id={INSPECTOR_ID} className="ma-inspector px-4 py-4 md:px-5 md:py-5">
+      <p className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-action">
+        Why this signal matters
       </p>
-      <dl className="ma-params mt-2">
-        {row.payload.map((param) => (
-          <div key={param.key} className="ma-param">
-            <dt>{param.key}</dt>
-            <dd>{param.value}</dd>
-          </div>
-        ))}
+      <p className="mt-1 text-base font-semibold text-porcelain">{row.action}</p>
+      <dl className="ma-read mt-4">
+        <div>
+          <dt className="font-mono">What happened</dt>
+          <dd>{row.popout.happened}</dd>
+        </div>
+        <div>
+          <dt className="font-mono">Why it matters</dt>
+          <dd>{row.popout.why}</dd>
+        </div>
+        <div>
+          <dt className="font-mono">What we connect</dt>
+          <dd>{row.popout.connect}</dd>
+        </div>
+        <div>
+          <dt className="font-mono">What it helps answer</dt>
+          <dd>{row.popout.answers}</dd>
+        </div>
       </dl>
-
-      <ol className="mt-5 flex flex-col gap-3">
-        {[
-          { n: '01', label: 'Capture', body: row.popout.capture },
-          { n: '02', label: 'Destination', body: row.popout.destination },
-          { n: '03', label: 'Limit', body: row.popout.limit },
-        ].map((beat) => (
-          <li key={beat.n}>
-            <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-action">
-              {beat.n} · {beat.label}
-            </p>
-            <p className="mt-1 text-sm leading-relaxed text-stage-muted">{beat.body}</p>
-          </li>
-        ))}
-      </ol>
+      <p className="ma-tech mt-4 font-mono">
+        EVENT {row.event} · SOURCE {row.kind} · DESTINATION GA4
+      </p>
     </div>
   )
 }
