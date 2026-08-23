@@ -143,10 +143,12 @@ export const capabilitySystem = {
 }
 
 export const authorityTheater = {
-  eyebrow: 'AUTHORITY EXPERIENCES · DISCOVERY AND GUIDANCE',
-  headline: 'Pages that get found, then move buyers.',
+  eyebrow: 'AUTHORITY EXPERIENCES · ONE PAGE · THREE LENSES',
+  headline: 'See the same page through the shopper, discovery, and measurement lens.',
   supporting:
-    'The strongest dealership-owned pages earn discovery, answer the real question, help the buyer evaluate a decision, and create a useful path to inventory.',
+    'Choose a lens below to see how one Authority Experience helps a buyer make a decision, gives search and AI clearer information to understand, and captures the actions the dealership can measure. Those signals help us decide what to strengthen, expand, or build next.',
+  lensCue: 'SELECT A LENS TO EXPLORE ↓',
+  lensRead: 'One page. Three jobs. One measurable path from discovery to buyer action.',
   exampleTopic: 'Which Three-Row SUV Is Right for My Family?',
   views: [
     { id: 'shopper', label: 'What the shopper sees' },

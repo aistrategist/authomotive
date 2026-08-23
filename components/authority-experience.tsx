@@ -121,8 +121,6 @@ const observerChip: Record<ViewId, string> = {
   measurable: 'SIGNAL VIEW',
 }
 
-const lensOrientation =
-  'One page. Three lenses: help the shopper choose, help search and AI understand the answer, and show the dealer what happened next.'
 
 function readInspectStation(target: EventTarget | null) {
   const el = target instanceof Element ? target : null
@@ -1046,7 +1044,7 @@ export function AuthorityExperience() {
     >
       <SignalRail step={3} />
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
-        <div className="max-w-[40rem]">
+        <div className="max-w-[46.5rem]">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">
             {authorityTheater.eyebrow}
           </p>
@@ -1061,10 +1059,11 @@ export function AuthorityExperience() {
           </p>
         </div>
 
+        <p className="ae-lens-cue font-mono">{authorityTheater.lensCue}</p>
         <div
           role="tablist"
           aria-label="Authority Experience views"
-          className="ae-tablist mt-8 grid grid-cols-3 gap-3 md:mt-9 md:gap-4"
+          className="ae-tablist mt-2.5 grid grid-cols-3 gap-3 md:mt-3 md:gap-4"
         >
           {lensUi.map((lens, i) => {
             const selected = view === lens.id
@@ -1117,7 +1116,7 @@ export function AuthorityExperience() {
           })}
         </div>
 
-        <p className="ae-lens-read font-mono">{lensOrientation}</p>
+        <p className="ae-lens-read font-mono">{authorityTheater.lensRead}</p>
 
         <div
           role="tabpanel"

@@ -1208,10 +1208,19 @@ html {
   width: 100%;
   padding-bottom: 0.4rem;
 }
+.ae-lens-cue {
+  margin: 1.75rem 0 0;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 68%, var(--stage-muted));
+}
 .ae-tab {
   position: relative;
   display: flex;
-  min-height: 48px;
+  min-height: 52px;
   min-width: 0;
   align-items: stretch;
   cursor: pointer;
@@ -1318,11 +1327,12 @@ html {
   line-height: 1.2;
 }
 .ae-tab-arrow {
-  display: none;
+  display: block;
   flex-shrink: 0;
   margin-left: auto;
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1;
+  opacity: 0.72;
   transition: transform 0.2s ease;
 }
 .ae-tab[data-active='true'] .ae-tab-arrow {
@@ -2938,6 +2948,12 @@ html {
   }
   .ae-tab-arrow {
     display: block;
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+  .ae-lens-cue {
+    margin-top: 2rem;
+    font-size: 0.75rem;
   }
   .ae-chrome-tab,
   .ae-chrome-address {
