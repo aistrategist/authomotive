@@ -11,6 +11,9 @@ import { SignalArchitectureNear } from '@/components/signal-architecture-near'
 import { ManagedFrameworkCopy } from '@/components/managed-framework-view'
 import { ManagedNear } from '@/components/managed-near'
 import { FinalCtaNear } from '@/components/final-cta-near'
+import { FieldProof } from '@/components/field-proof'
+
+export { FieldProof }
 
 export function CapabilitySystem() {
   return (

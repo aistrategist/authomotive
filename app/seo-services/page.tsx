@@ -5,6 +5,7 @@ import { QuestionToInventory } from '@/components/question-to-inventory'
 import {
   AuthorityExperience,
   CapabilitySystem,
+  FieldProof,
   FinalCta,
   IntelligencePreview,
   ManagedFramework,
@@ -38,6 +39,7 @@ export default function SeoServicesPage() {
         <CapabilitySystem />
         <AuthorityExperience />
         <IntelligencePreview />
+        <FieldProof />
         <SignalArchitecture />
         <ManagedFramework />
         <FinalCta />

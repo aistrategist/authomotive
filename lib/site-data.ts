@@ -332,6 +332,20 @@ export const reporting = {
     'The monthly report is built from organic, total, AI/LLM, and local traffic; VSRP and VDP activity; leads; and locality. Depth depends on platform access, data quality, and the dealership’s existing measurement environment.',
 }
 
+export const fieldProof = {
+  eyebrow: 'PROOF FROM THE FIELD · OBSERVED DEALERSHIP RESULT',
+  headline: 'Research content can become a measurable discovery asset.',
+  supporting:
+    'In one dealership example, a research page upgrade was followed by materially higher search visibility, clicks, and identifiable AI discovery in the next 28-day period. We treat results like these as evidence to investigate—not proof of a single cause.',
+  metrics: [
+    { id: 'clicks', value: '+89%', label: 'Web clicks', tone: 'accent' },
+    { id: 'impressions', value: '+93%', label: 'Web impressions', tone: 'proof' },
+    { id: 'ai', value: '+286%', label: 'AI impressions', tone: 'action' },
+  ],
+  source:
+    'Observed 28-day comparison · Google Search Console + AI discovery reporting · dealership anonymized',
+} as const
+
 export const measurement = {
   eyebrow: 'ASC · SIGNAL ARCHITECTURE',
   headline: 'Make sure the actions that matter actually show up.',
