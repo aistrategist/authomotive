@@ -2701,75 +2701,6 @@ html {
 .ae-active-result[data-lens='measurable'] .ae-active-result-station {
   color: color-mix(in srgb, var(--action) 55%, transparent);
 }
-.ae-foundation {
-  margin-top: 1.5rem;
-  padding: 0;
-  background: transparent;
-  border: none;
-}
-.ae-foundation-eyebrow {
-  margin: 0;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: color-mix(in srgb, var(--accent) 72%, var(--stage-muted));
-}
-.ae-foundation-title {
-  margin: 0.45rem 0 0;
-  max-width: 40rem;
-  font-size: clamp(1.125rem, 2vw, 1.35rem);
-  line-height: 1.3;
-  color: var(--stage-foreground);
-}
-.ae-foundation-rule {
-  display: block;
-  width: 100%;
-  height: 1px;
-  margin: 0.85rem 0 0.9rem;
-  background: color-mix(in srgb, var(--stage-foreground) 18%, transparent);
-}
-.ae-foundation-stations {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.ae-foundation-station {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  padding-bottom: 0.45rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--stage-foreground) 14%, transparent);
-}
-.ae-foundation-n {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-}
-.ae-foundation-station[data-tone='lavender'] .ae-foundation-n {
-  color: var(--proof);
-}
-.ae-foundation-label {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--stage-foreground);
-}
-.ae-foundation-note {
-  margin: 0.85rem 0 0;
-  max-width: 42rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--on-ink-muted);
-}
-@media (min-width: 768px) {
-  .ae-foundation-stations {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.75rem 1.25rem;
-  }
-}
 .ae-observer-token {
   padding: 0.02rem 0.22rem;
   border: 1px solid color-mix(in srgb, #ffffff 38%, transparent);
@@ -3039,9 +2970,6 @@ html {
   #authority-experiences > div:not(.journey-rail) {
     padding-top: 4.25rem;
     padding-bottom: 4.25rem;
-  }
-  .ae-foundation {
-    margin-top: 1.25rem;
   }
   .ae-instrument-stage {
     display: grid;
@@ -6934,20 +6862,6 @@ details.disclosure[open] > summary .disclosure-plus {
   }
   #authority-experiences .ae-active-result-station {
     font-size: 1.5rem;
-  }
-  #authority-experiences .ae-foundation {
-    margin-top: 1.125rem;
-  }
-  #authority-experiences .ae-foundation-stations {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem 0.75rem;
-  }
-  #authority-experiences .ae-foundation-title {
-    font-size: 1.0625rem;
-  }
-  #authority-experiences .mt-8.flex {
-    margin-top: 1.125rem;
-    gap: 0.875rem;
   }
   #authority-experiences .ae-chip {
     padding: 0.35rem 0.65rem;

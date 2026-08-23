@@ -1,4 +1,4 @@
-import { aiDiscovery, authorityTheater, cta } from '@/lib/site-data'
+import { authorityTheater } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
 
 const lensUi = [
@@ -22,13 +22,6 @@ const lensUi = [
   },
 ] as const
 
-
-const foundationItems = [
-  { n: '01', label: 'Identity', tone: 'blue' as const },
-  { n: '02', label: 'Brands & services', tone: 'blue' as const },
-  { n: '03', label: 'Inventory pathways', tone: 'lavender' as const },
-  { n: '04', label: 'Structured FAQs', tone: 'lavender' as const },
-] as const
 
 function LensGlyph({ id }: { id: (typeof lensUi)[number]['id'] }) {
   if (id === 'shopper') {
@@ -169,40 +162,6 @@ export function AuthorityExperienceFallback() {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="ae-foundation">
-          <p className="ae-foundation-eyebrow font-mono">{aiDiscovery.eyebrow}</p>
-          <h3 className="ae-foundation-title font-semibold tracking-tight text-pretty">
-            {aiDiscovery.headline}
-          </h3>
-          <span className="ae-foundation-rule" aria-hidden="true" />
-          <ul className="ae-foundation-stations" aria-label="AI Discovery page contents">
-            {foundationItems.map((item) => (
-              <li key={item.n} className="ae-foundation-station" data-tone={item.tone}>
-                <span className="ae-foundation-n font-mono" aria-hidden="true">
-                  {item.n}
-                </span>
-                <span className="ae-foundation-label">{item.label}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="ae-foundation-note">
-            Included with every engagement and reviewed monthly. It organizes verified first-party
-            information. It does not guarantee citations or control what any AI platform says.
-          </p>
-        </div>
-
-        <div className="mt-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <p className="max-w-xl text-xl font-semibold leading-snug text-stage-foreground text-pretty md:text-2xl">
-            One page. Three outcomes. AI Discovery sits underneath as supporting infrastructure.
-          </p>
-          <a href="#opportunity-review" className="btn btn-action-dark shrink-0">
-            {cta.primary}
-            <span className="btn-arrow" aria-hidden="true">
-              →
-            </span>
-          </a>
         </div>
       </div>
     </section>
