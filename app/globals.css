@@ -6285,35 +6285,40 @@ details.disclosure[open] > summary .disclosure-plus {
 }
 
 /* ------------------------------------------------------------------ */
-/* Field proof — full-width observed plate after Intelligence            */
+/* Field proof — CTA-orange callout aligned to the Intelligence frame    */
 /* ------------------------------------------------------------------ */
 
 .fp-band {
   position: relative;
-  padding: 1.35rem 1.25rem 1.5rem;
   border-bottom: 2px solid var(--ink);
-  background-color: var(--action-softest);
+  background-color: var(--action-hover);
   background-image:
-    radial-gradient(ellipse 720px 420px at 6% 8%, color-mix(in srgb, var(--action) 48%, transparent), transparent 64%),
-    radial-gradient(ellipse 560px 340px at 94% 92%, color-mix(in srgb, var(--action-hover) 36%, transparent), transparent 60%),
-    linear-gradient(165deg, var(--action-softest) 0%, var(--action-soft) 55%, var(--action-softest) 100%);
+    radial-gradient(ellipse 820px 460px at 4% -10%, var(--action-muted) 0%, transparent 58%),
+    radial-gradient(ellipse 640px 400px at 98% 110%, var(--action-strong) 0%, transparent 56%),
+    radial-gradient(ellipse 520px 280px at 48% 88%, var(--action) 0%, transparent 52%),
+    linear-gradient(158deg, var(--action-hover) 0%, var(--action) 38%, var(--action-strong) 100%);
+}
+.fp-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 1.65rem;
 }
 .fp-shell {
   position: relative;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1.35rem 1.2rem 1.4rem;
+  padding: 1.4rem 1.25rem 1.45rem;
   border: 2px solid var(--ink);
-  background: var(--paper);
-  box-shadow: 7px 7px 0 0 var(--action);
+  border-radius: 8px;
+  background: var(--action);
+  box-shadow: 8px 8px 0 0 var(--action-deep);
 }
 .fp-rule {
   position: absolute;
   left: 0;
   right: 0;
   top: -2px;
-  height: 3px;
-  background: var(--action);
+  height: 4px;
+  border-radius: 8px 8px 0 0;
+  background: var(--action-deep);
 }
 .fp-eyebrow {
   display: flex;
@@ -6330,7 +6335,7 @@ details.disclosure[open] > summary .disclosure-plus {
 }
 .fp-eyebrow-dot {
   font-weight: 700;
-  color: color-mix(in srgb, var(--action-deep) 55%, var(--ink));
+  color: var(--ink);
 }
 .fp-title {
   margin: 0.65rem 0 0;
@@ -6358,6 +6363,7 @@ details.disclosure[open] > summary .disclosure-plus {
   list-style: none;
   overflow: hidden;
   border: 2px solid var(--ink);
+  background: var(--paper);
 }
 .fp-metric {
   min-width: 0;
@@ -6368,13 +6374,13 @@ details.disclosure[open] > summary .disclosure-plus {
   border-bottom: none;
 }
 .fp-metric[data-tone='accent'] {
-  background: color-mix(in oklch, var(--accent) 26%, var(--paper));
+  background: color-mix(in oklch, var(--accent) 32%, var(--paper));
 }
 .fp-metric[data-tone='proof'] {
-  background: color-mix(in oklch, var(--proof) 26%, var(--paper));
+  background: color-mix(in oklch, var(--proof) 32%, var(--paper));
 }
 .fp-metric[data-tone='action'] {
-  background: color-mix(in oklch, var(--action) 26%, var(--paper));
+  background: color-mix(in oklch, var(--action) 40%, var(--paper));
 }
 .fp-metric-value {
   margin: 0;
@@ -6405,14 +6411,14 @@ details.disclosure[open] > summary .disclosure-plus {
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1.45;
-  color: color-mix(in srgb, var(--ink) 50%, transparent);
+  color: var(--action-deep);
 }
 @media (min-width: 768px) {
-  .fp-band {
-    padding: 1.65rem 2rem 1.8rem;
+  .fp-wrap {
+    padding: 1.8rem 2rem 2rem;
   }
   .fp-shell {
-    padding: 1.55rem 1.65rem 1.6rem;
+    padding: 1.6rem 1.7rem 1.65rem;
   }
   .fp-eyebrow {
     font-size: 1.125rem;
