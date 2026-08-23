@@ -140,14 +140,11 @@ export function SignalArchitecture() {
             </h2>
           </div>
           <div className="lg:col-span-5 lg:pb-1">
-            <p className="lede text-lg leading-relaxed text-stage-muted md:text-xl text-pretty">
+            <p className="lede text-stage-muted text-pretty">
               {measurement.supporting}
             </p>
-            <p className="mt-2.5 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-stage-muted md:text-xs">
+            <p className="mt-2.5 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-stage-muted md:text-xs">
               {measurement.stack}
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-stage-muted text-pretty">
-              {measurement.principle}
             </p>
           </div>
         </div>
@@ -156,11 +153,14 @@ export function SignalArchitecture() {
           <span className="ma-scope" aria-hidden="true" />
           <span className="ma-scope is-opp" aria-hidden="true" />
           <div className="ma-chrome flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-5">
-            <div className="flex items-center gap-2.5">
-              <span className="ma-live" aria-hidden="true" />
-              <p className="font-mono text-sm font-semibold tracking-wide text-porcelain md:text-base">
-                {measurement.product}
-              </p>
+            <div className="flex min-w-0 flex-col gap-1">
+              <div className="flex items-center gap-2.5">
+                <span className="ma-live" aria-hidden="true" />
+                <p className="font-mono text-sm font-semibold tracking-wide text-porcelain md:text-base">
+                  {measurement.product}
+                </p>
+              </div>
+              <p className="ma-status font-mono">{measurement.principle}</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="ma-chip font-mono">HITS {hitTotal}</span>
@@ -292,17 +292,14 @@ function Inspector({ row }: { row: MeasureEvent }) {
       role="region"
       aria-labelledby="ma-inspector-heading"
     >
-      <p
-        id="ma-inspector-heading"
-        className="ma-inspector-kicker font-mono text-[0.5625rem] uppercase tracking-[0.14em]"
-      >
+      <p id="ma-inspector-heading" className="ma-inspector-kicker font-mono">
         What this event means
       </p>
-      <p className="ma-inspector-label mt-2 text-base font-semibold tracking-tight md:text-lg">
-        {row.action}
-      </p>
-      <p className="ma-meaning mt-4 text-pretty">{row.meaning}</p>
-      <p className="ma-tech mt-5 font-mono">{row.path}</p>
+      <div className="ma-inspector-body">
+        <p className="ma-inspector-label">{row.action}</p>
+        <p className="ma-meaning text-pretty">{row.meaning}</p>
+      </div>
+      <p className="ma-tech font-mono">{row.path}</p>
     </div>
   )
 }

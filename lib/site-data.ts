@@ -328,9 +328,9 @@ export const measurement = {
   eyebrow: 'ASC · SIGNAL ARCHITECTURE',
   headline: 'Make sure the actions that matter actually show up.',
   supporting:
-    'We manage the GTM and GA4 event structure behind calls, forms, inventory activity, digital retail, Authority Experiences, and the measurable signals your vendors expose—so reporting is built on consistent, verified events.',
-  stack: 'Event planning · GTM implementation · GA4 structure · QA · reporting',
-  principle: 'If the vendor does not expose a signal, we do not invent one.',
+    'We structure and verify the website events behind calls, forms, inventory, retail, and exposed vendor signals—so reporting is built on data we can trust.',
+  stack: 'GTM · GA4 · ASC · QA · REPORTING',
+  principle: 'No exposed signal? We don\u2019t invent one.',
   payoff:
     'The result: cleaner measurement and a monthly report built on website actions we can actually verify.',
   product: 'CAPTURE · LIVE',

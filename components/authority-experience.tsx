@@ -1015,7 +1015,7 @@ export function AuthorityExperience() {
           >
             {authorityTheater.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
+          <p className="lede mt-4 text-[color:var(--on-ink-muted)] text-pretty">
             {authorityTheater.supporting}
           </p>
         </div>

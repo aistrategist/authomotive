@@ -162,7 +162,7 @@ export function ManagedFramework() {
           >
             {managedFramework.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 text-muted-foreground text-pretty">
             {managedFramework.lead}
           </p>
           <p className="mt-3 text-base font-semibold leading-snug text-ink text-pretty md:text-lg">

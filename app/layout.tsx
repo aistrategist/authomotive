@@ -1,15 +1,16 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist_Mono, Instrument_Sans } from 'next/font/google'
 import { AnchorScroll } from '@/components/anchor-scroll'
 import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
 import './globals.css'
 
-const geistSans = Geist({
+const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
-  variable: '--font-geist-sans',
+  variable: '--font-instrument-sans',
   display: 'swap',
   adjustFontFallback: true,
+  axes: ['wdth'],
 })
 const geistMono = Geist_Mono({
   subsets: ['latin'],
@@ -62,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`bg-background ${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`bg-background ${instrumentSans.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased">
         <AnchorScroll />
         {children}

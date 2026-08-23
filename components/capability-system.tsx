@@ -335,7 +335,7 @@ export function CapabilitySystem() {
           >
             {capabilitySystem.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">
+          <p className="lede mt-4 text-muted-foreground text-pretty">
             {capabilitySystem.supporting}
           </p>
           <p className="mt-3 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-ink/55">

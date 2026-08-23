@@ -39,7 +39,7 @@ export function QuestionToInventory() {
           >
             {headline}
           </h2>
-          <p className="lede mt-4 max-w-[40rem] text-lg leading-relaxed text-muted-foreground text-pretty">
+          <p className="lede mt-4 max-w-[40rem] text-muted-foreground text-pretty">
             {supporting}
           </p>
         </div>
