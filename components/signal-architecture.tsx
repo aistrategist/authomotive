@@ -222,7 +222,7 @@ export function SignalArchitecture() {
           ))}
         </ol>
 
-        <p className="mt-6 max-w-3xl text-lg font-semibold leading-snug text-porcelain text-pretty md:text-xl">
+        <p className="ma-payoff mt-6 text-base font-medium leading-snug text-pretty md:text-lg">
           {measurement.payoff}
         </p>
 
@@ -266,18 +266,18 @@ function StreamRow({
       aria-controls={INSPECTOR_ID}
       aria-label={`View event explanation for ${row.action}`}
       onClick={onSelect}
-      className={`ma-line ma-cols w-full px-4 py-2.5 text-left md:items-baseline md:px-5 ${
+      className={`ma-line ma-cols w-full px-4 py-2.5 text-left md:px-5 ${
         selected ? 'is-on' : ''
       }`}
     >
-      <span className="font-mono text-[0.6875rem] tabular-nums text-stage-muted">{index}</span>
-      <span className="font-mono text-[0.6875rem] tabular-nums text-stage-muted">{row.stamp}</span>
+      <span className="font-mono text-[0.6875rem] tabular-nums text-[color:var(--on-ink-muted)]">{index}</span>
+      <span className="font-mono text-[0.6875rem] tabular-nums text-[color:var(--on-ink-muted)]">{row.stamp}</span>
       <span className="min-w-0">
-        <span className="ma-moment block text-sm font-semibold text-porcelain">{row.action}</span>
-        <code className="mt-0.5 block font-mono text-xs">{row.event}</code>
+        <span className="ma-moment block">{row.action}</span>
+        <code className="mt-0.5 font-mono">{row.event}</code>
       </span>
       <span className={`ma-kind is-${row.kind.toLowerCase()}`}>{row.kind}</span>
-      <span className="font-mono text-[0.625rem] uppercase tracking-[0.1em] text-stage-muted md:text-right">
+      <span className="font-mono text-[0.625rem] uppercase tracking-[0.1em] text-[color:var(--on-ink-muted)] md:text-right">
         {row.pillar}
       </span>
     </button>
@@ -294,11 +294,11 @@ function Inspector({ row }: { row: MeasureEvent }) {
     >
       <p
         id="ma-inspector-heading"
-        className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-action"
+        className="ma-inspector-kicker font-mono text-[0.5625rem] uppercase tracking-[0.14em]"
       >
         What this event means
       </p>
-      <p className="mt-2 text-lg font-semibold tracking-tight text-porcelain md:text-xl">
+      <p className="ma-inspector-label mt-2 text-base font-semibold tracking-tight md:text-lg">
         {row.action}
       </p>
       <p className="ma-meaning mt-4 text-pretty">{row.meaning}</p>

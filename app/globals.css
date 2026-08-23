@@ -3174,7 +3174,7 @@ html {
   padding: 0 0.5rem;
   border: 1px solid color-mix(in srgb, var(--stage-line) 80%, transparent);
   background: color-mix(in srgb, var(--stage) 55%, transparent);
-  color: var(--stage-muted);
+  color: var(--on-ink-muted);
   font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -3186,6 +3186,9 @@ html {
   border-radius: 999px;
   background: var(--action);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--action) 28%, transparent);
+}
+.ma-console > .grid {
+  align-items: stretch;
 }
 .ma-stream-well {
   background: color-mix(in srgb, var(--stage-deep) 88%, #000);
@@ -3217,7 +3220,7 @@ html {
 @media (min-width: 768px) {
   .ma-cols {
     grid-template-columns: 1.75rem 4.25rem minmax(0, 1.45fr) 2.5rem minmax(0, 0.9fr);
-    align-items: baseline;
+    align-items: center;
   }
   .ma-line .ma-kind,
   .ma-line > :last-child {
@@ -3226,30 +3229,35 @@ html {
   }
 }
 .ma-line {
-  border-bottom: 1px solid color-mix(in srgb, var(--stage-line) 70%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--stage-line) 55%, transparent);
   transition: background-color 0.16s ease, box-shadow 0.16s ease;
 }
 .ma-line .ma-moment {
-  color: var(--porcelain);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--stage-foreground);
 }
 .ma-line.is-on .ma-moment {
-  color: var(--action);
+  color: var(--stage-foreground);
 }
 .ma-line code {
-  color: var(--stage-muted);
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: var(--on-ink-muted);
 }
 .ma-line.is-on code {
-  color: color-mix(in srgb, var(--action) 62%, var(--stage-muted));
+  color: var(--on-ink-muted);
 }
 .ma-line:hover,
 .ma-line:focus-visible {
-  background: color-mix(in srgb, var(--action) 8%, transparent);
+  background: color-mix(in srgb, var(--action) 7%, transparent);
 }
 .ma-line.is-on {
-  background: color-mix(in srgb, var(--action) 16%, transparent);
-  box-shadow:
-    inset 3px 0 0 0 var(--action),
-    inset 0 0 24px color-mix(in srgb, var(--action) 10%, transparent);
+  background: color-mix(in srgb, var(--action) 8%, transparent);
+  box-shadow: inset 3px 0 0 0 var(--action);
 }
 .ma-line:focus-visible {
   outline: 2px solid var(--action);
@@ -3275,8 +3283,9 @@ html {
   color: var(--stage-muted);
 }
 .ma-dock {
+  display: flex;
   border-left: 1px solid var(--stage-line);
-  background: color-mix(in srgb, var(--stage) 40%, transparent);
+  background: color-mix(in srgb, var(--stage-deep) 72%, #000);
 }
 @media (max-width: 1023px) {
   .ma-dock {
@@ -3285,27 +3294,38 @@ html {
   }
 }
 .ma-inspector {
-  border-top: 1px solid var(--stage-line);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  border-top: 0;
+}
+.ma-inspector-kicker {
+  color: color-mix(in srgb, var(--action) 82%, var(--stage-foreground));
+}
+.ma-inspector-label {
+  color: var(--porcelain);
 }
 .ma-meaning {
   max-width: 28rem;
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
+  font-weight: 500;
   line-height: 1.5;
-  color: var(--porcelain);
+  color: var(--stage-foreground);
 }
 .ma-tech {
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
+  line-height: 1.45;
   text-transform: uppercase;
-  color: var(--stage-muted);
+  color: var(--on-ink-muted);
 }
 @media (min-width: 1024px) {
-  .ma-inspector {
-    border-top: 0;
-  }
   .ma-meaning {
-    font-size: 1.1875rem;
+    font-size: 1.25rem;
     line-height: 1.45;
   }
 }
@@ -3341,13 +3361,22 @@ html {
   text-align: right;
 }
 .ma-cycle {
+  align-items: stretch;
   border: 1px solid var(--stage-line);
   background: var(--stage-line);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 14%, transparent);
 }
 .ma-cell {
+  display: flex;
+  min-height: 5.75rem;
+  flex-direction: column;
+  justify-content: flex-start;
   background: var(--stage-deep);
   box-shadow: inset 2px 0 0 0 color-mix(in srgb, var(--action) 55%, transparent);
+}
+.ma-payoff {
+  max-width: 40rem;
+  color: var(--porcelain);
 }
 .measure-handoff {
   display: inline-flex;
