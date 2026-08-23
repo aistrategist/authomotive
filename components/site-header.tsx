@@ -4,15 +4,23 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { cta, navLinks, siteConfig } from '@/lib/site-data'
 
-function Wordmark({ inverted = false }: { inverted?: boolean }) {
+function Wordmark({ inverted = false, adaptive = false }: { inverted?: boolean; adaptive?: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className={`text-[1.375rem] font-bold tracking-tight md:text-[1.625rem] ${
-        inverted ? 'text-paper' : 'text-ink'
+      className={`header-wordmark text-[1.375rem] font-bold tracking-tight md:text-[1.625rem] ${
+        adaptive ? '' : inverted ? 'text-paper' : 'text-ink'
       }`}
     >
-      Auth<span className={inverted ? 'text-accent' : 'text-accent-deep'}>o</span>motive
+      Auth
+      <span
+        className={`header-wordmark-o ${
+          adaptive ? '' : inverted ? 'text-accent' : 'text-accent-deep'
+        }`}
+      >
+        o
+      </span>
+      motive
     </span>
   )
 }
@@ -22,11 +30,9 @@ export { Wordmark }
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [activeSection, setActiveSection] = useState<string>('')
-  const [ctaRest, setCtaRest] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -41,7 +47,7 @@ export function SiteHeader() {
     let ticking = false
 
     function apply() {
-      setScrolled(window.scrollY > THRESHOLD)
+      headerRef.current?.classList.toggle('is-scrolled', window.scrollY > THRESHOLD)
       ticking = false
     }
 
@@ -100,10 +106,17 @@ export function SiteHeader() {
         ratios.set(key, Math.max(ratios.get(key) ?? 0, ratio))
       }
 
+      const header = headerRef.current
       const atForm = (ratios.get('opportunity-review') ?? 0) > 0.12
-      setCtaRest(atForm)
+      header?.classList.toggle('is-cta-rest', atForm)
+      header?.querySelectorAll('.header-cta').forEach((el) => {
+        el.classList.toggle('is-rest', atForm)
+      })
       if (atForm) {
-        setActiveSection('')
+        if (header) header.dataset.active = ''
+        header?.querySelectorAll<HTMLAnchorElement>('.header-nav-link[aria-current]').forEach((el) => {
+          el.removeAttribute('aria-current')
+        })
         return
       }
 
@@ -122,11 +135,13 @@ export function SiteHeader() {
         }
       }
 
-      if (!best || bestRatio < 0.1 || clearScore > bestRatio + 0.04) {
-        setActiveSection('')
-        return
-      }
-      setActiveSection(`#${best}`)
+      const next = !best || bestRatio < 0.1 || clearScore > bestRatio + 0.04 ? '' : `#${best}`
+      if (header) header.dataset.active = next
+      header?.querySelectorAll<HTMLAnchorElement>('.header-nav-link').forEach((el) => {
+        const href = el.getAttribute('href')
+        if (next && href === next) el.setAttribute('aria-current', 'true')
+        else el.removeAttribute('aria-current')
+      })
     }
 
     const io = new IntersectionObserver(
@@ -214,47 +229,35 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`site-header fixed inset-x-0 top-0 z-50 border-b ${
-        scrolled ? 'border-ink/10 bg-paper' : 'border-transparent bg-transparent'
-      }`}
+      ref={headerRef}
+      className="site-header fixed inset-x-0 top-0 z-50 border-b"
     >
       <div className="site-header-bar mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-3 px-4 sm:gap-6 sm:px-5 md:px-8">
         <a
           href="#top"
           aria-label="Authomotive home"
-          className={`min-w-0 shrink rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
-            scrolled ? 'focus-visible:outline-accent-deep' : 'focus-visible:outline-accent'
-          }`}
+          className="header-home min-w-0 shrink rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
         >
-          <Wordmark inverted={!scrolled} />
+          <Wordmark adaptive />
         </a>
 
         <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.href
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                aria-current={isActive ? 'true' : undefined}
-                className={`relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px] ${
-                  scrolled ? 'text-ink focus-visible:outline-accent-deep' : 'text-paper focus-visible:outline-accent'
-                }`}
-              >
-                {link.label}
-                {/* Compact active-section signal — a small Lime marker with a Petrol Ink outline, not a glowing dot */}
-                <span
-                  aria-hidden="true"
-                  className={`absolute -bottom-2 left-1/2 h-[7px] w-[7px] -translate-x-1/2 rounded-[1px] border border-ink bg-lime transition-opacity ${
-                    isActive ? 'opacity-100' : 'opacity-0'
-                  }`}
-                />
-              </a>
-            )
-          })}
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="header-nav-link relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px]"
+            >
+              {link.label}
+              <span
+                aria-hidden="true"
+                className="header-spy absolute -bottom-2 left-1/2 h-[7px] w-[7px] -translate-x-1/2 rounded-[1px] border border-ink bg-lime transition-opacity"
+              />
+            </a>
+          ))}
           <a
             href="#opportunity-review"
-            className={`btn btn-action header-cta !min-h-[44px] !whitespace-nowrap !px-4 !text-[15px] xl:!px-5${ctaRest ? ' is-rest' : ''}`}
+            className="btn btn-action header-cta !min-h-[44px] !whitespace-nowrap !px-4 !text-[15px] xl:!px-5"
           >
             {cta.primary}
             <span className="btn-arrow" aria-hidden="true">
@@ -269,11 +272,7 @@ export function SiteHeader() {
           onClick={() => setMenuOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
-          className={`site-header-menu flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden ${
-            scrolled
-              ? 'border-ink bg-paper text-ink focus-visible:outline-accent-deep'
-              : 'border-paper/60 bg-stage/30 text-paper focus-visible:outline-accent'
-          }`}
+          className="site-header-menu flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden"
         >
           <span className="sr-only">Open menu</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -308,7 +307,7 @@ export function SiteHeader() {
             </div>
             <nav aria-label="Mobile" className="flex flex-1 flex-col gap-1 overflow-y-auto px-5 py-8">
               {navLinks.map((link) => {
-                const isActive = activeSection === link.href
+                const isActive = headerRef.current?.dataset.active === link.href
                 return (
                   <a
                     key={link.href}
@@ -329,7 +328,9 @@ export function SiteHeader() {
               <a
                 href="#opportunity-review"
                 onClick={closeMenu}
-                className={`btn btn-action-dark header-cta mt-6 !text-lg${ctaRest ? ' is-rest' : ''}`}
+                className={`btn btn-action-dark header-cta mt-6 !text-lg${
+                  headerRef.current?.classList.contains('is-cta-rest') ? ' is-rest' : ''
+                }`}
               >
                 {cta.primary}
                 <span className="btn-arrow" aria-hidden="true">

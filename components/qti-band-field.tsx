@@ -78,7 +78,7 @@ export function QtiBandField() {
         if (capable && near) loadShader()
         setPaused(document.hidden || !near)
       },
-      { rootMargin: '160px 0px', threshold: 0.01 },
+      { rootMargin: '0px 0px -28% 0px', threshold: 0.12 },
     )
     io.observe(root)
 

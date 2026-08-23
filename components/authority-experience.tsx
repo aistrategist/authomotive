@@ -403,6 +403,9 @@ type ProjectionGeom = {
   h: number
 } | null
 
+const AE_MAX_FEEDERS = 4
+const AE_MAX_NODES = 5
+
 function AuthorityProjectionPath({
   stageRef,
   browserRef,
@@ -417,17 +420,105 @@ function AuthorityProjectionPath({
   reduced: boolean
 }) {
   const svgRef = useRef<SVGSVGElement>(null)
-  const [geom, setGeom] = useState<ProjectionGeom>(null)
+  const geomRef = useRef<ProjectionGeom>(null)
   const geomSigRef = useRef('')
   const pathTlRef = useRef<gsap.core.Timeline | null>(null)
   const drawnViewRef = useRef<ViewId | null>(null)
 
-  const commitGeom = useCallback((next: ProjectionGeom) => {
-    const signature = geomSignature(next)
-    if (signature === geomSigRef.current) return
-    geomSigRef.current = signature
-    setGeom(next)
-  }, [])
+  const paintGeom = useCallback(
+    (next: ProjectionGeom, replay: boolean) => {
+      const svg = svgRef.current
+      if (!svg) return
+      geomRef.current = next
+      pathTlRef.current?.kill()
+      pathTlRef.current = null
+
+      if (!next) {
+        svg.style.display = 'none'
+        return
+      }
+
+      svg.style.display = ''
+      svg.setAttribute('width', String(next.w))
+      svg.setAttribute('height', String(next.h))
+      svg.setAttribute('viewBox', `0 0 ${next.w} ${next.h}`)
+      svg.dataset.lens = next.view
+
+      const feeders = Array.from(svg.querySelectorAll<SVGPathElement>('.ae-route-feeder'))
+      const bus = svg.querySelector<SVGPathElement>('.ae-route-bus')
+      const outlet = svg.querySelector<SVGPathElement>('.ae-route-outlet')
+      const nodes = Array.from(svg.querySelectorAll<SVGCircleElement>('.ae-route-node'))
+
+      feeders.forEach((path, i) => {
+        const feeder = next.feeders[i]
+        if (!feeder) {
+          path.style.display = 'none'
+          path.removeAttribute('data-station')
+          return
+        }
+        path.style.display = ''
+        path.setAttribute('d', feeder.d)
+        path.dataset.station = feeder.station
+        path.dataset.routeIndex = String(i)
+      })
+      if (bus) bus.setAttribute('d', next.bus)
+      if (outlet) outlet.setAttribute('d', next.outlet)
+      nodes.forEach((node, i) => {
+        const pt = next.nodes[i]
+        if (!pt) {
+          node.style.display = 'none'
+          return
+        }
+        node.style.display = ''
+        node.setAttribute('cx', String(pt.x))
+        node.setAttribute('cy', String(pt.y))
+      })
+
+      const liveFeeders = feeders.filter((_, i) => next.feeders[i])
+      const paths = [...liveFeeders, bus, outlet].filter(
+        (path): path is SVGPathElement => path instanceof SVGPathElement,
+      )
+      const liveNodes = nodes.filter((_, i) => next.nodes[i])
+
+      if (!replay || reduced || window.innerWidth < 1200) {
+        paths.forEach((path) => {
+          gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0, autoAlpha: 1 })
+        })
+        if (liveNodes.length) gsap.set(liveNodes, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%' })
+        return
+      }
+
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+      const draw = (path: SVGPathElement, at: number, duration: number) => {
+        const length = path.getTotalLength()
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, autoAlpha: 1 })
+        tl.to(path, { strokeDashoffset: 0, duration }, at)
+      }
+      liveFeeders.forEach((path, i) => draw(path, i * 0.035, 0.16))
+      if (bus) draw(bus, 0.12, 0.24)
+      if (outlet) draw(outlet, 0.3, 0.16)
+      if (liveNodes.length) {
+        gsap.set(liveNodes, { scale: 0.4, autoAlpha: 0, transformOrigin: '50% 50%' })
+        liveNodes.forEach((node, i) => {
+          tl.to(node, { scale: 1, autoAlpha: 1, duration: 0.12 }, 0.14 + i * 0.02)
+        })
+      }
+      pathTlRef.current = tl
+    },
+    [reduced],
+  )
+
+  const commitGeom = useCallback(
+    (next: ProjectionGeom) => {
+      const signature = geomSignature(next)
+      if (signature === geomSigRef.current) return
+      geomSigRef.current = signature
+      const replay = Boolean(next && drawnViewRef.current !== next.view)
+      drawnViewRef.current = next?.view ?? null
+      paintGeom(next, replay)
+    },
+    [paintGeom],
+  )
 
   const measure = useCallback(() => {
     const stage = stageRef.current
@@ -541,84 +632,40 @@ function AuthorityProjectionPath({
   }, [measure, stageRef, browserRef, dockRef])
 
   useLayoutEffect(() => {
-    const svg = svgRef.current
-    pathTlRef.current?.kill()
-    pathTlRef.current = null
-    if (!geom || !svg) {
-      drawnViewRef.current = null
-      return
-    }
-
-    const feeders = Array.from(svg.querySelectorAll<SVGPathElement>('.ae-route-feeder'))
-    const bus = svg.querySelector<SVGPathElement>('.ae-route-bus')
-    const outlet = svg.querySelector<SVGPathElement>('.ae-route-outlet')
-    const nodes = Array.from(svg.querySelectorAll<SVGElement>('.ae-route-node'))
-    const paths = [...feeders, bus, outlet].filter(
-      (path): path is SVGPathElement => path instanceof SVGPathElement,
-    )
-    if (!paths.length) return
-
-    const replay = drawnViewRef.current !== geom.view
-    drawnViewRef.current = geom.view
-
-    if (reduced || window.innerWidth < 1200 || !replay) {
-      paths.forEach((path) => {
-        gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0, autoAlpha: 1 })
-      })
-      if (nodes.length) gsap.set(nodes, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%' })
-      return
-    }
-
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
-    const draw = (path: SVGPathElement, at: number, duration: number) => {
-      const length = path.getTotalLength()
-      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, autoAlpha: 1 })
-      tl.to(path, { strokeDashoffset: 0, duration }, at)
-    }
-    feeders.forEach((path, i) => draw(path, i * 0.035, 0.16))
-    if (bus) draw(bus, 0.12, 0.24)
-    if (outlet) draw(outlet, 0.3, 0.16)
-    if (nodes.length) {
-      gsap.set(nodes, { scale: 0.4, autoAlpha: 0, transformOrigin: '50% 50%' })
-      nodes.forEach((node, i) => {
-        tl.to(node, { scale: 1, autoAlpha: 1, duration: 0.12 }, 0.14 + i * 0.02)
-      })
-    }
-    pathTlRef.current = tl
     return () => {
-      tl.kill()
+      pathTlRef.current?.kill()
+      pathTlRef.current = null
     }
-  }, [geom, view, reduced])
-
-  if (!geom) return null
+  }, [])
 
   return (
     <svg
       ref={svgRef}
       className="ae-projection"
-      width={geom.w}
-      height={geom.h}
-      viewBox={`0 0 ${geom.w} ${geom.h}`}
+      width="0"
+      height="0"
+      viewBox="0 0 0 0"
       aria-hidden="true"
       focusable="false"
       data-lens={view}
+      style={{ display: 'none' }}
     >
-      {geom.feeders.map((feeder, i) => (
+      {Array.from({ length: AE_MAX_FEEDERS }, (_, i) => (
         <path
-          key={feeder.station}
+          key={`feeder-${i}`}
           className="ae-route-path ae-route-feeder ae-projection-path"
           data-route-index={i}
-          data-station={feeder.station}
-          d={feeder.d}
+          d=""
           fill="none"
           strokeWidth="3"
           vectorEffect="non-scaling-stroke"
           shapeRendering="crispEdges"
+          style={{ display: 'none' }}
         />
       ))}
       <path
         className="ae-route-path ae-route-bus ae-projection-path"
-        d={geom.bus}
+        d=""
         fill="none"
         strokeWidth="3"
         vectorEffect="non-scaling-stroke"
@@ -626,20 +673,14 @@ function AuthorityProjectionPath({
       />
       <path
         className="ae-route-path ae-route-outlet ae-projection-path"
-        d={geom.outlet}
+        d=""
         fill="none"
         strokeWidth="3"
         vectorEffect="non-scaling-stroke"
         shapeRendering="crispEdges"
       />
-      {geom.nodes.map((node, i) => (
-        <circle
-          key={`${node.x}-${node.y}-${i}`}
-          className="ae-route-node"
-          cx={node.x}
-          cy={node.y}
-          r="3"
-        />
+      {Array.from({ length: AE_MAX_NODES }, (_, i) => (
+        <circle key={`node-${i}`} className="ae-route-node" cx="0" cy="0" r="3" style={{ display: 'none' }} />
       ))}
     </svg>
   )

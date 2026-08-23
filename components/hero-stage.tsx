@@ -7,7 +7,7 @@
  * Three website-visitor glyphs (Search / AI / Local) with pace variance + thinking pauses.
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 
 const VB_W = 640
 const VB_H = 420
@@ -550,6 +550,261 @@ function PageWireframe({
   )
 }
 
+const HeroStageAtmosphere = memo(function HeroStageAtmosphere() {
+  return (
+    <>
+      <defs>
+        <pattern id="hs-map-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+          <path className="hs-map-grid-line" d="M28 0H0V28" fill="none" />
+        </pattern>
+        <radialGradient id="hs-grid-fade" cx="48%" cy="46%" r="62%">
+          <stop offset="0%" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="70%" stopColor="#fff" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+        <mask id="hs-grid-mask">
+          <rect width={VB_W} height={VB_H} fill="url(#hs-grid-fade)" />
+        </mask>
+      </defs>
+
+      <g className="hs-grid-fragments" mask="url(#hs-grid-mask)" opacity="0.45">
+        <rect x="40" y="20" width="220" height="180" fill="url(#hs-map-grid)" />
+        <rect x="300" y="40" width="240" height="200" fill="url(#hs-map-grid)" />
+        <rect x="80" y="220" width="260" height="170" fill="url(#hs-map-grid)" />
+        <rect x="360" y="250" width="200" height="140" fill="url(#hs-map-grid)" />
+      </g>
+    </>
+  )
+})
+
+const HeroTravelers = memo(function HeroTravelers({
+  assign,
+}: {
+  assign: (id: ChannelId, el: SVGGElement | null) => void
+}) {
+  return (
+    <>
+      {CHANNELS.map((ch) => (
+        <g
+          key={ch.id}
+          ref={(el) => assign(ch.id, el)}
+          className={`hs-traveler hs-traveler-${ch.id}`}
+          style={{ offsetRotate: '0deg' }}
+        >
+          <g className="hs-packet-steer" transform={`translate(0 ${ch.lane})`}>
+            <VisitorFace color={ch.color} variant={ch.face} />
+          </g>
+        </g>
+      ))}
+    </>
+  )
+})
+
+const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) {
+  const winningBranches = new Set(
+    CHANNELS.filter((ch) => ui.flashes[ch.id] === 'convert').map((ch) => ui.branch[ch.id]),
+  )
+  const anyConvertWin = winningBranches.size > 0
+
+  return (
+    <>
+      {PAGES.map((page) => (
+        <PageWireframe
+          key={page.id}
+          id={page.id}
+          x={page.x}
+          y={page.y}
+          label={page.label}
+          variant={page.id}
+          lit={Object.values(ui.flashes).includes(page.id)}
+        />
+      ))}
+
+      <g className="hs-trail-layer">
+        <path className="hs-trail-glow" d={TRAIL_MAIN} />
+        {BRANCH_IDS.map((id) => (
+          <path
+            key={`glow-${id}`}
+            className="hs-trail-glow hs-trail-glow-branch"
+            d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
+          />
+        ))}
+        <path className="hs-trail-base" d={TRAIL_MAIN} />
+        {BRANCH_IDS.map((id) => (
+          <path
+            key={`base-${id}`}
+            className={`hs-trail-base hs-trail-base-branch${
+              winningBranches.has(id) ? ' is-hot' : ''
+            }${anyConvertWin && !winningBranches.has(id) ? ' is-muted' : ''}`}
+            d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
+          />
+        ))}
+        {TRAIL_SEGMENTS.map((seg) => {
+          const isBranch = seg.id === 'phone' || seg.id === 'form' || seg.id === 'lead'
+          const hot = isBranch && winningBranches.has(seg.id)
+          const muted = isBranch && anyConvertWin && !winningBranches.has(seg.id)
+          return (
+            <path
+              key={seg.id}
+              className={`hs-trail-seg hs-trail-seg-${seg.tone}${isBranch ? ' hs-trail-branch' : ''}${
+                hot ? ' is-hot' : ''
+              }${muted ? ' is-muted' : ''}`}
+              d={seg.d}
+            />
+          )
+        })}
+        <path className="hs-trail-center" d={TRAIL_MAIN} />
+        {BRANCH_IDS.map((id) => (
+          <path
+            key={`center-${id}`}
+            className={`hs-trail-center hs-trail-center-branch${
+              winningBranches.has(id) ? ' is-hot' : ''
+            }${anyConvertWin && !winningBranches.has(id) ? ' is-muted' : ''}`}
+            d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
+          />
+        ))}
+        {STAGE_WAYPOINTS.map((wp) => (
+          <circle key={`node-${wp.id}`} className="hs-trail-node" cx={wp.cx} cy={wp.cy} r="16" />
+        ))}
+      </g>
+
+      <g
+        className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
+        transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
+      >
+        <circle className="hs-hub-bloom" r="36" fill="rgba(232,238,245,0.12)" />
+        <circle r="22" fill="#b8c1cc" />
+        <circle r="22" fill="none" stroke="rgba(255,252,247,0.35)" strokeWidth="1.35" />
+        <CarGlyph />
+      </g>
+
+      <g className="hs-start" transform={`translate(${SEARCH.cx} ${SEARCH.cy})`}>
+        <circle className="hs-convert-disc" r="16" fill="#b8c1cc" />
+        <circle r="16" fill="none" stroke="rgba(255,252,247,0.28)" strokeWidth="1.25" />
+        <SearchGlyph />
+      </g>
+
+      {STAGE_WAYPOINTS.map((wp) => (
+        <g key={wp.id}>
+          {CHANNELS.map((ch) => (
+            <circle
+              key={ch.id}
+              className={`hs-ring hs-ring-${ch.id}${ui.flashes[ch.id] === wp.id ? ' is-flash' : ''}`}
+              cx={wp.cx}
+              cy={wp.cy}
+              r="18"
+              fill="none"
+              stroke={ch.color}
+              strokeWidth="2"
+            />
+          ))}
+        </g>
+      ))}
+
+      {CONVERSIONS.map((cv) => {
+        const isWin = winningBranches.has(cv.id)
+        const isDim = anyConvertWin && !isWin
+        return (
+          <g
+            key={cv.id}
+            className={`hs-convert hs-convert-${cv.id}${isWin ? ' is-win' : ''}${isDim ? ' is-dim' : ''}`}
+          >
+            <circle
+              className={`hs-win-glow${isWin ? ' is-flash' : ''}`}
+              cx={cv.cx}
+              cy={cv.cy}
+              r="30"
+              fill="var(--action)"
+              opacity="0"
+            />
+            <circle
+              className={`hs-win-ring hs-win-ring-a${isWin ? ' is-flash' : ''}`}
+              cx={cv.cx}
+              cy={cv.cy}
+              r="16"
+              fill="none"
+              stroke="var(--action)"
+              strokeWidth="2"
+              opacity="0"
+            />
+            <circle
+              className={`hs-win-ring hs-win-ring-b${isWin ? ' is-flash' : ''}`}
+              cx={cv.cx}
+              cy={cv.cy}
+              r="16"
+              fill="none"
+              stroke="#fffcf7"
+              strokeWidth="1.4"
+              opacity="0"
+            />
+            <circle className="hs-convert-disc" cx={cv.cx} cy={cv.cy} r="13" fill="#b8c1cc" />
+            <g transform={`translate(${cv.cx} ${cv.cy})`}>
+              <g className="hs-convert-glyph">
+                <ConvertGlyph id={cv.id} />
+              </g>
+            </g>
+            <text
+              className="hs-convert-label"
+              x={cv.cx}
+              y={cv.cy + 26}
+              textAnchor="middle"
+              fill="rgba(255,252,247,0.58)"
+              style={{
+                fontSize: '8px',
+                letterSpacing: '0.12em',
+                fontFamily: 'ui-monospace, monospace',
+              }}
+            >
+              {cv.label}
+            </text>
+          </g>
+        )
+      })}
+    </>
+  )
+})
+
+const HeroTips = memo(function HeroTips({ ui }: { ui: UiSnap }) {
+  return (
+    <>
+      {STAGE_WAYPOINTS.flatMap((wp) =>
+        CHANNELS.map((ch) => (
+          <div
+            key={`${wp.id}-${ch.id}`}
+            className={`hs-tip hs-tip-${ch.tipLabel.toLowerCase()}${ui.tips[ch.id][wp.id] ? ' is-on' : ''}`}
+            style={{ left: wp.x, top: wp.y }}
+          >
+            <span className="hs-tip-dot" />
+            <span className="hs-tip-label">{wp.tip}</span>
+          </div>
+        )),
+      )}
+
+      {CHANNELS.map((ch) => {
+        const branch = CONVERSIONS.find((c) => c.id === ui.tipBranch[ch.id])!
+        const pos = tipPct(branch.cx, branch.cy)
+        const celebrating = ui.tips[ch.id].convert
+        const isLead = branch.id === 'lead'
+        return (
+          <div
+            key={`convert-${ch.id}`}
+            className={`hs-tip hs-tip-convert hs-tip-climax hs-tip-submit hs-tip-${ch.tipLabel.toLowerCase()}${
+              isLead ? ' hs-tip-win' : ''
+            }${celebrating ? ' is-on' : ''}`}
+            style={{ left: pos.x, top: pos.y }}
+          >
+            <span className="hs-tip-dot" />
+            <span className="hs-tip-icon" aria-hidden="true">
+              <ConvertTipIcon id={branch.id} />
+            </span>
+            <span className="hs-tip-label">{branch.tip}</span>
+          </div>
+        )
+      })}
+    </>
+  )
+})
+
 export function HeroStage() {
   const [ui, setUi] = useState<UiSnap>(() => ({
     tips: emptyChannelMap({}),
@@ -561,6 +816,9 @@ export function HeroStage() {
   const travelerEls = useRef(emptyChannelMap<SVGGElement | null>(null))
   const uiRef = useRef(ui)
   uiRef.current = ui
+  const assignTraveler = useCallback((id: ChannelId, el: SVGGElement | null) => {
+    travelerEls.current[id] = el
+  }, [])
 
   const simRef = useRef({
     reduced: false,
@@ -920,11 +1178,6 @@ export function HeroStage() {
     }
   }, [])
 
-  const winningBranches = new Set(
-    CHANNELS.filter((ch) => ui.flashes[ch.id] === 'convert').map((ch) => ui.branch[ch.id]),
-  )
-  const anyConvertWin = winningBranches.size > 0
-
   return (
     <div className="hero-stage relative mx-auto w-full max-w-[580px] overflow-visible lg:max-w-none">
       <p className="sr-only">
@@ -962,242 +1215,12 @@ export function HeroStage() {
             preserveAspectRatio="xMidYMid meet"
             overflow="visible"
           >
-            <defs>
-              <pattern id="hs-map-grid" width="28" height="28" patternUnits="userSpaceOnUse">
-                <path className="hs-map-grid-line" d="M28 0H0V28" fill="none" />
-              </pattern>
-              <radialGradient id="hs-grid-fade" cx="48%" cy="46%" r="62%">
-                <stop offset="0%" stopColor="#fff" stopOpacity="0.55" />
-                <stop offset="70%" stopColor="#fff" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-              </radialGradient>
-              <mask id="hs-grid-mask">
-                <rect width={VB_W} height={VB_H} fill="url(#hs-grid-fade)" />
-              </mask>
-            </defs>
-
-            <g className="hs-grid-fragments" mask="url(#hs-grid-mask)" opacity="0.45">
-              <rect x="40" y="20" width="220" height="180" fill="url(#hs-map-grid)" />
-              <rect x="300" y="40" width="240" height="200" fill="url(#hs-map-grid)" />
-              <rect x="80" y="220" width="260" height="170" fill="url(#hs-map-grid)" />
-              <rect x="360" y="250" width="200" height="140" fill="url(#hs-map-grid)" />
-            </g>
-
-            {PAGES.map((page) => (
-              <PageWireframe
-                key={page.id}
-                id={page.id}
-                x={page.x}
-                y={page.y}
-                label={page.label}
-                variant={page.id}
-                lit={Object.values(ui.flashes).includes(page.id)}
-              />
-            ))}
-
-            <g className="hs-trail-layer">
-              <path className="hs-trail-glow" d={TRAIL_MAIN} />
-              {BRANCH_IDS.map((id) => (
-                <path
-                  key={`glow-${id}`}
-                  className="hs-trail-glow hs-trail-glow-branch"
-                  d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
-                />
-              ))}
-              <path className="hs-trail-base" d={TRAIL_MAIN} />
-              {BRANCH_IDS.map((id) => (
-                <path
-                  key={`base-${id}`}
-                  className={`hs-trail-base hs-trail-base-branch${
-                    winningBranches.has(id) ? ' is-hot' : ''
-                  }${anyConvertWin && !winningBranches.has(id) ? ' is-muted' : ''}`}
-                  d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
-                />
-              ))}
-              {TRAIL_SEGMENTS.map((seg) => {
-                const isBranch =
-                  seg.id === 'phone' || seg.id === 'form' || seg.id === 'lead'
-                const hot = isBranch && winningBranches.has(seg.id)
-                const muted = isBranch && anyConvertWin && !winningBranches.has(seg.id)
-                return (
-                  <path
-                    key={seg.id}
-                    className={`hs-trail-seg hs-trail-seg-${seg.tone}${isBranch ? ' hs-trail-branch' : ''}${
-                      hot ? ' is-hot' : ''
-                    }${muted ? ' is-muted' : ''}`}
-                    d={seg.d}
-                  />
-                )
-              })}
-              <path className="hs-trail-center" d={TRAIL_MAIN} />
-              {BRANCH_IDS.map((id) => (
-                <path
-                  key={`center-${id}`}
-                  className={`hs-trail-center hs-trail-center-branch${
-                    winningBranches.has(id) ? ' is-hot' : ''
-                  }${anyConvertWin && !winningBranches.has(id) ? ' is-muted' : ''}`}
-                  d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
-                />
-              ))}
-              {STAGE_WAYPOINTS.map((wp) => (
-                <circle key={`node-${wp.id}`} className="hs-trail-node" cx={wp.cx} cy={wp.cy} r="16" />
-              ))}
-            </g>
-
-            <g
-              className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
-              transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
-            >
-              <circle className="hs-hub-bloom" r="36" fill="rgba(232,238,245,0.12)" />
-              <circle r="22" fill="#b8c1cc" />
-              <circle r="22" fill="none" stroke="rgba(255,252,247,0.35)" strokeWidth="1.35" />
-              <CarGlyph />
-            </g>
-
-            <g className="hs-start" transform={`translate(${SEARCH.cx} ${SEARCH.cy})`}>
-              <circle className="hs-convert-disc" r="16" fill="#b8c1cc" />
-              <circle r="16" fill="none" stroke="rgba(255,252,247,0.28)" strokeWidth="1.25" />
-              <SearchGlyph />
-            </g>
-
-              {STAGE_WAYPOINTS.map((wp) => (
-                <g key={wp.id}>
-                  {CHANNELS.map((ch) => (
-                    <circle
-                      key={ch.id}
-                      className={`hs-ring hs-ring-${ch.id}${ui.flashes[ch.id] === wp.id ? ' is-flash' : ''}`}
-                      cx={wp.cx}
-                      cy={wp.cy}
-                      r="18"
-                      fill="none"
-                      stroke={ch.color}
-                      strokeWidth="2"
-                    />
-                  ))}
-                </g>
-              ))}
-
-            {CONVERSIONS.map((cv) => {
-              const isWin = winningBranches.has(cv.id)
-              const isDim = anyConvertWin && !isWin
-              return (
-                <g
-                  key={cv.id}
-                  className={`hs-convert hs-convert-${cv.id}${isWin ? ' is-win' : ''}${
-                    isDim ? ' is-dim' : ''
-                  }`}
-                >
-                  <circle
-                    className={`hs-win-glow${isWin ? ' is-flash' : ''}`}
-                    cx={cv.cx}
-                    cy={cv.cy}
-                    r="30"
-                    fill="var(--action)"
-                    opacity="0"
-                  />
-                  <circle
-                    className={`hs-win-ring hs-win-ring-a${isWin ? ' is-flash' : ''}`}
-                    cx={cv.cx}
-                    cy={cv.cy}
-                    r="16"
-                    fill="none"
-                    stroke="var(--action)"
-                    strokeWidth="2"
-                    opacity="0"
-                  />
-                  <circle
-                    className={`hs-win-ring hs-win-ring-b${isWin ? ' is-flash' : ''}`}
-                    cx={cv.cx}
-                    cy={cv.cy}
-                    r="16"
-                    fill="none"
-                    stroke="#fffcf7"
-                    strokeWidth="1.4"
-                    opacity="0"
-                  />
-                  <circle
-                    className="hs-convert-disc"
-                    cx={cv.cx}
-                    cy={cv.cy}
-                    r="13"
-                    fill="#b8c1cc"
-                  />
-                  <g transform={`translate(${cv.cx} ${cv.cy})`}>
-                    <g className="hs-convert-glyph">
-                      <ConvertGlyph id={cv.id} />
-                    </g>
-                  </g>
-                  <text
-                    className="hs-convert-label"
-                    x={cv.cx}
-                    y={cv.cy + 26}
-                    textAnchor="middle"
-                    fill="rgba(255,252,247,0.58)"
-                    style={{
-                      fontSize: '8px',
-                      letterSpacing: '0.12em',
-                      fontFamily: 'ui-monospace, monospace',
-                    }}
-                  >
-                    {cv.label}
-                  </text>
-                </g>
-              )
-            })}
-
-            {CHANNELS.map((ch) => (
-              <g
-                key={ch.id}
-                ref={(el) => {
-                  travelerEls.current[ch.id] = el
-                }}
-                className={`hs-traveler hs-traveler-${ch.id}`}
-                style={{ offsetRotate: '0deg' }}
-              >
-                <g
-                  className="hs-packet-steer"
-                  transform={`translate(0 ${ch.lane})`}
-                >
-                  <VisitorFace color={ch.color} variant={ch.face} />
-                </g>
-              </g>
-            ))}
+            <HeroStageAtmosphere />
+            <HeroStageSignals ui={ui} />
+            <HeroTravelers assign={assignTraveler} />
           </svg>
 
-          {STAGE_WAYPOINTS.flatMap((wp) =>
-            CHANNELS.map((ch) => (
-              <div
-                key={`${wp.id}-${ch.id}`}
-                className={`hs-tip hs-tip-${ch.tipLabel.toLowerCase()}${ui.tips[ch.id][wp.id] ? ' is-on' : ''}`}
-                style={{ left: wp.x, top: wp.y }}
-              >
-                <span className="hs-tip-dot" />
-                <span className="hs-tip-label">{wp.tip}</span>
-              </div>
-            )),
-          )}
-
-          {CHANNELS.map((ch) => {
-            const branch = CONVERSIONS.find((c) => c.id === ui.tipBranch[ch.id])!
-            const pos = tipPct(branch.cx, branch.cy)
-            const celebrating = ui.tips[ch.id].convert
-            const isLead = branch.id === 'lead'
-            return (
-              <div
-                key={`convert-${ch.id}`}
-                className={`hs-tip hs-tip-convert hs-tip-climax hs-tip-submit hs-tip-${ch.tipLabel.toLowerCase()}${
-                  isLead ? ' hs-tip-win' : ''
-                }${celebrating ? ' is-on' : ''}`}
-                style={{ left: pos.x, top: pos.y }}
-              >
-                <span className="hs-tip-dot" />
-                <span className="hs-tip-icon" aria-hidden="true">
-                  <ConvertTipIcon id={branch.id} />
-                </span>
-                <span className="hs-tip-label">{branch.tip}</span>
-              </div>
-            )
-          })}
+          <HeroTips ui={ui} />
         </div>
       </div>
     </div>
