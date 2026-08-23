@@ -14,7 +14,7 @@ type MeasureEvent = (typeof measurement.events)[number]
 const stream = [...measurement.events].sort((a, b) => b.stamp.localeCompare(a.stamp))
 const hitTotal = String(stream.length).padStart(2, '0')
 const INSPECTOR_ID = 'ma-inspector'
-const DEFAULT_HIT = measurement.events.find((row) => row.id === 'campaign')?.id ?? stream[0]!.id
+const DEFAULT_HIT = measurement.events.find((row) => row.id === 'call')?.id ?? stream[0]!.id
 
 function hitIndex(row: MeasureEvent) {
   const chronological = [...measurement.events].sort((a, b) => a.stamp.localeCompare(b.stamp))
@@ -146,6 +146,9 @@ export function SignalArchitecture() {
             <p className="mt-2.5 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-stage-muted md:text-xs">
               {measurement.stack}
             </p>
+            <p className="mt-2 text-sm leading-relaxed text-stage-muted text-pretty">
+              {measurement.principle}
+            </p>
           </div>
         </div>
 
@@ -205,7 +208,7 @@ export function SignalArchitecture() {
         <ol
           id="how-it-works"
           className="ma-cycle mt-8 grid scroll-mt-24 gap-px sm:grid-cols-2 lg:grid-cols-4"
-          aria-label="Observe, connect, understand, decide"
+          aria-label="Define, implement, verify, report"
         >
           {measurement.cycle.map((stage) => (
             <li key={stage.id} className="ma-cell px-4 py-3">
@@ -261,7 +264,7 @@ function StreamRow({
       type="button"
       aria-pressed={selected}
       aria-controls={INSPECTOR_ID}
-      aria-label={`View signal details for ${row.action}`}
+      aria-label={`View event explanation for ${row.action}`}
       onClick={onSelect}
       className={`ma-line ma-cols w-full px-4 py-2.5 text-left md:items-baseline md:px-5 ${
         selected ? 'is-on' : ''
@@ -283,32 +286,23 @@ function StreamRow({
 
 function Inspector({ row }: { row: MeasureEvent }) {
   return (
-    <div id={INSPECTOR_ID} className="ma-inspector px-4 py-4 md:px-5 md:py-5">
-      <p className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-action">
-        Why this signal matters
+    <div
+      id={INSPECTOR_ID}
+      className="ma-inspector px-5 py-6 md:px-6 md:py-8"
+      role="region"
+      aria-labelledby="ma-inspector-heading"
+    >
+      <p
+        id="ma-inspector-heading"
+        className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-action"
+      >
+        What this event means
       </p>
-      <p className="mt-1 text-base font-semibold text-porcelain">{row.action}</p>
-      <dl className="ma-read mt-4">
-        <div>
-          <dt className="font-mono">What happened</dt>
-          <dd>{row.popout.happened}</dd>
-        </div>
-        <div>
-          <dt className="font-mono">Why it matters</dt>
-          <dd>{row.popout.why}</dd>
-        </div>
-        <div>
-          <dt className="font-mono">What we connect</dt>
-          <dd>{row.popout.connect}</dd>
-        </div>
-        <div>
-          <dt className="font-mono">What it helps answer</dt>
-          <dd>{row.popout.answers}</dd>
-        </div>
-      </dl>
-      <p className="ma-tech mt-4 font-mono">
-        EVENT {row.event} · SOURCE {row.kind} · DESTINATION GA4
+      <p className="mt-2 text-lg font-semibold tracking-tight text-porcelain md:text-xl">
+        {row.action}
       </p>
+      <p className="ma-meaning mt-4 text-pretty">{row.meaning}</p>
+      <p className="ma-tech mt-5 font-mono">{row.path}</p>
     </div>
   )
 }

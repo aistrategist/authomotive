@@ -3287,29 +3287,16 @@ html {
 .ma-inspector {
   border-top: 1px solid var(--stage-line);
 }
-.ma-read {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.7rem 0.9rem;
-}
-.ma-read dt {
-  margin: 0;
-  font-size: 0.5rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--action);
-}
-.ma-read dd {
-  margin: 0.22rem 0 0;
-  font-size: 0.8125rem;
-  line-height: 1.4;
+.ma-meaning {
+  max-width: 28rem;
+  font-size: 1.0625rem;
+  line-height: 1.5;
   color: var(--porcelain);
 }
 .ma-tech {
   margin: 0;
-  font-size: 0.5625rem;
-  letter-spacing: 0.08em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--stage-muted);
 }
@@ -3317,8 +3304,9 @@ html {
   .ma-inspector {
     border-top: 0;
   }
-  .ma-read {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .ma-meaning {
+    font-size: 1.1875rem;
+    line-height: 1.45;
   }
 }
 .ma-params {

@@ -326,20 +326,20 @@ export const reporting = {
 
 export const measurement = {
   eyebrow: 'ASC · SIGNAL ARCHITECTURE',
-  headline: 'Know what your marketing actually creates.',
+  headline: 'Make sure the actions that matter actually show up.',
   supporting:
-    'Calls, forms, inventory activity, digital retail, and measurable campaign responses become connected signals instead of scattered vendor numbers. We use them to show what shoppers actually did—and what deserves attention next.',
-  stack:
-    'Connected through GA4, GTM, ASC events, advertising pixels, and the signals your vendors expose.',
+    'We manage the GTM and GA4 event structure behind calls, forms, inventory activity, digital retail, Authority Experiences, and the measurable signals your vendors expose—so reporting is built on consistent, verified events.',
+  stack: 'Event planning · GTM implementation · GA4 structure · QA · reporting',
+  principle: 'If the vendor does not expose a signal, we do not invent one.',
   payoff:
-    'Know which marketing and website experiences are actually moving shoppers toward inventory and leads.',
+    'The result: cleaner measurement and a monthly report built on website actions we can actually verify.',
   product: 'CAPTURE · LIVE',
   planKind: 'GTM / GA4',
   path: 'dataLayer → GTM → GA4',
   events: [
     {
       id: 'campaign',
-      action: 'TV / CTV response',
+      action: 'TV / CTV campaign visit',
       event: 'campaign_visit',
       kind: 'GA4',
       stamp: '00:02.1',
@@ -349,12 +349,9 @@ export const measurement = {
         { key: 'medium', value: 'tv' },
         { key: 'campaign', value: 'tagged' },
       ],
-      popout: {
-        happened: 'A measurable website visit arrived from a connected TV/CTV campaign.',
-        why: 'Awareness spend can be evaluated against actual website behavior instead of impressions alone.',
-        connect: 'Campaign → landing page → inventory activity → lead events.',
-        answers: 'Are media dollars creating shoppers who actually move toward inventory?',
-      },
+      meaning:
+        'A measurable visit arrived from a tagged TV/CTV campaign. When that source is exposed, we preserve it in GA4 so it can be represented accurately in reporting.',
+      path: 'campaign_visit · CAMPAIGN → GA4 → REPORT',
     },
     {
       id: 'select',
@@ -368,12 +365,9 @@ export const measurement = {
         { key: 'item_id', value: 'unit' },
         { key: 'item_category', value: 'used' },
       ],
-      popout: {
-        happened: 'A shopper entered or interacted with dealership inventory results.',
-        why: 'Discovery has progressed into actual vehicle shopping.',
-        connect: 'Source or research page → VSRP → selected inventory.',
-        answers: 'Which discovery paths are creating inventory engagement?',
-      },
+      meaning:
+        'A shopper interacted with dealership inventory results. We confirm that inventory activity is captured consistently and available as a usable reporting signal.',
+      path: 'select_item · WEBSITE → GA4 → REPORT',
     },
     {
       id: 'vdp',
@@ -387,12 +381,9 @@ export const measurement = {
         { key: 'item_category', value: 'used' },
         { key: 'item_list_name', value: 'srp_used' },
       ],
-      popout: {
-        happened: 'A shopper reached an individual vehicle detail page.',
-        why: 'Website activity has progressed into consideration of a specific vehicle.',
-        connect: 'Landing source → research or VSRP path → VDP.',
-        answers: 'Which pathways are producing deeper vehicle interest?',
-      },
+      meaning:
+        'A shopper reached a specific vehicle detail page. We verify the inventory event is structured correctly so VDP activity can be read consistently in GA4 and reporting.',
+      path: 'view_item · WEBSITE → GA4 → REPORT',
     },
     {
       id: 'cta',
@@ -406,12 +397,9 @@ export const measurement = {
         { key: 'content_type', value: 'authority' },
         { key: 'event_action_result', value: 'success' },
       ],
-      popout: {
-        happened: 'A shopper used an Authority Experience to move further into a vehicle decision.',
-        why: 'Research content becomes measurable buyer behavior instead of anonymous page traffic.',
-        connect: 'Buyer question → interaction → inventory → lead activity.',
-        answers: 'Which research experiences are actually moving shoppers deeper into the dealership?',
-      },
+      meaning:
+        'A shopper interacted with an Authority Experience. We instrument that action so movement from research toward inventory can appear clearly in reporting.',
+      path: 'asc_cta_interaction · AUTHORITY → GTM → GA4 → REPORT',
     },
     {
       id: 'retail',
@@ -425,12 +413,9 @@ export const measurement = {
         { key: 'flow_outcome', value: 'start' },
         { key: 'department', value: 'sales' },
       ],
-      popout: {
-        happened: 'A shopper entered a measurable digital retail process.',
-        why: 'The buyer has moved beyond browsing into a higher-intent shopping action.',
-        connect: 'Discovery → inventory → vehicle → retail interaction.',
-        answers: 'Which pages and inventory pathways are feeding digital retail activity?',
-      },
+      meaning:
+        'A shopper entered a digital retail process. When the retail provider exposes that action, we preserve it as its own measurable event instead of blending it into a generic lead.',
+      path: 'asc_retail_process · VENDOR → GTM → GA4 → REPORT',
     },
     {
       id: 'form',
@@ -444,12 +429,9 @@ export const measurement = {
         { key: 'department', value: 'sales' },
         { key: 'comm_type', value: 'form' },
       ],
-      popout: {
-        happened: 'A shopper completed a tracked dealership form.',
-        why: 'This is a measurable outcome that can be connected back to the path that produced it.',
-        connect: 'Source → landing page → inventory activity → form submission.',
-        answers: 'Which experiences are contributing to actual lead generation?',
-      },
+      meaning:
+        'A shopper completed a dealership form. We confirm that the submission fires consistently and remains a clean, reportable lead event.',
+      path: 'asc_form_submission · GTM → GA4 → REPORT',
     },
     {
       id: 'call',
@@ -463,12 +445,9 @@ export const measurement = {
         { key: 'department', value: 'sales' },
         { key: 'event_action_result', value: 'click' },
       ],
-      popout: {
-        happened: 'A shopper tapped a tracked dealership phone number.',
-        why: 'This is a real lead action—not another page view.',
-        connect: 'Landing page → research or inventory path → phone event.',
-        answers: 'Which pages and campaigns are producing phone opportunities?',
-      },
+      meaning:
+        'A shopper clicked a dealership phone number. We verify that the call event fires correctly, stays distinct from other lead actions, and is available in GA4 and reporting.',
+      path: 'asc_click_to_call · GTM → GA4 → REPORT',
     },
     {
       id: 'comm',
@@ -482,19 +461,16 @@ export const measurement = {
         { key: 'department', value: 'sales' },
         { key: 'event_action_result', value: 'success' },
       ],
-      popout: {
-        happened: 'A shopper started a measurable chat or SMS conversation.',
-        why: 'A digital interaction has progressed into direct communication with the dealership.',
-        connect: 'Source → shopper path → communication event.',
-        answers: 'Which experiences are creating direct sales conversations?',
-      },
+      meaning:
+        'A shopper started a chat or SMS conversation. When the vendor exposes that signal, we map it into the event structure so it can be reported consistently.',
+      path: 'asc_comm_submission · VENDOR → GTM → GA4 → REPORT',
     },
   ],
   cycle: [
-    { id: 'observe', n: '01', label: 'Observe', lead: 'See what your marketing creates.' },
-    { id: 'connect', n: '02', label: 'Connect', lead: 'Tie discovery to inventory and leads.' },
-    { id: 'understand', n: '03', label: 'Understand', lead: 'Know which pathways are working.' },
-    { id: 'decide', n: '04', label: 'Decide', lead: 'Put the next effort where it matters.' },
+    { id: 'define', n: '01', label: 'Define', lead: 'Name the actions that matter.' },
+    { id: 'implement', n: '02', label: 'Implement', lead: 'Build the GTM + GA4 event structure.' },
+    { id: 'verify', n: '03', label: 'Verify', lead: 'Confirm available signals fire correctly.' },
+    { id: 'report', n: '04', label: 'Report', lead: 'Use verified events in the monthly read.' },
   ],
   handoffLabel: 'NEXT · THE WORKING RELATIONSHIP',
   handoffHref: '#engagement',
