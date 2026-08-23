@@ -5592,26 +5592,27 @@ details.disclosure[open] > summary .disclosure-plus {
   z-index: -1;
   left: 50%;
   top: 50%;
-  width: 168%;
-  height: 156%;
+  width: 180%;
+  height: 170%;
   pointer-events: none;
-  opacity: 0.86;
-  filter: blur(26px);
+  opacity: 1;
+  filter: blur(22px);
   background:
     radial-gradient(
-      ellipse 48% 42% at 36% 40%,
-      color-mix(in srgb, var(--paper) 58%, transparent) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 44% 40% at 66% 58%,
-      color-mix(in srgb, var(--paper) 44%, transparent) 0%,
+      ellipse 54% 48% at 50% 46%,
+      color-mix(in srgb, var(--paper) 94%, transparent) 0%,
+      color-mix(in srgb, var(--paper) 78%, transparent) 38%,
       transparent 72%
     ),
     radial-gradient(
-      ellipse 68% 56% at 50% 50%,
-      color-mix(in srgb, var(--paper) 32%, transparent) 0%,
-      transparent 76%
+      ellipse 48% 42% at 34% 38%,
+      color-mix(in srgb, var(--paper) 70%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 72% 64% at 50% 52%,
+      color-mix(in srgb, var(--paper) 58%, transparent) 0%,
+      transparent 78%
     );
   transform: translate(-50%, -50%);
 }
