@@ -213,14 +213,14 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 border-b ${
+      className={`site-header fixed inset-x-0 top-0 z-50 border-b ${
         scrolled ? 'border-ink/10 bg-paper' : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-6 px-5 md:px-8">
+      <div className="site-header-bar mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-3 px-4 sm:gap-6 sm:px-5 md:px-8">
         <a
           href="#top"
-          className={`rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
+          className={`min-w-0 shrink rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
             scrolled ? 'focus-visible:outline-accent-deep' : 'focus-visible:outline-accent'
           }`}
         >
@@ -268,7 +268,7 @@ export function SiteHeader() {
           onClick={() => setMenuOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
-          className={`flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden ${
+          className={`site-header-menu flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden ${
             scrolled
               ? 'border-ink bg-paper text-ink focus-visible:outline-accent-deep'
               : 'border-paper/60 bg-stage/30 text-paper focus-visible:outline-accent'
@@ -289,9 +289,9 @@ export function SiteHeader() {
             role="dialog"
             aria-modal="true"
             aria-label="Site navigation"
-            className="fixed inset-0 z-50 flex h-dvh flex-col bg-stage"
+            className="site-nav-sheet fixed inset-0 z-[60] flex h-dvh flex-col bg-stage"
           >
-            <div className="flex h-[4.5rem] items-center justify-between border-b border-stage-line px-5">
+            <div className="flex h-[4.5rem] items-center justify-between border-b border-stage-line px-4 sm:px-5">
               <Wordmark inverted />
               <button
                 type="button"

@@ -208,7 +208,8 @@
   }
   html {
     scroll-behavior: auto;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: calc(6rem + env(safe-area-inset-top, 0px));
+    overflow-x: clip;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -218,6 +219,32 @@
   body {
     @apply bg-background text-foreground;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  .site-header {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .site-header-bar {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .site-header-menu {
+    flex-shrink: 0;
+    margin-left: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .site-nav-sheet {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
   }
 }
 
@@ -3392,7 +3419,7 @@
     linear-gradient(120deg, var(--stage-deep) 0%, var(--stage) 52%, var(--stage-elevated) 100%);
   display: flex;
   align-items: center;
-  padding-top: 6.25rem; /* 4.5rem header + 1.75rem air */
+  padding-top: calc(6.25rem + env(safe-area-inset-top, 0px)); /* header + air + notch */
   padding-bottom: 1.75rem;
 }
 
@@ -4547,7 +4574,7 @@
 
 @media (max-width: 1023px) {
   .hero-atmosphere {
-    padding-top: 5.75rem;
+    padding-top: calc(5.75rem + env(safe-area-inset-top, 0px));
     padding-bottom: 1.5rem;
   }
   .hero-enter-stage {
