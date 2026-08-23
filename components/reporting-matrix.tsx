@@ -13,7 +13,7 @@ function SourceChips({ activeSources }: { activeSources: string[] }) {
           <span
             key={source.id}
             className={`flex min-h-[32px] items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium ${
-              active ? 'border-proof-deep/50 bg-proof-soft text-ink' : 'border-border text-fog'
+              active ? 'border-proof-deep/50 bg-proof-soft text-ink' : 'border-border text-muted-foreground'
             }`}
           >
             <span

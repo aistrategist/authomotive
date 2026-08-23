@@ -336,7 +336,7 @@ export function SiteHeader() {
                   →
                 </span>
               </a>
-              <p className="mt-auto pt-10 text-sm text-fog">{siteConfig.tagline}</p>
+              <p className="mt-auto pt-10 text-sm text-stage-muted">{siteConfig.tagline}</p>
             </nav>
           </div>,
           document.body,

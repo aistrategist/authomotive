@@ -369,7 +369,7 @@ export function FinalCta() {
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="cta-notes" className={labelClasses}>
                     What should your website be doing better?{' '}
-                    <span className="font-normal text-fog">(optional)</span>
+                    <span className="font-normal text-[color:var(--on-ink-muted)]">(optional)</span>
                   </label>
                   <textarea id="cta-notes" name="notes" rows={4} className={inputClasses} />
                 </div>
@@ -410,7 +410,7 @@ export function FinalCta() {
                     </svg>
                   </span>
                 </button>
-                <p className="text-sm leading-relaxed text-fog">{finalCta.consent}</p>
+                <p className="text-sm leading-relaxed text-[color:var(--on-ink-muted)]">{finalCta.consent}</p>
               </form>
             )}
           </div>

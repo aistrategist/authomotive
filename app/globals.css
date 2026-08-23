@@ -43,8 +43,6 @@
   --color-action-strong: var(--action-strong);
   --color-action-foreground: var(--action-foreground);
   --color-lime-mist: var(--lime-mist);
-  --color-orange-mist: var(--orange-mist);
-  --color-teal-mist: var(--teal-mist);
   --color-accent-softest: var(--accent-softest);
   --color-accent-soft: var(--accent-soft);
   --color-accent-muted: var(--accent-muted);
@@ -151,16 +149,13 @@
   --action-deep: #a45118;
   --action-foreground: #061b20;
   --conversion: var(--action);
-  /* Journey titles on paper/alloy — burnt orange, ≥4.5:1 on light surfaces */
-  --journey-title: #954a15;
-
   /* Neutral content surfaces */
   --paper: #fffcf7;
   --porcelain: #e8eef5;
   --alloy: #dce5ee;
   --border: #d4dfea;
 
-  /* Hero Local source — proof family, not conversion apricot */
+  /* Legacy: proof-family aliases used by the hero Local HUD. Prefer --proof. */
   --hero-local: #c8b8ff;
   --hero-local-soft: #f1edff;
 
@@ -180,7 +175,13 @@
   --hero-panel-shadow: rgba(0, 0, 0, 0.24);
   --hero-panel-line: rgba(232, 238, 245, 0.11);
 
-  /* Legacy names — keep utilities valid; carbon/graphite now resolve to stage */
+  /*
+    Legacy aliases — keep utilities valid; do not introduce in new work.
+    carbon/graphite → stage
+    lime / lime-mist / signal-deep / cobalt → accent family
+    fog → leftover border utility only; text should use muted-foreground (light)
+    or on-ink-muted / stage-muted (dark)
+  */
   --carbon: var(--stage);
   --graphite: var(--stage-elevated);
   --lime: var(--accent);
@@ -189,8 +190,6 @@
   --fog: #8794a2;
   --cobalt: var(--accent-strong);
   --coral: #ff6b5e;
-  --orange-mist: var(--action-soft);
-  --teal-mist: #dcebfa;
 
   --background: var(--paper);
   --foreground: var(--ink);
