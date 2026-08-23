@@ -6308,7 +6308,7 @@ details.disclosure[open] > summary .disclosure-plus {
   padding: 1.4rem 1.25rem 1.45rem;
   border: 2px solid var(--ink);
   border-radius: 8px;
-  background: var(--action);
+  background: var(--action-muted);
   box-shadow: 8px 8px 0 0 var(--action-deep);
 }
 .fp-rule {
