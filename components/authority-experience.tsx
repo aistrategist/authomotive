@@ -1583,7 +1583,7 @@ export function AuthorityExperience() {
         </div>
 
         <div className="mt-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <p className="max-w-xl text-lg leading-relaxed text-[color:var(--on-ink-muted)] text-pretty">
+          <p className="max-w-xl text-xl font-semibold leading-snug text-stage-foreground text-pretty md:text-2xl">
             One page. Three outcomes. AI Discovery sits underneath as supporting infrastructure.
           </p>
           <a href="#opportunity-review" className="btn btn-action-dark shrink-0">

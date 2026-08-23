@@ -25,10 +25,10 @@ export const hero = {
   headline: 'Your website should help buyers choose you.',
   emphasis: 'choose you',
   supporting:
-    'Authority Experiences, connected measurement, and a monthly read in plain English. Shoppers move from the question to inventory, and you can see what drove the action.',
+    'Build better paths from shopper questions to inventory, measure what happens next, and use the evidence to decide what to improve.',
   primaryCta: 'Request My Opportunity Review',
   secondaryCta: 'See the Authority System',
-  confidence: 'Works with the dealership website and vendor stack you already have.',
+  confidence: 'Works with the dealership website, agency, and vendor stack you already have.',
   question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
   outcomes: [
     {
@@ -114,7 +114,7 @@ export const capabilitySystem = {
       id: 'get-found',
       verb: 'BUILD',
       brandedName: 'Authority Experiences',
-      line: 'Shoppers should find you for the question they actually asked, then land on a page that helps them choose a vehicle.',
+      line: 'Dealership-owned pages built around real shopper questions to earn discovery, guide decisions, and move buyers into inventory.',
       proofs: ['Answers the real question.', 'Walks them toward live inventory.'],
       nextLabel: 'See one in action',
       nextHref: '#authority-experiences',
@@ -144,7 +144,7 @@ export const authorityTheater = {
   eyebrow: 'AUTHORITY EXPERIENCES · DISCOVERY AND GUIDANCE',
   headline: 'Pages that get found, then move buyers.',
   supporting:
-    'The strongest dealership content earns discovery, answers the real question, helps the buyer evaluate a decision, and creates a useful path to inventory.',
+    'The strongest dealership-owned pages earn discovery, answer the real question, help the buyer evaluate a decision, and create a useful path to inventory.',
   exampleTopic: 'Which Three-Row SUV Is Right for My Family?',
   views: [
     { id: 'shopper', label: 'What the shopper sees' },
@@ -538,10 +538,27 @@ export const founder = {
 export const managedFramework = {
   eyebrow: 'THE ENGAGEMENT · WHAT WORKS NEXT',
   headline: 'A working strategy, not another vendor handoff.',
-  lead:
-    'Authomotive works alongside your website provider, agency, and vendors. Implementation, authority work, measurement, and the monthly decision stay connected, so the next move is obvious.',
+  lead: 'Authomotive works alongside your website provider, agency, and vendors.',
+  relation: 'One strategic lead. One connected system. One monthly working session.',
   proof:
     'Informed by experience across 90+ dealership websites. That experience shapes how we connect discovery, inventory, and buyer action.',
+  beats: [
+    {
+      id: 'build',
+      verb: 'BUILD',
+      line: 'Improve the highest-value dealership-owned opportunity.',
+    },
+    {
+      id: 'read',
+      verb: 'READ',
+      line: 'Connect discovery, inventory, and buyer signals.',
+    },
+    {
+      id: 'decide',
+      verb: 'DECIDE',
+      line: 'Choose what gets protected, expanded, fixed, or built next.',
+    },
+  ],
   hub: {
     kicker: 'THE NEXT DECISION',
     title: 'Ongoing strategy',
@@ -613,7 +630,7 @@ export const finalCta = {
   eyebrow: 'ONE FOCUSED REVIEW · START WITH YOUR WEBSITE',
   headline: 'Find the strongest opportunity on your dealership website.',
   supporting:
-    'Start with an Authomotive Opportunity Review. We will identify the clearest opening across authority content, AI discovery, reporting, and measurement.',
+    'We’ll look at where your dealership is being discovered, how shoppers reach inventory, and what your current measurement can actually prove—then identify the clearest place to start.',
   concernOptions: [
     'Our content is not earning enough visibility',
     'We cannot clearly explain performance',

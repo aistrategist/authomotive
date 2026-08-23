@@ -166,11 +166,24 @@ export function ManagedFramework() {
             {managedFramework.lead}
           </p>
           <p className="mt-3 text-base font-semibold leading-snug text-ink text-pretty md:text-lg">
+            {managedFramework.relation}
+          </p>
+          <p className="mt-3 text-base leading-snug text-ink text-pretty md:text-lg">
             {managedFramework.proof}
           </p>
+          <dl className="mt-5 grid gap-3 sm:grid-cols-3">
+            {managedFramework.beats.map((beat) => (
+              <div key={beat.id} className="min-w-0">
+                <dt className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.16em] text-signal-deep">
+                  {beat.verb}
+                </dt>
+                <dd className="mt-1 text-sm leading-snug text-ink">{beat.line}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
-        <div ref={stageRef} className="mf-stage mt-10 md:mt-12">
+        <div ref={stageRef} className="mf-stage mt-8 md:mt-10">
           <div className="mf-orbit" data-tone={active.tone}>
             <svg className="mf-web" viewBox="0 0 100 100" aria-hidden="true">
               <circle className="mf-web-ring" cx="50" cy="50" r={RING_R} />
