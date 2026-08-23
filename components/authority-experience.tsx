@@ -1026,7 +1026,7 @@ export function AuthorityExperience() {
         <div
           role="tablist"
           aria-label="Authority Experience views"
-          className="ae-tablist mt-8 grid grid-cols-3 gap-2 md:mt-9 md:gap-3"
+          className="ae-tablist mt-8 grid grid-cols-3 gap-3 md:mt-9 md:gap-4"
         >
           {lensUi.map((lens, i) => {
             const selected = view === lens.id
@@ -1069,6 +1069,9 @@ export function AuthorityExperience() {
                     >
                       ACTIVE LENS
                     </span>
+                  </span>
+                  <span className="ae-tab-arrow" aria-hidden="true">
+                    →
                   </span>
                 </span>
               </button>
