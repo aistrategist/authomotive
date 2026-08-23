@@ -11,7 +11,7 @@ const chapters = [
     label: 'Buyer Questions to Inventory',
     anchors: ['platforms'],
     color: 'var(--accent-deep)',
-    rest: 'var(--accent-soft)',
+    rest: 'color-mix(in srgb, var(--accent) 28%, #fff)',
     seam: 'light',
   },
   {
@@ -20,7 +20,7 @@ const chapters = [
     label: 'One System · Three Jobs',
     anchors: ['capabilities'],
     color: 'var(--proof-deep)',
-    rest: 'var(--proof-soft)',
+    rest: 'color-mix(in srgb, var(--proof) 28%, #fff)',
     seam: 'light',
   },
   {
@@ -74,24 +74,6 @@ function progressFor(step: number) {
   return step >= TOTAL ? 1 : step / TOTAL
 }
 
-function RailCar() {
-  return (
-    <svg className="journey-car" viewBox="0 0 18 10" width="18" height="10" aria-hidden="true">
-      <path
-        d="M1.4 6.2h15.2M3.1 6.2 4.8 3.1h7.6l1.8 3.1"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M6.2 3.25h5" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
-      <circle cx="5.1" cy="7.45" r="1.35" fill="currentColor" />
-      <circle cx="12.7" cy="7.45" r="1.35" fill="currentColor" />
-    </svg>
-  )
-}
-
 export function SignalRail({ step }: { step: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) {
   const chapter = chapters[step - 1]
   const rootRef = useRef<HTMLDivElement>(null)
@@ -143,9 +125,6 @@ export function SignalRail({ step }: { step: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) {
       <div className="journey-track" aria-hidden="true">
         <span className="journey-rest" />
         <span className="journey-fill" />
-        <span className="journey-traveler">
-          <RailCar />
-        </span>
       </div>
       <div className="journey-row" aria-hidden="true">
         <span className="journey-title font-mono">{chapter.title}</span>
