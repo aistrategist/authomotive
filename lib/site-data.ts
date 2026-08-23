@@ -186,6 +186,10 @@ export const reporting = {
   sampleEyebrow: 'ILLUSTRATIVE INTELLIGENCE · SAMPLE DATA',
   reportKind: 'Monthly read',
   period: 'July 14 – August 10, 2026',
+  executive: {
+    label: 'EXECUTIVE SUMMARY',
+    body: 'More shoppers found the dealership without searching for its name, and more of that activity continued into inventory. Organic, AI, and local discovery all increased, while VSRP views, VDP activity, and leads moved up with them. North-side showed the strongest local momentum, giving us a clear place to investigate and expand what is working.',
+  },
   quote: 'The goal is not another dashboard. It is a monthly decision.',
   groups: [
     { id: 'traffic', label: 'Traffic' },

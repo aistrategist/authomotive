@@ -35,7 +35,19 @@ export function IntelligenceQuote() {
   )
 }
 
+const insightSteps = [
+  { key: 'changed', n: '01', label: 'WHAT CHANGED', tone: 'accent' },
+  { key: 'why', n: '02', label: 'WHY IT MATTERS', tone: 'proof' },
+  { key: 'next', n: '03', label: 'WHAT WE DO NEXT', tone: 'action' },
+] as const
+
 function InsightPanel({ metric }: { metric: Metric }) {
+  const copy = {
+    changed: metric.popout.changed,
+    why: metric.popout.why,
+    next: metric.popout.next,
+  }
+
   return (
     <div
       id={INSIGHT_ID}
@@ -50,20 +62,18 @@ function InsightPanel({ metric }: { metric: Metric }) {
       <p className="ri-insight-head font-mono">
         {metric.label} · {metric.value}
       </p>
-      <dl key={metric.id} className="ri-insight-grid">
-        <div>
-          <dt className="font-mono">What changed</dt>
-          <dd>{metric.popout.changed}</dd>
-        </div>
-        <div>
-          <dt className="font-mono">Why it matters</dt>
-          <dd>{metric.popout.why}</dd>
-        </div>
-        <div>
-          <dt className="font-mono">Next move</dt>
-          <dd>{metric.popout.next}</dd>
-        </div>
-      </dl>
+      <div key={metric.id} className="ri-insight-grid">
+        {insightSteps.map((step) => (
+          <article key={step.key} className="ri-insight-card" data-tone={step.tone}>
+            <p className="ri-insight-step font-mono">
+              <span>{step.n}</span>
+              <span aria-hidden="true"> · </span>
+              {step.label}
+            </p>
+            <p className="ri-insight-body">{copy[step.key]}</p>
+          </article>
+        ))}
+      </div>
     </div>
   )
 }
@@ -98,6 +108,10 @@ export function IntelligenceFrame({
       </div>
 
       <div className="flex flex-col gap-2.5 p-3 md:gap-3 md:p-4">
+        <div className="ri-exec">
+          <p className="ri-exec-label font-mono">{reporting.executive.label}</p>
+          <p className="ri-exec-copy">{reporting.executive.body}</p>
+        </div>
         <ul className="ri-kpis" aria-label="Monthly signals">
           {reporting.metrics.map((metric) => {
             const selected = activeId === metric.id
