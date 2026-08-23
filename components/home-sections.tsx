@@ -36,11 +36,11 @@ export function IntelligencePreview() {
       className="ri-band scroll-mt-24 overflow-x-clip border-b border-border"
     >
       <SignalRail step={4} />
-      <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
+      <div className="relative mx-auto max-w-[1280px] px-5 pb-8 pt-14 md:px-8 md:pb-9 md:pt-16 lg:pb-10 lg:pt-[4.5rem]">
         <IntelligenceCopy />
         <IntelligenceNear />
         <IntelligenceQuote />
-        <div className="mt-5 max-w-2xl">
+        <div className="ri-sources mt-4">
           <Disclosure title="Where the underlying data comes from">
             <p className="text-base leading-relaxed text-muted-foreground">
               {reporting.sourcesLine} The reporting framework can draw from Google Search Console,

@@ -1,22 +1,22 @@
 import { fieldProof } from '@/lib/site-data'
 
-/** Compact observed-result strip between Intelligence and Signal Architecture. */
+/** Full-width observed-result plate between Intelligence and Signal Architecture. */
 export function FieldProof() {
   return (
     <aside className="fp-band" aria-labelledby="field-proof-heading">
-      <div className="mx-auto max-w-[1280px] px-5 py-8 md:px-8 md:py-9">
-        <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-proof-deep">
-          {fieldProof.eyebrow}
+      <div className="fp-shell">
+        <span className="fp-rule" aria-hidden="true" />
+        <p className="fp-eyebrow font-mono">
+          <span>{fieldProof.eyebrow}</span>
+          <span className="fp-eyebrow-dot" aria-hidden="true">
+            ·
+          </span>
+          <span>{fieldProof.sub}</span>
         </p>
-        <h2
-          id="field-proof-heading"
-          className="mt-2 max-w-[36rem] text-xl font-semibold tracking-tight text-ink md:text-2xl text-balance"
-        >
+        <h2 id="field-proof-heading" className="fp-title">
           {fieldProof.headline}
         </h2>
-        <p className="mt-2.5 max-w-[42rem] text-[0.9375rem] leading-relaxed text-ink/80 text-pretty">
-          {fieldProof.supporting}
-        </p>
+        <p className="fp-copy">{fieldProof.supporting}</p>
         <ul className="fp-strip" aria-label="Observed dealership result">
           {fieldProof.metrics.map((metric) => (
             <li key={metric.id} className="fp-metric" data-tone={metric.tone}>

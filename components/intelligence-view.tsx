@@ -29,7 +29,7 @@ export function IntelligenceCopy() {
 
 export function IntelligenceQuote() {
   return (
-    <blockquote className="mt-6 border-l-4 border-proof pl-4 text-xl font-semibold leading-snug text-ink md:text-3xl text-pretty">
+    <blockquote className="mt-4 border-l-4 border-proof pl-4 text-xl font-semibold leading-snug text-ink md:text-3xl text-pretty">
       {reporting.quote}
     </blockquote>
   )

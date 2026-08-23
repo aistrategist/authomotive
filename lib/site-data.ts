@@ -333,7 +333,8 @@ export const reporting = {
 }
 
 export const fieldProof = {
-  eyebrow: 'PROOF FROM THE FIELD · OBSERVED DEALERSHIP RESULT',
+  eyebrow: 'PROOF FROM THE FIELD',
+  sub: 'OBSERVED DEALERSHIP RESULT',
   headline: 'Research content can become a measurable discovery asset.',
   supporting:
     'In one dealership example, a research page upgrade was followed by materially higher search visibility, clicks, and identifiable AI discovery in the next 28-day period. We treat results like these as evidence to investigate—not proof of a single cause.',
