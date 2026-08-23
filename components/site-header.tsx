@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { cta, navLinks, siteConfig } from '@/lib/site-data'
+import { HEADER_OFFSET } from '@/lib/scroll-to-id'
 
 function Wordmark({ inverted = false, adaptive = false }: { inverted?: boolean; adaptive?: boolean }) {
   return (
@@ -81,24 +82,38 @@ export function SiteHeader() {
     }
   }, [])
 
-  // Square under the current chapter. A line just below the header, not a
-  // thin IO band — late-swapped sections (Authority) stay trackable, and the
-  // Request button never gets a spy mark.
+  // Square under the current chapter. Hold the clicked link during a jump so
+  // the dot does not flicker through every section on the way up or down.
   useEffect(() => {
     const chapters = [
       { href: '#capabilities', id: 'capabilities' },
       { href: '#authority-experiences', id: 'authority-experiences' },
       { href: '#reporting', id: 'reporting' },
       { href: '#measurement', id: 'measurement' },
+      { href: '#how-it-works', id: 'how-it-works' },
       { href: '#how-it-works', id: 'engagement' },
     ] as const
-    const line = 96
+    const line = HEADER_OFFSET + 40
     let ticking = false
+    let held = false
+    let heldHref = ''
+    let settle = 0
+
+    function setActive(next: string) {
+      const header = headerRef.current
+      if (!header || header.dataset.active === next) return
+      header.dataset.active = next
+      header.querySelectorAll<HTMLAnchorElement>('.header-nav-link').forEach((el) => {
+        const href = el.getAttribute('href')
+        if (next && href === next) el.setAttribute('aria-current', 'true')
+        else el.removeAttribute('aria-current')
+      })
+    }
 
     function apply() {
       ticking = false
       const header = headerRef.current
-      if (!header) return
+      if (!header || held) return
 
       const form = document.getElementById('opportunity-review')
       const atForm = Boolean(form && form.getBoundingClientRect().top < window.innerHeight * 0.42)
@@ -117,29 +132,78 @@ export function SiteHeader() {
         if (first && first.getBoundingClientRect().top > line) next = ''
       }
 
-      if (header.dataset.active === next) return
-      header.dataset.active = next
-      header.querySelectorAll<HTMLAnchorElement>('.header-nav-link').forEach((el) => {
-        const href = el.getAttribute('href')
-        if (next && href === next) el.setAttribute('aria-current', 'true')
-        else el.removeAttribute('aria-current')
+      setActive(next)
+    }
+
+    function landedOn(href: string) {
+      return chapters.some((chapter) => {
+        if (chapter.href !== href) return false
+        const el = document.getElementById(chapter.id)
+        if (!el) return false
+        const top = el.getBoundingClientRect().top
+        return top > -160 && top < HEADER_OFFSET + 80
       })
     }
 
+    function release() {
+      window.clearTimeout(settle)
+      const jumpTo = heldHref
+      held = false
+      heldHref = ''
+      if (jumpTo && landedOn(jumpTo)) {
+        setActive(jumpTo)
+        return
+      }
+      apply()
+    }
+
+    function hold(next: string) {
+      held = true
+      heldHref = next
+      window.clearTimeout(settle)
+      settle = window.setTimeout(release, 750)
+      setActive(next)
+    }
+
     function onScroll() {
+      if (held) return
       if (ticking) return
       ticking = true
       requestAnimationFrame(apply)
+    }
+
+    function onClick(event: MouseEvent) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return
+      }
+      const node = event.target
+      if (!(node instanceof Element)) return
+      const anchor = node.closest('a[href^="#"]')
+      if (!(anchor instanceof HTMLAnchorElement)) return
+      const href = anchor.getAttribute('href')
+      if (!href || href === '#') return
+      const id = decodeURIComponent(href.slice(1))
+      if (id === 'top' || id === 'opportunity-review') {
+        hold('')
+        return
+      }
+      const match = chapters.find((chapter) => chapter.id === id || chapter.href === href)
+      if (match) hold(match.href)
     }
 
     apply()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
     window.addEventListener('hashchange', apply)
+    window.addEventListener('autho:scrolled', release)
+    document.addEventListener('click', onClick, true)
     return () => {
+      window.clearTimeout(settle)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
       window.removeEventListener('hashchange', apply)
+      window.removeEventListener('autho:scrolled', release)
+      document.removeEventListener('click', onClick, true)
     }
   }, [])
 
