@@ -121,11 +121,8 @@ const observerChip: Record<ViewId, string> = {
   measurable: 'SIGNAL VIEW',
 }
 
-const lensRead: Record<ViewId, string> = {
-  shopper: 'Same page. The numbers are the decisions a buyer can make here.',
-  discovery: 'Same page. The numbers are what search and AI can actually read.',
-  measurable: 'Same page. The numbers are the actions a dealer can measure.',
-}
+const lensOrientation =
+  'One page. Three lenses: help the shopper choose, help search and AI understand the answer, and show the dealer what happened next.'
 
 function readInspectStation(target: EventTarget | null) {
   const el = target instanceof Element ? target : null
@@ -1039,7 +1036,7 @@ export function AuthorityExperience() {
                 type="button"
                 role="tab"
                 id={`view-tab-${lens.id}`}
-                aria-label={views[i]!.label}
+                aria-label={`${lens.short}. ${lens.main}`}
                 aria-selected={selected}
                 aria-controls="authority-view-panel"
                 tabIndex={selected ? 0 : -1}
@@ -1079,9 +1076,7 @@ export function AuthorityExperience() {
           })}
         </div>
 
-        <p className="ae-lens-read font-mono" aria-live="polite">
-          {lensRead[view]}
-        </p>
+        <p className="ae-lens-read font-mono">{lensOrientation}</p>
 
         <div
           role="tabpanel"
@@ -1269,11 +1264,11 @@ export function AuthorityExperience() {
                           </p>
                         </div>
                       </div>
-                      <figure ref={photoRef} className="ae-oem-hero-visual ae-oem-photo" aria-hidden="true">
+                      <figure ref={photoRef} className="ae-oem-hero-visual ae-oem-photo">
                         <Image
                           className="ae-oem-photo-img"
                           src="/images/northline-family-suv.webp"
-                          alt=""
+                          alt="Three-row family SUV shown in the illustrative Northline buyer guide."
                           fill
                           priority={false}
                           sizes="(min-width: 1200px) 26vw, (min-width: 768px) 34vw, 88vw"

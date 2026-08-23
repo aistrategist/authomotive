@@ -53,7 +53,7 @@ export const discoveryToInventory = {
   eyebrow: 'KEEP THE PLATFORM · ADD THE STRATEGY',
   headline: 'We work on the website you already have.',
   supporting:
-    'Shoppers still research a need first. SEO, AEO, and GEO bolt onto the site, agency, and vendors already in place. The actions below are what you can actually read.',
+    'Shoppers still start with a need. We strengthen the website you already have for search, AI, and local discovery, then connect that discovery to inventory and measurable buyer actions.',
   platforms: {
     line: 'Your website, agency, and vendors stay.',
   },
@@ -120,15 +120,6 @@ export const capabilitySystem = {
       nextHref: '#authority-experiences',
     },
     {
-      id: 'know-working',
-      verb: 'DECIDE',
-      brandedName: 'Authomotive Intelligence',
-      line: 'At month-end you should know what changed, what caused it, and what to build next.',
-      proofs: ['One story, not five dashboards.', 'Protect, expand, or fix.'],
-      nextLabel: 'See the monthly read',
-      nextHref: '#reporting',
-    },
-    {
       id: 'track-matters',
       verb: 'CONNECT',
       brandedName: 'Signal Architecture',
@@ -136,6 +127,15 @@ export const capabilitySystem = {
       proofs: ['Events before the launch.', 'The report can tell the truth.'],
       nextLabel: 'See what gets tracked',
       nextHref: '#measurement',
+    },
+    {
+      id: 'know-working',
+      verb: 'DECIDE',
+      brandedName: 'Authomotive Intelligence',
+      line: 'At month-end you should know what changed, what likely contributed, and what deserves attention next.',
+      proofs: ['One story, not five dashboards.', 'Protect, expand, or fix.'],
+      nextLabel: 'See the monthly read',
+      nextHref: '#reporting',
     },
   ] satisfies Capability[],
 }
@@ -175,10 +175,11 @@ export const aiDiscovery = {
 
 export const reporting = {
   eyebrow: 'AUTHOMOTIVE INTELLIGENCE · ONE MONTHLY TRUTH',
-  headline: 'See what changed. Understand why. Decide what comes next.',
+  headline: 'See what changed. Understand what likely contributed. Decide what comes next.',
   supporting:
-    'Each month we read the dealership numbers that matter: traffic mix, AI and local discovery, VSRP and VDP activity, leads, and locality. Then we say what moved, why it moved, and what to do next.',
+    'Each month we read the dealership signals that matter: search and AI discovery, traffic mix, VSRP and VDP activity, leads, and local market movement. Then we explain what changed, what likely contributed, and what deserves attention next.',
   product: 'Authomotive Intelligence',
+  sampleEyebrow: 'ILLUSTRATIVE MONTHLY INTELLIGENCE · SAMPLE DATA',
   reportKind: 'Monthly SEO & discovery report',
   period: 'July 14 – August 10, 2026',
   quote: 'The goal is not another dashboard. It is a monthly decision.',
@@ -532,11 +533,11 @@ export const managedFramework = {
   lead:
     'Authomotive works alongside your website provider, agency, and vendors. Implementation, authority work, measurement, and the monthly decision stay connected, so the next move is obvious.',
   proof:
-    'Drawn from work across 90+ dealership websites. This is what actually moves discovery, inventory, and buyer action.',
+    'Informed by experience across 90+ dealership websites. That experience shapes how we connect discovery, inventory, and buyer action.',
   hub: {
     kicker: 'THE NEXT DECISION',
     title: 'Ongoing strategy',
-    line: 'What works this month becomes the next thing we build, correct, or expand.',
+    line: 'Every month follows the same rhythm: build the highest-value opportunity, measure what shoppers did, then decide what gets protected, expanded, fixed, or built next.',
   },
   works: [
     {

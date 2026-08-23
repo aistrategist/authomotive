@@ -7,6 +7,7 @@ import { cta, navLinks, siteConfig } from '@/lib/site-data'
 function Wordmark({ inverted = false }: { inverted?: boolean }) {
   return (
     <span
+      aria-hidden="true"
       className={`text-[1.375rem] font-bold tracking-tight md:text-[1.625rem] ${
         inverted ? 'text-paper' : 'text-ink'
       }`}
@@ -220,12 +221,12 @@ export function SiteHeader() {
       <div className="site-header-bar mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-3 px-4 sm:gap-6 sm:px-5 md:px-8">
         <a
           href="#top"
+          aria-label="Authomotive home"
           className={`min-w-0 shrink rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
             scrolled ? 'focus-visible:outline-accent-deep' : 'focus-visible:outline-accent'
           }`}
         >
           <Wordmark inverted={!scrolled} />
-          <span className="sr-only">Authomotive home</span>
         </a>
 
         <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
@@ -292,6 +293,7 @@ export function SiteHeader() {
             className="site-nav-sheet fixed inset-0 z-[60] flex h-dvh flex-col bg-stage"
           >
             <div className="flex h-[4.5rem] items-center justify-between border-b border-stage-line px-4 sm:px-5">
+              <span className="sr-only">Authomotive</span>
               <Wordmark inverted />
               <button
                 type="button"

@@ -1,4 +1,4 @@
-import { hero, siteConfig } from '@/lib/site-data'
+import { hero } from '@/lib/site-data'
 import { HeroStage } from '@/components/hero-stage'
 
 /**
@@ -14,8 +14,8 @@ export function Hero() {
               {hero.eyebrow}
             </p>
             <h1 className="hero-enter hero-enter-2 mt-3 text-[2.15rem] font-semibold uppercase leading-[0.92] tracking-[-0.035em] md:text-[2.75rem] lg:text-[3.15rem] xl:text-[3.45rem]">
-              <span className="block text-accent">Get found.</span>
-              <span className="block text-proof">Guide buyers.</span>
+              <span className="block text-accent">Get found. </span>
+              <span className="block text-proof">Guide buyers. </span>
               <span className="block text-action">Prove what works.</span>
             </h1>
             <p className="hero-enter hero-enter-3 mt-4 max-w-[30rem] text-[0.95rem] leading-snug text-[color:var(--on-ink-muted)] md:text-base">
@@ -38,7 +38,6 @@ export function Hero() {
             <p className="hero-enter hero-enter-5 mt-3 max-w-md text-[0.8125rem] leading-snug text-[color:var(--on-ink-muted)]">
               {hero.confidence}
             </p>
-            <p className="sr-only">{siteConfig.tagline}</p>
           </div>
 
           <div className="hero-enter hero-enter-stage relative z-[1] min-w-0 overflow-visible lg:-ml-4 lg:-mr-2 xl:-ml-8 xl:-mr-6">

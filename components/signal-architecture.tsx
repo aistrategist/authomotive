@@ -201,21 +201,16 @@ export function SignalArchitecture() {
                         triggerRefs.current[row.id] = el
                       }}
                     />
-                    {openId === row.id ? (
-                      <div className="lg:hidden">
-                        <Inspector row={row} />
-                      </div>
-                    ) : null}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <aside className="ma-dock hidden lg:col-span-5 lg:block" aria-live="polite">
+            <aside className="ma-dock lg:col-span-5" aria-live="polite">
               {selected ? (
                 <Inspector row={selected} />
               ) : (
-                <p className="px-5 py-8 font-mono text-xs uppercase tracking-[0.14em] text-stage-muted">
+                <p className="hidden px-5 py-8 font-mono text-xs uppercase tracking-[0.14em] text-stage-muted lg:block">
                   Select a hit to inspect
                 </p>
               )}

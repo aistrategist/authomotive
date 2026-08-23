@@ -23,9 +23,9 @@ const allowIndexing = isPubliclyIndexable()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
+  title: 'Authomotive | Dealership Authority, AI Discovery & Measurement',
   description:
-    'Authomotive helps dealerships get found, guide buyers, and prove what works. Authority Experiences, connected measurement, and a monthly read in plain English sit on the website they already have.',
+    'Authomotive helps dealerships get found, guide buyers to inventory, and prove what works with Authority Experiences, measurement, and monthly intelligence.',
   alternates: {
     canonical: '/',
   },
@@ -33,18 +33,18 @@ export const metadata: Metadata = {
     ? { index: true, follow: true }
     : { index: false, follow: false },
   openGraph: {
-    title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
+    title: 'Authomotive | Dealership Authority, AI Discovery & Measurement',
     description:
-      'The managed authority and measurement framework for dealership websites. Get found. Guide buyers. Prove what works.',
+      'Authomotive helps dealerships get found, guide buyers to inventory, and prove what works with Authority Experiences, measurement, and monthly intelligence.',
     type: 'website',
     siteName: 'Authomotive',
     url: '/',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
+    title: 'Authomotive | Dealership Authority, AI Discovery & Measurement',
     description:
-      'The managed authority and measurement framework for dealership websites. Get found. Guide buyers. Prove what works.',
+      'Authomotive helps dealerships get found, guide buyers to inventory, and prove what works with Authority Experiences, measurement, and monthly intelligence.',
   },
 }
 

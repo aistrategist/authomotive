@@ -229,9 +229,7 @@ export function FinalCta() {
                   aria-hidden="true"
                   inert
                 >
-                  <label htmlFor="cta-company-website">Company website</label>
                   <input
-                    id="cta-company-website"
                     name="company_website"
                     type="text"
                     tabIndex={-1}

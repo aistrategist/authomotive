@@ -122,6 +122,7 @@ export function IntelligencePreview() {
               <p className="mt-0.5 font-mono text-[0.625rem] uppercase tracking-wider text-stage-muted md:text-xs">
                 {reporting.reportKind} · {reporting.period}
               </p>
+              <p className="ri-sample font-mono">{reporting.sampleEyebrow}</p>
             </div>
           </div>
 
