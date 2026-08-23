@@ -5420,22 +5420,22 @@ details.disclosure[open] > summary .disclosure-plus {
 }
 #reporting .ri-insight-card[data-tone='accent'] {
   border-top-color: var(--accent-deep);
-  background: color-mix(in srgb, var(--accent) 14%, var(--paper));
+  background: color-mix(in oklch, var(--accent) 26%, var(--paper));
 }
 #reporting .ri-insight-card[data-tone='proof'] {
   border-top-color: var(--proof-deep);
-  background: color-mix(in srgb, var(--proof) 16%, var(--paper));
+  background: color-mix(in oklch, var(--proof) 26%, var(--paper));
 }
 #reporting .ri-insight-card[data-tone='action'] {
   border-top-color: var(--action-deep);
-  background: color-mix(in srgb, var(--action) 22%, var(--paper));
+  background: color-mix(in oklch, var(--action) 26%, var(--paper));
 }
 #reporting .ri-insight-step {
   margin: 0;
-  font-size: 0.5625rem;
+  font-size: 0.8125rem;
   font-weight: 750;
-  letter-spacing: 0.1em;
-  line-height: 1.25;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 #reporting .ri-insight-card[data-tone='accent'] .ri-insight-step {
@@ -5578,6 +5578,10 @@ details.disclosure[open] > summary .disclosure-plus {
   #reporting .ri-insight-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.75rem 1.35rem;
+  }
+  #reporting .ri-insight-step {
+    font-size: 0.9375rem;
+    letter-spacing: 0.05em;
   }
   #reporting .ri-insight-card:not(:last-child)::after {
     content: '→';
