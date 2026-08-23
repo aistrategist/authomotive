@@ -900,7 +900,6 @@ html {
   --qti-ow: 66%;
   --qti-oh: 55%;
   --qti-or: 10deg;
-  animation: qti-bloom 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 .qti-bloom-host.is-paused {
   animation-play-state: paused;
@@ -920,9 +919,6 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .qti-bloom-host {
-    animation: none;
-  }
   .qti-wells-inner > span {
     filter: blur(72px);
   }
@@ -3806,6 +3802,14 @@ html {
   display: block;
   width: 100%;
   height: auto;
+  overflow: visible;
+}
+.hs-map-travelers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   overflow: visible;
 }
 .hs-map-grid-line {

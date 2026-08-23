@@ -7,7 +7,7 @@
  * Three website-visitor glyphs (Search / AI / Local) with pace variance + thinking pauses.
  */
 
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef } from 'react'
 
 const VB_W = 640
 const VB_H = 420
@@ -600,12 +600,7 @@ const HeroTravelers = memo(function HeroTravelers({
   )
 })
 
-const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) {
-  const winningBranches = new Set(
-    CHANNELS.filter((ch) => ui.flashes[ch.id] === 'convert').map((ch) => ui.branch[ch.id]),
-  )
-  const anyConvertWin = winningBranches.size > 0
-
+const HeroStageSignals = memo(function HeroStageSignals() {
   return (
     <>
       {PAGES.map((page) => (
@@ -616,7 +611,6 @@ const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) 
           y={page.y}
           label={page.label}
           variant={page.id}
-          lit={Object.values(ui.flashes).includes(page.id)}
         />
       ))}
 
@@ -633,22 +627,18 @@ const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) 
         {BRANCH_IDS.map((id) => (
           <path
             key={`base-${id}`}
-            className={`hs-trail-base hs-trail-base-branch${
-              winningBranches.has(id) ? ' is-hot' : ''
-            }${anyConvertWin && !winningBranches.has(id) ? ' is-muted' : ''}`}
+            data-hs-branch={id}
+            className="hs-trail-base hs-trail-base-branch"
             d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
           />
         ))}
         {TRAIL_SEGMENTS.map((seg) => {
           const isBranch = seg.id === 'phone' || seg.id === 'form' || seg.id === 'lead'
-          const hot = isBranch && winningBranches.has(seg.id)
-          const muted = isBranch && anyConvertWin && !winningBranches.has(seg.id)
           return (
             <path
               key={seg.id}
-              className={`hs-trail-seg hs-trail-seg-${seg.tone}${isBranch ? ' hs-trail-branch' : ''}${
-                hot ? ' is-hot' : ''
-              }${muted ? ' is-muted' : ''}`}
+              data-hs-branch={isBranch ? seg.id : undefined}
+              className={`hs-trail-seg hs-trail-seg-${seg.tone}${isBranch ? ' hs-trail-branch' : ''}`}
               d={seg.d}
             />
           )
@@ -657,9 +647,8 @@ const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) 
         {BRANCH_IDS.map((id) => (
           <path
             key={`center-${id}`}
-            className={`hs-trail-center hs-trail-center-branch${
-              winningBranches.has(id) ? ' is-hot' : ''
-            }${anyConvertWin && !winningBranches.has(id) ? ' is-muted' : ''}`}
+            data-hs-branch={id}
+            className="hs-trail-center hs-trail-center-branch"
             d={`M${JUNCTION.cx} ${JUNCTION.cy}${BRANCH_PATHS[id]}`}
           />
         ))}
@@ -668,10 +657,7 @@ const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) 
         ))}
       </g>
 
-      <g
-        className={`hs-junction${anyConvertWin ? ' is-bloom' : ''}`}
-        transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}
-      >
+      <g className="hs-junction" transform={`translate(${JUNCTION.cx} ${JUNCTION.cy})`}>
         <circle className="hs-hub-bloom" r="36" fill="rgba(232,238,245,0.12)" />
         <circle r="22" fill="#b8c1cc" />
         <circle r="22" fill="none" stroke="rgba(255,252,247,0.35)" strokeWidth="1.35" />
@@ -689,7 +675,8 @@ const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) 
           {CHANNELS.map((ch) => (
             <circle
               key={ch.id}
-              className={`hs-ring hs-ring-${ch.id}${ui.flashes[ch.id] === wp.id ? ' is-flash' : ''}`}
+              data-hs-ring={`${ch.id}-${wp.id}`}
+              className={`hs-ring hs-ring-${ch.id}`}
               cx={wp.cx}
               cy={wp.cy}
               r="18"
@@ -701,77 +688,71 @@ const HeroStageSignals = memo(function HeroStageSignals({ ui }: { ui: UiSnap }) 
         </g>
       ))}
 
-      {CONVERSIONS.map((cv) => {
-        const isWin = winningBranches.has(cv.id)
-        const isDim = anyConvertWin && !isWin
-        return (
-          <g
-            key={cv.id}
-            className={`hs-convert hs-convert-${cv.id}${isWin ? ' is-win' : ''}${isDim ? ' is-dim' : ''}`}
-          >
-            <circle
-              className={`hs-win-glow${isWin ? ' is-flash' : ''}`}
-              cx={cv.cx}
-              cy={cv.cy}
-              r="30"
-              fill="var(--action)"
-              opacity="0"
-            />
-            <circle
-              className={`hs-win-ring hs-win-ring-a${isWin ? ' is-flash' : ''}`}
-              cx={cv.cx}
-              cy={cv.cy}
-              r="16"
-              fill="none"
-              stroke="var(--action)"
-              strokeWidth="2"
-              opacity="0"
-            />
-            <circle
-              className={`hs-win-ring hs-win-ring-b${isWin ? ' is-flash' : ''}`}
-              cx={cv.cx}
-              cy={cv.cy}
-              r="16"
-              fill="none"
-              stroke="#fffcf7"
-              strokeWidth="1.4"
-              opacity="0"
-            />
-            <circle className="hs-convert-disc" cx={cv.cx} cy={cv.cy} r="13" fill="#b8c1cc" />
-            <g transform={`translate(${cv.cx} ${cv.cy})`}>
-              <g className="hs-convert-glyph">
-                <ConvertGlyph id={cv.id} />
-              </g>
+      {CONVERSIONS.map((cv) => (
+        <g key={cv.id} data-hs-convert={cv.id} className={`hs-convert hs-convert-${cv.id}`}>
+          <circle
+            className="hs-win-glow"
+            cx={cv.cx}
+            cy={cv.cy}
+            r="30"
+            fill="var(--action)"
+            opacity="0"
+          />
+          <circle
+            className="hs-win-ring hs-win-ring-a"
+            cx={cv.cx}
+            cy={cv.cy}
+            r="16"
+            fill="none"
+            stroke="var(--action)"
+            strokeWidth="2"
+            opacity="0"
+          />
+          <circle
+            className="hs-win-ring hs-win-ring-b"
+            cx={cv.cx}
+            cy={cv.cy}
+            r="16"
+            fill="none"
+            stroke="#fffcf7"
+            strokeWidth="1.4"
+            opacity="0"
+          />
+          <circle className="hs-convert-disc" cx={cv.cx} cy={cv.cy} r="13" fill="#b8c1cc" />
+          <g transform={`translate(${cv.cx} ${cv.cy})`}>
+            <g className="hs-convert-glyph">
+              <ConvertGlyph id={cv.id} />
             </g>
-            <text
-              className="hs-convert-label"
-              x={cv.cx}
-              y={cv.cy + 26}
-              textAnchor="middle"
-              fill="rgba(255,252,247,0.58)"
-              style={{
-                fontSize: '8px',
-                letterSpacing: '0.12em',
-                fontFamily: 'ui-monospace, monospace',
-              }}
-            >
-              {cv.label}
-            </text>
           </g>
-        )
-      })}
+          <text
+            className="hs-convert-label"
+            x={cv.cx}
+            y={cv.cy + 26}
+            textAnchor="middle"
+            fill="rgba(255,252,247,0.58)"
+            style={{
+              fontSize: '8px',
+              letterSpacing: '0.12em',
+              fontFamily: 'ui-monospace, monospace',
+            }}
+          >
+            {cv.label}
+          </text>
+        </g>
+      ))}
     </>
   )
 })
 
-const HeroTips = memo(function HeroTips({ ui }: { ui: UiSnap }) {
+const HeroTips = memo(function HeroTips() {
   return (
     <>
       {STAGE_WAYPOINTS.flatMap((wp) =>
         CHANNELS.map((ch) => (
           <div
             key={`${wp.id}-${ch.id}`}
-            className={`hs-tip hs-tip-${ch.tipLabel.toLowerCase()}${ui.tips[ch.id][wp.id] ? ' is-on' : ''}`}
+            data-hs-tip={`${wp.id}-${ch.id}`}
+            className={`hs-tip hs-tip-${ch.tipLabel.toLowerCase()}`}
             style={{ left: wp.x, top: wp.y }}
           >
             <span className="hs-tip-dot" />
@@ -780,42 +761,93 @@ const HeroTips = memo(function HeroTips({ ui }: { ui: UiSnap }) {
         )),
       )}
 
-      {CHANNELS.map((ch) => {
-        const branch = CONVERSIONS.find((c) => c.id === ui.tipBranch[ch.id])!
-        const pos = tipPct(branch.cx, branch.cy)
-        const celebrating = ui.tips[ch.id].convert
-        const isLead = branch.id === 'lead'
-        return (
-          <div
-            key={`convert-${ch.id}`}
-            className={`hs-tip hs-tip-convert hs-tip-climax hs-tip-submit hs-tip-${ch.tipLabel.toLowerCase()}${
-              isLead ? ' hs-tip-win' : ''
-            }${celebrating ? ' is-on' : ''}`}
-            style={{ left: pos.x, top: pos.y }}
-          >
-            <span className="hs-tip-dot" />
-            <span className="hs-tip-icon" aria-hidden="true">
-              <ConvertTipIcon id={branch.id} />
-            </span>
-            <span className="hs-tip-label">{branch.tip}</span>
-          </div>
-        )
-      })}
+      {CHANNELS.flatMap((ch) =>
+        CONVERSIONS.map((branch) => {
+          const pos = tipPct(branch.cx, branch.cy)
+          return (
+            <div
+              key={`convert-${ch.id}-${branch.id}`}
+              data-hs-convert-tip={`${ch.id}-${branch.id}`}
+              className={`hs-tip hs-tip-convert hs-tip-climax hs-tip-submit hs-tip-${ch.tipLabel.toLowerCase()}${
+                branch.id === 'lead' ? ' hs-tip-win' : ''
+              }`}
+              style={{ left: pos.x, top: pos.y }}
+            >
+              <span className="hs-tip-dot" />
+              <span className="hs-tip-icon" aria-hidden="true">
+                <ConvertTipIcon id={branch.id} />
+              </span>
+              <span className="hs-tip-label">{branch.tip}</span>
+            </div>
+          )
+        }),
+      )}
     </>
   )
 })
 
+function applyStoryDom(root: HTMLElement, ui: UiSnap) {
+  const winning = new Set(
+    CHANNELS.filter((ch) => ui.flashes[ch.id] === 'convert').map((ch) => ui.branch[ch.id]),
+  )
+  const anyWin = winning.size > 0
+
+  for (const page of PAGES) {
+    const lit = Object.values(ui.flashes).includes(page.id)
+    root.querySelector(`.hs-skel-${page.id}`)?.classList.toggle('is-lit', lit)
+  }
+
+  for (const id of BRANCH_IDS) {
+    const hot = winning.has(id)
+    const muted = anyWin && !hot
+    root.querySelectorAll(`[data-hs-branch="${id}"]`).forEach((el) => {
+      el.classList.toggle('is-hot', hot)
+      el.classList.toggle('is-muted', muted)
+    })
+  }
+
+  root.querySelector('.hs-junction')?.classList.toggle('is-bloom', anyWin)
+
+  for (const wp of STAGE_WAYPOINTS) {
+    for (const ch of CHANNELS) {
+      root
+        .querySelector(`[data-hs-ring="${ch.id}-${wp.id}"]`)
+        ?.classList.toggle('is-flash', ui.flashes[ch.id] === wp.id)
+      root
+        .querySelector(`[data-hs-tip="${wp.id}-${ch.id}"]`)
+        ?.classList.toggle('is-on', Boolean(ui.tips[ch.id][wp.id]))
+    }
+  }
+
+  for (const cv of CONVERSIONS) {
+    const win = winning.has(cv.id)
+    const group = root.querySelector(`[data-hs-convert="${cv.id}"]`)
+    if (!group) continue
+    group.classList.toggle('is-win', win)
+    group.classList.toggle('is-dim', anyWin && !win)
+    group.querySelectorAll('.hs-win-glow, .hs-win-ring').forEach((el) => {
+      el.classList.toggle('is-flash', win)
+    })
+  }
+
+  for (const ch of CHANNELS) {
+    for (const cv of CONVERSIONS) {
+      root
+        .querySelector(`[data-hs-convert-tip="${ch.id}-${cv.id}"]`)
+        ?.classList.toggle('is-on', Boolean(ui.tips[ch.id].convert) && ui.tipBranch[ch.id] === cv.id)
+    }
+  }
+}
+
 export function HeroStage() {
-  const [ui, setUi] = useState<UiSnap>(() => ({
+  const rootRef = useRef<HTMLDivElement>(null)
+  const travelerEls = useRef(emptyChannelMap<SVGGElement | null>(null))
+  const uiRef = useRef<UiSnap>({
     tips: emptyChannelMap({}),
     flashes: emptyChannelMap(null),
     tipBranch: emptyChannelMap('phone' as BranchId),
     branch: emptyChannelMap('phone' as BranchId),
-  }))
-
-  const travelerEls = useRef(emptyChannelMap<SVGGElement | null>(null))
-  const uiRef = useRef(ui)
-  uiRef.current = ui
+  })
   const assignTraveler = useCallback((id: ChannelId, el: SVGGElement | null) => {
     travelerEls.current[id] = el
   }, [])
@@ -854,12 +886,14 @@ export function HeroStage() {
     if (reduced) {
       const branch = emptyChannelMap('phone' as BranchId)
       for (const ch of CHANNELS) branch[ch.id] = simRef.current.travelers[ch.id].branch
-      setUi({
+      const reducedUi: UiSnap = {
         tips: { ...emptyChannelMap({}), seo: { convert: true } },
         flashes: emptyChannelMap(null),
         tipBranch: { ...branch },
         branch,
-      })
+      }
+      uiRef.current = reducedUi
+      if (rootRef.current) applyStoryDom(rootRef.current, reducedUi)
       const lead = simRef.current.travelers.seo
       applyTravelerDom(nodes.seo, travelerDom.seo, {
         progress: 1,
@@ -1098,7 +1132,7 @@ export function HeroStage() {
       }
       if (uiChanged(uiRef.current, nextUi)) {
         uiRef.current = nextUi
-        setUi(nextUi)
+        if (rootRef.current) applyStoryDom(rootRef.current, nextUi)
       }
 
       raf = requestAnimationFrame(tick)
@@ -1157,7 +1191,7 @@ export function HeroStage() {
       else scheduleStart()
     }
 
-    const root = travelerEls.current.seo?.ownerSVGElement?.closest('.hero-stage') ?? null
+    const root = rootRef.current
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting && !document.hidden) scheduleStart()
@@ -1179,7 +1213,7 @@ export function HeroStage() {
   }, [])
 
   return (
-    <div className="hero-stage relative mx-auto w-full max-w-[580px] overflow-visible lg:max-w-none">
+    <div ref={rootRef} className="hero-stage relative mx-auto w-full max-w-[580px] overflow-visible lg:max-w-none">
       <p className="sr-only">
         Animated conversion map: website visitors from Search, AI, and Local follow a trail
         through an authority guide, VSRP, and VDP, then convert via phone, form, or lead.
@@ -1216,11 +1250,21 @@ export function HeroStage() {
             overflow="visible"
           >
             <HeroStageAtmosphere />
-            <HeroStageSignals ui={ui} />
+            <HeroStageSignals />
+          </svg>
+          <svg
+            className="hs-map-svg hs-map-travelers"
+            viewBox={`0 0 ${VB_W} ${VB_H}`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="presentation"
+            preserveAspectRatio="xMidYMid meet"
+            overflow="visible"
+          >
             <HeroTravelers assign={assignTraveler} />
           </svg>
 
-          <HeroTips ui={ui} />
+          <HeroTips />
         </div>
       </div>
     </div>
