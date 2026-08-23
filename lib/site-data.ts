@@ -51,11 +51,11 @@ export const hero = {
 
 export const discoveryToInventory = {
   eyebrow: 'KEEP THE PLATFORM · ADD THE STRATEGY',
-  headline: 'We work on the website you already have.',
+  headline: 'Turn the website you already have into a connected buyer system.',
   supporting:
-    'Shoppers still start with a need. We strengthen the website you already have for search, AI, and local discovery, then connect that discovery to inventory and measurable buyer actions.',
+    'We build dealership-owned content for search, AI, and local discovery, connect it to inventory and buyer actions, then measure the signals that help decide what we improve next.',
   platforms: {
-    lockup: ['Content', 'Strategy'] as const,
+    lockup: ['Platform', 'Strategy', 'Layer'] as const,
     line: 'Your website, agency, and vendors stay.',
   },
   disciplines: [
