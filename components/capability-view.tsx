@@ -1,6 +1,7 @@
 import type { Ref } from 'react'
 import { capabilitySystem } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
+import { VisitorGlyph } from '@/components/visitor-glyph'
 
 const jobs = capabilitySystem.capabilities
 const tones = ['accent', 'proof', 'action'] as const
@@ -97,8 +98,13 @@ export function CapabilityView({
           stroke="currentColor"
           strokeLinecap="round"
         />
-        <circle className="cap-path-halo" r="12" />
-        <circle className="cap-path-tip" r="5.5" />
+        <g className="cap-path-tip">
+          <g className="cap-path-shopper">
+            <circle className="cap-path-halo" cx="0" cy="1.4" r="10.5" />
+            <circle className="cap-path-pulse" cx="0" cy="1.4" r="10.5" />
+            <VisitorGlyph color="var(--paper)" />
+          </g>
+        </g>
       </svg>
       <SignalRail step={2} />
       <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">

@@ -6282,15 +6282,25 @@ details.disclosure[open] > summary .disclosure-plus {
   stroke-dashoffset: 0;
 }
 .cap-path-halo {
+  fill: currentColor;
+  stroke: none;
+  opacity: 0.42;
+}
+.cap-path-pulse {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
-  opacity: 0.35;
+  stroke-width: 1.15;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 .cap-path-tip {
-  fill: currentColor;
-  stroke: var(--ink);
-  stroke-width: 1.25;
+  pointer-events: none;
+}
+.cap-path-shopper {
+  transform: scale(1.35);
+  transform-box: fill-box;
+  transform-origin: center;
 }
 .cap-stop {
   position: relative;
@@ -6478,11 +6488,8 @@ details.disclosure[open] > summary .disclosure-plus {
   .cap-path-glide {
     stroke-width: 6.5;
   }
-  .cap-path-tip {
-    r: 6.5;
-  }
-  .cap-path-halo {
-    r: 14;
+  .cap-path-shopper {
+    transform: scale(1.55);
   }
   .cap-stop {
     display: grid;
@@ -6554,6 +6561,19 @@ details.disclosure[open] > summary .disclosure-plus {
   .cap-path {
     transition: color 0.22s ease;
   }
+  .cap-path-pulse {
+    animation: cap-shopper-pulse 2s ease-out infinite;
+  }
+}
+@keyframes cap-shopper-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -6566,8 +6586,7 @@ details.disclosure[open] > summary .disclosure-plus {
     stroke-dashoffset: 0;
   }
   .cap-path-glide,
-  .cap-path-tip,
-  .cap-path-halo {
+  .cap-path-tip {
     display: none;
   }
   .cap-stop {

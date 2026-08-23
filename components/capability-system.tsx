@@ -62,8 +62,7 @@ export function CapabilitySystem() {
     const svg = root.querySelector<SVGSVGElement>('.cap-path')
     const run = root.querySelector<SVGPathElement>('.cap-path-run')
     const glide = root.querySelector<SVGPathElement>('.cap-path-glide')
-    const tip = root.querySelector<SVGCircleElement>('.cap-path-tip')
-    const halo = root.querySelector<SVGCircleElement>('.cap-path-halo')
+    const tip = root.querySelector<SVGGElement>('.cap-path-tip')
     const stops = voyage.querySelectorAll<HTMLElement>('.cap-stop')
 
     let lastBox = ''
@@ -167,10 +166,7 @@ export function CapabilitySystem() {
         const len = runLength
         if (len > 0) {
           const at = run.getPointAtLength(progress * len)
-          tip.setAttribute('cx', String(at.x))
-          tip.setAttribute('cy', String(at.y))
-          halo?.setAttribute('cx', String(at.x))
-          halo?.setAttribute('cy', String(at.y))
+          tip.setAttribute('transform', `translate(${at.x} ${at.y})`)
           activateFromProgress(progress, at.y)
         } else {
           activateFromProgress(progress)
