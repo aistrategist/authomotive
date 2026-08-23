@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useId, useRef, useState, type RefObject } from 'react'
+import { useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -13,14 +13,14 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 type Metric = (typeof reporting.metrics)[number]
 
+const INSIGHT_ID = 'ri-insight'
+
 export function IntelligencePreview() {
-  const [openId, setOpenId] = useState<string | null>(null)
+  const [activeId, setActiveId] = useState<string>(reporting.metrics[0]!.id)
   const rootRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
-  const mosaicRef = useRef<HTMLDivElement>(null)
-  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
-  const popoutRef = useRef<HTMLDivElement>(null)
+  const active = reporting.metrics.find((metric) => metric.id === activeId) ?? reporting.metrics[0]!
 
   useGSAP(
     () => {
@@ -47,43 +47,6 @@ export function IntelligencePreview() {
     },
     { scope: rootRef },
   )
-
-  useEffect(() => {
-    if (!openId) return
-
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const popout = popoutRef.current
-    if (popout && !reduced) {
-      gsap.fromTo(popout, { y: 4, opacity: 0.72 }, { y: 0, opacity: 1, duration: 0.22, ease: 'power2.out', overwrite: 'auto' })
-    }
-    popout?.focus()
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        const id = openId
-        setOpenId(null)
-        triggerRefs.current[id]?.focus()
-      }
-    }
-
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node
-      if (mosaicRef.current?.contains(target)) return
-      setOpenId(null)
-    }
-
-    document.addEventListener('keydown', onKeyDown)
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      document.removeEventListener('pointerdown', onPointerDown)
-    }
-  }, [openId])
-
-  const toggle = (id: string) => {
-    setOpenId((current) => (current === id ? null : id))
-  }
 
   return (
     <section
@@ -116,64 +79,46 @@ export function IntelligencePreview() {
           className="ri-frame mt-10 overflow-visible rounded-[8px] border-2 border-ink bg-paper shadow-[6px_6px_0_0_var(--proof)] md:mt-12"
         >
           <span ref={ruleRef} className="ri-frame-rule" aria-hidden="true" />
-          <div className="ri-chrome flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink bg-stage-elevated px-5 py-3.5 md:px-6">
-            <div className="min-w-0">
-              <p className="text-base font-semibold text-porcelain md:text-lg">{reporting.product}</p>
-              <p className="mt-0.5 font-mono text-[0.625rem] uppercase tracking-wider text-stage-muted md:text-xs">
-                {reporting.reportKind} · {reporting.period}
-              </p>
+          <div className="ri-chrome">
+            <div className="ri-chrome-title">
+              <p className="ri-chrome-product">{reporting.product}</p>
               <p className="ri-sample font-mono">{reporting.sampleEyebrow}</p>
             </div>
+            <p className="ri-chrome-period font-mono">
+              {reporting.reportKind} · {reporting.period}
+            </p>
           </div>
 
-          <div className="flex flex-col gap-6 p-5 md:p-7">
-            <div ref={mosaicRef} className="ri-mosaic flex flex-col gap-5">
-              {reporting.groups.map((group) => {
-                const metrics = reporting.metrics.filter((metric) => metric.group === group.id)
+          <div className="flex flex-col gap-2.5 p-3 md:gap-3 md:p-4">
+            <ul className="ri-kpis" aria-label="Monthly signals">
+              {reporting.metrics.map((metric) => {
+                const selected = activeId === metric.id
                 return (
-                  <div key={group.id}>
-                    <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
-                      {group.label}
-                    </p>
-                    <ul
-                      className={`mt-2 grid gap-2 ${
-                        group.id === 'traffic' ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2'
-                      }`}
+                  <li key={metric.id} className="min-w-0">
+                    <button
+                      type="button"
+                      aria-pressed={selected}
+                      aria-controls={INSIGHT_ID}
+                      aria-label={`View insight for ${metric.label}`}
+                      onClick={() => setActiveId(metric.id)}
+                      className={`ri-kpi-tile${selected ? ' is-on' : ''}`}
                     >
-                      {metrics.map((metric, index) => (
-                        <li
-                          key={metric.id}
-                          className={`ri-kpi relative min-w-0 ${openId === metric.id ? 'max-md:col-span-2' : ''}`}
-                        >
-                          <MetricTile
-                            metric={metric}
-                            open={openId === metric.id}
-                            onToggle={() => toggle(metric.id)}
-                            buttonRef={(el) => {
-                              triggerRefs.current[metric.id] = el
-                            }}
-                          />
-                          {openId === metric.id ? (
-                            <MetricPopout
-                              metric={metric}
-                              alignMdEnd={index % 2 === 1}
-                              alignLgEnd={group.id === 'traffic' ? index >= 2 : index % 2 === 1}
-                              panelRef={popoutRef}
-                              onClose={() => {
-                                setOpenId(null)
-                                triggerRefs.current[metric.id]?.focus()
-                              }}
-                            />
-                          ) : null}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                      <span className="ri-kpi-cat font-mono">{metric.category}</span>
+                      <span className="ri-kpi-name">{metric.label}</span>
+                      <span className="ri-kpi-value font-mono">{metric.value}</span>
+                      <span className="ri-kpi-note">{metric.note}</span>
+                      <span className="ri-kpi-cue" aria-hidden="true">
+                        i
+                      </span>
+                    </button>
+                  </li>
                 )
               })}
-            </div>
+            </ul>
 
-            <div className="ri-modules grid gap-3 md:grid-cols-2">
+            <InsightPanel metric={active} />
+
+            <div className="ri-modules">
               <TrafficMixModule />
               <InventoryLeadModule />
               <LocalityModule />
@@ -202,129 +147,35 @@ export function IntelligencePreview() {
   )
 }
 
-function MetricTile({
-  metric,
-  open,
-  onToggle,
-  buttonRef,
-}: {
-  metric: Metric
-  open: boolean
-  onToggle: () => void
-  buttonRef: (el: HTMLButtonElement | null) => void
-}) {
-  const popoutId = `ri-popout-${metric.id}`
-
-  return (
-    <button
-      ref={buttonRef}
-      type="button"
-      aria-expanded={open}
-      aria-controls={popoutId}
-      onClick={onToggle}
-      className={`ri-kpi-tile relative w-full border-2 border-ink bg-paper px-3 py-3 pr-16 text-left md:px-4 md:pr-[4.5rem] ${
-        open ? 'is-on' : ''
-      }`}
-    >
-      <span className="ri-kpi-cue pointer-events-none absolute top-2 right-2 flex items-center gap-1">
-        <span
-          className="ri-kpi-cue-mark flex size-4 shrink-0 items-center justify-center rounded-full text-[0.625rem] font-bold leading-none text-white"
-          aria-hidden="true"
-        >
-          i
-        </span>
-        <span className="font-mono text-[0.5625rem] font-semibold uppercase tracking-[0.1em]">Click</span>
-      </span>
-      <span className="sr-only">Opens a detail for this metric. </span>
-      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.1em] text-ink">{metric.label}</p>
-      <p className="mt-1 font-mono text-2xl font-semibold tracking-tight text-ink">{metric.value}</p>
-      <p className="mt-1 text-sm text-muted-foreground">{metric.note}</p>
-    </button>
-  )
-}
-
-function MetricPopout({
-  metric,
-  alignMdEnd,
-  alignLgEnd,
-  panelRef,
-  onClose,
-}: {
-  metric: Metric
-  alignMdEnd: boolean
-  alignLgEnd: boolean
-  panelRef: RefObject<HTMLDivElement | null>
-  onClose: () => void
-}) {
-  const titleId = useId()
-  const popoutId = `ri-popout-${metric.id}`
-  const observed = metric.id === 'organic' ? reporting.evidence.observed : null
-
+function InsightPanel({ metric }: { metric: Metric }) {
   return (
     <div
-      ref={panelRef}
-      id={popoutId}
-      role="dialog"
-      aria-modal="false"
-      aria-labelledby={titleId}
-      tabIndex={-1}
-      className={`ri-popout mt-2 w-full outline-none md:absolute md:z-20 md:mt-2 md:w-[min(22rem,calc(100vw-3rem))] ${
-        alignMdEnd ? 'md:right-0 md:left-auto' : 'md:left-0'
-      } ${alignLgEnd ? 'lg:right-0 lg:left-auto' : 'lg:left-0 lg:right-auto'}`}
+      id={INSIGHT_ID}
+      className="ri-insight"
+      role="region"
+      aria-labelledby="ri-insight-kicker"
+      aria-live="polite"
     >
-      <div className="border-2 border-ink bg-paper p-4 shadow-[4px_4px_0_0_var(--proof)] md:p-5">
-        <div className="flex items-start justify-between gap-3">
-          <p id={titleId} className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
-            {metric.label}
-          </p>
-          <button
-            type="button"
-            onClick={onClose}
-            className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-muted-foreground hover:text-ink"
-          >
-            Close
-          </button>
+      <p id="ri-insight-kicker" className="ri-insight-kicker font-mono">
+        The monthly read
+      </p>
+      <p className="ri-insight-head font-mono">
+        {metric.label} · {metric.value}
+      </p>
+      <dl key={metric.id} className="ri-insight-grid">
+        <div>
+          <dt className="font-mono">What changed</dt>
+          <dd>{metric.popout.changed}</dd>
         </div>
-        <ol className="mt-3 flex flex-col gap-2.5">
-          {[
-            { n: '01', label: 'Changed', body: metric.popout.changed },
-            { n: '02', label: 'Why', body: metric.popout.why },
-            { n: '03', label: 'Next', body: metric.popout.next },
-          ].map((beat) => (
-            <li key={beat.n}>
-              <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-ink">
-                {beat.n} · {beat.label}
-              </p>
-              <p className="mt-1 text-sm leading-relaxed text-ink">{beat.body}</p>
-            </li>
-          ))}
-        </ol>
-        {observed ? (
-          <div className="mt-4 border-t border-ink/15 pt-3">
-            <p className="font-mono text-[0.5625rem] uppercase tracking-[0.12em] text-ink">
-              {observed.kicker}
-            </p>
-            <p className="mt-1 text-sm font-semibold text-ink">{observed.title}</p>
-            <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-              {observed.metrics.map((item) => (
-                <div key={item.id}>
-                  <dt className="font-mono text-[0.5625rem] uppercase tracking-[0.1em] text-ink">
-                    {item.label}
-                  </dt>
-                  <dd className="font-mono text-sm font-semibold text-ink">
-                    {item.before}
-                    <span className="mx-1 text-muted-foreground" aria-hidden="true">
-                      →
-                    </span>
-                    {item.after}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{observed.source}</p>
-          </div>
-        ) : null}
-      </div>
+        <div>
+          <dt className="font-mono">Why it matters</dt>
+          <dd>{metric.popout.why}</dd>
+        </div>
+        <div>
+          <dt className="font-mono">Next move</dt>
+          <dd>{metric.popout.next}</dd>
+        </div>
+      </dl>
     </div>
   )
 }

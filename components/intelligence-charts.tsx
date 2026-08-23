@@ -77,8 +77,8 @@ function areaFromCurve(points: PlotPoint[], h: number, pad: number) {
 
 export function TrafficMixModule() {
   const w = 480
-  const h = 200
-  const pad = 22
+  const h = 148
+  const pad = 16
   const yMax = Math.max(...mixSeries[0].values) * 1.1
   const plotted = mixSeries.map((series) => ({
     ...series,
@@ -86,12 +86,13 @@ export function TrafficMixModule() {
   }))
 
   return (
-    <div className="ri-module border border-ink/15 bg-porcelain/60 px-4 py-4 md:px-5">
-      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
-        Traffic mix · MoM
+    <div className="ri-module ri-module-trend border border-ink/15 bg-porcelain/60 px-3 py-3 md:px-4">
+      <p className="font-mono text-[0.5625rem] font-medium uppercase tracking-[0.14em] text-ink">
+        Discovery trend
       </p>
-      <p className="mt-1 text-base font-semibold text-ink">Website traffic</p>
-      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1" aria-label="Traffic types">
+      <p className="mt-0.5 text-sm font-semibold text-ink md:text-base">Traffic mix</p>
+      <p className="ri-module-ask">Is growth broad or channel-specific?</p>
+      <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1" aria-label="Traffic types">
         {mixSeries.map((series) => (
           <li key={series.id} className="flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-ink">
             <span className={`h-1.5 w-3 ${series.mark}`} aria-hidden="true" />
@@ -99,7 +100,7 @@ export function TrafficMixModule() {
           </li>
         ))}
       </ul>
-      <div className="ri-cal mt-3">
+      <div className="ri-cal mt-2">
         <svg
           className="h-auto w-full"
           viewBox={`0 0 ${w} ${h}`}
@@ -197,30 +198,29 @@ export function TrafficMixModule() {
 }
 
 const pathway = [
-  { id: 'vsrp', label: 'VSRP results', value: 2980, width: 100, tone: 'bg-proof' },
-  { id: 'vdp', label: 'VDP views', value: 1640, width: 62, tone: 'bg-proof-deep/55' },
-  { id: 'leads', label: 'Leads', value: 860, width: 34, tone: 'bg-action' },
+  { id: 'vsrp', label: 'VSRP', value: 2980 },
+  { id: 'vdp', label: 'VDP', value: 1640 },
+  { id: 'leads', label: 'Leads', value: 860 },
 ] as const
 
 export function InventoryLeadModule() {
   return (
-    <div className="ri-module border border-ink/15 bg-porcelain/60 px-4 py-4 md:px-5">
-      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
-        Inventory to lead
+    <div className="ri-module ri-module-flow border border-ink/15 bg-porcelain/60 px-3 py-3 md:px-4">
+      <p className="font-mono text-[0.5625rem] font-medium uppercase tracking-[0.14em] text-ink">
+        Buyer movement
       </p>
-      <p className="mt-1 text-base font-semibold text-ink">VSRP → VDP → leads</p>
-      <ol className="mt-4 flex flex-col gap-2.5" aria-label="Inventory-to-lead pathway">
-        {pathway.map((step) => (
-          <li key={step.id}>
-            <div className="mb-1 flex items-baseline justify-between gap-3">
-              <span className="text-sm font-semibold text-ink">{step.label}</span>
-              <span className="font-mono text-sm font-semibold tabular-nums text-ink">
-                {step.value.toLocaleString()}
+      <p className="mt-0.5 text-sm font-semibold text-ink md:text-base">Inventory flow</p>
+      <p className="ri-module-ask">Are shoppers reaching vehicles?</p>
+      <ol className="ri-flow" aria-label="Inventory-to-lead pathway: 2,980 VSRP results, 1,640 VDP views, 860 leads">
+        {pathway.map((step, i) => (
+          <li key={step.id} className="ri-flow-step">
+            <span className="ri-flow-value font-mono">{step.value.toLocaleString()}</span>
+            <span className="ri-flow-label">{step.label}</span>
+            {i < pathway.length - 1 ? (
+              <span className="ri-flow-arrow" aria-hidden="true">
+                →
               </span>
-            </div>
-            <div className="h-7 overflow-hidden bg-paper">
-              <div className={`iq-bar-in-x h-full ${step.tone}`} style={{ width: `${step.width}%` }} />
-            </div>
+            ) : null}
           </li>
         ))}
       </ol>
@@ -237,33 +237,21 @@ const markets = [
 
 export function LocalityModule() {
   return (
-    <div className="ri-module border border-ink/15 bg-porcelain/60 px-4 py-4 md:col-span-2 md:px-5">
-      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
-        Locality
+    <div className="ri-module ri-module-market border border-ink/15 bg-porcelain/60 px-3 py-3 md:px-4">
+      <p className="font-mono text-[0.5625rem] font-medium uppercase tracking-[0.14em] text-ink">
+        Market movement
       </p>
-      <p className="mt-1 text-base font-semibold text-ink">Where local visibility is moving</p>
-      <div className="mt-4 grid gap-2 sm:grid-cols-4" role="img" aria-label="Locality strength by market">
+      <p className="mt-0.5 text-sm font-semibold text-ink md:text-base">Locality</p>
+      <p className="ri-module-ask">Where should we push next?</p>
+      <ul className="ri-markets" aria-label="Locality strength by market">
         {markets.map((market) => (
-          <div
-            key={market.name}
-            className={`border px-3 py-2.5 ${
-              market.hot ? 'border-action/50 bg-action-soft' : 'border-ink/10 bg-paper'
-            }`}
-          >
-            <div className="flex items-baseline justify-between gap-2">
-              <p className="text-sm font-semibold text-ink">{market.name}</p>
-              <p className="font-mono text-sm font-semibold text-ink">{market.strength}</p>
-            </div>
-            <p className="mt-0.5 text-xs text-muted-foreground">{market.status}</p>
-            <div className="mt-2 h-1.5 overflow-hidden bg-paper">
-              <div
-                className={`iq-bar-in-x h-full ${market.hot ? 'bg-action' : 'bg-ink/25'}`}
-                style={{ width: `${market.strength}%` }}
-              />
-            </div>
-          </div>
+          <li key={market.name} className={`ri-market${market.hot ? ' is-hot' : ''}`}>
+            <span className="ri-market-name">{market.name}</span>
+            <span className="ri-market-score font-mono">{market.strength}</span>
+            <span className="ri-market-status">{market.status}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }
