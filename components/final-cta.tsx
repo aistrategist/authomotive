@@ -159,9 +159,9 @@ export function FinalCta() {
       aria-labelledby="cta-heading"
       className="ink-grid scroll-mt-24 bg-stage"
     >
+      <SignalRail step={7} />
       <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <span ref={ruleRef} className="or-chapter-rule" aria-hidden="true" />
-        <SignalRail step={7} />
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-lime">

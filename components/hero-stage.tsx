@@ -8,7 +8,6 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { CheckCircle2, ClipboardList, Phone } from 'lucide-react'
 
 const VB_W = 640
 const VB_H = 420
@@ -71,7 +70,6 @@ const CONVERSIONS = [
     cy: 272,
     tip: 'Call started',
     label: 'PHONE',
-    Icon: Phone,
   },
   {
     id: 'form' as const,
@@ -79,7 +77,6 @@ const CONVERSIONS = [
     cy: 324,
     tip: 'Form submitted',
     label: 'FORM',
-    Icon: ClipboardList,
   },
   {
     id: 'lead' as const,
@@ -87,7 +84,6 @@ const CONVERSIONS = [
     cy: 378,
     tip: 'Lead won',
     label: 'LEAD',
-    Icon: CheckCircle2,
   },
 ] as const
 
@@ -152,11 +148,11 @@ const TRAIL_SEGMENTS = [
 
 /** Five website visitors — Search, AI, and Local channels */
 const CHANNELS = [
-  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#8fbcf5', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
-  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#c8b8ff', r: 6, startDelayMs: 900, speedBias: 1.32, face: 1, lane: 10 },
-  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: '#e8eef5', r: 6, startDelayMs: 2200, speedBias: 0.88, face: 2, lane: -10 },
-  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: '#6ea5e8', r: 5.5, startDelayMs: 3600, speedBias: 0.64, face: 1, lane: 6 },
-  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: '#f1edff', r: 5.5, startDelayMs: 5100, speedBias: 0.5, face: 2, lane: -6 },
+  { id: 'seo' as const, tipLabel: 'SEO', hudLabel: 'Search', color: 'var(--accent)', r: 7, startDelayMs: 0, speedBias: 1.85, face: 0, lane: 0 },
+  { id: 'geo' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof)', r: 6, startDelayMs: 0, speedBias: 1.32, face: 1, lane: 10 },
+  { id: 'aeo' as const, tipLabel: 'AEO', hudLabel: 'AI', color: 'var(--porcelain)', r: 6, startDelayMs: 0, speedBias: 0.88, face: 2, lane: -10 },
+  { id: 'seo2' as const, tipLabel: 'SEO', hudLabel: 'Search', color: 'var(--accent-mid)', r: 5.5, startDelayMs: 0, speedBias: 0.64, face: 1, lane: 6 },
+  { id: 'geo2' as const, tipLabel: 'GEO', hudLabel: 'Local', color: 'var(--proof-soft)', r: 5.5, startDelayMs: 0, speedBias: 0.5, face: 2, lane: -6 },
 ] as const
 
 type ChannelId = (typeof CHANNELS)[number]['id']
@@ -190,12 +186,14 @@ const FLASH_HOLD_MS = 650
 const CONVERT_FLASH_HOLD_MS = WIN_CELEBRATE_MS
 const LEAD_FLASH_HOLD_MS = WIN_CELEBRATE_MS
 const TIP_FADE_MS = 280
-const THINK_MIN_MS = 700
-const THINK_MAX_MS = 1400
-const THINK_COOLDOWN_MS = 1600
-const THINK_FADE_MS = 150
+const THINK_MIN_MS = 480
+const THINK_MAX_MS = 860
+const THINK_COOLDOWN_MS = 2200
+const THINK_FADE_MS = 140
 /** Target share of active travelers paused in a “thinking” state */
-const THINK_TARGET_RATIO = 0.2
+const THINK_TARGET_RATIO = 0.16
+/** One visitor leaves the origin before the next fades in */
+const SPAWN_GAP_MS = 1750
 
 function pickBranch(exclude?: BranchId): BranchId {
   const pool = exclude ? BRANCH_IDS.filter((b) => b !== exclude) : BRANCH_IDS
@@ -248,7 +246,6 @@ function makeTravelerSeed(branch: BranchId, waitUntil: number) {
     tipBranch: branch,
     tipAnchorUntil: 0,
     started: false,
-    heading: 0,
   }
 }
 
@@ -256,35 +253,8 @@ function emptyChannelMap<T>(value: T): Record<ChannelId, T> {
   return Object.fromEntries(CHANNEL_IDS.map((id) => [id, value])) as Record<ChannelId, T>
 }
 
-function buildPathMetrics() {
-  if (typeof document === 'undefined') return null
-  const ns = 'http://www.w3.org/2000/svg'
-  const svg = document.createElementNS(ns, 'svg')
-  const metrics = {} as Record<BranchId, { el: SVGPathElement; len: number }>
-  for (const id of BRANCH_IDS) {
-    const el = document.createElementNS(ns, 'path')
-    el.setAttribute('d', JOURNEY_PATHS[id])
-    svg.appendChild(el)
-    metrics[id] = { el, len: el.getTotalLength() }
-  }
-  return metrics
-}
-
 type TipLive = Record<ChannelId, Partial<Record<TipId, boolean>>>
 type FlashLive = Record<ChannelId, TipId | null>
-
-function slightHeading(
-  metrics: NonNullable<ReturnType<typeof buildPathMetrics>>,
-  branch: BranchId,
-  progress: number,
-) {
-  const { el, len } = metrics[branch]
-  const at = Math.max(0, Math.min(len, progress * len))
-  const a = el.getPointAtLength(Math.max(0, at - 3))
-  const b = el.getPointAtLength(Math.min(len, at + 3))
-  const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI
-  return ang * 0.22
-}
 
 function rollSpeed(ch: (typeof CHANNELS)[number]) {
   if (ch.id === 'seo' || ch.id === 'geo') return (1 / BASE_JOURNEY_MS) * ch.speedBias
@@ -318,26 +288,25 @@ function applyTravelerDom(
     opacity: number
     thinking: boolean
     branch: BranchId
-    heading: number
     atNode: boolean
   },
 ) {
   if (!g) return
   g.style.offsetPath = OFFSET_PATH[live.branch]
-  g.style.offsetDistance = `${(live.progress * 100).toFixed(3)}%`
+  g.style.offsetDistance = `${(live.progress * 100).toFixed(2)}%`
   g.style.opacity = String(live.opacity)
   g.classList.toggle('is-thinking', live.thinking)
   g.classList.toggle('is-node', live.atNode)
   if (steer) steer.style.transform = 'rotate(0deg)'
 }
 
-const INK = '#061b20'
+const INK = 'var(--ink)'
 
 /** Raw head-and-shoulders glyph — no plate, halo, ring, or carrier. */
 function VisitorGlyph({ color, variant = 0 }: { color: string; variant?: number }) {
-  const headY = variant === 1 ? -4.1 : variant === 2 ? -4.5 : -4.3
-  const headR = variant === 1 ? 3.5 : variant === 2 ? 3.75 : 3.6
-  const bodyW = variant === 1 ? 7.3 : variant === 2 ? 6.5 : 6.9
+  const headY = variant === 1 ? -4.15 : variant === 2 ? -4.45 : -4.3
+  const headR = variant === 1 ? 3.45 : variant === 2 ? 3.55 : 3.6
+  const bodyW = variant === 1 ? 7.3 : variant === 2 ? 6.45 : 6.9
 
   return (
     <g
@@ -347,17 +316,7 @@ function VisitorGlyph({ color, variant = 0 }: { color: string; variant?: number 
       strokeWidth="1"
       strokeLinejoin="round"
     >
-      <circle cx={variant === 2 ? 0.35 : 0} cy={headY} r={headR} />
-      {variant === 2 ? (
-        <ellipse
-          cx="1.6"
-          cy={headY - 0.7}
-          rx="2.1"
-          ry="2.5"
-          fill={color}
-          stroke={INK}
-        />
-      ) : null}
+      <circle cx="0" cy={headY} r={headR} />
       <path
         d={`M ${-bodyW} 8.2 C ${-bodyW} 1.5 -3.1 0.15 0 0.15 C 3.1 0.15 ${bodyW} 1.5 ${bodyW} 8.2 Z`}
       />
@@ -369,10 +328,13 @@ function VisitorFace({ color, variant = 0 }: { color: string; variant?: number }
   return (
     <g className="hs-packet hs-visitor-fit">
       <VisitorGlyph color={color} variant={variant} />
-      <g className="hs-think" fill={color} stroke="none">
-        <circle className="hs-think-dot" cx="8.2" cy="-8.8" r="1.1" />
-        <circle className="hs-think-dot" cx="11.4" cy="-11.2" r="1.35" />
-        <circle className="hs-think-dot" cx="15" cy="-13.8" r="1.65" />
+      <g className="hs-think">
+        <circle className="hs-think-tail" cx="7.4" cy="-10.8" r="1.05" />
+        <circle className="hs-think-tail" cx="10.6" cy="-15.2" r="1.5" />
+        <ellipse className="hs-think-cloud" cx="17.2" cy="-22" rx="8.2" ry="5.2" />
+        <circle className="hs-think-dot hs-think-d1" cx="13.6" cy="-22" r="1.08" />
+        <circle className="hs-think-dot hs-think-d2" cx="17.2" cy="-22" r="1.08" />
+        <circle className="hs-think-dot hs-think-d3" cx="20.8" cy="-22" r="1.08" />
       </g>
     </g>
   )
@@ -380,7 +342,7 @@ function VisitorFace({ color, variant = 0 }: { color: string; variant?: number }
 
 function VisitorChipIcon({ color, variant = 0 }: { color: string; variant?: number }) {
   return (
-    <svg className="hs-chip-face" viewBox="-10 -11 20 22" width="18" height="18" aria-hidden="true">
+    <svg className="hs-chip-face" viewBox="-10 -11 20 22" width="22" height="22" aria-hidden="true">
       <VisitorGlyph color={color} variant={variant} />
     </svg>
   )
@@ -396,26 +358,34 @@ function SearchGlyph() {
 }
 
 /** Lime disc + dark glyph — shared style for junction car + convert ends */
-function ConvertGlyph({ id }: { id: BranchId }) {
+function ConvertGlyph({ id, stroke = INK }: { id: BranchId; stroke?: string }) {
   if (id === 'phone') {
     return (
-      <g fill="none" stroke={INK} strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round">
+      <g fill="none" stroke={stroke} strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round">
         <path d="M-3.2 -4.2h2.1c.35 0 .65.28.65.65l.35 1.85c.05.3-.08.55-.3.7l-.95.95a7.2 7.2 0 0 0 3.1 3.1l.95-.95c.22-.22.5-.35.7-.3l1.85.35c.37.07.65.35.65.7v2.1c0 .37-.28.65-.65.65A8 8 0 0 1 -3.85 -3.55c0-.37.28-.65.65-.65Z" />
       </g>
     )
   }
   if (id === 'form') {
     return (
-      <g fill="none" stroke={INK} strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round">
+      <g fill="none" stroke={stroke} strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round">
         <rect x="-3.6" y="-4.4" width="7.2" height="8.8" rx="1.1" />
         <path d="M-1.8 -1.6h3.6M-1.8 .4h3.6M-1.8 2.4h2.2" />
       </g>
     )
   }
   return (
-    <g fill="none" stroke={INK} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <g fill="none" stroke={stroke} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M-2.6 .1  -.6 2.1  3.2 -1.8" />
     </g>
+  )
+}
+
+function ConvertTipIcon({ id }: { id: BranchId }) {
+  return (
+    <svg className="hs-tip-mark" width="13" height="13" viewBox="-6 -6.5 12 13" fill="none" aria-hidden>
+      <ConvertGlyph id={id} stroke="currentColor" />
+    </svg>
   )
 }
 
@@ -536,7 +506,7 @@ export function HeroStage() {
 
   const simRef = useRef({
     reduced: false,
-    pathMetrics: null as ReturnType<typeof buildPathMetrics>,
+    spawnLockUntil: 0,
     travelers: Object.fromEntries(
       CHANNELS.map((ch, i) => [
         ch.id,
@@ -548,7 +518,6 @@ export function HeroStage() {
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     simRef.current.reduced = reduced
-    simRef.current.pathMetrics = buildPathMetrics()
     const nodes = { g: travelerEls.current, steer: steerEls.current }
 
     for (const ch of CHANNELS) {
@@ -578,11 +547,21 @@ export function HeroStage() {
         opacity: 0.9,
         thinking: false,
         branch: lead.branch,
-        heading: 0,
         atNode: false,
       })
       return
     }
+
+    const first = simRef.current.travelers.seo
+    first.started = true
+    simRef.current.spawnLockUntil = performance.now() + SPAWN_GAP_MS
+    applyTravelerDom(nodes.g.seo, nodes.steer.seo, {
+      progress: 0,
+      opacity: 0.92,
+      thinking: false,
+      branch: first.branch,
+      atNode: false,
+    })
 
     let raf = 0
     let last = performance.now()
@@ -590,10 +569,9 @@ export function HeroStage() {
 
     const tick = (now: number) => {
       if (!running) return
-      const dt = Math.min(48, now - last)
+      const dt = Math.min(32, now - last)
       last = now
       const sim = simRef.current.travelers
-      const metrics = simRef.current.pathMetrics
 
       let thinkingCount = 0
       for (const ch of CHANNELS) {
@@ -607,14 +585,15 @@ export function HeroStage() {
 
       for (const ch of CHANNELS) {
         const t = sim[ch.id]
+        const waitingToSpawn =
+          now < t.waitUntil || (!t.started && now < simRef.current.spawnLockUntil)
 
-        if (now < t.waitUntil) {
+        if (waitingToSpawn) {
           applyTravelerDom(nodes.g[ch.id], nodes.steer[ch.id], {
             progress: t.progress,
             opacity: 0,
             thinking: false,
             branch: t.branch,
-            heading: 0,
             atNode: false,
           })
           nextTips[ch.id] = {}
@@ -630,6 +609,7 @@ export function HeroStage() {
           t.fired = { guide: false, vsrp: false, vdp: false, convert: false }
           t.tipUntil = {}
           t.thinking = false
+          simRef.current.spawnLockUntil = now + SPAWN_GAP_MS
         }
 
         if (t.thinking) {
@@ -641,8 +621,8 @@ export function HeroStage() {
           }
         } else if (
           ch.id !== 'seo' &&
-          t.progress > 0.08 &&
-          t.progress < 0.9 &&
+          t.progress > 0.16 &&
+          t.progress < 0.88 &&
           now >= t.cooldownUntil &&
           now >= t.resumeAt &&
           thinkingCount / CHANNELS.length < THINK_TARGET_RATIO + 0.05
@@ -699,11 +679,6 @@ export function HeroStage() {
                 ? 0
                 : 1
 
-        const heading =
-          t.thinking || opacity === 0 || !metrics
-            ? t.heading
-            : (t.heading = slightHeading(metrics, t.branch, t.progress))
-
         const atNode = now < t.flashUntil && Boolean(t.flashTip)
 
         let live = {
@@ -711,7 +686,6 @@ export function HeroStage() {
           opacity: Math.max(0, Math.min(1, opacity)),
           thinking: t.thinking,
           branch: t.branch,
-          heading,
           atNode,
         }
 
@@ -723,7 +697,6 @@ export function HeroStage() {
               opacity: 0.55,
               thinking: false,
               branch: t.branch,
-              heading,
               atNode,
             }
           } else {
@@ -733,7 +706,7 @@ export function HeroStage() {
             t.started = false
             t.thinking = false
             t.resumeAt = 0
-            t.waitUntil = now + rand(450, 1100)
+            t.waitUntil = now + rand(280, 640)
             t.fired = { guide: false, vsrp: false, vdp: false, convert: false }
             t.tipUntil = {}
             t.flashTip = null
@@ -745,7 +718,6 @@ export function HeroStage() {
               opacity: 0,
               thinking: false,
               branch: t.branch,
-              heading: 0,
               atNode: false,
             }
           }
@@ -823,15 +795,15 @@ export function HeroStage() {
           <p className="hs-intel-kicker">Website visitors</p>
           <div className="hs-intel-channels">
             <span className="hs-legend-item hs-chip-seo">
-              <VisitorChipIcon color="#8fbcf5" variant={0} />
+              <VisitorChipIcon color="var(--accent)" variant={0} />
               Search
             </span>
             <span className="hs-legend-item hs-chip-aeo">
-              <VisitorChipIcon color="#e8eef5" variant={2} />
+              <VisitorChipIcon color="var(--porcelain)" variant={2} />
               AI
             </span>
             <span className="hs-legend-item hs-chip-geo">
-              <VisitorChipIcon color="#c8b8ff" variant={1} />
+              <VisitorChipIcon color="var(--proof)" variant={1} />
               Local
             </span>
           </div>
@@ -849,7 +821,7 @@ export function HeroStage() {
           >
             <defs>
               <pattern id="hs-map-grid" width="28" height="28" patternUnits="userSpaceOnUse">
-                <path d="M28 0H0V28" fill="none" stroke="rgba(110,101,125,0.28)" strokeWidth="1" />
+                <path className="hs-map-grid-line" d="M28 0H0V28" fill="none" />
               </pattern>
               <radialGradient id="hs-grid-fade" cx="48%" cy="46%" r="62%">
                 <stop offset="0%" stopColor="#fff" stopOpacity="0.55" />
@@ -977,7 +949,7 @@ export function HeroStage() {
                     cx={cv.cx}
                     cy={cv.cy}
                     r="30"
-                    fill="#ffc982"
+                    fill="var(--action)"
                     opacity="0"
                   />
                   <circle
@@ -986,7 +958,7 @@ export function HeroStage() {
                     cy={cv.cy}
                     r="16"
                     fill="none"
-                    stroke="#ffc982"
+                    stroke="var(--action)"
                     strokeWidth="2"
                     opacity="0"
                   />
@@ -1068,7 +1040,6 @@ export function HeroStage() {
           {CHANNELS.map((ch) => {
             const branch = CONVERSIONS.find((c) => c.id === ui.tipBranch[ch.id])!
             const pos = tipPct(branch.cx, branch.cy)
-            const Icon = branch.Icon
             const celebrating = ui.tips[ch.id].convert
             const isLead = branch.id === 'lead'
             return (
@@ -1081,7 +1052,7 @@ export function HeroStage() {
               >
                 <span className="hs-tip-dot" />
                 <span className="hs-tip-icon" aria-hidden="true">
-                  <Icon size={13} strokeWidth={2.5} />
+                  <ConvertTipIcon id={branch.id} />
                 </span>
                 <span className="hs-tip-label">{branch.tip}</span>
               </div>

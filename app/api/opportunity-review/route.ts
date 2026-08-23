@@ -150,7 +150,7 @@ export async function POST(request: Request) {
       from,
       to,
       replyTo: emailRaw,
-      subject: `Opportunity Review request — ${dealership}`,
+      subject: `Opportunity Review request from ${dealership}`,
       html,
       text,
     })

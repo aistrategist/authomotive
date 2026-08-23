@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef, type CSSProperties } from 'react'
+import { useEffect, useRef, type CSSProperties } from 'react'
 
 const TOTAL = 7
 
@@ -10,16 +10,18 @@ const chapters = [
     title: 'Turn Questions Into Inventory',
     label: 'Buyer Questions to Inventory',
     anchors: ['platforms'],
-    color: 'var(--accent)',
-    surface: 'paper',
+    color: 'var(--accent-deep)',
+    rest: 'var(--accent-soft)',
+    seam: 'light',
   },
   {
     step: 2,
     title: 'Connect The Whole System',
     label: 'One System · Three Jobs',
     anchors: ['capabilities'],
-    color: 'var(--ink)',
-    surface: 'paper',
+    color: 'var(--proof-deep)',
+    rest: 'var(--proof-soft)',
+    seam: 'light',
   },
   {
     step: 3,
@@ -27,7 +29,8 @@ const chapters = [
     label: 'Authority Experience',
     anchors: ['authority-experiences'],
     color: 'var(--accent)',
-    surface: 'stage',
+    rest: 'var(--alloy)',
+    seam: 'light',
   },
   {
     step: 4,
@@ -35,15 +38,17 @@ const chapters = [
     label: 'Intelligence',
     anchors: ['reporting'],
     color: 'var(--proof)',
-    surface: 'stage',
+    rest: 'var(--action-soft)',
+    seam: 'light',
   },
   {
     step: 5,
     title: 'Track What Matters',
     label: 'Measurement',
     anchors: ['measurement', 'how-it-works'],
-    color: 'var(--ink)',
-    surface: 'paper',
+    color: 'var(--action)',
+    rest: 'var(--ink)',
+    seam: 'dark',
   },
   {
     step: 6,
@@ -51,7 +56,8 @@ const chapters = [
     label: 'Engagement',
     anchors: ['engagement'],
     color: 'var(--ink)',
-    surface: 'paper',
+    rest: 'var(--porcelain)',
+    seam: 'light',
   },
   {
     step: 7,
@@ -59,69 +65,104 @@ const chapters = [
     label: 'Opportunity Review',
     anchors: ['opportunity-review'],
     color: 'var(--action)',
-    surface: 'stage',
+    rest: 'var(--alloy)',
+    seam: 'light',
   },
 ] as const
 
-function widthFor(step: number) {
-  return step >= TOTAL ? 100 : (step / TOTAL) * 100
+function progressFor(step: number) {
+  return step >= TOTAL ? 1 : step / TOTAL
+}
+
+function RailCar() {
+  return (
+    <svg className="journey-car" viewBox="0 0 18 10" width="18" height="10" aria-hidden="true">
+      <path
+        d="M1.4 6.2h15.2M3.1 6.2 4.8 3.1h7.6l1.8 3.1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M6.2 3.25h5" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
+      <circle cx="5.1" cy="7.45" r="1.35" fill="currentColor" />
+      <circle cx="12.7" cy="7.45" r="1.35" fill="currentColor" />
+    </svg>
+  )
 }
 
 export function SignalRail({ step }: { step: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) {
   const chapter = chapters[step - 1]
   const rootRef = useRef<HTMLDivElement>(null)
-  const to = widthFor(step)
-  const from = step === 1 ? 0 : widthFor(step - 1)
+  const to = progressFor(step)
+  const from = step === 1 ? 0 : progressFor(step - 1)
   const counter = `${String(step).padStart(2, '0')} / ${String(TOTAL).padStart(2, '0')}`
 
-  useLayoutEffect(() => {
-    const el = rootRef.current
-    if (!el || !chapter) return
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root || !chapter) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const hash = window.location.hash.replace('#', '')
     const landedOnChapter = (chapter.anchors as readonly string[]).includes(hash)
-    if (reduced || landedOnChapter) return
+    if (reduced || landedOnChapter) {
+      root.classList.add('is-in')
+      return
+    }
 
-    el.classList.add('is-pending')
-
-    const target = el.closest('section') ?? el
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return
-        el.classList.remove('is-pending')
-        el.classList.add('is-in')
+        root.classList.add('is-in')
         io.disconnect()
       },
-      { threshold: 0.18, rootMargin: '0px 0px -12% 0px' },
+      { rootMargin: '0px 0px -18% 0px', threshold: 0.01 },
     )
-    io.observe(target)
+    io.observe(root.closest('section') ?? root)
     return () => io.disconnect()
-  }, [chapter, step])
+  }, [chapter])
 
   if (!chapter) return null
 
   return (
     <div
       ref={rootRef}
-      className={`journey-rail journey-${chapter.surface}`}
+      className="journey-rail"
+      data-seam={chapter.seam}
       style={
         {
-          '--journey-from': `${from}%`,
-          '--journey-to': `${to}%`,
+          '--journey-from': from,
+          '--journey-to': to,
           '--journey-color': chapter.color,
+          '--journey-rest': chapter.rest,
         } as CSSProperties
       }
     >
       <p className="sr-only">{`Chapter ${step} of ${TOTAL}: ${chapter.label}`}</p>
-      <div className="journey-meta" aria-hidden="true">
-        <span className="journey-title font-mono">{chapter.title}</span>
-        <span className="journey-count font-mono">{counter}</span>
-      </div>
       <div className="journey-track" aria-hidden="true">
         <span className="journey-rest" />
-        <span className="journey-fill">
-          <span className="journey-station" />
+        <span className="journey-fill" />
+        <span className="journey-traveler">
+          <RailCar />
+        </span>
+      </div>
+      <div className="journey-row" aria-hidden="true">
+        <span className="journey-title font-mono">{chapter.title}</span>
+        <span className="journey-meter">
+          <span className="journey-dots">
+            {Array.from({ length: TOTAL }, (_, i) => {
+              const on = i < step
+              const live = i === step - 1
+              return (
+                <i
+                  key={i}
+                  className={`journey-dot${on ? ' is-on' : ''}${live ? ' is-live' : ''}`}
+                />
+              )
+            })}
+          </span>
+          <span className="journey-count font-mono">{counter}</span>
         </span>
       </div>
     </div>

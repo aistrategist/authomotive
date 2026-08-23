@@ -22,6 +22,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [activeSection, setActiveSection] = useState<string>('')
+  const [ctaRest, setCtaRest] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -98,7 +99,9 @@ export function SiteHeader() {
         ratios.set(key, Math.max(ratios.get(key) ?? 0, ratio))
       }
 
-      if ((ratios.get('opportunity-review') ?? 0) > 0.12) {
+      const atForm = (ratios.get('opportunity-review') ?? 0) > 0.12
+      setCtaRest(atForm)
+      if (atForm) {
         setActiveSection('')
         return
       }
@@ -211,7 +214,7 @@ export function SiteHeader() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 border-b ${
-        scrolled ? 'border-ink/10 bg-paper' : 'border-paper/15 bg-transparent'
+        scrolled ? 'border-ink/10 bg-paper' : 'border-transparent bg-transparent'
       }`}
     >
       <div className="mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-6 px-5 md:px-8">
@@ -250,7 +253,7 @@ export function SiteHeader() {
           })}
           <a
             href="#opportunity-review"
-            className="btn btn-action !min-h-[44px] !whitespace-nowrap !px-4 !text-[15px] xl:!px-5"
+            className={`btn btn-action header-cta !min-h-[44px] !whitespace-nowrap !px-4 !text-[15px] xl:!px-5${ctaRest ? ' is-rest' : ''}`}
           >
             {cta.primary}
             <span className="btn-arrow" aria-hidden="true">
@@ -324,7 +327,7 @@ export function SiteHeader() {
               <a
                 href="#opportunity-review"
                 onClick={closeMenu}
-                className="btn btn-action-dark mt-6 !text-lg"
+                className={`btn btn-action-dark header-cta mt-6 !text-lg${ctaRest ? ' is-rest' : ''}`}
               >
                 {cta.primary}
                 <span className="btn-arrow" aria-hidden="true">

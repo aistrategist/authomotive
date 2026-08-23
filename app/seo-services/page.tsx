@@ -2,18 +2,20 @@ import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { Hero } from '@/components/hero'
 import { QuestionToInventory } from '@/components/question-to-inventory'
-import { CapabilitySystem } from '@/components/capability-system'
-import { AuthorityExperience } from '@/components/authority-experience'
-import { IntelligencePreview } from '@/components/intelligence-preview'
-import { SignalArchitecture } from '@/components/signal-architecture'
-import { ManagedFramework } from '@/components/managed-framework'
-import { FinalCta } from '@/components/final-cta'
+import {
+  AuthorityExperience,
+  CapabilitySystem,
+  FinalCta,
+  IntelligencePreview,
+  ManagedFramework,
+  SignalArchitecture,
+} from '@/components/home-sections'
 import { SiteFooter } from '@/components/site-footer'
 
 export const metadata: Metadata = {
   title: 'SEO Services',
   description:
-    'Authomotive SEO services for dealership websites — search-ready authority content, measurement, and conversion.',
+    'Authomotive SEO services for dealership websites: search-ready authority content, measurement, and conversion.',
   alternates: {
     canonical: '/seo-services',
   },

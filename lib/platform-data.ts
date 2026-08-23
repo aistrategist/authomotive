@@ -67,6 +67,7 @@ export const platformCredibility = {
       marks: [
         { id: 'dealer-com', name: 'Dealer.com', kind: 'wordmark' },
         { id: 'dealer-inspire', name: 'Dealer Inspire', kind: 'wordmark' },
+        { id: 'dealer-on', name: 'DealerOn', kind: 'wordmark' },
         { id: 'motive', name: 'Motive', kind: 'wordmark', note: 'motivehq.com' },
         { id: 'open-cms', name: 'Open or Custom CMS', kind: 'wordmark' },
       ],
@@ -167,7 +168,7 @@ export const reportingMatrix = {
       means: 'Where dealership discovery is strengthening or weakening',
       next: 'Protect, expand, test, or correct',
       interpretation:
-        'Visibility movement is read against the queries, pages, and topic clusters that produced it\u2014so the dealership knows where discovery is strengthening or weakening, and why.',
+        'Visibility movement is read against the queries, pages, and topic clusters that produced it, so the dealership knows where discovery is strengthening or weakening, and why.',
       decision: 'Protect what is working, expand what is growing, test or correct what is not.',
       sources: ['gsc', 'ga4', 'semrush', 'dataforseo'],
     },
@@ -179,7 +180,7 @@ export const reportingMatrix = {
       means: 'Where geographic authority is becoming stronger',
       next: 'Reinforce or expand the right local opportunity',
       interpretation:
-        'Market-level movement is connected to the local pages, queries, and inventory relevance behind it\u2014showing where geographic authority is genuinely building.',
+        'Market-level movement is connected to the local pages, queries, and inventory relevance behind it, so you can see where geographic authority is actually building.',
       decision: 'Reinforce or expand the local opportunity the evidence supports.',
       sources: ['gsc', 'ga4', 'semrush', 'dataforseo'],
     },
@@ -191,7 +192,7 @@ export const reportingMatrix = {
       means: 'Where buyer intent advances, stalls, or disappears',
       next: 'Improve the experience, pathway, or measurement plan',
       interpretation:
-        'Engagement movement is tied to the specific selections, handoffs, calls, forms, and retailing starts that drove it\u2014revealing where buyer intent advances, stalls, or disappears.',
+        'Engagement movement is tied to the specific selections, handoffs, calls, forms, and retailing starts that drove it. That shows where buyer intent advances, stalls, or disappears.',
       decision: 'Improve the experience, the pathway, or the measurement plan itself.',
       sources: ['ga4', 'gtm', 'events', 'vendor', 'ads'],
     },
@@ -203,7 +204,7 @@ export const reportingMatrix = {
       means: 'Directional evidence of AI-assisted discovery',
       next: 'Maintain, clarify, or deepen the dealership-owned answer',
       interpretation:
-        'Identifiable AI referrals and observed visibility are read as directional evidence\u2014connected to the topics, pages, and maintained first-party information most likely responsible.',
+        'Identifiable AI referrals and observed visibility are read as directional evidence, tied to the topics, pages, and maintained first-party information most likely responsible.',
       decision: 'Maintain, clarify, or deepen the dealership-owned answer.',
       sources: ['ga4', 'gsc', 'semrush', 'dataforseo', 'firstparty'],
     },

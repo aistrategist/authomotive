@@ -1,12 +1,14 @@
 import { SiteHeader } from '@/components/site-header'
 import { Hero } from '@/components/hero'
 import { QuestionToInventory } from '@/components/question-to-inventory'
-import { CapabilitySystem } from '@/components/capability-system'
-import { AuthorityExperience } from '@/components/authority-experience'
-import { IntelligencePreview } from '@/components/intelligence-preview'
-import { SignalArchitecture } from '@/components/signal-architecture'
-import { ManagedFramework } from '@/components/managed-framework'
-import { FinalCta } from '@/components/final-cta'
+import {
+  AuthorityExperience,
+  CapabilitySystem,
+  FinalCta,
+  IntelligencePreview,
+  ManagedFramework,
+  SignalArchitecture,
+} from '@/components/home-sections'
 import { SiteFooter } from '@/components/site-footer'
 import { getSiteUrl } from '@/lib/site-url'
 

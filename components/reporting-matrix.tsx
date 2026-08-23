@@ -33,7 +33,7 @@ function InterpretationPanel({ row }: { row: MatrixRow }) {
   return (
     <div className="min-h-[170px] rounded-lg border-l-4 border-proof bg-porcelain p-4 md:min-h-[130px] md:p-5">
       <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">
-        {row.lens} — plain-English interpretation
+        {row.lens}: a plain-English read
       </p>
       <p className="mt-2.5 text-lg font-semibold leading-snug text-ink md:text-xl text-pretty">
         {row.interpretation}

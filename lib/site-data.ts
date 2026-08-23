@@ -25,7 +25,7 @@ export const hero = {
   headline: 'Your website should help buyers choose you.',
   emphasis: 'choose you',
   supporting:
-    'Authority Experiences, connected measurement, and plain-English intelligence that move shoppers from discovery to inventory—and show what drove the action.',
+    'Authority Experiences, connected measurement, and a monthly read in plain English. Shoppers move from the question to inventory, and you can see what drove the action.',
   primaryCta: 'Request My Opportunity Review',
   secondaryCta: 'See the Authority System',
   confidence: 'Works with the dealership website and vendor stack you already have.',
@@ -50,86 +50,37 @@ export const hero = {
 }
 
 export const discoveryToInventory = {
-  eyebrow: 'FROM DISCOVERY TO INVENTORY',
-  headline: 'Turn buyer questions into inventory pathways.',
+  eyebrow: 'KEEP THE PLATFORM · ADD THE STRATEGY',
+  headline: 'We work on the website you already have.',
   supporting:
-    'Shoppers search with specific needs, not generic keywords. Authomotive turns those questions into dealership-owned Authority Experiences that combine useful research with matching live inventory, then measures the movement into VDPs and lead actions.',
-  path: ['Buyer Question', 'Authority Experience', 'Live Inventory', 'VDP Activity'],
-  intentStream: {
-    label: 'BUYER INTENT SIGNAL',
-    liveLabel: 'LIVE',
-    srDescription:
-      'Illustration of Search, AI and Local buyer questions mapped to intent signals, then into helpful research with live vehicles on one dealership-owned page.',
-    signalsLabel: 'INTENT SIGNALS',
-    mappedLabel: 'AUTHORITY EXPERIENCE',
-    statusMapping: 'MAPPING BUYER INTENT',
-    statusActive: 'LIVE INVENTORY PATH ACTIVE',
-    researchZone: 'Helpful Research',
-    vehiclesZone: 'Live Vehicles',
-    surfacesLabel: 'EXAMPLE SURFACES',
-    signals: ['Family seating', 'Winter capability', 'Budget', 'Local availability'],
-    sources: [
-      {
-        id: 'search' as const,
-        name: 'Search',
-        question: 'best three-row SUV for Cleveland winters under $50,000',
-        surfaces: 'Google · Bing',
-      },
-      {
-        id: 'ai' as const,
-        name: 'AI',
-        question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
-        surfaces: 'ChatGPT · Gemini · Perplexity',
-      },
-      {
-        id: 'local' as const,
-        name: 'Local',
-        question: 'three-row SUVs with AWD available near Cleveland',
-        surfaces: 'Google Maps · Apple Maps',
-      },
-    ],
+    'Shoppers still research a need first. SEO, AEO, and GEO bolt onto the site, agency, and vendors already in place. The actions below are what you can actually read.',
+  platforms: {
+    line: 'Your website, agency, and vendors stay.',
   },
-  steps: [
-    {
-      id: 'found',
-      stage: 'Dealership-Owned Research',
-      title: 'Get Found',
-      body: 'Build Authority Experiences around specific, high-intent questions for organic, local and AI-assisted discovery.',
-    },
-    {
-      id: 'guide',
-      stage: 'Live Inventory Pathway',
-      title: 'Guide Buyers',
-      body: 'Embed or connect matching live inventory, depending on platform capability, so shoppers can move directly from useful guidance to real vehicles and VDPs.',
-    },
-    {
-      id: 'prove',
-      stage: 'Measurement Attached',
-      title: 'Prove What Works',
-      body: 'Measure research-to-inventory movement, VDP entries and lead actions, then use the evidence to expand what works.',
-    },
-  ],
-  stack: {
-    eyebrow: 'BUILT INTO THE EXISTING DEALER STACK',
-    items: [
-      'Dealership-owned page',
-      'Live inventory connection',
-      'Measurement defined at launch',
-    ],
-    supporting:
-      'No website replacement. No inventory-feed takeover. Exact implementation depends on platform access and vendor capability.',
-  },
+  disciplines: [
+    { id: 'seo', label: 'SEO', line: 'Get found for the question.', tone: 'accent' },
+    { id: 'aeo', label: 'AEO', line: 'Be the answer AI can trust.', tone: 'proof' },
+    { id: 'geo', label: 'GEO', line: 'Show up where they are.', tone: 'action' },
+  ] as const,
+  events: [
+    { id: 'vsrp', label: 'VSRP', parent: 'seo' },
+    { id: 'vdp', label: 'VDP', parent: 'seo' },
+    { id: 'form', label: 'Form', parent: 'aeo' },
+    { id: 'chat', label: 'Chat', parent: 'aeo' },
+    { id: 'call', label: 'Call', parent: 'geo' },
+    { id: 'lead', label: 'Lead', parent: 'geo' },
+  ] as const,
 }
 
 export const industryGap = {
   eyebrow: 'THE GAP · DISCONNECTED WORK',
   headline: 'More tools. Less clarity. Too many missed signals.',
   supporting:
-    'Content, inventory, analytics, advertising, vendor experiences, and AI visibility are often managed separately—making it difficult to know what buyers found, what helped them decide, and which actions mattered.',
+    'Content, inventory, analytics, advertising, vendor experiences, and AI visibility are often managed separately, so it is hard to know what buyers found, what helped them decide, and which actions mattered.',
   problems: [
     {
       title: 'Content that looks like every competing dealer page',
-      body: 'Most dealership content exists to fill a URL\u2014repeating manufacturer language, answering little, and giving search systems few reasons to treat it as distinctive.',
+      body: 'Most dealership content exists to fill a URL. It repeats manufacturer language, answers little, and gives search systems few reasons to treat it as distinctive.',
     },
     {
       title: 'Reports that provide numbers without an explanation',
@@ -137,7 +88,7 @@ export const industryGap = {
     },
     {
       title: 'Buyer actions that disappear between platforms',
-      body: 'Shoppers use embedded tools, vendor experiences, calls, forms, and digital retailing pathways\u2014and many of those actions never reach standard reporting.',
+      body: 'Shoppers use embedded tools, vendor experiences, calls, forms, and digital retailing pathways, and many of those actions never reach standard reporting.',
     },
   ],
   closing: 'Authomotive connects those missing pieces into one measurable standard.',
@@ -145,132 +96,45 @@ export const industryGap = {
 
 export interface Capability {
   id: string
-  plainName: string
+  verb: string
   brandedName: string
-  primaryMessage: string
-  supporting: string
-  outcomesTitle: string
-  outcomes: string[]
-  disclosureTitle: string
-  disclosureItems: string[]
-  keyLine: string
+  line: string
+  proofs: [string, string]
   nextLabel: string
   nextHref: string
 }
 
 export const capabilitySystem = {
-  eyebrow: 'ONE AUTHORITY SYSTEM · THREE CONNECTED JOBS',
-  headline: 'One system. Three jobs. One measurable standard.',
-  supporting:
-    'We build the authority, connect the signals, and turn the evidence into a clear next move.',
+  eyebrow: 'ONE AUTHORITY SYSTEM · THREE JOBS',
+  headline: 'One system. Three jobs.',
+  supporting: 'We build the pages that earn the question, connect the buyer actions, and hand you the next move.',
+  motto: 'BUILD · CONNECT · DECIDE',
   capabilities: [
     {
       id: 'get-found',
-      plainName: 'Get Found. Guide Buyers.',
+      verb: 'BUILD',
       brandedName: 'Authority Experiences',
-      primaryMessage:
-        'Create dealership-owned pages that answer better questions and move buyers toward a decision.',
-      supporting:
-        'Original dealership research built around real shopper needs, local opportunity, vehicle decisions and inventory pathways—useful to buyers and clearer to search and AI systems.',
-      outcomesTitle: 'Visible outcomes',
-      outcomes: [
-        'Stronger non-branded discovery opportunities',
-        'Better answers to high-value buyer questions',
-        'Clearer model, feature, ownership, and comparison guidance',
-        'More intentional movement from research to inventory',
-        'Content that can be measured and improved over time',
-      ],
-      disclosureTitle: 'What makes the content different?',
-      disclosureItems: [
-        'Direct answers instead of keyword filler',
-        'Buyer-fit guidance',
-        'Model, trim, feature, ownership, and comparison logic',
-        'Local relevance where it is genuinely useful',
-        'Clear information hierarchy',
-        'Structured FAQs and supporting data',
-        'Internal pathways between related research',
-        'Contextual transitions to relevant inventory',
-        'Search-friendly and AI-readable HTML',
-        'Custom interactive elements when they improve understanding',
-        'Measurement planned before launch',
-      ],
-      keyLine:
-        'Most dealership pages are built to exist. Authority Experiences are built to earn attention, guide a decision, and prove their value.',
-      nextLabel: 'See an Authority Experience in action',
+      line: 'Shoppers should find you for the question they actually asked, then land on a page that helps them choose a vehicle.',
+      proofs: ['Answers the real question.', 'Walks them toward live inventory.'],
+      nextLabel: 'See one in action',
       nextHref: '#authority-experiences',
     },
     {
       id: 'know-working',
-      plainName: 'Prove What Works.',
+      verb: 'DECIDE',
       brandedName: 'Authomotive Intelligence',
-      primaryMessage: 'Turn disconnected performance data into one reliable monthly story.',
-      supporting:
-        'Authomotive connects visibility, engagement, locality, content, AI activity and buyer actions into one monthly story—so the dealership sees what changed and decides what comes next.',
-      outcomesTitle: 'Reporting questions we answer',
-      outcomes: [
-        'What improved month over month?',
-        'What changed year over year?',
-        'Which pages and buyer questions contributed?',
-        'Are non-branded opportunities growing?',
-        'Where is local visibility getting stronger?',
-        'How are shoppers engaging with the work?',
-        'Which actions indicate movement toward inventory or conversion?',
-        'What should be protected, expanded, tested, or corrected next?',
-      ],
-      disclosureTitle: 'What can feed the reporting framework?',
-      disclosureItems: [
-        'Google Search Console',
-        'GA4',
-        'Semrush or DataForSEO',
-        'Identifiable AI referral traffic',
-        'Observed AI and AI Overview visibility',
-        'Geographic and locality performance',
-        'Page and query movement',
-        'Engagement behavior',
-        'GTM and custom-event data',
-        'Inventory-pathway actions',
-        'Advertising measurement signals',
-      ],
-      keyLine: 'The goal is not another dashboard. It is a clearer decision.',
-      nextLabel: 'See how the evidence becomes a decision',
+      line: 'At month-end you should know what changed, what caused it, and what to build next.',
+      proofs: ['One story, not five dashboards.', 'Protect, expand, or fix.'],
+      nextLabel: 'See the monthly read',
       nextHref: '#reporting',
     },
     {
       id: 'track-matters',
-      plainName: 'Track What Matters.',
+      verb: 'CONNECT',
       brandedName: 'Signal Architecture',
-      primaryMessage: 'Capture the buyer actions standard analytics often overlooks.',
-      supporting:
-        'Authomotive connects GTM, custom events, supported vendor signals and clearer event standards—so reporting reflects more of what shoppers actually did.',
-      outcomesTitle: 'Examples of what gets measured',
-      outcomes: [
-        'Calls and important CTA clicks',
-        'Form starts and successful submissions',
-        'Research selections and comparisons',
-        'Inventory handoffs',
-        'Digital retailing starts',
-        'Chat and vendor-tool engagement',
-        'Embedded experience exits',
-        'Campaign-specific conversion tags',
-        'MNTN and other advertising measurement requirements',
-        'ASC-aligned dealership event naming',
-      ],
-      disclosureTitle: 'How deeper tracking is implemented',
-      disclosureItems: [
-        'Google Tag Manager configuration',
-        'GA4 custom events',
-        'Data-layer listeners',
-        'Custom JavaScript where appropriate',
-        'ASC-aligned event taxonomy',
-        'Vendor-provided event hooks',
-        'postMessage integrations when supported',
-        'Outbound-link and handoff measurement',
-        'Iframe focus or exit signals when technically reliable',
-        'Campaign and advertising tags mapped to meaningful actions',
-        'Validation, debugging, naming governance, and documentation',
-      ],
-      keyLine: 'If an action matters to the dealership, it deserves a clear measurement plan.',
-      nextLabel: 'See the managed measurement loop',
+      line: 'If a shopper called, compared, or started a deal, that action has to show up.',
+      proofs: ['Events before the launch.', 'The report can tell the truth.'],
+      nextLabel: 'See what gets tracked',
       nextHref: '#measurement',
     },
   ] satisfies Capability[],
@@ -278,7 +142,7 @@ export const capabilitySystem = {
 
 export const authorityTheater = {
   eyebrow: 'AUTHORITY EXPERIENCES · DISCOVERY AND GUIDANCE',
-  headline: 'Pages that get found—and move buyers.',
+  headline: 'Pages that get found, then move buyers.',
   supporting:
     'The strongest dealership content earns discovery, answers the real question, helps the buyer evaluate a decision, and creates a useful path to inventory.',
   exampleTopic: 'Which Three-Row SUV Is Right for My Family?',
@@ -313,20 +177,126 @@ export const reporting = {
   eyebrow: 'AUTHOMOTIVE INTELLIGENCE · ONE MONTHLY TRUTH',
   headline: 'See what changed. Understand why. Decide what comes next.',
   supporting:
-    'Authomotive Intelligence connects discovery, content, locality, shopper actions, AI visibility, and measured outcomes—then explains the story in language dealership teams can use.',
-  disclaimer: 'Illustrative reporting interface \u2014 not client results',
-  views: [
-    'Executive Summary',
-    'Search and Content',
-    'Locality',
-    'Buyer Actions',
-    'AI Visibility',
+    'Each month we read the dealership numbers that matter: traffic mix, AI and local discovery, VSRP and VDP activity, leads, and locality. Then we say what moved, why it moved, and what to do next.',
+  product: 'Authomotive Intelligence',
+  reportKind: 'Monthly SEO & discovery report',
+  period: 'July 14 – August 10, 2026',
+  quote: 'The goal is not another dashboard. It is a monthly decision.',
+  groups: [
+    { id: 'traffic', label: 'Traffic' },
+    { id: 'inventory', label: 'Inventory' },
+    { id: 'outcomes', label: 'Outcomes' },
+  ],
+  metrics: [
+    {
+      id: 'organic',
+      group: 'traffic',
+      label: 'Organic traffic',
+      value: '+18%',
+      note: 'Non-branded discovery',
+      tone: 'accent',
+      popout: {
+        changed: 'Non-branded organic rose. Winter-driving and wheelbase clusters carried the period.',
+        why: 'Two Authority Experiences launched around real shopper questions, with inventory pathways attached.',
+        next: 'Expand the winter-driving cluster that is already earning discovery.',
+      },
+    },
+    {
+      id: 'total',
+      group: 'traffic',
+      label: 'Total traffic',
+      value: '+9%',
+      note: 'All observed sessions',
+      tone: 'ink',
+      popout: {
+        changed: 'Total sessions rose, but slower than organic. The mix improved.',
+        why: 'Organic lift sat beside stable paid and other sessions. The total is mix, not a trophy.',
+        next: 'Hold the mix. Do not chase the total if organic and leads are the story.',
+      },
+    },
+    {
+      id: 'ai',
+      group: 'traffic',
+      label: 'AI / LLM traffic',
+      value: '+24%',
+      note: 'Identifiable referrals',
+      tone: 'proof',
+      popout: {
+        changed: 'Identifiable AI referrals and observed visibility both moved up.',
+        why: 'Authority pages were structured for AI discovery. We report observed footprint, not invented journeys.',
+        next: 'Keep the pages that are being cited. Do not claim complete AI attribution.',
+      },
+    },
+    {
+      id: 'local',
+      group: 'traffic',
+      label: 'Local traffic',
+      value: '+11%',
+      note: 'Maps and local pack',
+      tone: 'accent',
+      popout: {
+        changed: 'Local-pack and maps-driven sessions strengthened on the north side.',
+        why: 'Locality pages and listing consistency supported the same questions the Authority Experiences answer.',
+        next: 'Protect the north-side cluster. Watch the east corridor as the next locality bet.',
+      },
+    },
+    {
+      id: 'vsrp',
+      group: 'inventory',
+      label: 'VSRP results',
+      value: '+14%',
+      note: 'Inventory search views',
+      tone: 'proof',
+      popout: {
+        changed: 'Vehicle search result views rose with the research-to-inventory handoffs.',
+        why: 'Authority Experiences pointed shoppers into matching inventory instead of a generic lot.',
+        next: 'Keep the handoff from research to the right VSRP filters. Do not send every click to the homepage.',
+      },
+    },
+    {
+      id: 'vdp',
+      group: 'inventory',
+      label: 'VDP views',
+      value: '+12%',
+      note: 'Vehicle detail views',
+      tone: 'proof',
+      popout: {
+        changed: 'Vehicle detail views followed VSRP. More shoppers reached a specific unit.',
+        why: 'Cleaner pathway tracking connected research clicks to the VDP they actually opened.',
+        next: 'Read VDP against leads. Views that do not become a call or form are the next gap.',
+      },
+    },
+    {
+      id: 'leads',
+      group: 'outcomes',
+      label: 'Leads',
+      value: '+7%',
+      note: 'Calls, forms, and handoffs',
+      tone: 'action',
+      popout: {
+        changed: 'Leads rose, but not at the same pace as VDP views.',
+        why: 'Pathway tracking connected VDP to calls and forms. The mobile form-start gap is still visible.',
+        next: 'Close the mobile form-start gap so inventory activity becomes a lead action.',
+      },
+    },
+    {
+      id: 'locality',
+      group: 'outcomes',
+      label: 'Locality',
+      value: 'North-side',
+      note: 'Strongest market this period',
+      tone: 'action',
+      popout: {
+        changed: 'North-side is the strength. East corridor is the opening.',
+        why: 'Local visibility and the Authority Experiences landed in the same market, not spread thin.',
+        next: 'Double down north-side. Brief the east corridor as the next locality page, not a statewide push.',
+      },
+    },
   ],
   evidence: {
-    eyebrow: 'HOW THE EVIDENCE IS FRAMED',
     observed: {
-      kicker: 'OBSERVED PAGE-LEVEL RESULT',
-      title: 'One guide. A clearer before-and-after.',
+      kicker: 'ORGANIC · PAGE-LEVEL EXAMPLE',
+      title: 'Sprinter Wheelbase Guide',
       context:
         'A commercial vehicle dealership’s Sprinter Wheelbase Guide existed before its July 14, 2026 authority and AI-discovery upgrade. In the following 28-day comparison, the page recorded:',
       metrics: [
@@ -340,60 +310,178 @@ export const reporting = {
       qualification:
         'Observed result from one anonymized dealership page. Outcomes vary by market, website and reporting period.',
     },
-    decision: {
-      kicker: 'The decision',
-      title: 'Changed. Why. Next.',
-      lead: 'What moved, what likely contributed, what to do next.',
-      body: 'The monthly output is a decision a dealership team can act on. The interface above shows the format. Live reporting uses the dealership’s own observed signals, with honest limits on what cannot be seen.',
-    },
   },
+  sourcesLine:
+    'The monthly report is built from organic, total, AI/LLM, and local traffic; VSRP and VDP activity; leads; and locality. Depth depends on platform access, data quality, and the dealership’s existing measurement environment.',
 }
 
 export const measurement = {
-  eyebrow: 'SIGNAL ARCHITECTURE · TRACK WHAT MATTERS',
-  headline: 'Track the buyer actions your platforms miss.',
+  eyebrow: 'ASC · DATA LAYER',
+  headline: 'Track the actions the report is built on.',
   supporting:
-    'Authomotive creates a cleaner measurement layer across content, inventory pathways, embedded experiences, calls, forms, digital retailing, and advertising requirements.',
-  buyerActions: [
-    'Research interactions',
-    'Inventory handoffs',
-    'Calls and forms',
-    'Digital retailing',
-    'Supported vendor experiences',
+    'Shopper behavior, inventory activity, and leads become named events in one plan. Calls fire as asc_click_to_call. Forms fire as asc_form_submission. They stay separate hits, not a generic lead blob, so the monthly report can read what actually happened.',
+  product: 'CAPTURE · LIVE',
+  planKind: 'GTM / GA4',
+  path: 'dataLayer → GTM → GA4',
+  events: [
+    {
+      id: 'vsrp',
+      action: 'VSRP views',
+      event: 'view_item_list',
+      kind: 'GA4',
+      stamp: '00:02.1',
+      pillar: 'VSRP results',
+      payload: [
+        { key: 'item_list_name', value: 'srp_used' },
+        { key: 'item_list_id', value: 'inventory' },
+        { key: 'item_category', value: 'used' },
+      ],
+      popout: {
+        capture: 'Vehicle search result views fire as GA4 ecommerce so inventory search is named the same way across the site.',
+        destination: 'Maps to the VSRP results pillar in the monthly report.',
+        limit: 'Filter state is recorded when the data layer exposes it. We do not guess hidden inventory queries.',
+      },
+    },
+    {
+      id: 'select',
+      action: 'Inventory selection',
+      event: 'select_item',
+      kind: 'GA4',
+      stamp: '00:04.4',
+      pillar: 'VSRP results',
+      payload: [
+        { key: 'item_list_name', value: 'srp_used' },
+        { key: 'item_id', value: 'unit' },
+        { key: 'item_category', value: 'used' },
+        { key: 'index', value: '3' },
+      ],
+      popout: {
+        capture: 'A unit selected from the list is a named ecommerce hit, so VSRP-to-VDP movement can be read.',
+        destination: 'Stays with VSRP results, then read against the following view_item.',
+        limit: 'We capture the exposed list context. We do not reconstruct a shopper’s full filter path.',
+      },
+    },
+    {
+      id: 'vdp',
+      action: 'VDP views',
+      event: 'view_item',
+      kind: 'GA4',
+      stamp: '00:07.4',
+      pillar: 'VDP views',
+      payload: [
+        { key: 'item_id', value: 'unit' },
+        { key: 'item_category', value: 'used' },
+        { key: 'item_list_name', value: 'srp_used' },
+      ],
+      popout: {
+        capture: 'Vehicle detail views are named events with unit-level context, so research-to-inventory handoffs can be read.',
+        destination: 'Maps to VDP views, then read against leads.',
+        limit: 'Third-party VDP embeds are measured when the vendor exposes a supported signal.',
+      },
+    },
+    {
+      id: 'cta',
+      action: 'Authority and research CTAs',
+      event: 'asc_cta_interaction',
+      kind: 'ASC',
+      stamp: '00:09.2',
+      pillar: 'Organic traffic',
+      payload: [
+        { key: 'element_text', value: 'compare' },
+        { key: 'content_type', value: 'authority' },
+        { key: 'event_action_result', value: 'success' },
+      ],
+      popout: {
+        capture: 'Guide reads, comparison tools, and Authority Experience CTAs fire as asc_cta_interaction, not generic pageviews.',
+        destination: 'Feeds organic and content movement in Authomotive Intelligence, and can be used in advertising platforms.',
+        limit: 'We do not invent anonymous AI-assisted journeys. Identifiable referrals and observed visibility only.',
+      },
+    },
+    {
+      id: 'retail',
+      action: 'Digital retailing',
+      event: 'asc_retail_process',
+      kind: 'ASC',
+      stamp: '00:11.0',
+      pillar: 'Leads',
+      payload: [
+        { key: 'flow_name', value: 'retail' },
+        { key: 'flow_outcome', value: 'start' },
+        { key: 'department', value: 'sales' },
+      ],
+      popout: {
+        capture: 'Digital retailing progress is captured as asc_retail_process when the pathway is on-site or the vendor exposes a handoff.',
+        destination: 'Counts toward leads and inventory activity, not a vanity session.',
+        limit: 'Cross-origin retail iframes are measured only with a supported integration. Otherwise we track the handoff, focus, or exit.',
+      },
+    },
+    {
+      id: 'form',
+      action: 'Form submission',
+      event: 'asc_form_submission',
+      kind: 'ASC',
+      stamp: '00:12.6',
+      pillar: 'Leads',
+      payload: [
+        { key: 'form_name', value: 'contact' },
+        { key: 'department', value: 'sales' },
+        { key: 'event_action_result', value: 'success' },
+        { key: 'comm_type', value: 'form' },
+      ],
+      popout: {
+        capture: 'Form completes fire as asc_form_submission. Department lives in a parameter, not a second key event.',
+        destination: 'Maps to Leads. Campaign tags, including MNTN, attach to this conversion, not a pageview.',
+        limit: 'Do not also mark asc_form_submission_sales or _service as key events. Those twins fire with the parent and double-count.',
+      },
+    },
+    {
+      id: 'call',
+      action: 'Click to call',
+      event: 'asc_click_to_call',
+      kind: 'ASC',
+      stamp: '00:14.2',
+      pillar: 'Leads',
+      payload: [
+        { key: 'comm_type', value: 'voice' },
+        { key: 'department', value: 'sales' },
+        { key: 'event_action_result', value: 'click' },
+        { key: 'link_url', value: 'tel' },
+      ],
+      popout: {
+        capture: 'Tap-to-call is its own hit. A click is not a completed conversation, and it is not assumed to be a sales call.',
+        destination: 'Maps to Leads when the call platform can confirm the outcome. Ads attach to the conversion we can trust.',
+        limit: 'Call tracking depends on the dealership’s voice vendor. We map the reliable conversion, not a reconstructed conversation. Department twins stay parameters, not a second key event.',
+      },
+    },
+    {
+      id: 'comm',
+      action: 'Chat and SMS',
+      event: 'asc_comm_submission',
+      kind: 'ASC',
+      stamp: '00:16.1',
+      pillar: 'Leads',
+      payload: [
+        { key: 'comm_type', value: 'chat' },
+        { key: 'department', value: 'sales' },
+        { key: 'event_action_result', value: 'success' },
+      ],
+      popout: {
+        capture: 'Chat and SMS completes fire as asc_comm_submission when the vendor pushes a supported signal.',
+        destination: 'Lands in Leads once the handoff is documented, on the same plan as forms and calls.',
+        limit: 'If the vendor does not expose a signal, we do not invent one. We track the surrounding handoff only.',
+      },
+    },
   ],
-  destinations: [
-    'Consistent event definitions',
-    'GA4 and GTM',
-    'Advertising measurement',
-    'Authomotive Intelligence',
-    'Future content and workflow decisions',
+  cycle: [
+    { id: 'observe', n: '01', label: 'Observe', lead: 'See what shoppers actually do.' },
+    { id: 'connect', n: '02', label: 'Connect', lead: 'Capture the actions that matter.' },
+    { id: 'improve', n: '03', label: 'Improve', lead: 'Use the evidence to guide the work.' },
+    { id: 'report', n: '04', label: 'Report', lead: 'Decide what comes next.' },
   ],
-  implementationRows: [
-    {
-      title: 'Custom events',
-      body: 'Meaningful shopper actions are defined as GA4 custom events with consistent, documented names so they can be trusted in reporting and used in advertising platforms.',
-    },
-    {
-      title: 'ASC alignment',
-      body: 'Where dealership event standards apply, event naming follows ASC-aligned taxonomy so measurement is consistent with broader automotive industry conventions.',
-    },
-    {
-      title: 'Vendor signals',
-      body: 'When a vendor exposes supported events, data-layer signals, or postMessage communication, those signals are captured and mapped into the measurement plan.',
-    },
-    {
-      title: 'Iframe and handoff measurement',
-      body: 'Interactions inside cross-origin iframes can only be measured when the vendor provides a supported integration. Where direct measurement is unavailable, we track the reliable handoff, focus, exit, or supported surrounding signal\u2014without inventing precision.',
-    },
-    {
-      title: 'MNTN and advertising tags',
-      body: 'Campaign and advertising tags\u2014including MNTN and platform conversion tags\u2014are mapped to meaningful actions rather than generic pageviews.',
-    },
-    {
-      title: 'Validation and governance',
-      body: 'Every implementation is validated, debugged, documented, and governed with clear naming rules so measurement stays dependable as the website changes.',
-    },
-  ],
+  handoffLabel: 'NEXT · THE WORKING RELATIONSHIP',
+  handoffHref: '#engagement',
+  handoffCta: 'See how the evidence becomes a monthly decision',
+  handoffNote: 'The next decision becomes the next thing Authomotive builds and measures.',
 }
 
 export const howItWorks = {
@@ -439,52 +527,49 @@ export const founder = {
 }
 
 export const managedFramework = {
-  eyebrow: 'THE ENGAGEMENT · ONE ACCOUNTABLE LEAD',
-  headline: 'A working strategy—not another vendor handoff.',
+  eyebrow: 'THE ENGAGEMENT · WHAT WORKS NEXT',
+  headline: 'A working strategy, not another vendor handoff.',
   lead:
-    'Authomotive works alongside your website provider, agency and vendors. One strategic lead connects the implementation, ongoing authority work, measurement and monthly decisions.',
-  sessionTitle: 'YOUR AUTHOMOTIVE MONTHLY WORKING SESSION',
-  sessionParts: [
+    'Authomotive works alongside your website provider, agency, and vendors. Implementation, authority work, measurement, and the monthly decision stay connected, so the next move is obvious.',
+  proof:
+    'Drawn from work across 90+ dealership websites. This is what actually moves discovery, inventory, and buyer action.',
+  hub: {
+    kicker: 'THE NEXT DECISION',
+    title: 'Ongoing strategy',
+    line: 'What works this month becomes the next thing we build, correct, or expand.',
+  },
+  works: [
     {
-      id: 'between',
-      label: 'BETWEEN SESSIONS',
-      mark: 'bg-accent',
-      items: [
-        'Build and improve prioritized Authority Experiences',
-        'Maintain the dealership’s AI Discovery foundation',
-        'Review discovery, inventory-pathway and shopper-action signals',
-        'Validate the measurement attached to the work',
-      ],
+      id: 'authority',
+      label: 'Authority Experiences',
+      tone: 'accent',
+      move: 'Expand the page that earned the question. Retire the one that did not.',
     },
     {
-      id: 'during',
-      label: 'AT THE WORKING SESSION',
-      mark: 'bg-proof',
-      items: [
-        'What changed?',
-        'What likely contributed?',
-        'What did shoppers do?',
-        'What should we build, correct or expand next?',
-      ],
+      id: 'pathways',
+      label: 'Inventory pathways',
+      tone: 'proof',
+      move: 'Tighten the handoff from research into matching SRP and VDP pages.',
     },
     {
-      id: 'after',
-      label: 'AFTER THE SESSION',
-      mark: 'bg-ink',
-      items: [
-        'Documented decisions',
-        'Prioritized next work',
-        'Clear ownership',
-        'Measurement attached before the next launch',
-      ],
+      id: 'discovery',
+      label: 'AI Discovery',
+      tone: 'action',
+      move: 'Keep the owned source accurate so search and AI have one place to trust.',
+    },
+    {
+      id: 'measurement',
+      label: 'Connected measurement',
+      tone: 'proof',
+      move: 'Attach the event before the next launch. Read what shoppers actually did.',
+    },
+    {
+      id: 'intelligence',
+      label: 'Monthly intelligence',
+      tone: 'action',
+      move: 'What changed, what likely contributed, and what we build next.',
     },
   ],
-  leadInset: {
-    kicker: 'ONE STRATEGIC LEAD',
-    copy:
-      'Chris Gabriel leads the strategy, implementation and interpretation. The work does not disappear between departments, account managers or disconnected vendor reports.',
-    supporting: 'Deep dealership experience without the layers of a conventional agency.',
-  },
   collab: {
     eyebrow: 'BUILT TO WORK WITH THE TEAM ALREADY IN PLACE',
     partners: [
@@ -497,10 +582,10 @@ export const managedFramework = {
       'Authomotive adds the authority, measurement and decision-making layer. It does not require the dealership to replace the partners or platforms already supporting the business.',
   },
   fit:
-    'A strong fit for dealerships that know the website should be producing more—but cannot yet connect content, visibility, inventory movement and buyer behavior into one accountable plan.',
+    'A strong fit for dealerships that know the website should be producing more, but cannot yet connect content, visibility, inventory movement, and buyer behavior into one accountable plan.',
   ctaLabel: 'Start With My Dealership Website',
   ctaSupport:
-    'Begin with one focused Opportunity Review—not a generic audit deck or invented score.',
+    'Begin with one focused Opportunity Review, not a generic audit deck or invented score.',
 }
 
 export const idealFit = {
@@ -536,5 +621,5 @@ export const finalCta = {
   successCopy:
     'Thank you. Authomotive has received the details you provided and can now review the website and primary concern.',
   errorCopy:
-    'We couldn\u2019t send your request. Your information is still here\u2014please try again in a moment.',
+    'We couldn\u2019t send your request. Your information is still here. Please try again in a moment.',
 }

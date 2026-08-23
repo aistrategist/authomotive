@@ -1,174 +1,336 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { measurement } from '@/lib/site-data'
 import { SignalRail } from '@/components/signal-rail'
 
-const stages = [
-  {
-    id: 'observe',
-    n: '01',
-    label: 'OBSERVE',
-    lead: 'See what shoppers actually do.',
-    support:
-      'Research interactions, inventory handoffs, calls, forms and supported vendor experiences.',
-    tile: 'bg-ink text-paper',
-  },
-  {
-    id: 'connect',
-    n: '02',
-    label: 'CONNECT',
-    lead: 'Capture the actions that matter.',
-    support: 'Bring those actions into one measurement plan instead of losing them between platforms.',
-    tile: 'bg-ink text-paper',
-  },
-  {
-    id: 'improve',
-    n: '03',
-    label: 'IMPROVE',
-    lead: 'Use the evidence to guide the work.',
-    support:
-      'Expand what works, correct what does not and attach measurement before the next page or experience launches.',
-    tile: 'bg-ink text-paper',
-  },
-  {
-    id: 'report',
-    n: '04',
-    label: 'REPORT',
-    lead: 'Explain what changed and decide what comes next.',
-    support: 'Turn the month’s evidence into a clear dealership decision.',
-    tile: 'bg-proof-soft text-ink',
-  },
-] as const
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
-/**
- * Closed Observe → Connect → Improve → Report operating cycle.
- * Discovery-to-inventory remains the only horizontal buyer pathway.
- */
+type MeasureEvent = (typeof measurement.events)[number]
+
+const stream = [...measurement.events].sort((a, b) => b.stamp.localeCompare(a.stamp))
+const hitTotal = String(stream.length).padStart(2, '0')
+
+function hitIndex(row: MeasureEvent) {
+  const chronological = [...measurement.events].sort((a, b) => a.stamp.localeCompare(b.stamp))
+  return String(chronological.findIndex((hit) => hit.id === row.id) + 1).padStart(2, '0')
+}
+
 export function SignalArchitecture() {
+  const [openId, setOpenId] = useState<string | null>(stream[0]?.id ?? null)
+  const rootRef = useRef<HTMLElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
+  const streamRef = useRef<HTMLDivElement>(null)
+  const scanRef = useRef<HTMLSpanElement>(null)
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const selected = stream.find((row) => row.id === openId) ?? null
+
+  useGSAP(
+    () => {
+      const root = rootRef.current
+      const frame = frameRef.current
+      const streamEl = streamRef.current
+      const scan = scanRef.current
+      if (!root || !frame || !streamEl || !scan) return
+
+      const hits = streamEl.querySelectorAll<HTMLElement>('.ma-hit')
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (reduced) {
+        gsap.set(hits, { opacity: 1, y: 0 })
+        gsap.set(scan, { opacity: 0.35, y: 0 })
+        return
+      }
+
+      gsap.set(hits, { opacity: 0, y: 10 })
+      gsap.set(scan, { opacity: 0, y: 0 })
+
+      ScrollTrigger.create({
+        trigger: frame,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          gsap.to(hits, {
+            opacity: 1,
+            y: 0,
+            duration: 0.42,
+            stagger: 0.07,
+            ease: 'power2.out',
+            overwrite: 'auto',
+            onComplete: () => {
+              const travel = Math.max(streamEl.offsetHeight - 28, 80)
+              gsap.to(scan, {
+                opacity: 0.85,
+                y: travel,
+                duration: 1.7,
+                ease: 'power2.inOut',
+                overwrite: 'auto',
+                onComplete: () => {
+                  gsap.to(scan, { opacity: 0.22, duration: 0.35, overwrite: 'auto' })
+                },
+              })
+            },
+          })
+        },
+      })
+    },
+    { scope: rootRef },
+  )
+
+  useEffect(() => {
+    const move = (delta: number) => {
+      const ids = stream.map((row) => row.id)
+      const current = openId ? ids.indexOf(openId) : delta > 0 ? -1 : ids.length
+      const next = Math.max(0, Math.min(ids.length - 1, current + delta))
+      const id = ids[next]
+      if (!id) return
+      setOpenId(id)
+      triggerRefs.current[id]?.focus()
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (!openId) return
+        event.preventDefault()
+        const id = openId
+        setOpenId(null)
+        triggerRefs.current[id]?.focus()
+        return
+      }
+
+      const inConsole = frameRef.current?.contains(document.activeElement)
+      if (!inConsole) return
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault()
+        move(1)
+        return
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault()
+        move(-1)
+      }
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node
+      if (frameRef.current?.contains(target)) return
+      setOpenId(null)
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [openId])
+
+  const toggle = (id: string) => {
+    setOpenId((current) => (current === id ? null : id))
+  }
+
   return (
     <section
+      ref={rootRef}
       id="measurement"
       aria-labelledby="measurement-heading"
-      className="scroll-mt-24 border-b border-border bg-paper"
+      className="ma-band scroll-mt-24 overflow-x-clip border-b border-stage-line"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
-        <SignalRail step={5} />
-        <div className="max-w-[42rem]">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-signal-deep">
-            THE MANAGED MEASUREMENT LOOP
-          </p>
-          <h2
-            id="measurement-heading"
-            className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-5xl text-balance"
-          >
-            Observe. Connect. Improve. Report.
-          </h2>
-          <p className="mt-4 max-w-[38rem] text-lg leading-relaxed text-muted-foreground text-pretty">
-            If an action matters to the dealership, it deserves a clear measurement plan—from shopper
-            behavior and inventory activity through the next monthly decision.
+      <SignalRail step={5} />
+      <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+          <div className="lg:col-span-7">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-action">
+              {measurement.eyebrow}
+            </p>
+            <h2
+              id="measurement-heading"
+              className="mt-3 text-3xl font-semibold tracking-tight text-porcelain md:text-5xl text-balance"
+            >
+              {measurement.headline}
+            </h2>
+          </div>
+          <p className="lede text-lg leading-relaxed text-stage-muted md:text-xl text-pretty lg:col-span-5 lg:pb-1">
+            {measurement.supporting}
           </p>
         </div>
 
-        <div className="measure-cycle mt-8 md:mt-9">
-          <div className="measure-feed">
-            <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-signal-deep md:text-xs">
-              WHAT SHOPPERS DO
-            </p>
-            <ul className="mt-3 flex flex-col gap-2" aria-label="Shopper actions the measurement loop observes">
-              {measurement.buyerActions.map((action) => (
-                <li key={action} className="flex items-center gap-2.5">
-                  <span className="h-2 w-2 shrink-0 bg-accent" aria-hidden="true" />
-                  <span className="text-sm font-semibold leading-snug text-ink md:text-base">{action}</span>
-                </li>
-              ))}
-            </ul>
-            <span className="measure-feed-arrow" aria-hidden="true" />
-          </div>
-
-          <div className="measure-loop">
-            <span className="measure-feed-in" aria-hidden="true" />
-            <svg
-              className="measure-loop-ring"
-              viewBox="0 0 336 192"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                className="measure-loop-path"
-                pathLength="1"
-                d="M16 96 V28 Q16 16 28 16 H308 Q320 16 320 28 V164 Q320 176 308 176 H28 Q16 176 16 164 V96"
-              />
-              <path className="measure-loop-arrow" d="M16 62 l-7 16 h14 z" />
-            </svg>
-
-            <ol
-              id="how-it-works"
-              className="measure-loop-stages scroll-mt-24"
-              aria-label="Observe, connect, improve, report, then the cycle repeats"
-            >
-              {stages.map((stage) => (
-                <li key={stage.id} className={`measure-stage is-${stage.id}`}>
-                  <span
-                    className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center font-mono text-sm font-bold ${stage.tile}`}
-                  >
-                    <span className="sr-only">
-                      Stage {stage.n}, {stage.label}.{' '}
-                    </span>
-                    <span aria-hidden="true">{stage.n}</span>
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-signal-deep">
-                      {stage.n} · {stage.label}
-                    </h3>
-                    <p className="mt-1.5 text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
-                      {stage.lead}
-                    </p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty md:text-[0.9375rem]">
-                      {stage.support}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-
-            <p className="measure-return" aria-hidden="true">
-              Returns to Observe
-            </p>
-
-            <div className="measure-hub">
-              <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-proof-deep">
-                MONTHLY DECISION
-              </p>
-              <p className="mt-2 text-base font-semibold leading-snug tracking-tight text-ink md:text-lg text-pretty">
-                What should we build, correct or expand next?
+        <div ref={frameRef} className="ma-console mt-10 md:mt-12">
+          <span className="ma-scope" aria-hidden="true" />
+          <span className="ma-scope is-opp" aria-hidden="true" />
+          <div className="ma-chrome flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-5">
+            <div className="flex items-center gap-2.5">
+              <span className="ma-live" aria-hidden="true" />
+              <p className="font-mono text-sm font-semibold tracking-wide text-porcelain md:text-base">
+                {measurement.product}
               </p>
             </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="ma-chip font-mono">HITS {hitTotal}</span>
+              <span className="ma-chip font-mono">{measurement.path}</span>
+              <span className="ma-chip font-mono">{measurement.planKind}</span>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-12">
+            <div ref={streamRef} className="ma-stream-well relative lg:col-span-7">
+              <span ref={scanRef} className="ma-scan" aria-hidden="true" />
+              <div
+                className="ma-cols hidden border-b border-stage-line px-4 py-2 font-mono text-[0.5625rem] uppercase tracking-[0.12em] text-stage-muted md:grid md:px-5"
+                aria-hidden="true"
+              >
+                <span>#</span>
+                <span>Time</span>
+                <span>Event</span>
+                <span>Kind</span>
+                <span>Pillar</span>
+              </div>
+              <ul className="ma-stream" aria-label="Captured shopper events">
+                {stream.map((row) => (
+                  <li key={row.id} className="ma-hit">
+                    <StreamRow
+                      row={row}
+                      index={hitIndex(row)}
+                      selected={openId === row.id}
+                      onToggle={() => toggle(row.id)}
+                      buttonRef={(el) => {
+                        triggerRefs.current[row.id] = el
+                      }}
+                    />
+                    {openId === row.id ? (
+                      <div className="lg:hidden">
+                        <Inspector row={row} />
+                      </div>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <aside className="ma-dock hidden lg:col-span-5 lg:block" aria-live="polite">
+              {selected ? (
+                <Inspector row={selected} />
+              ) : (
+                <p className="px-5 py-8 font-mono text-xs uppercase tracking-[0.14em] text-stage-muted">
+                  Select a hit to inspect
+                </p>
+              )}
+            </aside>
           </div>
         </div>
 
-        <p className="mt-5 max-w-[40rem] text-sm font-semibold leading-relaxed text-ink text-pretty md:text-base">
-          The next decision becomes the next thing Authomotive builds and measures.
-        </p>
-
-        <p className="mt-4 max-w-[42rem] text-sm leading-relaxed text-muted-foreground text-pretty">
-          Implementation uses named events, GA4, GTM and supported vendor signals where available. The
-          technical depth lives beneath the engagement—not in another dashboard the dealership must
-          operate.
-        </p>
+        <ol
+          id="how-it-works"
+          className="ma-cycle mt-8 grid scroll-mt-24 gap-px sm:grid-cols-2 lg:grid-cols-4"
+          aria-label="Observe, connect, improve, report"
+        >
+          {measurement.cycle.map((stage) => (
+            <li key={stage.id} className="ma-cell px-4 py-3">
+              <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-action">
+                {stage.n} · {stage.label}
+              </p>
+              <p className="mt-1.5 text-sm font-semibold leading-snug text-porcelain md:text-base">
+                {stage.lead}
+              </p>
+            </li>
+          ))}
+        </ol>
 
         <div className="mt-8 flex flex-col items-start gap-2">
-          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-signal-deep md:text-xs">
-            NEXT · THE WORKING RELATIONSHIP
+          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-action md:text-xs">
+            {measurement.handoffLabel}
           </p>
-          <a href="#engagement" className="measure-handoff">
-            See how the evidence becomes a monthly decision
+          <a href={measurement.handoffHref} className="measure-handoff is-dark">
+            {measurement.handoffCta}
             <span className="btn-arrow" aria-hidden="true">
               →
             </span>
           </a>
-          <p className="max-w-[36rem] text-sm leading-relaxed text-muted-foreground text-pretty">
-            {measurement.headline}
+          <p className="max-w-[36rem] text-sm leading-relaxed text-stage-muted text-pretty">
+            {measurement.handoffNote}
           </p>
         </div>
       </div>
     </section>
+  )
+}
+
+function StreamRow({
+  row,
+  index,
+  selected,
+  onToggle,
+  buttonRef,
+}: {
+  row: MeasureEvent
+  index: string
+  selected: boolean
+  onToggle: () => void
+  buttonRef: (el: HTMLButtonElement | null) => void
+}) {
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      aria-expanded={selected}
+      onClick={onToggle}
+      className={`ma-line ma-cols w-full px-4 py-2.5 text-left md:items-baseline md:px-5 ${
+        selected ? 'is-on' : ''
+      }`}
+    >
+      <span className="font-mono text-[0.6875rem] tabular-nums text-stage-muted">{index}</span>
+      <span className="font-mono text-[0.6875rem] tabular-nums text-stage-muted">{row.stamp}</span>
+      <span className="min-w-0">
+        <code className="font-mono text-sm">{row.event}</code>
+        <span className="mt-0.5 block text-sm text-porcelain">{row.action}</span>
+      </span>
+      <span className={`ma-kind is-${row.kind.toLowerCase()}`}>{row.kind}</span>
+      <span className="font-mono text-[0.625rem] uppercase tracking-[0.1em] text-stage-muted md:text-right">
+        {row.pillar}
+      </span>
+    </button>
+  )
+}
+
+function Inspector({ row }: { row: MeasureEvent }) {
+  return (
+    <div className="ma-inspector px-4 py-4 md:px-5 md:py-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-action">{row.event}</p>
+        <span className={`ma-kind is-${row.kind.toLowerCase()}`}>{row.kind}</span>
+      </div>
+      <p className="mt-1 text-base font-semibold text-porcelain">{row.action}</p>
+
+      <p className="mt-5 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-stage-muted">
+        Parameters
+      </p>
+      <dl className="ma-params mt-2">
+        {row.payload.map((param) => (
+          <div key={param.key} className="ma-param">
+            <dt>{param.key}</dt>
+            <dd>{param.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <ol className="mt-5 flex flex-col gap-3">
+        {[
+          { n: '01', label: 'Capture', body: row.popout.capture },
+          { n: '02', label: 'Destination', body: row.popout.destination },
+          { n: '03', label: 'Limit', body: row.popout.limit },
+        ].map((beat) => (
+          <li key={beat.n}>
+            <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-action">
+              {beat.n} · {beat.label}
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-stage-muted">{beat.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
   )
 }

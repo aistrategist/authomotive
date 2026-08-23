@@ -1,217 +1,229 @@
-'use client'
+const months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'] as const
 
-import { useRef, type RefObject } from 'react'
-import gsap from 'gsap'
-import { useGSAP } from '@gsap/react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+const mixSeries = [
+  {
+    id: 'total',
+    label: 'Total',
+    values: [7800, 8600, 7100, 8400, 9700, 11400],
+    stroke: 'stroke-ink/60',
+    fill: 'fill-ink/10',
+    mark: 'bg-ink/50',
+    dot: 'fill-paper stroke-ink/70',
+  },
+  {
+    id: 'organic',
+    label: 'Organic',
+    values: [3000, 3380, 2760, 3680, 4800, 6100],
+    stroke: 'stroke-accent',
+    fill: null,
+    mark: 'bg-accent',
+    dot: 'fill-paper stroke-accent',
+  },
+  {
+    id: 'local',
+    label: 'Local',
+    values: [1580, 1880, 1460, 1960, 2380, 2860],
+    stroke: 'stroke-action',
+    fill: null,
+    mark: 'bg-action',
+    dot: 'fill-paper stroke-action',
+  },
+  {
+    id: 'ai',
+    label: 'AI / LLM',
+    values: [360, 490, 300, 580, 820, 1120],
+    stroke: 'stroke-proof-deep',
+    fill: null,
+    mark: 'bg-proof',
+    dot: 'fill-paper stroke-proof-deep',
+  },
+] as const
 
-gsap.registerPlugin(useGSAP, ScrollTrigger)
+type PlotPoint = { x: number; y: number }
 
-function useChartDraw(scopeRef: RefObject<HTMLElement | null>) {
-  useGSAP(
-    () => {
-      const root = scopeRef.current
-      if (!root) return
-      const lines = root.querySelectorAll<SVGElement>('.ri-chart-line')
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (lines.length === 0) return
-      if (reduced) {
-        gsap.set(lines, { strokeDashoffset: 0 })
-        return
-      }
-      gsap.set(lines, { strokeDasharray: 1, strokeDashoffset: 1 })
-      ScrollTrigger.create({
-        trigger: root,
-        start: 'top 88%',
-        once: true,
-        onEnter: () => {
-          gsap.to(lines, {
-            strokeDashoffset: 0,
-            duration: 0.85,
-            ease: 'power2.out',
-            stagger: 0.06,
-            overwrite: 'auto',
-          })
-        },
-      })
-    },
-    { scope: scopeRef },
-  )
+function plotPoints(values: readonly number[], w: number, h: number, yMax: number, pad: number): PlotPoint[] {
+  return values.map((v, i) => ({
+    x: pad + (i / (values.length - 1)) * (w - pad * 2),
+    y: pad + (1 - v / yMax) * (h - pad * 2),
+  }))
 }
 
-function ChartNote({ children }: { children: string }) {
-  return <p className="mt-2.5 text-sm text-muted-foreground">{children}</p>
+function curvePath(points: PlotPoint[]) {
+  if (points.length === 0) return ''
+  if (points.length === 1) return `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`
+
+  let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i === 0 ? i : i - 1]
+    const p1 = points[i]
+    const p2 = points[i + 1]
+    const p3 = points[i + 2] ?? p2
+    const c1x = p1.x + (p2.x - p0.x) / 6
+    const c1y = p1.y + (p2.y - p0.y) / 6
+    const c2x = p2.x - (p3.x - p1.x) / 6
+    const c2y = p2.y - (p3.y - p1.y) / 6
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
+  }
+  return d
 }
 
-function sparkline(values: number[], w: number, h: number, pad = 4) {
-  const max = Math.max(...values)
-  const min = Math.min(...values)
-  const span = Math.max(1, max - min)
-  return values
-    .map((v, i) => {
-      const x = pad + (i / (values.length - 1)) * (w - pad * 2)
-      const y = h - pad - ((v - min) / span) * (h - pad * 2)
-      return `${x.toFixed(1)},${y.toFixed(1)}`
-    })
-    .join(' ')
+function areaFromCurve(points: PlotPoint[], h: number, pad: number) {
+  const line = curvePath(points)
+  const first = points[0]
+  const last = points[points.length - 1]
+  if (!first || !last) return ''
+  return `${line} L ${last.x.toFixed(1)} ${h - pad} L ${first.x.toFixed(1)} ${h - pad} Z`
 }
 
-function areaPath(values: number[], w: number, h: number, pad = 4) {
-  const line = sparkline(values, w, h, pad)
-  return `M ${pad} ${h - pad} L ${line} L ${w - pad} ${h - pad} Z`
-}
-
-export function ExecutiveCharts() {
-  const rootRef = useRef<HTMLDivElement>(null)
-  useChartDraw(rootRef)
-  const mom = [38, 44, 41, 52, 58, 71]
-  const yoy = [22, 25, 31, 29, 36, 48]
+export function TrafficMixModule() {
+  const w = 480
+  const h = 200
+  const pad = 22
+  const yMax = Math.max(...mixSeries[0].values) * 1.1
+  const plotted = mixSeries.map((series) => ({
+    ...series,
+    points: plotPoints(series.values, w, h, yMax, pad),
+  }))
 
   return (
-    <div ref={rootRef} className="flex flex-col gap-4">
-      <div className="ri-kpis grid grid-cols-3 gap-2 sm:gap-3">
-        {[
-          { value: '+18%', label: 'Research visibility' },
-          { value: '2', label: 'Authority Experiences launched' },
-          { value: '+12%', label: 'Inventory-pathway clicks' },
-        ].map((kpi) => (
-          <div key={kpi.label} className="rounded-lg border border-border bg-porcelain/70 px-4 py-3">
-            <p className="font-mono text-2xl font-semibold tracking-tight text-proof-deep">{kpi.value}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{kpi.label}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="ri-chart-pair grid gap-4 rounded-lg border border-border p-4 sm:grid-cols-2 sm:gap-6 md:p-6">
-        <TimeSeriesChart
-          values={mom}
-          labels={['M1', 'M2', 'M3', 'M4', 'M5', 'M6']}
-          title="Month over month"
-          note="Illustrative shape, not client data"
-        />
-        <TimeSeriesChart
-          values={yoy}
-          labels={['Y1', 'Y2', 'Y3', 'Y4', 'Y5', 'Y6']}
-          title="Year over year"
-          note="Illustrative shape, not client data"
-        />
-      </div>
-    </div>
-  )
-}
-
-function TimeSeriesChart({
-  values,
-  labels,
-  title,
-  note,
-}: {
-  values: number[]
-  labels: string[]
-  title: string
-  note: string
-}) {
-  const max = Math.max(...values)
-  const w = 320
-  const h = 118
-  const points = sparkline(values, w, h, 8)
-  const area = areaPath(values, w, h, 8)
-
-  return (
-    <div>
-      <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">{title}</p>
-      <div className="ri-chart-plot relative mt-3 h-36" role="img" aria-label={`${title} illustrative trend`}>
-        <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
-          <path d={area} className="fill-proof/20" />
-          <polyline
-            points={points}
-            pathLength={1}
-            className="ri-chart-line fill-none stroke-proof-deep"
-            strokeWidth="2.25"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-        <div className="relative z-[1] flex h-full items-end gap-2">
-          {values.map((v, i) => (
-            <div key={labels[i]} className="flex min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
-              <div
-                className={`iq-bar-in w-full max-w-8 rounded-t-sm ${
-                  i === values.length - 1 ? 'bg-proof ring-1 ring-proof-deep/50' : 'bg-ink/12'
-                }`}
-                style={{ height: `${(v / max) * 78}%` }}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="mt-1 flex justify-between font-mono text-[10px] uppercase tracking-wider text-fog">
-        {labels.map((l) => (
-          <span key={l}>{l}</span>
-        ))}
-      </div>
-      <ChartNote>{note}</ChartNote>
-    </div>
-  )
-}
-
-const searchTopics = [
-  { label: 'Three-row SUV research', value: 92, delta: '+18' },
-  { label: 'Winter driving guidance', value: 74, delta: '+11' },
-  { label: 'Lease vs. buy', value: 61, delta: '+7' },
-  { label: 'Trade-in value', value: 48, delta: '+2' },
-  { label: 'CPO vs. new', value: 41, delta: '0' },
-]
-
-export function SearchContentCharts() {
-  const rootRef = useRef<HTMLDivElement>(null)
-  useChartDraw(rootRef)
-  const trend = [28, 31, 30, 38, 44, 52, 61]
-  const points = sparkline(trend, 280, 64, 6)
-
-  return (
-    <div ref={rootRef} className="rounded-lg border border-border p-5 md:p-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Query contribution</p>
-          <p className="mt-1 text-base font-semibold text-ink">Non-branded topics earning discovery</p>
-        </div>
-        <svg width="160" height="40" viewBox="0 0 280 64" aria-hidden="true" className="text-proof-deep">
-          <polyline
-            points={points}
-            pathLength={1}
-            className="ri-chart-line fill-none stroke-current"
-            strokeWidth="3"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-
-      <ul className="mt-5 flex flex-col gap-2.5" aria-label="Illustrative query contribution ranking">
-        {searchTopics.map((row, i) => (
-          <li key={row.label}>
-            <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
-              <span className="font-medium text-ink">{row.label}</span>
-              <span
-                className={`font-mono text-xs font-semibold ${
-                  row.delta.startsWith('+') ? 'text-proof-deep' : 'text-fog'
-                }`}
-              >
-                {row.delta === '0' ? 'flat' : row.delta}
-              </span>
-            </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-porcelain">
-              <div
-                className={`iq-bar-in-x h-full rounded-full ${i === 0 ? 'bg-proof' : 'bg-proof-deep/45'}`}
-                style={{ width: `${row.value}%` }}
-              />
-            </div>
+    <div className="ri-module border border-ink/15 bg-porcelain/60 px-4 py-4 md:px-5">
+      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
+        Traffic mix · MoM
+      </p>
+      <p className="mt-1 text-base font-semibold text-ink">Website traffic</p>
+      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1" aria-label="Traffic types">
+        {mixSeries.map((series) => (
+          <li key={series.id} className="flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-ink">
+            <span className={`h-1.5 w-3 ${series.mark}`} aria-hidden="true" />
+            {series.label}
           </li>
         ))}
       </ul>
-      <ChartNote>Illustrative ranking of buyer questions, not client data</ChartNote>
+      <div className="ri-cal mt-3">
+        <svg
+          className="h-auto w-full"
+          viewBox={`0 0 ${w} ${h}`}
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label="Month-over-month website traffic. Total, organic, local, and AI referrals."
+        >
+          {months.map((month, i) => {
+            const x = pad + (i / (months.length - 1)) * (w - pad * 2)
+            const half = (w - pad * 2) / (months.length - 1) / 2
+            const reporting = i >= 4
+            return (
+              <rect
+                key={month}
+                x={Math.max(pad, x - half)}
+                y={pad}
+                width={i === 0 || i === months.length - 1 ? half : half * 2}
+                height={h - pad * 2}
+                className={reporting ? 'fill-proof/10' : i % 2 === 0 ? 'fill-ink/5' : 'fill-transparent'}
+              />
+            )
+          })}
+          {[0.25, 0.5, 0.75, 1].map((t) => {
+            const y = pad + (1 - t) * (h - pad * 2)
+            return (
+              <line
+                key={t}
+                x1={pad}
+                x2={w - pad}
+                y1={y}
+                y2={y}
+                className="stroke-ink/10"
+                strokeWidth="1"
+              />
+            )
+          })}
+          {months.map((month, i) => {
+            const x = pad + (i / (months.length - 1)) * (w - pad * 2)
+            return (
+              <line
+                key={`tick-${month}`}
+                x1={x}
+                x2={x}
+                y1={pad}
+                y2={h - pad}
+                className="stroke-ink/12"
+                strokeWidth="1"
+              />
+            )
+          })}
+          {plotted.map((series) =>
+            series.fill ? (
+              <path key={`${series.id}-area`} d={areaFromCurve(series.points, h, pad)} className={series.fill} />
+            ) : null,
+          )}
+          {plotted.map((series) => (
+            <path
+              key={series.id}
+              d={curvePath(series.points)}
+              className={`ri-mix-line fill-none ${series.stroke}`}
+              strokeWidth={series.id === 'total' ? 2.75 : 2.25}
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          ))}
+          {plotted.map((series) =>
+            series.points.map((point, i) => (
+              <circle
+                key={`${series.id}-dot-${months[i]}`}
+                cx={point.x}
+                cy={point.y}
+                r={i === series.points.length - 1 ? 4.2 : 3.2}
+                className={series.dot}
+                strokeWidth="1.6"
+              />
+            )),
+          )}
+        </svg>
+        <div className="relative mt-1 h-4">
+          {months.map((month, i) => (
+            <span
+              key={month}
+              className={`absolute -translate-x-1/2 font-mono text-[0.5625rem] uppercase tracking-[0.12em] ${
+                i >= 4 ? 'font-semibold text-ink' : 'text-muted-foreground'
+              }`}
+              style={{ left: `${((pad + (i / (months.length - 1)) * (w - pad * 2)) / w) * 100}%` }}
+            >
+              {month}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const pathway = [
+  { id: 'vsrp', label: 'VSRP results', value: 2980, width: 100, tone: 'bg-proof' },
+  { id: 'vdp', label: 'VDP views', value: 1640, width: 62, tone: 'bg-proof-deep/55' },
+  { id: 'leads', label: 'Leads', value: 860, width: 34, tone: 'bg-action' },
+] as const
+
+export function InventoryLeadModule() {
+  return (
+    <div className="ri-module border border-ink/15 bg-porcelain/60 px-4 py-4 md:px-5">
+      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
+        Inventory to lead
+      </p>
+      <p className="mt-1 text-base font-semibold text-ink">VSRP → VDP → leads</p>
+      <ol className="mt-4 flex flex-col gap-2.5" aria-label="Inventory-to-lead pathway">
+        {pathway.map((step) => (
+          <li key={step.id}>
+            <div className="mb-1 flex items-baseline justify-between gap-3">
+              <span className="text-sm font-semibold text-ink">{step.label}</span>
+              <span className="font-mono text-sm font-semibold tabular-nums text-ink">
+                {step.value.toLocaleString()}
+              </span>
+            </div>
+            <div className="h-7 overflow-hidden bg-paper">
+              <div className={`iq-bar-in-x h-full ${step.tone}`} style={{ width: `${step.width}%` }} />
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   )
 }
@@ -223,182 +235,34 @@ const markets = [
   { name: 'South county', strength: 38, status: 'Watch', hot: false },
 ]
 
-export function LocalityCharts() {
+export function LocalityModule() {
   return (
-    <div className="rounded-lg border border-border p-5 md:p-6">
-      <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Priority markets</p>
+    <div className="ri-module border border-ink/15 bg-porcelain/60 px-4 py-4 md:col-span-2 md:px-5">
+      <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-ink">
+        Locality
+      </p>
       <p className="mt-1 text-base font-semibold text-ink">Where local visibility is moving</p>
-
-      <div className="mt-5 grid gap-3 sm:grid-cols-2" role="img" aria-label="Illustrative locality strength by market">
-        {markets.map((m) => (
+      <div className="mt-4 grid gap-2 sm:grid-cols-4" role="img" aria-label="Locality strength by market">
+        {markets.map((market) => (
           <div
-            key={m.name}
-            className={`relative overflow-hidden rounded-lg border p-4 ${
-              m.hot ? 'border-proof-deep/50 bg-proof-soft' : 'border-border bg-porcelain/50'
+            key={market.name}
+            className={`border px-3 py-2.5 ${
+              market.hot ? 'border-action/50 bg-action-soft' : 'border-ink/10 bg-paper'
             }`}
           >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <span
-                  className={`h-3 w-3 shrink-0 rounded-full ${
-                    m.hot ? 'bg-proof ring-2 ring-proof-deep' : 'bg-fog/70'
-                  }`}
-                  aria-hidden="true"
-                />
-                <div>
-                  <p className="text-base font-semibold text-ink">{m.name}</p>
-                  <p className="text-sm text-muted-foreground">{m.status}</p>
-                </div>
-              </div>
-              <p className="font-mono text-lg font-semibold text-proof-deep">{m.strength}</p>
+            <div className="flex items-baseline justify-between gap-2">
+              <p className="text-sm font-semibold text-ink">{market.name}</p>
+              <p className="font-mono text-sm font-semibold text-ink">{market.strength}</p>
             </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-paper">
+            <p className="mt-0.5 text-xs text-muted-foreground">{market.status}</p>
+            <div className="mt-2 h-1.5 overflow-hidden bg-paper">
               <div
-                className={`iq-bar-in-x h-full rounded-full ${m.hot ? 'bg-proof' : 'bg-proof-deep/50'}`}
-                style={{ width: `${m.strength}%` }}
+                className={`iq-bar-in-x h-full ${market.hot ? 'bg-action' : 'bg-ink/25'}`}
+                style={{ width: `${market.strength}%` }}
               />
             </div>
           </div>
         ))}
-      </div>
-      <ChartNote>Illustrative market movement, not client data</ChartNote>
-    </div>
-  )
-}
-
-const funnel = [
-  { label: 'Research interactions', value: 4820, width: 100 },
-  { label: 'Inventory handoffs', value: 2980, width: 68 },
-  { label: 'Digital retailing', value: 1640, width: 44 },
-  { label: 'Calls and forms', value: 860, width: 28 },
-]
-
-export function BuyerActionCharts() {
-  return (
-    <div className="rounded-lg border border-border p-5 md:p-6">
-      <p className="font-mono text-xs uppercase tracking-wider text-accent-deep">Measured pathway</p>
-      <p className="mt-1 text-base font-semibold text-ink">How shopper actions move through the site</p>
-
-      <div className="relative mt-6" aria-label="Illustrative buyer-action funnel">
-        <div
-          className="pointer-events-none absolute top-2 bottom-2 left-3 hidden w-px bg-alloy sm:block"
-          aria-hidden="true"
-        />
-
-        <ol className="flex flex-col gap-3 sm:pl-8">
-          {funnel.map((step, i) => (
-            <li key={step.label}>
-              <div className="mb-1.5 flex items-baseline justify-between gap-3">
-                <span className="text-sm font-semibold text-ink">{step.label}</span>
-                <span className="font-mono text-sm font-semibold tabular-nums text-accent-deep">
-                  {step.value.toLocaleString()}
-                </span>
-              </div>
-              <div className="h-9 overflow-hidden rounded-md bg-porcelain">
-                <div
-                  className={`iq-bar-in-x flex h-full items-center rounded-md px-3 ${
-                    i === funnel.length - 1 ? 'bg-proof/80' : i === 0 ? 'bg-accent' : 'bg-accent-deep/45'
-                  }`}
-                  style={{ width: `${step.width}%` }}
-                />
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-      <ChartNote>Illustrative conversion pathway, not client data</ChartNote>
-    </div>
-  )
-}
-
-const radarBlips = [
-  { a: 18, r: 0.38, seen: true },
-  { a: 52, r: 0.62, seen: true },
-  { a: 88, r: 0.28, seen: false },
-  { a: 126, r: 0.7, seen: true },
-  { a: 168, r: 0.48, seen: false },
-  { a: 210, r: 0.82, seen: true },
-  { a: 248, r: 0.34, seen: false },
-  { a: 292, r: 0.58, seen: true },
-  { a: 328, r: 0.74, seen: false },
-]
-
-export function AiVisibilityCharts() {
-  const rootRef = useRef<HTMLDivElement>(null)
-  useChartDraw(rootRef)
-  const referrals = [8, 11, 9, 14, 18, 16, 22]
-  const points = sparkline(referrals, 260, 72, 8)
-  const cx = 110
-  const cy = 110
-  const maxR = 92
-
-  return (
-    <div ref={rootRef} className="grid gap-6 rounded-lg border border-border p-5 md:grid-cols-[minmax(0,220px)_1fr] md:p-6">
-      <div className="mx-auto w-full max-w-[220px]">
-        <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Observed footprint</p>
-        <svg
-          className="mt-3 h-auto w-full"
-          viewBox="0 0 220 220"
-          role="img"
-          aria-label="Illustrative AI visibility radar with observed and unobserved signals"
-        >
-          <circle cx={cx} cy={cy} r={maxR} className="fill-porcelain/80 stroke-border" />
-          <circle cx={cx} cy={cy} r={maxR * 0.66} className="fill-none stroke-border" />
-          <circle cx={cx} cy={cy} r={maxR * 0.33} className="fill-none stroke-border" />
-          <g transform={`translate(${cx} ${cy})`}>
-            <path
-              d={`M 0 0 L 0 ${-maxR} A ${maxR} ${maxR} 0 0 1 ${maxR * 0.42} ${-maxR * 0.91} Z`}
-              className="fill-proof/25 stroke-proof/60"
-              strokeWidth="1"
-            />
-          </g>
-          {radarBlips.map((b, i) => {
-            const rad = ((b.a - 90) * Math.PI) / 180
-            const x = cx + Math.cos(rad) * maxR * b.r
-            const y = cy + Math.sin(rad) * maxR * b.r
-            return (
-              <circle
-                key={i}
-                cx={x}
-                cy={y}
-                r={b.seen ? 4.5 : 3.5}
-                className={b.seen ? 'fill-proof stroke-proof-deep' : 'fill-fog/40 stroke-fog'}
-                strokeWidth="1.25"
-              />
-            )
-          })}
-          <circle cx={cx} cy={cy} r="3.5" className="fill-proof-deep" />
-        </svg>
-        <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-proof ring-1 ring-proof-deep" /> Observed
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-fog/50" /> Unobserved
-          </span>
-        </div>
-      </div>
-
-      <div>
-        <p className="font-mono text-xs uppercase tracking-wider text-proof-deep">Identifiable AI referrals</p>
-        <p className="mt-1 text-base font-semibold text-ink">Signals we can actually attribute</p>
-        <svg className="mt-4 h-24 w-full" viewBox="0 0 260 72" preserveAspectRatio="none" aria-hidden="true">
-          <path d={areaPath(referrals, 260, 72, 8)} className="fill-proof/20" />
-          <polyline
-            points={points}
-            pathLength={1}
-            className="ri-chart-line fill-none stroke-proof-deep"
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Highlighted marks identifiable referrals and observed visibility. Dim marks remain outside honest
-          attribution — we do not invent complete AI journey tracking.
-        </p>
-        <ChartNote>Illustrative AI footprint, not client data</ChartNote>
       </div>
     </div>
   )

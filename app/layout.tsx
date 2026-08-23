@@ -5,8 +5,18 @@ import { AnchorScroll } from '@/components/anchor-scroll'
 import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
 import './globals.css'
 
-const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
-const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
+const geistSans = Geist({
+  subsets: ['latin'],
+  variable: '--font-geist-sans',
+  display: 'swap',
+  adjustFontFallback: true,
+})
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
+  display: 'swap',
+  adjustFontFallback: true,
+})
 
 const siteUrl = getSiteUrl()
 const allowIndexing = isPubliclyIndexable()
@@ -15,7 +25,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Authomotive | Dealer Search, AI Visibility, Reporting & Measurement',
   description:
-    'Authomotive helps dealerships get found, guide buyers, and prove what works—through Authority Experiences, connected measurement, and plain-English intelligence on the website they already have.',
+    'Authomotive helps dealerships get found, guide buyers, and prove what works. Authority Experiences, connected measurement, and a monthly read in plain English sit on the website they already have.',
   alternates: {
     canonical: '/',
   },

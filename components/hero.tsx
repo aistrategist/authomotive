@@ -1,5 +1,3 @@
-'use client'
-
 import { hero, siteConfig } from '@/lib/site-data'
 import { HeroStage } from '@/components/hero-stage'
 
@@ -17,8 +15,8 @@ export function Hero() {
             </p>
             <h1 className="hero-enter hero-enter-2 mt-3 text-[2.15rem] font-semibold uppercase leading-[0.92] tracking-[-0.035em] md:text-[2.75rem] lg:text-[3.15rem] xl:text-[3.45rem]">
               <span className="block text-accent">Get found.</span>
-              <span className="block text-paper">Guide buyers.</span>
-              <span className="block text-proof">Prove what works.</span>
+              <span className="block text-proof">Guide buyers.</span>
+              <span className="block text-action">Prove what works.</span>
             </h1>
             <p className="hero-enter hero-enter-3 mt-4 max-w-[30rem] text-[0.95rem] leading-snug text-[color:var(--on-ink-muted)] md:text-base">
               {hero.supporting}

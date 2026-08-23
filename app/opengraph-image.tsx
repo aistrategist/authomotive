@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 export const alt =
-  'Authomotive — The managed authority and measurement framework for dealership websites'
+  'Authomotive. The managed authority and measurement framework for dealership websites'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
