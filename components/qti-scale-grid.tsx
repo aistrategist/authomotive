@@ -53,18 +53,24 @@ export function QtiScaleGrid() {
       const next = { w: Math.round(el.clientWidth), h: Math.round(el.clientHeight) }
       setBox((prev) => (prev.w === next.w && prev.h === next.h ? prev : next))
     }
+    const mayMeasure = () => {
+      const hash = window.location.hash.replace(/^#/, '')
+      return (
+        hash === 'platforms' ||
+        hash === 'question-to-inventory-heading' ||
+        window.scrollY > 8
+      )
+    }
     const schedule = () => {
+      if (!mayMeasure()) return
       if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(measure, { timeout: 180 })
+        window.requestIdleCallback(measure)
       } else {
         requestAnimationFrame(measure)
       }
     }
-    schedule()
 
     const ro = new ResizeObserver(schedule)
-    ro.observe(el)
-
     const io = new IntersectionObserver(
       ([entry]) => {
         visible = Boolean(entry?.isIntersecting)
@@ -74,16 +80,29 @@ export function QtiScaleGrid() {
       { rootMargin: '80px 0px', threshold: 0.01 },
     )
     io.observe(host ?? el)
+    if (mayMeasure()) {
+      ro.observe(el)
+      schedule()
+    }
 
+    const onMove = () => {
+      if (!mayMeasure()) return
+      ro.observe(el)
+      schedule()
+    }
     const onVisibility = () => {
       host?.classList.toggle('is-paused', document.hidden || !visible)
     }
     document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('scroll', onMove, { passive: true })
+    window.addEventListener('hashchange', onMove)
 
     return () => {
       ro.disconnect()
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('scroll', onMove)
+      window.removeEventListener('hashchange', onMove)
     }
   }, [])
 

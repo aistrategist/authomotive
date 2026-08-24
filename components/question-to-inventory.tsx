@@ -1,6 +1,7 @@
 import { QtiBandField } from '@/components/qti-band-field'
 import { QtiScaleGrid } from '@/components/qti-scale-grid'
 import { QtiWeb } from '@/components/qti-web'
+import { QtiWebView } from '@/components/qti-web-view'
 import { SignalRail } from '@/components/signal-rail'
 import { discoveryToInventory } from '@/lib/site-data'
 
@@ -46,6 +47,7 @@ export function QuestionToInventory() {
         </div>
 
         <div id="platforms" className="scroll-mt-24">
+          <QtiWebView />
           <QtiWeb />
         </div>
       </div>
