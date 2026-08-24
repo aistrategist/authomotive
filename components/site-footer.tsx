@@ -1,5 +1,5 @@
+import { AuthomotiveWordmark } from '@/components/authomotive-brand-svg'
 import { navLinks, siteConfig } from '@/lib/site-data'
-import { Wordmark } from '@/components/site-header'
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
@@ -9,10 +9,13 @@ export function SiteFooter() {
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16">
         <div className="flex flex-col justify-between gap-10 md:flex-row md:items-start">
           <div className="flex flex-col gap-3">
-            <p>
-              <span className="sr-only">Authomotive</span>
-              <Wordmark inverted />
-            </p>
+            <a
+              href="#top"
+              aria-label="Authomotive home"
+              className="footer-logo rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+            >
+              <AuthomotiveWordmark palette="onInk" />
+            </a>
             <p className="text-base text-stage-muted">{siteConfig.tagline}</p>
           </div>
 

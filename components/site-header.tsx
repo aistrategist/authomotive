@@ -6,29 +6,6 @@ import { AuthomotiveWordmark } from '@/components/authomotive-brand-svg'
 import { cta, navLinks, siteConfig } from '@/lib/site-data'
 import { HEADER_OFFSET } from '@/lib/scroll-to-id'
 
-function Wordmark({ inverted = false, adaptive = false }: { inverted?: boolean; adaptive?: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`header-wordmark text-[1.375rem] font-bold tracking-tight md:text-[1.625rem] ${
-        adaptive ? '' : inverted ? 'text-paper' : 'text-ink'
-      }`}
-    >
-      Auth
-      <span
-        className={`header-wordmark-o ${
-          adaptive ? '' : inverted ? 'text-accent' : 'text-accent-deep'
-        }`}
-      >
-        o
-      </span>
-      motive
-    </span>
-  )
-}
-
-export { Wordmark }
-
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -38,6 +15,47 @@ export function SiteHeader() {
 
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  // Transparent-over-hero → solid Warm Paper scroll state. A single listener
+  // attached once, throttled via rAF, so it never flickers near the threshold.
+  // Also re-synced on bfcache restore, tab refocus, and resize/layout shifts,
+  // since those can change or reveal scroll position without a scroll event.
+  useEffect(() => {
+    const THRESHOLD = 28
+    let ticking = false
+
+    function apply() {
+      headerRef.current?.classList.toggle('is-scrolled', window.scrollY > THRESHOLD)
+      ticking = false
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(apply)
+      }
+    }
+
+    function onPageShow() {
+      apply()
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === 'visible') apply()
+    }
+
+    apply()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    window.addEventListener('pageshow', onPageShow)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('pageshow', onPageShow)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
   }, [])
 
   // Square under the current chapter. Hold the clicked link during a jump so
@@ -230,7 +248,12 @@ export function SiteHeader() {
           aria-label="Authomotive home"
           className="header-home header-logo min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
         >
-          <AuthomotiveWordmark />
+          <span className="header-logo-variant header-logo-ink">
+            <AuthomotiveWordmark palette="onInk" />
+          </span>
+          <span className="header-logo-variant header-logo-light">
+            <AuthomotiveWordmark />
+          </span>
         </a>
 
         <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
@@ -285,7 +308,9 @@ export function SiteHeader() {
           >
             <div className="flex h-[4.5rem] items-center justify-between border-b border-stage-line px-4 sm:px-5">
               <span className="sr-only">Authomotive</span>
-              <Wordmark inverted />
+              <span className="site-nav-sheet-logo">
+                <AuthomotiveWordmark palette="onInk" />
+              </span>
               <button
                 type="button"
                 onClick={closeMenu}

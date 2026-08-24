@@ -53,7 +53,7 @@ export default function LogoTestPage() {
 
           <figure className="flex flex-col items-start gap-3">
             <figcaption className={caption}>Primary · live header slot</figcaption>
-            <div className="flex h-[2.25rem] w-full max-w-[22rem] items-center">
+            <div className="flex h-[1.8rem] w-full max-w-[17.6rem] items-center">
               <AuthomotiveWordmark className="h-full w-full" />
             </div>
           </figure>
@@ -70,7 +70,7 @@ export default function LogoTestPage() {
         </p>
         <div className="mt-12 flex flex-col gap-12">
           <AuthomotiveWordmark palette="onInk" className="h-14 w-auto" />
-          <div className="flex h-[2.25rem] w-full max-w-[22rem] items-center">
+          <div className="flex h-[1.8rem] w-full max-w-[17.6rem] items-center">
             <AuthomotiveWordmark palette="onInk" className="h-full w-full" />
           </div>
         </div>
