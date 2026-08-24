@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
 import {
   WORDMARK_PALETTES,
+  WORDMARK_PRODUCTION_TREATMENT,
   WORDMARK_SETS,
 } from '@/components/authomotive-wordmark-outline'
 
@@ -9,7 +10,7 @@ export const alt = 'Authomotive. Get found. Guide buyers. Prove what works.'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-const wordmark = WORDMARK_SETS.uniform
+const wordmark = WORDMARK_SETS[WORDMARK_PRODUCTION_TREATMENT]
 const colors = WORDMARK_PALETTES.onInk
 
 /**

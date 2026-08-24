@@ -34,13 +34,12 @@ const LOCKUP = {
 
 /**
  * Wordmark-first logo. Trimmed to its own ink, so the consumer controls padding.
- * `uniform` is the production candidate: weight carries the AUTH/OMOTIVE hierarchy and
- * colour carries the four-letter sequence, so tracking has no hierarchy left to signal
- * and an even rhythm reads as the most deliberate.
+ * Production `uniform` keeps OMOTIVE at 0.024em and pulls AUTH to -0.030em so the
+ * colour sequence reads as one unit. The H→O join is restored with jointDx.
  */
 const WORDMARK_TREATMENTS = {
   graded: { authTracking: 0.014, motoTracking: 0.024, jointDx: 1 },
-  uniform: { authTracking: 0.024, motoTracking: 0.024, jointDx: 0 },
+  uniform: { authTracking: -0.03, motoTracking: 0.024, jointDx: 3.888 },
   open: { authTracking: 0.034, motoTracking: 0.034, jointDx: 0 },
 }
 
