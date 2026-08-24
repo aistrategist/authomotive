@@ -39,49 +39,6 @@ export function SiteHeader() {
     setMounted(true)
   }, [])
 
-  // Transparent-over-hero → solid Warm Paper scroll state. A single listener
-  // attached once, throttled via rAF, so it never flickers near the threshold.
-  // Also re-synced on bfcache restore, tab refocus, and resize/layout shifts,
-  // since those can change or reveal scroll position without a scroll event.
-  useEffect(() => {
-    const THRESHOLD = 28
-    let ticking = false
-
-    function apply() {
-      headerRef.current?.classList.toggle('is-scrolled', window.scrollY > THRESHOLD)
-      ticking = false
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        ticking = true
-        requestAnimationFrame(apply)
-      }
-    }
-
-    function onPageShow() {
-      // Fires on bfcache restore (back/forward navigation), where React
-      // effects don't re-run but scroll position may already be non-zero.
-      apply()
-    }
-
-    function onVisibilityChange() {
-      if (document.visibilityState === 'visible') apply()
-    }
-
-    apply()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    window.addEventListener('pageshow', onPageShow)
-    document.addEventListener('visibilitychange', onVisibilityChange)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      window.removeEventListener('pageshow', onPageShow)
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-    }
-  }, [])
-
   // Square under the current chapter. Hold the clicked link during a jump so
   // the dot does not flicker through every section on the way up or down.
   useEffect(() => {
@@ -270,9 +227,14 @@ export function SiteHeader() {
         <a
           href="#top"
           aria-label="Authomotive home"
-          className="header-home min-w-0 shrink rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
+          className="header-home header-logo min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
         >
-          <Wordmark adaptive />
+          <img
+            src="/authomotive-logo.png"
+            alt=""
+            width={1024}
+            height={161}
+          />
         </a>
 
         <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
