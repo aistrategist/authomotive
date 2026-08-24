@@ -25,9 +25,8 @@ export const hero = {
   headline: 'Your website should help buyers choose you.',
   emphasis: 'choose you',
   supporting:
-    'Build better paths from shopper questions to inventory, measure what happens next, and use the evidence to decide what to improve.',
+    'Build better dealership website paths from shopper questions to inventory, measure what happens next, and use the evidence to decide what to improve.',
   primaryCta: 'Request My Opportunity Review',
-  secondaryCta: 'See the Connected Buyer System',
   confidence: 'Works with the dealership website, agency, and vendor stack you already have.',
   question: 'Which three-row SUV fits my family, budget, and winter driving needs?',
   outcomes: [

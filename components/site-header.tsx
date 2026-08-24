@@ -242,7 +242,7 @@ export function SiteHeader() {
       ref={headerRef}
       className="site-header fixed inset-x-0 top-0 z-50 border-b"
     >
-      <div className="site-header-bar mx-auto flex h-[4.5rem] max-w-[1280px] items-center justify-between gap-3 px-4 sm:gap-6 sm:px-5 md:px-8">
+      <div className="site-header-bar mx-auto flex h-[4.25rem] max-w-[1280px] items-center justify-between gap-4 px-4 sm:gap-8 sm:px-5 md:px-8">
         <a
           href="#top"
           aria-label="Authomotive home"
@@ -256,12 +256,12 @@ export function SiteHeader() {
           </span>
         </a>
 
-        <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
+        <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-5 xl:gap-7">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="header-nav-link relative whitespace-nowrap rounded-sm py-1 text-[14px] font-semibold tracking-[-0.006em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[15px]"
+              className="header-nav-link relative whitespace-nowrap rounded-sm py-1 text-[13.5px] font-semibold tracking-[0.01em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[14.5px]"
             >
               {link.label}
               <span
@@ -272,7 +272,7 @@ export function SiteHeader() {
           ))}
           <a
             href="#opportunity-review"
-            className="btn btn-action header-cta !min-h-[44px] !whitespace-nowrap !px-4 !text-[15px] xl:!px-5"
+            className="btn btn-action header-cta !min-h-[40px] !whitespace-nowrap !px-3.5 !text-[14px] xl:!px-4"
           >
             {cta.primary}
             <span className="btn-arrow" aria-hidden="true">
@@ -306,7 +306,7 @@ export function SiteHeader() {
             aria-label="Site navigation"
             className="site-nav-sheet fixed inset-0 z-[60] flex h-dvh flex-col bg-stage"
           >
-            <div className="flex h-[4.5rem] items-center justify-between border-b border-stage-line px-4 sm:px-5">
+            <div className="flex h-[4.25rem] items-center justify-between border-b border-stage-line px-4 sm:px-5">
               <span className="sr-only">Authomotive</span>
               <span className="site-nav-sheet-logo">
                 <AuthomotiveWordmark palette="onInk" />

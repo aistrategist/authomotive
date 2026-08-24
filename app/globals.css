@@ -3650,6 +3650,65 @@ html {
   font-stretch: 88%;
 }
 
+.hero-reassurance {
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--on-ink-muted) 62%, transparent);
+}
+@media (min-width: 768px) {
+  .hero-reassurance {
+    font-size: 0.75rem;
+  }
+}
+
+.hero-stamp {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--accent) 72%, transparent);
+}
+@media (min-width: 768px) {
+  .hero-stamp {
+    font-size: 0.75rem;
+  }
+}
+
+.hero-stage-slot {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.hero-stage-slot::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  inset: 4% -8% -2% 12%;
+  border-radius: 58% 42% 54% 46%;
+  background:
+    radial-gradient(ellipse 58% 52% at 62% 40%, color-mix(in srgb, var(--action) 78%, transparent), transparent 70%),
+    radial-gradient(ellipse 46% 40% at 38% 62%, color-mix(in srgb, var(--action-hover) 48%, transparent), transparent 72%),
+    radial-gradient(ellipse 78% 70% at 58% 54%, color-mix(in srgb, var(--action-strong) 26%, transparent), transparent 74%);
+  filter: blur(36px);
+  transform: rotate(-14deg);
+  opacity: 0.88;
+}
+.hero-stage-slot > * {
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 1024px) {
+  .hero-stage-slot {
+    padding-top: 1.15rem;
+    padding-bottom: 1.15rem;
+  }
+  .hero-stage-slot::before {
+    inset: -2% -10% -6% 8%;
+    filter: blur(44px);
+  }
+}
+
 .hero-atmosphere {
   position: relative;
   background-color: var(--stage);
@@ -3659,9 +3718,10 @@ html {
     radial-gradient(ellipse 420px 320px at 12% 78%, rgba(255, 201, 130, 0.1), transparent 55%),
     linear-gradient(120deg, var(--stage-deep) 0%, var(--stage) 52%, var(--stage-elevated) 100%);
   display: flex;
-  align-items: center;
-  padding-top: calc(6.25rem + env(safe-area-inset-top, 0px)); /* header + air + notch */
-  padding-bottom: 1.75rem;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: calc(6.75rem + env(safe-area-inset-top, 0px)); /* header + air so H1 leads */
+  padding-bottom: 2.25rem;
 }
 
 /* Same architectural tile language as the form band — faded under the stage */
@@ -4821,8 +4881,8 @@ html {
 
 @media (max-width: 1023px) {
   .hero-atmosphere {
-    padding-top: calc(5.75rem + env(safe-area-inset-top, 0px));
-    padding-bottom: 1.5rem;
+    padding-top: calc(6.15rem + env(safe-area-inset-top, 0px));
+    padding-bottom: 2rem;
   }
   .hero-enter-stage {
     animation-name: hero-enter-stage;
