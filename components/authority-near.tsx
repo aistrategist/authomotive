@@ -1,18 +1,18 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { NearSwap } from '@/components/near-swap'
-import { AuthorityExperienceFallback } from '@/components/authority-experience-fallback'
 
 const load = () =>
   import('@/components/authority-experience').then((m) => ({ default: m.AuthorityExperience }))
 
-export function AuthorityNear() {
+export function AuthorityNear({ fallback }: { fallback: ReactNode }) {
   return (
     <NearSwap
       load={load}
       hashes={['authority-experiences']}
       rootMargin="640px 0px"
-      fallback={<AuthorityExperienceFallback />}
+      fallback={fallback}
     />
   )
 }

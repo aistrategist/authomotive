@@ -11,7 +11,6 @@ export function FinalCtaNear() {
       load={load}
       hashes={['opportunity-review']}
       rootMargin="640px 0px"
-      idleMs={2500}
       fallback={<FinalCtaView />}
     />
   )

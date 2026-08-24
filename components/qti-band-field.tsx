@@ -52,30 +52,27 @@ export function QtiBandField() {
     const root = slotRef.current
     if (!root) return
 
-    let capable = false
+    let capable: boolean | null = null
     let near = false
 
-    const syncCapability = () => {
-      capable = canUseShader()
-      if (!capable) setEnabled(false)
-    }
-    syncCapability()
-
     const loadShader = () => {
+      if (capable === null) capable = canUseShader()
       if (capable) setEnabled(true)
+      else setEnabled(false)
     }
 
     const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onCapabilityChange = () => {
-      syncCapability()
-      if (capable && near) loadShader()
+      capable = null
+      if (near) loadShader()
+      else setEnabled(false)
     }
     reduceMq.addEventListener('change', onCapabilityChange)
 
     const io = new IntersectionObserver(
       ([entry]) => {
         near = Boolean(entry?.isIntersecting)
-        if (capable && near) loadShader()
+        if (near) loadShader()
         setPaused(document.hidden || !near)
       },
       { rootMargin: '0px 0px -28% 0px', threshold: 0.12 },

@@ -4,13 +4,18 @@ import { reporting } from '@/lib/site-data'
 import { CapabilityView } from '@/components/capability-view'
 import { CapabilityNear } from '@/components/capability-near'
 import { AuthorityNear } from '@/components/authority-near'
-import { IntelligenceCopy, IntelligenceQuote } from '@/components/intelligence-view'
+import { IntelligenceCopy, IntelligenceFrame, IntelligenceQuote } from '@/components/intelligence-view'
 import { IntelligenceNear } from '@/components/intelligence-near'
-import { SignalArchitectureCopy, SignalArchitectureCycle } from '@/components/signal-architecture-view'
+import {
+  SignalArchitectureConsole,
+  SignalArchitectureCopy,
+  SignalArchitectureCycle,
+} from '@/components/signal-architecture-view'
 import { SignalArchitectureNear } from '@/components/signal-architecture-near'
-import { ManagedFrameworkCopy } from '@/components/managed-framework-view'
+import { ManagedFrameworkCopy, ManagedHub } from '@/components/managed-framework-view'
 import { ManagedNear } from '@/components/managed-near'
 import { FinalCtaNear } from '@/components/final-cta-near'
+import { AuthorityExperienceFallback } from '@/components/authority-experience-fallback'
 import { FieldProof } from '@/components/field-proof'
 
 export { FieldProof }
@@ -25,7 +30,7 @@ export function CapabilitySystem() {
 }
 
 export function AuthorityExperience() {
-  return <AuthorityNear />
+  return <AuthorityNear fallback={<AuthorityExperienceFallback />} />
 }
 
 export function IntelligencePreview() {
@@ -38,7 +43,7 @@ export function IntelligencePreview() {
       <SignalRail step={4} />
       <div className="relative mx-auto max-w-[1280px] px-5 pb-8 pt-14 md:px-8 md:pb-9 md:pt-16 lg:pb-10 lg:pt-[4.5rem]">
         <IntelligenceCopy />
-        <IntelligenceNear />
+        <IntelligenceNear fallback={<IntelligenceFrame />} />
         <IntelligenceQuote />
         <div className="ri-sources mt-4">
           <Disclosure title="Where the underlying data comes from">
@@ -68,7 +73,7 @@ export function SignalArchitecture() {
       <SignalRail step={5} />
       <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <SignalArchitectureCopy />
-        <SignalArchitectureNear />
+        <SignalArchitectureNear fallback={<SignalArchitectureConsole />} />
         <SignalArchitectureCycle />
       </div>
     </section>
@@ -86,7 +91,7 @@ export function ManagedFramework() {
       <SignalRail step={6} />
       <div className="mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">
         <ManagedFrameworkCopy />
-        <ManagedNear />
+        <ManagedNear fallback={<ManagedHub />} />
       </div>
     </section>
   )
