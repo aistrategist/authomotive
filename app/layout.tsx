@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist_Mono, Instrument_Sans } from 'next/font/google'
 import { AnchorScroll } from '@/components/anchor-scroll'
+import { siteConfig } from '@/lib/site-data'
 import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
 import './globals.css'
 
@@ -21,12 +22,14 @@ const geistMono = Geist_Mono({
 
 const siteUrl = getSiteUrl()
 const allowIndexing = isPubliclyIndexable()
+const defaultTitle = `${siteConfig.name} | ${siteConfig.tagline}`
+const defaultDescription = `${siteConfig.tagline} ${siteConfig.category}.`
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Authomotive | Dealership Authority, AI Discovery & Measurement',
-  description:
-    'Authomotive helps dealerships get found, guide buyers to inventory, and prove what works with Authority Experiences, measurement, and monthly intelligence.',
+  applicationName: siteConfig.name,
+  title: defaultTitle,
+  description: defaultDescription,
   alternates: {
     canonical: '/',
   },
@@ -34,18 +37,16 @@ export const metadata: Metadata = {
     ? { index: true, follow: true }
     : { index: false, follow: false },
   openGraph: {
-    title: 'Authomotive | Dealership Authority, AI Discovery & Measurement',
-    description:
-      'Authomotive helps dealerships get found, guide buyers to inventory, and prove what works with Authority Experiences, measurement, and monthly intelligence.',
+    title: defaultTitle,
+    description: defaultDescription,
     type: 'website',
-    siteName: 'Authomotive',
+    siteName: siteConfig.name,
     url: '/',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Authomotive | Dealership Authority, AI Discovery & Measurement',
-    description:
-      'Authomotive helps dealerships get found, guide buyers to inventory, and prove what works with Authority Experiences, measurement, and monthly intelligence.',
+    title: defaultTitle,
+    description: defaultDescription,
   },
 }
 

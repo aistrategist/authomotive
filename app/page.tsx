@@ -11,6 +11,7 @@ import {
   SignalArchitecture,
 } from '@/components/home-sections'
 import { SiteFooter } from '@/components/site-footer'
+import { siteConfig } from '@/lib/site-data'
 import { getSiteUrl } from '@/lib/site-url'
 
 const siteUrl = getSiteUrl()
@@ -23,14 +24,13 @@ const structuredData = {
       '@id': `${siteUrl}/#organization`,
       name: 'Authomotive',
       url: siteUrl,
-      slogan: 'Get found. Guide buyers. Prove what works.',
+      slogan: siteConfig.tagline,
       founder: {
         '@type': 'Person',
         name: 'Chris Gabriel',
         jobTitle: 'Founder',
       },
-      description:
-        'The managed authority and measurement framework for dealership websites. Authomotive builds search- and AI-ready dealership content, unified performance reporting, managed AI Discovery pages, and custom measurement.',
+      description: siteConfig.category,
     },
     {
       '@type': 'WebSite',
