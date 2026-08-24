@@ -15,25 +15,24 @@ function fitAdventureLine(root: HTMLElement, voyage: HTMLElement, svg: SVGSVGEle
   const h = root.clientHeight
   if (w < 8 || h < 8) return []
 
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
   const box = root.getBoundingClientRect()
   const pins = [...voyage.querySelectorAll<HTMLElement>('.cap-pin')]
-  const stations = pins.map((pin) => {
-    const r = pin.getBoundingClientRect()
-    return {
-      x: r.left + r.width / 2 - box.left,
-      y: r.top + r.height / 2 - box.top,
-    }
-  })
+  const pinBoxes = pins.map((pin) => pin.getBoundingClientRect())
+  const voyageBox = voyage.getBoundingClientRect()
+  const stations = pinBoxes.map((r) => ({
+    x: r.left + r.width / 2 - box.left,
+    y: r.top + r.height / 2 - box.top,
+  }))
   const x = stations.length
     ? stations.reduce((sum, station) => sum + station.x, 0) / stations.length
     : w / 2
   const bow = Math.min(36, w * 0.03)
   const wide = window.matchMedia('(min-width: 1024px)').matches
-  const voyageBox = voyage.getBoundingClientRect()
   const startY = wide ? 0 : Math.max(0, voyageBox.top - box.top)
   const endY = wide ? h : Math.min(h, voyageBox.bottom - box.top)
   const points = [{ x, y: startY }, ...stations, { x, y: endY }]
+
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
 
   let d = `M ${points[0]!.x.toFixed(1)} ${points[0]!.y.toFixed(1)}`
   for (let i = 1; i < points.length; i++) {
