@@ -519,65 +519,29 @@ html {
 .header-cta {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  box-shadow: none;
-  filter: drop-shadow(6px 6px 0 var(--ink));
-}
-.btn-action.header-cta:hover,
-.btn-action.header-cta:focus-visible {
-  box-shadow: none;
-  filter: drop-shadow(7px 7px 0 var(--ink));
-}
-.btn-action.header-cta:active {
-  box-shadow: none;
-  filter: drop-shadow(3px 3px 0 var(--ink));
-}
-.btn-action-dark.header-cta {
-  filter: drop-shadow(6px 6px 0 var(--accent));
-}
-.btn-action-dark.header-cta:hover,
-.btn-action-dark.header-cta:focus-visible {
-  box-shadow: none;
-  filter: drop-shadow(7px 7px 0 var(--accent));
-}
-.btn-action-dark.header-cta:active {
-  box-shadow: none;
-  filter: drop-shadow(3px 3px 0 var(--accent));
-}
-.header-cta > * {
-  position: relative;
-  z-index: 2;
-}
-.header-cta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  width: 55%;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in srgb, var(--paper) 55%, transparent) 50%,
-    transparent 100%
-  );
-  transform: translateX(-180%);
-  opacity: 0;
 }
 .header-cta::after {
   content: '';
   position: absolute;
-  inset: 0;
-  z-index: 0;
+  inset: -2px;
+  z-index: -1;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 0 18px 4px color-mix(in srgb, var(--action) 46%, transparent);
+  box-shadow: 0 0 18px 4px color-mix(in srgb, var(--action) 46%, transparent);
   opacity: 0;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .header-cta::before {
+  .header-cta {
+    background-color: var(--action);
+    background-image: linear-gradient(
+      105deg,
+      transparent 34%,
+      color-mix(in srgb, var(--paper) 55%, transparent) 50%,
+      transparent 66%
+    );
+    background-size: 240% 100%;
+    background-repeat: no-repeat;
+    background-position: 140% 0;
     animation: header-cta-sheen 3.8s ease-in-out infinite;
     animation-play-state: paused;
   }
@@ -589,16 +553,16 @@ html {
     animation: header-cta-arrow 3.8s ease-in-out 0.35s infinite;
     animation-play-state: paused;
   }
-  html.is-decor-motion .header-cta::before,
+  html.is-decor-motion .header-cta,
   html.is-decor-motion .header-cta::after,
   html.is-decor-motion .header-cta .btn-arrow {
     animation-play-state: running;
   }
-  .header-cta:hover::before,
-  .header-cta:focus-visible::before,
-  .header-cta.is-rest::before {
+  .header-cta:hover,
+  .header-cta:focus-visible,
+  .header-cta.is-rest {
     animation: none;
-    opacity: 0;
+    background-image: none;
   }
   .header-cta:hover::after,
   .header-cta:focus-visible::after,
@@ -615,13 +579,11 @@ html {
 @keyframes header-cta-sheen {
   0%,
   14% {
-    transform: translateX(-180%);
-    opacity: 1;
+    background-position: 140% 0;
   }
   58%,
   100% {
-    transform: translateX(220%);
-    opacity: 1;
+    background-position: -40% 0;
   }
 }
 @keyframes header-cta-glow {
@@ -4115,12 +4077,10 @@ html {
 }
 
 .hs-traveler {
-  /* Path is JS; position is a transform-only WAAPI ride */
+  /* Path is JS; distance is a WAAPI ride so the soar stays compositor-smooth */
   opacity: 0;
   overflow: visible;
-  transform-box: view-box;
-  transform-origin: 0 0;
-  will-change: transform, opacity;
+  will-change: offset-distance, opacity;
 }
 
 .hs-think {
@@ -4217,11 +4177,14 @@ html {
 .hs-skel {
   opacity: 0.84;
   filter: drop-shadow(0 12px 24px var(--hero-panel-shadow));
-  transition: opacity 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    filter 0.25s ease;
 }
 
 .hs-skel.is-lit {
   opacity: 1;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
 }
 
 .hs-chip {
@@ -4572,7 +4535,11 @@ html {
   }
 
   .hs-trail-center {
-    animation: none;
+    animation: hs-trail-center-drift 14s linear infinite;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .hero-atmosphere.is-near .hs-trail-center {
+    animation-play-state: running;
   }
 
   /*
@@ -7542,12 +7509,13 @@ details.disclosure[open] > summary .disclosure-plus {
  */
 @media (max-width: 767px) {
   .header-cta,
-  .header-cta::before,
   .header-cta::after,
   .header-cta .btn-arrow {
     animation: none !important;
   }
-  .header-cta::before,
+  .header-cta {
+    background-image: none;
+  }
   .header-cta::after {
     opacity: 0;
   }

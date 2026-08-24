@@ -13,8 +13,6 @@ const QtiFieldSurface = dynamic(() => import('@/components/qti-field-surface'), 
   ssr: false,
 })
 
-const QTI_HASHES = ['platforms', 'question-to-inventory-heading']
-
 function canUseShader() {
   if (typeof window === 'undefined') return false
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
@@ -27,15 +25,6 @@ function canUseShader() {
   } catch {
     return false
   }
-}
-
-function isDeepLinked() {
-  const hash = window.location.hash.replace(/^#/, '')
-  return QTI_HASHES.includes(hash)
-}
-
-function hasUserMoved() {
-  return window.scrollY > 8
 }
 
 class ShaderGuard extends Component<{ children: ReactNode }, { dead: boolean }> {
@@ -65,7 +54,6 @@ export function QtiBandField() {
 
     let capable: boolean | null = null
     let near = false
-    let shaderIdle = 0
 
     const loadShader = () => {
       if (capable === null) capable = canUseShader()
@@ -73,52 +61,36 @@ export function QtiBandField() {
       else setEnabled(false)
     }
 
-    const cancelIdle = () => {
-      if (shaderIdle && typeof cancelIdleCallback === 'function') {
-        cancelIdleCallback(shaderIdle)
-        shaderIdle = 0
-      }
-    }
-
-    const begin = () => {
-      shaderIdle = 0
-      if (!near || document.hidden) {
-        setPaused(true)
-        return
-      }
-      loadShader()
-      setPaused(false)
-    }
-
-    const schedule = () => {
-      if (!near || document.hidden) return
-      if (!isDeepLinked() && !hasUserMoved()) return
-      cancelIdle()
-      if (isDeepLinked()) {
-        begin()
-        return
-      }
-      if (typeof requestIdleCallback === 'function') {
-        shaderIdle = requestIdleCallback(begin)
-      } else {
-        requestAnimationFrame(begin)
-      }
-    }
-
     const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onCapabilityChange = () => {
       capable = null
-      if (near && (isDeepLinked() || hasUserMoved())) loadShader()
+      if (near) loadShader()
       else setEnabled(false)
     }
     reduceMq.addEventListener('change', onCapabilityChange)
 
+    let shaderIdle = 0
+    let shaderTimer = 0
     const io = new IntersectionObserver(
       ([entry]) => {
         near = Boolean(entry?.isIntersecting)
-        if (near) schedule()
-        else {
-          cancelIdle()
+        if (near) {
+          const begin = () => {
+            shaderIdle = 0
+            shaderTimer = 0
+            if (!near || document.hidden) {
+              setPaused(true)
+              return
+            }
+            loadShader()
+            setPaused(false)
+          }
+          if (typeof requestIdleCallback === 'function') {
+            shaderIdle = requestIdleCallback(begin, { timeout: 2200 })
+          } else {
+            shaderTimer = window.setTimeout(begin, 2200)
+          }
+        } else {
           setPaused(true)
         }
       },
@@ -129,23 +101,14 @@ export function QtiBandField() {
     const onVisibility = () => {
       setPaused(document.hidden || !near)
     }
-    const onMove = () => schedule()
     document.addEventListener('visibilitychange', onVisibility)
-    window.addEventListener('scroll', onMove, { passive: true })
-    window.addEventListener('hashchange', onMove)
-
-    if (isDeepLinked()) {
-      near = true
-      schedule()
-    }
 
     return () => {
       reduceMq.removeEventListener('change', onCapabilityChange)
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
-      window.removeEventListener('scroll', onMove)
-      window.removeEventListener('hashchange', onMove)
-      cancelIdle()
+      if (shaderIdle && typeof cancelIdleCallback === 'function') cancelIdleCallback(shaderIdle)
+      if (shaderTimer) window.clearTimeout(shaderTimer)
     }
   }, [])
 

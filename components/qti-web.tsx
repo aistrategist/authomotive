@@ -1,29 +1,49 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { platformCredibility } from '@/lib/platform-data'
+import { discoveryToInventory } from '@/lib/site-data'
 
-const LINKS: { from: string; to: string }[] = [
-  { from: 'site', to: 'seo' },
-  { from: 'site', to: 'aeo' },
-  { from: 'site', to: 'geo' },
-  { from: 'seo', to: 'vsrp' },
-  { from: 'seo', to: 'vdp' },
-  { from: 'aeo', to: 'form' },
-  { from: 'aeo', to: 'chat' },
-  { from: 'geo', to: 'call' },
-  { from: 'geo', to: 'lead' },
-  { from: 'seo', to: 'aeo' },
-  { from: 'aeo', to: 'geo' },
-  { from: 'seo', to: 'form' },
-  { from: 'aeo', to: 'vdp' },
-  { from: 'aeo', to: 'call' },
-  { from: 'geo', to: 'chat' },
-  { from: 'vsrp', to: 'form' },
-  { from: 'vdp', to: 'chat' },
-  { from: 'form', to: 'call' },
+const websiteMarks =
+  platformCredibility.categories.find((category) => category.id === 'website')?.marks ?? []
+
+const disciplines = discoveryToInventory.disciplines
+const events = discoveryToInventory.events
+
+type NodeId = 'site' | (typeof disciplines)[number]['id'] | (typeof events)[number]['id']
+
+const LINKS: { from: NodeId; to: NodeId; kind: 'trunk' | 'fan' | 'cross' }[] = [
+  { from: 'site', to: 'seo', kind: 'trunk' },
+  { from: 'site', to: 'aeo', kind: 'trunk' },
+  { from: 'site', to: 'geo', kind: 'trunk' },
+  { from: 'seo', to: 'vsrp', kind: 'fan' },
+  { from: 'seo', to: 'vdp', kind: 'fan' },
+  { from: 'aeo', to: 'form', kind: 'fan' },
+  { from: 'aeo', to: 'chat', kind: 'fan' },
+  { from: 'geo', to: 'call', kind: 'fan' },
+  { from: 'geo', to: 'lead', kind: 'fan' },
+  { from: 'seo', to: 'aeo', kind: 'cross' },
+  { from: 'aeo', to: 'geo', kind: 'cross' },
+  { from: 'seo', to: 'form', kind: 'cross' },
+  { from: 'aeo', to: 'vdp', kind: 'cross' },
+  { from: 'aeo', to: 'call', kind: 'cross' },
+  { from: 'geo', to: 'chat', kind: 'cross' },
+  { from: 'vsrp', to: 'form', kind: 'cross' },
+  { from: 'vdp', to: 'chat', kind: 'cross' },
+  { from: 'form', to: 'call', kind: 'cross' },
 ]
 
-const QTI_HASHES = ['platforms', 'question-to-inventory-heading']
+const TONE_BY_NODE: Record<string, 'accent' | 'proof' | 'action'> = {
+  seo: 'accent',
+  aeo: 'proof',
+  geo: 'action',
+  vsrp: 'accent',
+  vdp: 'accent',
+  form: 'proof',
+  chat: 'proof',
+  call: 'action',
+  lead: 'action',
+}
 
 type Point = { x: number; y: number }
 
@@ -67,8 +87,8 @@ function fitStrands(root: HTMLElement, svg: SVGSVGElement) {
   }
 }
 
-function neighborsOf(id: string) {
-  const next = new Set<string>([id])
+function neighborsOf(id: NodeId) {
+  const next = new Set<NodeId>([id])
   for (const link of LINKS) {
     if (link.from === id) next.add(link.to)
     if (link.to === id) next.add(link.from)
@@ -76,122 +96,66 @@ function neighborsOf(id: string) {
   return next
 }
 
-function isDeepLinked() {
-  const hash = window.location.hash.replace(/^#/, '')
-  return QTI_HASHES.includes(hash)
-}
-
-function hasUserMoved() {
-  return window.scrollY > 8
-}
-
-function applyLit(root: HTMLElement, id: string | null) {
-  if (id) root.setAttribute('data-lit', id)
-  else root.removeAttribute('data-lit')
-
-  const lit = id ? neighborsOf(id) : null
-  root.querySelectorAll<HTMLElement>('[data-node]').forEach((el) => {
-    const nid = el.dataset.node
-    if (nid && lit?.has(nid)) el.setAttribute('data-lit', '')
-    else el.removeAttribute('data-lit')
-  })
-  root.querySelectorAll<SVGPathElement>('.qti-web-strand').forEach((path) => {
-    const from = path.dataset.from
-    const to = path.dataset.to
-    if (id && (from === id || to === id)) path.setAttribute('data-lit', '')
-    else path.removeAttribute('data-lit')
-  })
-}
-
 /**
- * Tiny interaction/layout controller. Static webbing is server-rendered.
+ * 1 / 3 / 6 webbing: named dealer platforms, SEO / AEO / GEO, then the
+ * six actions a GM can actually read. Strands are fitted to node centers.
  */
 export function QtiWeb() {
+  const rootRef = useRef<HTMLDivElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+  const [lit, setLit] = useState<NodeId | null>(null)
+  const litNodes = lit ? neighborsOf(lit) : null
+
+  const paint = useCallback(() => {
+    const root = rootRef.current
+    const svg = svgRef.current
+    if (root && svg) fitStrands(root, svg)
+  }, [])
+
   useEffect(() => {
-    const root = document.querySelector<HTMLElement>('.qti-web')
-    const svg = root?.querySelector<SVGSVGElement>('.qti-web-svg')
-    if (!root || !svg) return
+    const root = rootRef.current
+    if (!root) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
     let live = false
-    let started = false
-    let ro: ResizeObserver | null = null
-
     const markLive = () => {
       if (live) return
       live = true
       root.classList.add('is-live')
     }
 
-    const paint = () => {
-      fitStrands(root, svg)
-    }
-
     const start = () => {
-      if (started) return
-      started = true
       paint()
       if (reduced.matches) {
         markLive()
-      } else {
-        requestAnimationFrame(markLive)
-      }
-      ro = new ResizeObserver(() => {
-        requestAnimationFrame(paint)
-      })
-      ro.observe(root)
-    }
-
-    const mayStart = () => isDeepLinked() || hasUserMoved()
-
-    const onInteract = (event: Event) => {
-      const node = event.target
-      if (!(node instanceof Element)) return
-      const host = node.closest<HTMLElement>('[data-node]')
-      if (!host || !root.contains(host)) return
-      start()
-      const id = host.dataset.node
-      if (event.type === 'pointerleave' || event.type === 'blur') {
-        if (!root.contains(document.activeElement) && !root.matches(':hover')) applyLit(root, null)
         return
       }
-      if (id) applyLit(root, id)
+      requestAnimationFrame(() => {
+        paint()
+        requestAnimationFrame(markLive)
+      })
     }
 
-    root.addEventListener('pointerenter', onInteract, true)
-    root.addEventListener('focusin', onInteract)
-    root.addEventListener('pointerleave', () => applyLit(root, null))
-    root.addEventListener('focusout', (event) => {
-      const next = event.relatedTarget
-      if (next instanceof Node && root.contains(next)) return
-      applyLit(root, null)
-    })
+    if (reduced.matches) {
+      paint()
+      markLive()
+    }
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry?.isIntersecting) return
-        if (!mayStart()) return
-        start()
-        io.disconnect()
+        if (entry?.isIntersecting) start()
       },
-      { threshold: 0.35, rootMargin: '0px' },
+      { threshold: 0.12 },
     )
     io.observe(root)
 
-    const onMove = () => {
-      if (!mayStart()) return
-      const box = root.getBoundingClientRect()
-      const approaching = box.top < window.innerHeight * 0.92 && box.bottom > window.innerHeight * 0.08
-      if (approaching || isDeepLinked()) {
-        start()
-        window.removeEventListener('scroll', onMove)
-        window.removeEventListener('hashchange', onMove)
-      }
-    }
+    const box = root.getBoundingClientRect()
+    if (box.top < window.innerHeight && box.bottom > 0) start()
 
-    if (isDeepLinked()) start()
-    window.addEventListener('scroll', onMove, { passive: true })
-    window.addEventListener('hashchange', onMove)
+    const ro = new ResizeObserver(() => {
+      requestAnimationFrame(paint)
+    })
+    ro.observe(root)
 
     const onMotion = () => {
       if (reduced.matches) markLive()
@@ -200,14 +164,100 @@ export function QtiWeb() {
 
     return () => {
       io.disconnect()
-      ro?.disconnect()
-      window.removeEventListener('scroll', onMove)
-      window.removeEventListener('hashchange', onMove)
+      ro.disconnect()
       reduced.removeEventListener('change', onMotion)
-      root.removeEventListener('pointerenter', onInteract, true)
-      root.removeEventListener('focusin', onInteract)
     }
-  }, [])
+  }, [paint])
 
-  return null
+  return (
+    <div
+      ref={rootRef}
+      className="qti-web"
+      data-lit={lit ?? undefined}
+      onPointerLeave={() => setLit(null)}
+    >
+      <svg ref={svgRef} className="qti-web-svg" aria-hidden="true">
+        {LINKS.map((link) => (
+          <path
+            key={`${link.from}-${link.to}`}
+            className="qti-web-strand"
+            data-from={link.from}
+            data-to={link.to}
+            data-kind={link.kind}
+            data-tone={TONE_BY_NODE[link.to] ?? 'accent'}
+            data-lit={lit && (link.from === lit || link.to === lit) ? '' : undefined}
+            pathLength={1}
+          />
+        ))}
+      </svg>
+
+      <div className="qti-web-row" data-row="platforms">
+        <p className="qti-web-strategy">
+          {discoveryToInventory.platforms.lockup.map((word) => (
+            <span key={word}>{word}</span>
+          ))}
+        </p>
+        <div
+          className="qti-web-site"
+          data-node="site"
+          data-lit={litNodes?.has('site') ? '' : undefined}
+          tabIndex={0}
+          onPointerEnter={() => setLit('site')}
+          onFocus={() => setLit('site')}
+          onBlur={() => setLit(null)}
+        >
+          <ul className="qti-wordmarks" aria-label="Website platforms Authomotive works with">
+            {websiteMarks.map((mark) => (
+              <li key={mark.id} className="qti-wordmark">
+                {mark.name}
+              </li>
+            ))}
+          </ul>
+          <p className="qti-web-site-line">{discoveryToInventory.platforms.line}</p>
+        </div>
+      </div>
+
+      <ul className="qti-web-row" data-row="disciplines" aria-label="Strategy layer Authomotive adds">
+        {disciplines.map((discipline) => (
+          <li key={discipline.id}>
+            <div
+              className="qti-web-chip"
+              data-node={discipline.id}
+              data-tone={discipline.tone}
+              data-lit={litNodes?.has(discipline.id) ? '' : undefined}
+              tabIndex={0}
+              onPointerEnter={() => setLit(discipline.id)}
+              onFocus={() => setLit(discipline.id)}
+              onBlur={() => setLit(null)}
+            >
+              <p className="qti-web-chip-label">{discipline.label}</p>
+              <p className="qti-web-chip-line">{discipline.line}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <ul className="qti-web-row" data-row="events" aria-label="Actions the dealership can read">
+        {events.map((event) => {
+          const tone = TONE_BY_NODE[event.id] ?? 'accent'
+          return (
+            <li key={event.id}>
+              <div
+                className="qti-web-event"
+                data-node={event.id}
+                data-tone={tone}
+                data-lit={litNodes?.has(event.id) ? '' : undefined}
+                tabIndex={0}
+                onPointerEnter={() => setLit(event.id)}
+                onFocus={() => setLit(event.id)}
+                onBlur={() => setLit(null)}
+              >
+                {event.label}
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
 }

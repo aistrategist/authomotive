@@ -2,32 +2,30 @@
 
 import { useEffect } from 'react'
 
+const ARM_TIMEOUT_MS = 1800
+
 /**
  * Desktop TBT: keep decorative CSS loops paused until the main thread is idle,
- * with no timeout that can force work into the Lighthouse window. Shopper-path
+ * and keep below-fold loops paused until their section is near. Shopper-path
  * motion is owned by HeroStage, not this gate.
  */
 export function MotionGate() {
   useEffect(() => {
     const root = document.documentElement
     let idleId = 0
-    let armed = false
+    let timer = 0
 
     const arm = () => {
-      if (armed) return
-      armed = true
       idleId = 0
+      timer = 0
       root.classList.add('is-decor-motion')
     }
 
     if (typeof requestIdleCallback === 'function') {
-      idleId = requestIdleCallback(arm)
+      idleId = requestIdleCallback(arm, { timeout: ARM_TIMEOUT_MS })
+    } else {
+      timer = window.setTimeout(arm, ARM_TIMEOUT_MS)
     }
-
-    const onEngage = () => arm()
-    window.addEventListener('scroll', onEngage, { once: true, passive: true })
-    window.addEventListener('pointerdown', onEngage, { once: true })
-    window.addEventListener('keydown', onEngage, { once: true })
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -42,9 +40,7 @@ export function MotionGate() {
     return () => {
       io.disconnect()
       if (idleId && typeof cancelIdleCallback === 'function') cancelIdleCallback(idleId)
-      window.removeEventListener('scroll', onEngage)
-      window.removeEventListener('pointerdown', onEngage)
-      window.removeEventListener('keydown', onEngage)
+      if (timer) window.clearTimeout(timer)
       root.classList.remove('is-decor-motion')
     }
   }, [])
