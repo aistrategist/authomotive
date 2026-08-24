@@ -7601,23 +7601,32 @@ details.disclosure[open] > summary .disclosure-plus {
 /* Below-fold render containment                                       */
 /* ------------------------------------------------------------------ */
 
-/* Skip style and layout for chapters that are still off screen.
-   content-visibility carries paint containment even while a chapter is on
-   screen, so only chapters whose ink stays inside their own border box are
-   listed. Left out on purpose: #capabilities (voyage SVG paints ~370px
-   outside the section), #engagement (.mf-work sits at a JS-measured offset
-   and can clear the section by a few px), #opportunity-review (parks a
-   field at -9999px), and #authority-experiences (its live chapter is 74px
-   taller than the fallback it replaces, so a skipped placeholder would
-   land later anchors short). #reporting is safe because the one child that
-   reports a rect past the section is inside a closed <details>, which the
-   UA already skips.
+/* Skip style and layout for chapters that are still off screen. The first
+   layout of this page is the single biggest main-thread cost, and skipped
+   chapters keep their subtrees out of it.
 
-   Each remaining chapter measures the same height before and after its
-   live module loads, and these fallbacks are those measured content-box
-   heights, identical from 1280px up. Document height, scrollbar length and
-   anchor jumps are therefore unchanged. Re-measure if this markup moves. */
-@media (min-width: 1280px) {
+   content-visibility carries paint containment even while a chapter is on
+   screen, so only chapters whose painted ink stays inside their own border
+   box are listed. Two are left out on purpose:
+
+     #capabilities          g.cap-path-tip rides 43px above the section top.
+                            Its 250px of side bleed is already handled by
+                            overflow-x: clip, but the top edge is not.
+     #authority-experiences its live chapter is 74px taller than the
+                            fallback it replaces, so a skipped placeholder
+                            sends anchors below it 74px short.
+
+   #reporting is fine despite reporting a child past its bottom edge: that
+   child sits in a closed <details>, which the UA already skips. The 1px
+   escapes elsewhere are .sr-only text, which is never painted.
+
+   Every chapter here measures the same height before and after its live
+   module loads, and the fallbacks below are those measured content-box
+   heights (border excluded), stable from 1320px up. Document height,
+   scrollbar length and anchor landings are therefore unchanged. Below
+   1320px .mf-work can clear #engagement by a few px, so the whole block
+   starts there. Re-measure if this markup moves. */
+@media (min-width: 1320px) {
   .cv-home #reporting {
     content-visibility: auto;
     contain-intrinsic-size: auto 1391px;
@@ -7629,5 +7638,13 @@ details.disclosure[open] > summary .disclosure-plus {
   .cv-home #measurement {
     content-visibility: auto;
     contain-intrinsic-size: auto 1239px;
+  }
+  .cv-home #engagement {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1144px;
+  }
+  .cv-home #opportunity-review {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 814px;
   }
 }
