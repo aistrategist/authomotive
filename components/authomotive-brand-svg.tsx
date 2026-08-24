@@ -1,6 +1,10 @@
 'use client'
 
 import { useId } from 'react'
+import {
+  WORDMARK_PATH,
+  WORDMARK_VIEWBOX_WIDTH,
+} from '@/components/authomotive-wordmark-outline'
 
 const A_BODY =
   'M5.2 97 34.2 3.8H46.6L76.4 97H59.4L52.8 74H27.4L21.4 97H5.2Zm28.8-52L40.4 12.8 46.8 45H34Z'
@@ -75,70 +79,71 @@ export function AuthomotiveMark({
   )
 }
 
-export const lockupVariants = {
-  tight: {
-    id: 'tight',
-    label: 'A — Tight / automotive',
-    viewBox: '0 0 648 100',
-    textX: 91,
-    authTracking: '0.008em',
-    motoTracking: '0.016em',
-    hoDx: 0,
-  },
-  balanced: {
-    id: 'balanced',
-    label: 'B — Balanced',
-    viewBox: '0 0 672 100',
-    textX: 93,
-    authTracking: '0.014em',
-    motoTracking: '0.024em',
-    hoDx: 1,
-  },
-  airy: {
-    id: 'airy',
-    label: 'C — Airy / premium',
-    viewBox: '0 0 700 100',
-    textX: 95,
-    authTracking: '0.022em',
-    motoTracking: '0.036em',
-    hoDx: 2.5,
-  },
+// The mark occupies x 2.6–79.2 of an 80x100 box. The wordmark sits against the mark's
+// optical centre (y 54.6) rather than its geometric mid (y 50.4), because the splayed
+// legs and the three bands load the lower half. Mirrored in the generator script — edit
+// both together, then re-run `npm run logo:outline`.
+const LOCKUP = {
+  textX: 90,
+  wordmarkY: 80,
+  fontSize: 72,
+  authTracking: '0.014em',
+  motoTracking: '0.024em',
+  hoDx: 1,
 } as const
 
-export type LockupVariant = keyof typeof lockupVariants
-
-const WORDMARK_Y = 76
-
-export function AuthomotiveLogo({
-  className,
-  variant = 'balanced',
-}: {
-  className?: string
-  variant?: LockupVariant
-}) {
+/**
+ * Production lockup. Carries no font dependency — the wordmark is outlined from
+ * Instrument Sans, so it cannot reflow or shift while the webfont loads.
+ *
+ * Nonzero fill is required: most letters are built from overlapping same-wound
+ * strokes, and only the two O counters are reverse-wound.
+ */
+export function AuthomotiveLogo({ className }: { className?: string }) {
   const maskId = `${useId().replace(/:/g, '')}-cut`
-  const lockup = lockupVariants[variant]
 
   return (
     <svg
       className={className}
-      viewBox={lockup.viewBox}
+      viewBox={`0 0 ${WORDMARK_VIEWBOX_WIDTH} 100`}
+      fill="none"
+      preserveAspectRatio="xMinYMid meet"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <MarkGeometry maskId={maskId} />
+      <path fill="currentColor" d={WORDMARK_PATH} />
+    </svg>
+  )
+}
+
+/**
+ * Live-text rendering of the same lockup, kept only so /logo-test can verify the
+ * outlined path against the font it was generated from. Not for production use.
+ */
+export function AuthomotiveLogoText({ className }: { className?: string }) {
+  const maskId = `${useId().replace(/:/g, '')}-cut`
+
+  return (
+    <svg
+      className={className}
+      viewBox={`0 0 ${WORDMARK_VIEWBOX_WIDTH} 100`}
       fill="none"
       aria-hidden="true"
       focusable="false"
     >
       <MarkGeometry maskId={maskId} />
       <text
-        x={lockup.textX}
-        y={WORDMARK_Y}
+        x={LOCKUP.textX}
+        y={LOCKUP.wordmarkY}
         fill="currentColor"
         fontFamily="var(--font-instrument-sans), 'Instrument Sans', ui-sans-serif, sans-serif"
-        fontSize="72"
+        fontSize={LOCKUP.fontSize}
       >
-        <tspan fontWeight={700} letterSpacing={lockup.authTracking}>
+        <tspan fontWeight={700} letterSpacing={LOCKUP.authTracking}>
           AUTH
         </tspan>
-        <tspan fontWeight={400} letterSpacing={lockup.motoTracking} dx={lockup.hoDx}>
+        <tspan fontWeight={400} letterSpacing={LOCKUP.motoTracking} dx={LOCKUP.hoDx}>
           OMOTIVE
         </tspan>
       </text>
