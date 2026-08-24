@@ -765,92 +765,55 @@ const HeroTips = memo(function HeroTips() {
   )
 })
 
-function makeStoryDomCache(root: HTMLElement) {
-  const rings = {} as Record<string, Element | null>
-  const tips = {} as Record<string, Element | null>
-  const convertTips = {} as Record<string, Element | null>
-  const converts = {} as Record<string, { group: Element; flashes: Element[] } | null>
-  const branches = {} as Record<string, Element[]>
-  const skels = {} as Record<string, Element | null>
-
-  for (const page of PAGES) {
-    skels[page.id] = root.querySelector(`.hs-skel-${page.id}`)
-  }
-  for (const id of BRANCH_IDS) {
-    branches[id] = [...root.querySelectorAll(`[data-hs-branch="${id}"]`)]
-  }
-  for (const wp of STAGE_WAYPOINTS) {
-    for (const ch of CHANNELS) {
-      rings[`${ch.id}-${wp.id}`] = root.querySelector(`[data-hs-ring="${ch.id}-${wp.id}"]`)
-      tips[`${wp.id}-${ch.id}`] = root.querySelector(`[data-hs-tip="${wp.id}-${ch.id}"]`)
-    }
-  }
-  for (const cv of CONVERSIONS) {
-    const group = root.querySelector(`[data-hs-convert="${cv.id}"]`)
-    converts[cv.id] = group
-      ? { group, flashes: [...group.querySelectorAll('.hs-win-glow, .hs-win-ring')] }
-      : null
-    for (const ch of CHANNELS) {
-      convertTips[`${ch.id}-${cv.id}`] = root.querySelector(
-        `[data-hs-convert-tip="${ch.id}-${cv.id}"]`,
-      )
-    }
-  }
-
-  return {
-    skels,
-    branches,
-    junction: root.querySelector('.hs-junction'),
-    rings,
-    tips,
-    converts,
-    convertTips,
-  }
-}
-
-function applyStoryDom(cache: ReturnType<typeof makeStoryDomCache>, ui: UiSnap) {
+function applyStoryDom(root: HTMLElement, ui: UiSnap) {
   const winning = new Set(
     CHANNELS.filter((ch) => ui.flashes[ch.id] === 'convert').map((ch) => ui.branch[ch.id]),
   )
   const anyWin = winning.size > 0
 
   for (const page of PAGES) {
-    cache.skels[page.id]?.classList.toggle('is-lit', Object.values(ui.flashes).includes(page.id))
+    const lit = Object.values(ui.flashes).includes(page.id)
+    root.querySelector(`.hs-skel-${page.id}`)?.classList.toggle('is-lit', lit)
   }
 
   for (const id of BRANCH_IDS) {
     const hot = winning.has(id)
     const muted = anyWin && !hot
-    cache.branches[id]?.forEach((el) => {
+    root.querySelectorAll(`[data-hs-branch="${id}"]`).forEach((el) => {
       el.classList.toggle('is-hot', hot)
       el.classList.toggle('is-muted', muted)
     })
   }
 
-  cache.junction?.classList.toggle('is-bloom', anyWin)
+  root.querySelector('.hs-junction')?.classList.toggle('is-bloom', anyWin)
 
   for (const wp of STAGE_WAYPOINTS) {
     for (const ch of CHANNELS) {
-      cache.rings[`${ch.id}-${wp.id}`]?.classList.toggle('is-flash', ui.flashes[ch.id] === wp.id)
-      cache.tips[`${wp.id}-${ch.id}`]?.classList.toggle('is-on', Boolean(ui.tips[ch.id][wp.id]))
+      root
+        .querySelector(`[data-hs-ring="${ch.id}-${wp.id}"]`)
+        ?.classList.toggle('is-flash', ui.flashes[ch.id] === wp.id)
+      root
+        .querySelector(`[data-hs-tip="${wp.id}-${ch.id}"]`)
+        ?.classList.toggle('is-on', Boolean(ui.tips[ch.id][wp.id]))
     }
   }
 
   for (const cv of CONVERSIONS) {
     const win = winning.has(cv.id)
-    const entry = cache.converts[cv.id]
-    if (!entry) continue
-    entry.group.classList.toggle('is-win', win)
-    entry.group.classList.toggle('is-dim', anyWin && !win)
-    entry.flashes.forEach((el) => el.classList.toggle('is-flash', win))
+    const group = root.querySelector(`[data-hs-convert="${cv.id}"]`)
+    if (!group) continue
+    group.classList.toggle('is-win', win)
+    group.classList.toggle('is-dim', anyWin && !win)
+    group.querySelectorAll('.hs-win-glow, .hs-win-ring').forEach((el) => {
+      el.classList.toggle('is-flash', win)
+    })
   }
 
   for (const ch of CHANNELS) {
     for (const cv of CONVERSIONS) {
-      cache.convertTips[`${ch.id}-${cv.id}`]?.classList.toggle(
-        'is-on',
-        Boolean(ui.tips[ch.id].convert) && ui.tipBranch[ch.id] === cv.id,
-      )
+      root
+        .querySelector(`[data-hs-convert-tip="${ch.id}-${cv.id}"]`)
+        ?.classList.toggle('is-on', Boolean(ui.tips[ch.id].convert) && ui.tipBranch[ch.id] === cv.id)
     }
   }
 }
@@ -909,7 +872,7 @@ export function HeroStage() {
         branch,
       }
       uiRef.current = reducedUi
-      if (rootRef.current) applyStoryDom(makeStoryDomCache(rootRef.current), reducedUi)
+      if (rootRef.current) applyStoryDom(rootRef.current, reducedUi)
       const lead = simRef.current.travelers.seo
       applyTravelerDom(nodes.seo, travelerDom.seo, {
         progress: 1,
@@ -922,11 +885,17 @@ export function HeroStage() {
       return
     }
 
-    const storyCache = rootRef.current ? makeStoryDomCache(rootRef.current) : null
-    const waitingDom = Object.fromEntries(CHANNEL_IDS.map((id) => [id, true])) as Record<
-      ChannelId,
-      boolean
-    >
+    const first = simRef.current.travelers.seo
+    first.started = true
+    applyTravelerDom(nodes.seo, travelerDom.seo, {
+      progress: 0,
+      opacity: 0.92,
+      thinking: false,
+      branch: first.branch,
+      atNode: false,
+      pinDistance: true,
+    })
+
     let raf = 0
     let idleId = 0
     let startRaf = 0
@@ -982,26 +951,21 @@ export function HeroStage() {
           now < t.waitUntil || (!t.started && now < simRef.current.spawnLockUntil)
 
         if (waitingToSpawn) {
-          if (!waitingDom[ch.id]) {
-            waitingDom[ch.id] = true
-            cancelRide(ch.id)
-            applyTravelerDom(nodes[ch.id], travelerDom[ch.id], {
-              progress: t.progress,
-              opacity: 0,
-              thinking: false,
-              branch: t.branch,
-              atNode: false,
-              pinDistance: true,
-            })
-          }
+          cancelRide(ch.id)
+          applyTravelerDom(nodes[ch.id], travelerDom[ch.id], {
+            progress: t.progress,
+            opacity: 0,
+            thinking: false,
+            branch: t.branch,
+            atNode: false,
+            pinDistance: true,
+          })
           nextTips[ch.id] = {}
           nextFlashes[ch.id] = null
           nextTipBranch[ch.id] = t.tipBranch
           nextBranch[ch.id] = t.branch
           continue
         }
-
-        waitingDom[ch.id] = false
 
         if (!t.started) {
           t.started = true
@@ -1147,7 +1111,7 @@ export function HeroStage() {
       }
       if (uiChanged(uiRef.current, nextUi)) {
         uiRef.current = nextUi
-        if (storyCache) applyStoryDom(storyCache, nextUi)
+        if (rootRef.current) applyStoryDom(rootRef.current, nextUi)
       }
 
       raf = requestAnimationFrame(tick)
@@ -1193,7 +1157,7 @@ export function HeroStage() {
         if (!document.hidden) start()
       }
       if (typeof requestIdleCallback === 'function') {
-        idleId = requestIdleCallback(begin, { timeout: 1600 })
+        idleId = requestIdleCallback(begin, { timeout: 400 })
       } else {
         startRaf = requestAnimationFrame(() => {
           startRaf = requestAnimationFrame(begin)

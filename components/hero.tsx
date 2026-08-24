@@ -8,7 +8,7 @@ import { HeroStage } from '@/components/hero-stage'
 export function Hero() {
   return (
     <>
-      <section id="top" className="hero-atmosphere relative overflow-visible scroll-mt-24" data-motion-gate>
+      <section id="top" className="hero-atmosphere relative overflow-visible scroll-mt-24">
         <div className="mx-auto grid w-full max-w-[1280px] items-center gap-6 px-5 md:gap-8 md:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-6">
           <div className="hero-copy relative z-20 max-w-xl overflow-visible lg:max-w-[34rem]">
             <h1 className="hero-enter hero-enter-1 text-[2.15rem] font-semibold uppercase leading-none tracking-[-0.035em] md:text-[2.75rem] lg:text-[3.15rem] xl:text-[3.45rem]">

@@ -15,7 +15,6 @@ export function QuestionToInventory() {
     <section
       aria-labelledby="question-to-inventory-heading"
       className="qti-band scroll-mt-24"
-      data-motion-gate
     >
       <QtiBandField />
       <div className="qti-bloom-host" aria-hidden="true">
