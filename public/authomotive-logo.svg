@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 100" fill="none" color="#061B20" aria-hidden="true" focusable="false">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 672 100" fill="none" color="#061B20" aria-hidden="true" focusable="false">
   <defs>
     <mask id="a-cut" maskUnits="userSpaceOnUse">
       <rect width="80" height="100" fill="#fff"/>
@@ -11,7 +11,7 @@
   <path fill="#8FBCF5" d="M2.6 90.2C26 84.2 51.2 71.6 77.6 60.8L78.8 54.2C52.2 65 27 77.6 3.8 83.6Z"/>
   <path fill="#C8B8FF" d="M5.4 79C28.4 73.2 53.2 61.2 77.8 51.2L79 44.6C54.2 54.6 29.4 66.6 6.6 72.4Z"/>
   <path fill="#FFC982" d="M8.2 67.8C31 62.2 55.2 50.8 78 41.4L79.2 34.8C56 44.2 32 55.6 9.4 61.2Z"/>
-  <text x="98" y="78" fill="currentColor" font-family="Instrument Sans, ui-sans-serif, sans-serif" font-size="72">
-    <tspan font-weight="700" letter-spacing="0.03em">AUTH</tspan><tspan font-weight="400" letter-spacing="0.055em" dx="6">OMOTIVE</tspan>
+  <text x="93" y="76" fill="currentColor" font-family="Instrument Sans, ui-sans-serif, sans-serif" font-size="72">
+    <tspan font-weight="700" letter-spacing="0.014em">AUTH</tspan><tspan font-weight="400" letter-spacing="0.024em" dx="1">OMOTIVE</tspan>
   </text>
 </svg>

@@ -75,29 +75,70 @@ export function AuthomotiveMark({
   )
 }
 
-export function AuthomotiveLogo({ className }: { className?: string }) {
+export const lockupVariants = {
+  tight: {
+    id: 'tight',
+    label: 'A — Tight / automotive',
+    viewBox: '0 0 648 100',
+    textX: 91,
+    authTracking: '0.008em',
+    motoTracking: '0.016em',
+    hoDx: 0,
+  },
+  balanced: {
+    id: 'balanced',
+    label: 'B — Balanced',
+    viewBox: '0 0 672 100',
+    textX: 93,
+    authTracking: '0.014em',
+    motoTracking: '0.024em',
+    hoDx: 1,
+  },
+  airy: {
+    id: 'airy',
+    label: 'C — Airy / premium',
+    viewBox: '0 0 700 100',
+    textX: 95,
+    authTracking: '0.022em',
+    motoTracking: '0.036em',
+    hoDx: 2.5,
+  },
+} as const
+
+export type LockupVariant = keyof typeof lockupVariants
+
+const WORDMARK_Y = 76
+
+export function AuthomotiveLogo({
+  className,
+  variant = 'balanced',
+}: {
+  className?: string
+  variant?: LockupVariant
+}) {
   const maskId = `${useId().replace(/:/g, '')}-cut`
+  const lockup = lockupVariants[variant]
 
   return (
     <svg
       className={className}
-      viewBox="0 0 920 100"
+      viewBox={lockup.viewBox}
       fill="none"
       aria-hidden="true"
       focusable="false"
     >
       <MarkGeometry maskId={maskId} />
       <text
-        x="98"
-        y="78"
+        x={lockup.textX}
+        y={WORDMARK_Y}
         fill="currentColor"
         fontFamily="var(--font-instrument-sans), 'Instrument Sans', ui-sans-serif, sans-serif"
         fontSize="72"
       >
-        <tspan fontWeight={700} letterSpacing="0.03em">
+        <tspan fontWeight={700} letterSpacing={lockup.authTracking}>
           AUTH
         </tspan>
-        <tspan fontWeight={400} letterSpacing="0.055em" dx="6">
+        <tspan fontWeight={400} letterSpacing={lockup.motoTracking} dx={lockup.hoDx}>
           OMOTIVE
         </tspan>
       </text>

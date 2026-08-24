@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+const variants = [
+  { id: 'tight', label: 'A — Tight / automotive' },
+  { id: 'balanced', label: 'B — Balanced' },
+  { id: 'airy', label: 'C — Airy / premium' },
+] as const
+
 export default function LogoTestPage() {
   return (
     <main className="min-h-dvh">
@@ -14,14 +20,21 @@ export default function LogoTestPage() {
           Temporary review · not linked
         </p>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink">
-          Authomotive SVG reconstruction
+          Wordmark spacing · A frozen
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink/70">
-          Horizontal lockup on white. Public files: <code>/authomotive-logo.svg</code> and{' '}
-          <code>/authomotive-mark.svg</code>. Header still uses the PNG.
+          Three spacing variants at the same height. A mark is unchanged. Public lockup file
+          uses Balanced. Header still uses the PNG.
         </p>
-        <div className="mt-10 max-w-4xl text-ink">
-          <AuthomotiveLogo className="h-auto w-full" />
+        <div className="mt-10 flex flex-col gap-10 text-ink">
+          {variants.map((item) => (
+            <figure key={item.id} className="flex flex-col items-start gap-3">
+              <figcaption className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-ink/50">
+                {item.label}
+              </figcaption>
+              <AuthomotiveLogo variant={item.id} className="h-16 w-auto" />
+            </figure>
+          ))}
         </div>
       </section>
 
@@ -29,14 +42,21 @@ export default function LogoTestPage() {
         <p className="font-mono text-xs font-medium uppercase tracking-[0.16em] text-paper/50">
           Reversed on ink
         </p>
-        <div className="mt-10 max-w-4xl">
-          <AuthomotiveLogo className="h-auto w-full text-paper" />
+        <div className="mt-10 flex flex-col gap-10">
+          {variants.map((item) => (
+            <figure key={item.id} className="flex flex-col items-start gap-3">
+              <figcaption className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-paper/45">
+                {item.label}
+              </figcaption>
+              <AuthomotiveLogo variant={item.id} className="h-16 w-auto text-paper" />
+            </figure>
+          ))}
         </div>
       </section>
 
       <section className="bg-white px-6 py-12 md:px-10 md:py-16">
         <p className="font-mono text-xs font-medium uppercase tracking-[0.16em] text-ink/50">
-          Standalone mark
+          Standalone mark · frozen
         </p>
         <div className="mt-10 flex flex-wrap items-end gap-10">
           <figure className="flex flex-col items-start gap-2">
