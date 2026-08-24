@@ -12,8 +12,6 @@ type Loader = () => Promise<{ default: ComponentType }>
 
 const MOBILE_ROOT_MARGIN = '140px 0px'
 const DESKTOP_ROOT_MARGIN = '200px 0px'
-const MOBILE_EAGER_PX = 140
-const DESKTOP_EAGER_PX = 160
 
 function isCompactViewport() {
   return window.matchMedia('(max-width: 767px)').matches
@@ -70,12 +68,10 @@ export function NearSwap({
     if (!target) return
 
     const compact = isCompactViewport()
-    const eagerPx = compact ? MOBILE_EAGER_PX : DESKTOP_EAGER_PX
-    if (target.getBoundingClientRect().top < window.innerHeight + eagerPx) {
-      start()
-      return
-    }
 
+    // The observer also fires for a target that is already on screen, so there
+    // is no eager measurement here. Reading a rect on mount forced a reflow
+    // once per lazy chapter, all of it inside the first-load window.
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return

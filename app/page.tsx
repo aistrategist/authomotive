@@ -63,7 +63,7 @@ export default function Home() {
         Skip to main content
       </a>
       <SiteHeader />
-      <main id="main-content">
+      <main id="main-content" className="cv-home">
         <Hero />
         <QuestionToInventory />
         <CapabilitySystem />

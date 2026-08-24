@@ -7596,3 +7596,38 @@ details.disclosure[open] > summary .disclosure-plus {
     animation: none !important;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Below-fold render containment                                       */
+/* ------------------------------------------------------------------ */
+
+/* Skip style and layout for chapters that are still off screen.
+   content-visibility carries paint containment even while a chapter is on
+   screen, so only chapters whose ink stays inside their own border box are
+   listed. Left out on purpose: #capabilities (voyage SVG paints ~370px
+   outside the section), #engagement (.mf-work sits at a JS-measured offset
+   and can clear the section by a few px), #opportunity-review (parks a
+   field at -9999px), and #authority-experiences (its live chapter is 74px
+   taller than the fallback it replaces, so a skipped placeholder would
+   land later anchors short). #reporting is safe because the one child that
+   reports a rect past the section is inside a closed <details>, which the
+   UA already skips.
+
+   Each remaining chapter measures the same height before and after its
+   live module loads, and these fallbacks are those measured content-box
+   heights, identical from 1280px up. Document height, scrollbar length and
+   anchor jumps are therefore unchanged. Re-measure if this markup moves. */
+@media (min-width: 1280px) {
+  .cv-home #reporting {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1391px;
+  }
+  .cv-home .fp-band {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 298px;
+  }
+  .cv-home #measurement {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1239px;
+  }
+}
