@@ -543,12 +543,20 @@ html {
     background-repeat: no-repeat;
     background-position: 140% 0;
     animation: header-cta-sheen 3.8s ease-in-out infinite;
+    animation-play-state: paused;
   }
   .header-cta::after {
     animation: header-cta-glow 3.8s ease-in-out 0.15s infinite;
+    animation-play-state: paused;
   }
   .header-cta .btn-arrow {
     animation: header-cta-arrow 3.8s ease-in-out 0.35s infinite;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .header-cta,
+  html.is-decor-motion .header-cta::after,
+  html.is-decor-motion .header-cta .btn-arrow {
+    animation-play-state: running;
   }
   .header-cta:hover,
   .header-cta:focus-visible,
@@ -3568,6 +3576,10 @@ html {
   }
   .ma-live {
     animation: ma-pulse 1.6s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .ma-band.is-near .ma-live {
+    animation-play-state: running;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -3636,6 +3648,10 @@ html {
   .signal-dash {
     stroke-dasharray: 6 10;
     animation: signal-travel 1.4s linear infinite;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .signal-dash {
+    animation-play-state: running;
   }
 }
 @keyframes signal-travel {
@@ -4520,6 +4536,10 @@ html {
 
   .hs-trail-center {
     animation: hs-trail-center-drift 14s linear infinite;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .hero-atmosphere.is-near .hs-trail-center {
+    animation-play-state: running;
   }
 
   /*
@@ -4576,21 +4596,35 @@ html {
 
   .hs-bar-1 {
     animation: hs-bar-pulse 2.1s ease-in-out infinite;
+    animation-play-state: paused;
   }
   .hs-bar-2 {
     animation: hs-bar-pulse 2.7s ease-in-out infinite 0.15s;
+    animation-play-state: paused;
   }
   .hs-bar-3 {
     animation: hs-bar-pulse 1.9s ease-in-out infinite 0.3s;
+    animation-play-state: paused;
   }
   .hs-bar-4 {
     animation: hs-bar-pulse 3.1s ease-in-out infinite 0.1s;
+    animation-play-state: paused;
   }
   .hs-bar-5 {
     animation: hs-bar-pulse 2.4s ease-in-out infinite 0.45s;
+    animation-play-state: paused;
   }
   .hs-bar-6 {
     animation: hs-bar-pulse 2.9s ease-in-out infinite 0.2s;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .hero-atmosphere.is-near .hs-bar-1,
+  html.is-decor-motion .hero-atmosphere.is-near .hs-bar-2,
+  html.is-decor-motion .hero-atmosphere.is-near .hs-bar-3,
+  html.is-decor-motion .hero-atmosphere.is-near .hs-bar-4,
+  html.is-decor-motion .hero-atmosphere.is-near .hs-bar-5,
+  html.is-decor-motion .hero-atmosphere.is-near .hs-bar-6 {
+    animation-play-state: running;
   }
 
   .hs-chip-seo,
@@ -4956,9 +4990,15 @@ html {
 @media (prefers-reduced-motion: no-preference) {
   .paper-grid-bloom {
     animation: paper-grid-bloom 11s ease-in-out infinite;
+    animation-play-state: paused;
   }
   .paper-grid-bloom-soft {
     animation: paper-grid-bloom 14s ease-in-out infinite reverse;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .qti-band.is-near .paper-grid-bloom,
+  html.is-decor-motion .qti-band.is-near .paper-grid-bloom-soft {
+    animation-play-state: running;
   }
 }
 
@@ -5001,16 +5041,26 @@ html {
   }
   .iq-ping {
     animation: iq-ping 2.4s ease-out infinite;
+    animation-play-state: paused;
   }
   .iq-sweep {
     transform-origin: 0px 0px;
     animation: iq-sweep 4.2s linear infinite;
+    animation-play-state: paused;
   }
   .iq-pulse-lime {
     animation: iq-pulse-lime 2.2s ease-in-out infinite;
+    animation-play-state: paused;
   }
   .iq-funnel-dot {
     animation: iq-funnel-dot 2.8s linear infinite;
+    animation-play-state: paused;
+  }
+  html.is-decor-motion .ri-band.is-near .iq-ping,
+  html.is-decor-motion .ri-band.is-near .iq-sweep,
+  html.is-decor-motion .ri-band.is-near .iq-pulse-lime,
+  html.is-decor-motion .ri-band.is-near .iq-funnel-dot {
+    animation-play-state: running;
   }
   .iq-funnel-dot-b {
     animation-delay: 1s;

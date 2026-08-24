@@ -69,13 +69,32 @@ export function QtiBandField() {
     }
     reduceMq.addEventListener('change', onCapabilityChange)
 
+    let shaderIdle = 0
+    let shaderTimer = 0
     const io = new IntersectionObserver(
       ([entry]) => {
         near = Boolean(entry?.isIntersecting)
-        if (near) loadShader()
-        setPaused(document.hidden || !near)
+        if (near) {
+          const begin = () => {
+            shaderIdle = 0
+            shaderTimer = 0
+            if (!near || document.hidden) {
+              setPaused(true)
+              return
+            }
+            loadShader()
+            setPaused(false)
+          }
+          if (typeof requestIdleCallback === 'function') {
+            shaderIdle = requestIdleCallback(begin, { timeout: 2200 })
+          } else {
+            shaderTimer = window.setTimeout(begin, 2200)
+          }
+        } else {
+          setPaused(true)
+        }
       },
-      { rootMargin: '0px 0px -28% 0px', threshold: 0.12 },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.2 },
     )
     io.observe(root)
 
@@ -88,6 +107,8 @@ export function QtiBandField() {
       reduceMq.removeEventListener('change', onCapabilityChange)
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
+      if (shaderIdle && typeof cancelIdleCallback === 'function') cancelIdleCallback(shaderIdle)
+      if (shaderTimer) window.clearTimeout(shaderTimer)
     }
   }, [])
 

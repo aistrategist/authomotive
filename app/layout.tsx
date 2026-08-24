@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist_Mono, Instrument_Sans } from 'next/font/google'
 import { AnchorScroll } from '@/components/anchor-scroll'
+import { MotionGate } from '@/components/motion-gate'
 import { ReviewFunnel } from '@/components/review-funnel'
 import { siteConfig } from '@/lib/site-data'
 import { getSiteUrl, isPubliclyIndexable } from '@/lib/site-url'
@@ -68,6 +69,7 @@ export default function RootLayout({
     <html lang="en" className={`bg-background ${instrumentSans.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased">
         <AnchorScroll />
+        <MotionGate />
         <ReviewFunnel />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
