@@ -50,13 +50,6 @@ export function ManagedFramework() {
 
   useEffect(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const syncMotion = () => {
-      reducedRef.current = motion.matches
-      paint(motion.matches ? 1 : elapsedRef.current / DWELL_MS, activeIndexRef.current)
-    }
-    syncMotion()
-    motion.addEventListener('change', syncMotion)
-
     const root = stageRef.current
     let raf = 0
     let last = performance.now()
@@ -68,7 +61,10 @@ export function ManagedFramework() {
     }
 
     const tick = (now: number) => {
-      if (!running) return
+      if (!running || reducedRef.current) {
+        raf = 0
+        return
+      }
       const visible = nearRef.current && !document.hidden
       if (!visible) {
         raf = 0
@@ -79,9 +75,7 @@ export function ManagedFramework() {
       last = now
       const index = activeIndexRef.current
 
-      if (reducedRef.current) {
-        paint(1, index)
-      } else if (!heldRef.current) {
+      if (!heldRef.current) {
         elapsedRef.current += dt
         if (elapsedRef.current >= DWELL_MS) {
           const next = (index + 1) % MF_COUNT
@@ -100,10 +94,19 @@ export function ManagedFramework() {
     }
 
     const startLoop = () => {
-      if (!running || raf || document.hidden || !nearRef.current) return
+      if (!running || raf || document.hidden || !nearRef.current || reducedRef.current) return
       last = performance.now()
       raf = requestAnimationFrame(tick)
     }
+
+    const syncMotion = () => {
+      reducedRef.current = motion.matches
+      paint(motion.matches ? 1 : elapsedRef.current / DWELL_MS, activeIndexRef.current)
+      if (motion.matches) stopLoop()
+      else startLoop()
+    }
+    syncMotion()
+    motion.addEventListener('change', syncMotion)
 
     const io = new IntersectionObserver(
       ([entry]) => {

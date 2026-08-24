@@ -6361,6 +6361,9 @@ details.disclosure[open] > summary .disclosure-plus {
 #opportunity-review .or-field[aria-invalid='true'] {
   border-color: var(--coral);
 }
+#opportunity-review .or-field-error {
+  color: color-mix(in srgb, var(--coral) 70%, var(--paper));
+}
 #opportunity-review .or-submit:focus-visible {
   outline: 2px solid var(--paper);
   outline-offset: 3px;

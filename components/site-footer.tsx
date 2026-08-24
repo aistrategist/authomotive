@@ -24,14 +24,14 @@ export function SiteFooter() {
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                className="inline-flex min-h-6 items-center rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
               >
                 {link.label}
               </a>
             ))}
             <a
               href="#opportunity-review"
-              className="rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+              className="inline-flex min-h-6 items-center rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               Contact
             </a>

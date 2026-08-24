@@ -168,7 +168,7 @@ export function FinalCtaView({
                       className={inputClasses}
                     />
                     {errors.name && (
-                      <p id="cta-name-error" className="text-sm text-coral">
+                      <p id="cta-name-error" className="or-field-error text-sm">
                         {errors.name}
                       </p>
                     )}
@@ -188,7 +188,7 @@ export function FinalCtaView({
                       className={inputClasses}
                     />
                     {errors.email && (
-                      <p id="cta-email-error" className="text-sm text-coral">
+                      <p id="cta-email-error" className="or-field-error text-sm">
                         {errors.email}
                       </p>
                     )}
@@ -210,7 +210,7 @@ export function FinalCtaView({
                       className={inputClasses}
                     />
                     {errors.dealership && (
-                      <p id="cta-dealership-error" className="text-sm text-coral">
+                      <p id="cta-dealership-error" className="or-field-error text-sm">
                         {errors.dealership}
                       </p>
                     )}
@@ -232,7 +232,7 @@ export function FinalCtaView({
                       className={inputClasses}
                     />
                     {errors.website && (
-                      <p id="cta-website-error" className="text-sm text-coral">
+                      <p id="cta-website-error" className="or-field-error text-sm">
                         {errors.website}
                       </p>
                     )}
@@ -275,7 +275,7 @@ export function FinalCtaView({
                       ))}
                     </select>
                     {errors.concern && (
-                      <p id="cta-concern-error" className="text-sm text-coral">
+                      <p id="cta-concern-error" className="or-field-error text-sm">
                         {errors.concern}
                       </p>
                     )}

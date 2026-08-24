@@ -261,7 +261,7 @@ export function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
-              className="header-nav-link relative whitespace-nowrap rounded-sm py-1 text-[13.5px] font-semibold tracking-[0.01em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[14.5px]"
+              className="header-nav-link relative inline-flex min-h-6 items-center whitespace-nowrap rounded-sm py-1 text-[13.5px] font-semibold tracking-[0.01em] hover:underline hover:underline-offset-[6px] hover:decoration-accent hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-4 active:translate-y-px xl:text-[14.5px]"
             >
               {link.label}
               <span
