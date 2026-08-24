@@ -514,15 +514,12 @@ export function HeroStageMotion() {
         nextBranch[ch.id] = t.branch
 
         const convertHoldUntil = t.tipUntil.convert ?? 0
-        const holdingConvert = t.progress >= 0.985 && now < convertHoldUntil
         const opacity =
           t.progress <= 0.02
             ? t.progress / 0.02
-            : holdingConvert
-              ? 0.55
-              : t.progress >= 0.995
-                ? 0
-                : 1
+            : t.progress >= 0.985
+              ? Math.max(0, 1 - (t.progress - 0.985) / 0.015)
+              : 1
 
         const atNode = now < t.flashUntil && Boolean(t.flashTip)
         const riding = Boolean(rides[ch.id]) && !t.thinking && now >= t.resumeAt && t.progress < 1
@@ -542,7 +539,7 @@ export function HeroStageMotion() {
             rides[ch.id]?.pause()
             live = {
               progress: 1,
-              opacity: 0.55,
+              opacity: 0,
               thinking: false,
               branch: t.branch,
               atNode,

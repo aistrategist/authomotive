@@ -146,36 +146,15 @@ function samplePath(d) {
 }
 
 function travelerOrigin(face, lane) {
+  // Person glyph only. The think-cloud sits up and right of the visitor and is
+  // hidden most of the ride — including it pulled the bbox center ~9px off the
+  // trail, so the icon rode beside the path instead of on it. lane is added
+  // here to cancel the nested SVG translate(0, lane) on .hs-packet-steer.
   const { headY, headR, bodyW } = glyphMetrics(face)
-  let minX = -headR
-  let maxX = headR
-  let minY = headY - headR
-  let maxY = headY + headR
-
-  const include = (x, y) => {
-    if (x < minX) minX = x
-    if (x > maxX) maxX = x
-    if (y < minY) minY = y
-    if (y > maxY) maxY = y
-  }
-
-  include(-bodyW, 8.2)
-  include(bodyW, 8.2)
-  include(0, 0.15)
-  include(-bodyW, 1.5)
-  include(bodyW, 1.5)
-  include(-3.1, 0.15)
-  include(3.1, 0.15)
-
-  include(7.4 - 1.05, -10.8 - 1.05)
-  include(7.4 + 1.05, -10.8 + 1.05)
-  include(10.6 - 1.5, -15.2 - 1.5)
-  include(10.6 + 1.5, -15.2 + 1.5)
-  include(17.2 - 8.2, -22 - 5.2)
-  include(17.2 + 8.2, -22 + 5.2)
-  include(13.6 - 1.08, -22 - 1.08)
-  include(20.8 + 1.08, -22 + 1.08)
-
+  const minX = -bodyW
+  const maxX = bodyW
+  const minY = headY - headR
+  const maxY = 8.2
   return {
     x: Number(((minX + maxX) / 2).toFixed(2)),
     y: Number(((minY + maxY) / 2 + lane).toFixed(2)),

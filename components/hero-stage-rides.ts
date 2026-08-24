@@ -13,9 +13,9 @@ export const JOURNEY_XY: Record<BranchId, readonly (readonly [number, number])[]
 }
 
 export const TRAVELER_ORIGIN: Record<ChannelId, { x: number; y: number }> = {
-  seo: {"x":9.25,"y":-9.5},
-  aeo: {"x":9.47,"y":-19.5},
-  geo: {"x":9.05,"y":-9.5},
+  seo: {"x":0,"y":0.15},
+  aeo: {"x":0,"y":-9.9},
+  geo: {"x":0,"y":0.3},
 }
 
 function pointAt(branch: BranchId, progress: number) {

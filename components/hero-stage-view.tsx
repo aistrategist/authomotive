@@ -29,8 +29,10 @@ const INK = 'var(--ink)'
 
 function VisitorFace({ color, variant = 0 }: { color: string; variant?: number }) {
   return (
-    <g className="hs-packet hs-visitor-fit">
-      <VisitorGlyph color={color} variant={variant} />
+    <>
+      <g className="hs-packet hs-visitor-fit">
+        <VisitorGlyph color={color} variant={variant} />
+      </g>
       <g className="hs-think">
         <circle className="hs-think-tail" cx="7.4" cy="-10.8" r="1.05" />
         <circle className="hs-think-tail" cx="10.6" cy="-15.2" r="1.5" />
@@ -39,7 +41,7 @@ function VisitorFace({ color, variant = 0 }: { color: string; variant?: number }
         <circle className="hs-think-dot hs-think-d2" cx="17.2" cy="-22" r="1.08" />
         <circle className="hs-think-dot hs-think-d3" cx="20.8" cy="-22" r="1.08" />
       </g>
-    </g>
+    </>
   )
 }
 
