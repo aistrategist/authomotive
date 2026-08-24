@@ -19,8 +19,8 @@ export function SiteHeader() {
 
   // Transparent-over-hero → solid Warm Paper scroll state. A single listener
   // attached once, throttled via rAF, so it never flickers near the threshold.
-  // Skip the initial apply at rest (scrollY === 0, no hash): the header already
-  // renders unscrolled. Re-sync on later scroll, resize, hash, or bfcache.
+  // Also re-synced on bfcache restore, tab refocus, and resize/layout shifts,
+  // since those can change or reveal scroll position without a scroll event.
   useEffect(() => {
     const THRESHOLD = 28
     let ticking = false
@@ -37,15 +37,15 @@ export function SiteHeader() {
       }
     }
 
-    function onPageShow(event: PageTransitionEvent) {
-      if (event.persisted || window.scrollY > 0) apply()
+    function onPageShow() {
+      apply()
     }
 
     function onVisibilityChange() {
-      if (document.visibilityState === 'visible' && window.scrollY > 0) apply()
+      if (document.visibilityState === 'visible') apply()
     }
 
-    if (window.scrollY > 0) apply()
+    apply()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
     window.addEventListener('pageshow', onPageShow)
@@ -170,15 +170,10 @@ export function SiteHeader() {
       if (match) hold(match.href)
     }
 
-    function onPageShow(event: PageTransitionEvent) {
-      if (event.persisted || window.scrollY > 0 || window.location.hash) apply()
-    }
-
-    if (window.scrollY > 0 || window.location.hash) apply()
+    apply()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
     window.addEventListener('hashchange', apply)
-    window.addEventListener('pageshow', onPageShow)
     window.addEventListener('autho:scrolled', release)
     document.addEventListener('click', onClick, true)
     return () => {
@@ -186,7 +181,6 @@ export function SiteHeader() {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
       window.removeEventListener('hashchange', apply)
-      window.removeEventListener('pageshow', onPageShow)
       window.removeEventListener('autho:scrolled', release)
       document.removeEventListener('click', onClick, true)
     }
