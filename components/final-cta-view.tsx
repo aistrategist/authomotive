@@ -132,7 +132,14 @@ export function FinalCtaView({
                 <p className="text-base leading-relaxed text-[color:var(--on-ink-muted)]">{finalCta.successCopy}</p>
               </div>
             ) : (
-              <form onSubmit={onSubmit} noValidate className="relative flex flex-col gap-4">
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  onSubmit?.(event)
+                }}
+                noValidate
+                className="relative flex flex-col gap-4"
+              >
                 <div
                   className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden"
                   aria-hidden="true"
@@ -302,7 +309,7 @@ export function FinalCtaView({
 
                 <button
                   type="submit"
-                  disabled={status === 'submitting'}
+                  disabled={status === 'submitting' || !onSubmit}
                   aria-busy={status === 'submitting'}
                   className="btn btn-action-dark or-submit mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60"
                 >

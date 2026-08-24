@@ -256,7 +256,7 @@ export function SiteHeader() {
           </span>
         </a>
 
-        <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-5 xl:gap-7">
+        <nav aria-label="Primary" className="hidden items-center xl:flex xl:gap-5">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -272,7 +272,7 @@ export function SiteHeader() {
           ))}
           <a
             href="#opportunity-review"
-            className="btn btn-action header-cta !min-h-[40px] !whitespace-nowrap !px-3.5 !text-[14px] xl:!px-4"
+            className="btn btn-action header-cta !min-h-[40px] shrink-0 !whitespace-nowrap !px-3.5 !text-[14px] xl:!px-4"
           >
             {cta.primary}
             <span className="btn-arrow" aria-hidden="true">
@@ -287,7 +287,7 @@ export function SiteHeader() {
           onClick={() => setMenuOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
-          className="site-header-menu flex h-11 w-11 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden"
+          className="site-header-menu flex h-11 w-11 shrink-0 items-center justify-center rounded-md border-2 focus-visible:outline-2 focus-visible:outline-offset-2 xl:hidden"
         >
           <span className="sr-only">Open menu</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -306,7 +306,7 @@ export function SiteHeader() {
             aria-label="Site navigation"
             className="site-nav-sheet fixed inset-0 z-[60] flex h-dvh flex-col bg-stage"
           >
-            <div className="flex h-[4.25rem] items-center justify-between border-b border-stage-line px-4 sm:px-5">
+            <div className="flex h-[4.25rem] items-center justify-between gap-3 border-b border-stage-line px-4 sm:px-5">
               <span className="sr-only">Authomotive</span>
               <span className="site-nav-sheet-logo">
                 <AuthomotiveWordmark palette="onInk" />

@@ -13,6 +13,7 @@ export function FinalCta() {
   const [status, setStatus] = useState<FinalCtaStatus>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [concern, setConcern] = useState('')
+  const submittingRef = useRef(false)
   const rootRef = useRef<HTMLElement>(null)
   const ruleRef = useRef<HTMLSpanElement>(null)
   const frameRuleRef = useRef<HTMLSpanElement>(null)
@@ -73,7 +74,7 @@ export function FinalCta() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (status === 'submitting') return
+    if (submittingRef.current || status === 'submitting') return
     const form = e.currentTarget
     const formData = new FormData(form)
 
@@ -90,7 +91,7 @@ export function FinalCta() {
 
     const nextErrors: Record<string, string> = {}
     if (!data.name) nextErrors.name = 'Please enter your name.'
-    if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+    if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email))
       nextErrors.email = 'Please enter a valid work email.'
     if (!data.dealership) nextErrors.dealership = 'Please enter your dealership or group.'
     if (!data.website) nextErrors.website = 'Please enter your website URL.'
@@ -106,13 +107,20 @@ export function FinalCta() {
       return
     }
 
+    submittingRef.current = true
     setStatus('submitting')
-    const result = await submitOpportunityReview(data)
-    if (result.ok) {
-      setStatus('success')
-    } else {
+    try {
+      const result = await submitOpportunityReview(data)
+      if (result.ok) {
+        setStatus('success')
+        return
+      }
       if (result.errors) setErrors(result.errors)
       setStatus('error')
+      submittingRef.current = false
+    } catch {
+      setStatus('error')
+      submittingRef.current = false
     }
   }
 
