@@ -5,10 +5,8 @@
  * browser, instanced at wght 700 (AUTH) and wght 400 (OMOTIVE). Each weight run is
  * shaped separately, matching how a browser shapes two <tspan> elements.
  *
- * Emits two things:
- *   1. The icon + wordmark lockup as a single path (the current site header).
- *   2. The wordmark-first logo as one path per letter, so AUTH can be coloured
- *      letter-by-letter, at three spacing treatments.
+ * Emits the production wordmark-first logo as one path per letter, plus static
+ * SVG masters for on-light and on-ink.
  *
  * Run with: npm run logo:outline  [-- --font path/to/InstrumentSans.ttf]
  * Re-run whenever the metrics below change.
@@ -362,25 +360,6 @@ for (const [name, treatment] of Object.entries(WORDMARK_TREATMENTS)) {
 
 // ------------------------------------------------------------------------- outputs
 
-const maskPaths = MARK.bands.map(([, d]) => `      <path fill="#000" d="${d}"/>`).join('\n')
-const bandPaths = MARK.bands.map(([fill, d]) => `  <path fill="${fill}" d="${d}"/>`).join('\n')
-
-writeFileSync(
-  'public/authomotive-logo.svg',
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${lockupWidth} 100" fill="none" color="#061B20" aria-hidden="true" focusable="false">
-  <defs>
-    <mask id="a-cut" maskUnits="userSpaceOnUse">
-      <rect width="80" height="100" fill="#fff"/>
-${maskPaths}
-    </mask>
-  </defs>
-  <path fill="currentColor" fill-rule="evenodd" mask="url(#a-cut)" d="${MARK.body}"/>
-${bandPaths}
-  <path fill="currentColor" d="${lockupPath}"/>
-</svg>
-`,
-)
-
 /** Wordmark-first asset: one <path> per coloured letter, plus OMOTIVE. */
 function wordmarkSvg(set, palette) {
   const paths = set.letters
@@ -447,7 +426,6 @@ export const WORDMARK_PRODUCTION_TREATMENT: WordmarkTreatment = '${PRODUCTION_TR
 `,
 )
 
-console.log('\nwrote public/authomotive-logo.svg')
-console.log('wrote public/authomotive-wordmark.svg')
+console.log('\nwrote public/authomotive-wordmark.svg')
 console.log('wrote public/authomotive-wordmark-reversed.svg')
 console.log('wrote components/authomotive-wordmark-outline.ts')
