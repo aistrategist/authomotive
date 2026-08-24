@@ -3687,12 +3687,12 @@ html {
   inset: 4% -8% -2% 12%;
   border-radius: 58% 42% 54% 46%;
   background:
-    radial-gradient(ellipse 58% 52% at 62% 40%, color-mix(in srgb, var(--action) 78%, transparent), transparent 70%),
-    radial-gradient(ellipse 46% 40% at 38% 62%, color-mix(in srgb, var(--action-hover) 48%, transparent), transparent 72%),
-    radial-gradient(ellipse 78% 70% at 58% 54%, color-mix(in srgb, var(--action-strong) 26%, transparent), transparent 74%);
-  filter: blur(36px);
+    radial-gradient(ellipse 58% 52% at 62% 40%, color-mix(in srgb, var(--action) 28%, transparent), transparent 72%),
+    radial-gradient(ellipse 46% 40% at 38% 62%, color-mix(in srgb, var(--action-hover) 14%, transparent), transparent 74%),
+    radial-gradient(ellipse 78% 70% at 58% 54%, color-mix(in srgb, var(--action-strong) 8%, transparent), transparent 76%);
+  filter: blur(48px);
   transform: rotate(-14deg);
-  opacity: 0.88;
+  opacity: 0.42;
 }
 .hero-stage-slot > * {
   position: relative;
@@ -3705,7 +3705,7 @@ html {
   }
   .hero-stage-slot::before {
     inset: -2% -10% -6% 8%;
-    filter: blur(44px);
+    filter: blur(56px);
   }
 }
 
