@@ -10,7 +10,6 @@ import {
   CONVERT_FLASH_HOLD_MS,
   CONVERT_TIP_HOLD_MS,
   FLASH_HOLD_MS,
-  JOURNEY_PATHS,
   LEAD_FLASH_HOLD_MS,
   LEAD_TIP_HOLD_MS,
   MAX_THINKING,
@@ -27,16 +26,11 @@ import {
   TIP_HOLD_MS,
   TIP_IDS,
   TIP_THRESHOLDS,
-  VB_H,
-  VB_W,
   type BranchId,
   type ChannelId,
   type TipId,
 } from '@/components/hero-stage-data'
-
-const RIDE_STEPS = 80
-
-type Point = { x: number; y: number }
+import { rideKeyframes, rideTransform } from '@/components/hero-stage-rides'
 
 function pickBranch(exclude?: BranchId): BranchId {
   const pool = exclude ? BRANCH_IDS.filter((b) => b !== exclude) : BRANCH_IDS
@@ -125,60 +119,6 @@ function animationTimeMs(value: Animation['currentTime']) {
 
 function progressFromRide(anim: Animation) {
   return Math.max(0, Math.min(1, animationTimeMs(anim.currentTime) / BASE_JOURNEY_MS))
-}
-
-function sampleJourneyPoints() {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-  svg.setAttribute('viewBox', `0 0 ${VB_W} ${VB_H}`)
-  svg.setAttribute('width', String(VB_W))
-  svg.setAttribute('height', String(VB_H))
-  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  svg.appendChild(path)
-  svg.setAttribute('aria-hidden', 'true')
-  svg.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;overflow:hidden;pointer-events:none'
-  document.body.appendChild(svg)
-
-  const points = {} as Record<BranchId, Point[]>
-  for (const id of BRANCH_IDS) {
-    path.setAttribute('d', JOURNEY_PATHS[id])
-    const len = path.getTotalLength()
-    const samples: Point[] = []
-    for (let i = 0; i <= RIDE_STEPS; i++) {
-      const p = path.getPointAtLength((i / RIDE_STEPS) * len)
-      samples.push({ x: p.x, y: p.y })
-    }
-    points[id] = samples
-  }
-
-  svg.remove()
-  return points
-}
-
-function pointAt(samples: Point[], progress: number) {
-  const n = samples.length - 1
-  const x = Math.max(0, Math.min(1, progress)) * n
-  const i = Math.min(n - 1, Math.floor(x))
-  const t = x - i
-  const a = samples[i]!
-  const b = samples[i + 1] ?? a
-  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }
-}
-
-function translateAt(samples: Point[], origin: Point, progress: number) {
-  const p = pointAt(samples, progress)
-  return `translate(${(p.x - origin.x).toFixed(2)}px, ${(p.y - origin.y).toFixed(2)}px)`
-}
-
-function rideKeyframes(samples: Point[], origin: Point): Keyframe[] {
-  return samples.map((p, i) => ({
-    offset: i / (samples.length - 1),
-    transform: `translate(${(p.x - origin.x).toFixed(2)}px, ${(p.y - origin.y).toFixed(2)}px)`,
-  }))
-}
-
-function travelerOrigin(g: SVGGElement): Point {
-  const bb = g.getBBox()
-  return { x: bb.x + bb.width / 2, y: bb.y + bb.height / 2 }
 }
 
 /** Compositor-owned ride — browser interpolates precomputed translate keyframes. */
@@ -362,23 +302,19 @@ export function HeroStageMotion() {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     sim.reduced = reduced
 
-    let journeyPoints: Record<BranchId, Point[]> | null = null
-    const origins = emptyChannelMap<Point>({ x: 0, y: 0 })
+    let framesReady = false
     const frames = {} as Record<ChannelId, Record<BranchId, Keyframe[]>>
 
-    const ensureGeometry = () => {
-      if (journeyPoints) return journeyPoints
-      journeyPoints = sampleJourneyPoints()
+    const ensureFrames = () => {
+      if (framesReady) return
       for (const ch of CHANNELS) {
-        const g = nodes[ch.id]
-        origins[ch.id] = g ? travelerOrigin(g) : { x: 0, y: 0 }
         frames[ch.id] = {
-          phone: rideKeyframes(journeyPoints.phone, origins[ch.id]),
-          form: rideKeyframes(journeyPoints.form, origins[ch.id]),
-          lead: rideKeyframes(journeyPoints.lead, origins[ch.id]),
+          phone: rideKeyframes(ch.id, 'phone'),
+          form: rideKeyframes(ch.id, 'form'),
+          lead: rideKeyframes(ch.id, 'lead'),
         }
       }
-      return journeyPoints
+      framesReady = true
     }
 
     for (const ch of CHANNELS) {
@@ -394,7 +330,7 @@ export function HeroStageMotion() {
     }
 
     if (reduced) {
-      const points = ensureGeometry()
+      ensureFrames()
       const branch = emptyChannelMap('phone' as BranchId)
       for (const ch of CHANNELS) branch[ch.id] = sim.travelers[ch.id].branch
       const reducedUi: UiSnap = {
@@ -412,7 +348,7 @@ export function HeroStageMotion() {
         thinking: false,
         branch: lead.branch,
         atNode: false,
-        pinTransform: translateAt(points[lead.branch], origins.seo, 1),
+        pinTransform: rideTransform('seo', lead.branch, 1),
       })
       return
     }
@@ -423,8 +359,6 @@ export function HeroStageMotion() {
       boolean
     >
     let raf = 0
-    let idleId = 0
-    let startRaf = 0
     let last = performance.now()
     let running = false
     let waveAligned = false
@@ -465,8 +399,7 @@ export function HeroStageMotion() {
     }
 
     const tick = (now: number) => {
-      if (!running || !journeyPoints) return
-      const points = journeyPoints
+      if (!running) return
       const dt = Math.min(32, now - last)
       last = now
       const travelers = sim.travelers
@@ -496,7 +429,7 @@ export function HeroStageMotion() {
               thinking: false,
               branch: t.branch,
               atNode: false,
-              pinTransform: translateAt(points[t.branch], origins[ch.id], t.progress),
+              pinTransform: rideTransform(ch.id, t.branch, t.progress),
             })
           }
           nextTips[ch.id] = {}
@@ -600,9 +533,7 @@ export function HeroStageMotion() {
           thinking: t.thinking,
           branch: t.branch,
           atNode,
-          pinTransform: riding
-            ? undefined
-            : translateAt(points[t.branch], origins[ch.id], t.progress),
+          pinTransform: riding ? undefined : rideTransform(ch.id, t.branch, t.progress),
         }
 
         if (t.progress >= 1) {
@@ -615,7 +546,7 @@ export function HeroStageMotion() {
               thinking: false,
               branch: t.branch,
               atNode,
-              pinTransform: translateAt(points[t.branch], origins[ch.id], 1),
+              pinTransform: rideTransform(ch.id, t.branch, 1),
             }
           } else {
             cancelRide(ch.id)
@@ -639,7 +570,7 @@ export function HeroStageMotion() {
               thinking: false,
               branch: t.branch,
               atNode: false,
-              pinTransform: translateAt(points[t.branch], origins[ch.id], 0),
+              pinTransform: rideTransform(ch.id, t.branch, 0),
             }
           }
         }
@@ -661,20 +592,9 @@ export function HeroStageMotion() {
       raf = requestAnimationFrame(tick)
     }
 
-    const cancelDeferredStart = () => {
-      if (idleId && typeof cancelIdleCallback === 'function') {
-        cancelIdleCallback(idleId)
-        idleId = 0
-      }
-      if (startRaf) {
-        cancelAnimationFrame(startRaf)
-        startRaf = 0
-      }
-    }
-
     const start = () => {
       if (running) return
-      ensureGeometry()
+      ensureFrames()
       running = true
       last = performance.now()
       if (!waveAligned) {
@@ -690,24 +610,12 @@ export function HeroStageMotion() {
     const stop = () => {
       running = false
       cancelAnimationFrame(raf)
-      cancelDeferredStart()
       pauseRides()
     }
 
     const scheduleStart = () => {
-      if (running || document.hidden || idleId || startRaf) return
-      const begin = () => {
-        idleId = 0
-        startRaf = 0
-        if (!document.hidden) start()
-      }
-      if (typeof requestIdleCallback === 'function') {
-        idleId = requestIdleCallback(begin)
-      } else {
-        startRaf = requestAnimationFrame(() => {
-          startRaf = requestAnimationFrame(begin)
-        })
-      }
+      if (running || document.hidden) return
+      start()
     }
 
     const onVis = () => {
