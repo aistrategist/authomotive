@@ -92,25 +92,22 @@ export function SiteHeader() {
       if (!header || held) return
 
       const form = document.getElementById('opportunity-review')
-      const first = document.getElementById('capabilities')
-      const chapterNodes = chapters.map((chapter) => document.getElementById(chapter.id))
-      const formTop = form?.getBoundingClientRect().top ?? Infinity
-      const firstTop = first?.getBoundingClientRect().top ?? Infinity
-      const chapterTops = chapterNodes.map((el) => el?.getBoundingClientRect().top ?? Infinity)
-
-      const atForm = formTop < window.innerHeight * 0.42
-      let next = ''
-      if (!atForm) {
-        chapters.forEach((chapter, i) => {
-          if (chapterTops[i]! <= line) next = chapter.href
-        })
-        if (firstTop > line) next = ''
-      }
-
+      const atForm = Boolean(form && form.getBoundingClientRect().top < window.innerHeight * 0.42)
       header.classList.toggle('is-cta-rest', atForm)
       header.querySelectorAll('.header-cta').forEach((el) => {
         el.classList.toggle('is-rest', atForm)
       })
+
+      let next = ''
+      if (!atForm) {
+        for (const chapter of chapters) {
+          const el = document.getElementById(chapter.id)
+          if (el && el.getBoundingClientRect().top <= line) next = chapter.href
+        }
+        const first = document.getElementById('capabilities')
+        if (first && first.getBoundingClientRect().top > line) next = ''
+      }
+
       setActive(next)
     }
 
