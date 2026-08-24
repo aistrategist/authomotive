@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100" fill="none" color="#061B20" aria-hidden="true" focusable="false">
+  <defs>
+    <mask id="a-cut" maskUnits="userSpaceOnUse">
+      <rect width="80" height="100" fill="#fff"/>
+      <path d="M3 88C20 83 44 69 77 55" stroke="#000" stroke-width="8.2" stroke-linecap="round"/>
+      <path d="M4 79.5C21 74.5 45 60.5 78 46.5" stroke="#000" stroke-width="8.2" stroke-linecap="round"/>
+      <path d="M5 71C22 66 46 52 79 38" stroke="#000" stroke-width="8.2" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <path fill="currentColor" fill-rule="evenodd" mask="url(#a-cut)" d="M6 97 31 5h18l25 92H57.2L51.8 77H28.2L22.8 97H6Zm27.6-48L40 16l6.4 33H33.6Z"/>
+  <path d="M3 88C20 83 44 69 77 55" stroke="#8FBCF5" stroke-width="5.6" stroke-linecap="round"/>
+  <path d="M4 79.5C21 74.5 45 60.5 78 46.5" stroke="#C8B8FF" stroke-width="5.6" stroke-linecap="round"/>
+  <path d="M5 71C22 66 46 52 79 38" stroke="#FFC982" stroke-width="5.6" stroke-linecap="round"/>
+</svg>
