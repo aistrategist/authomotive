@@ -3,45 +3,63 @@
 import { useId } from 'react'
 
 const A_BODY =
-  'M6 97 31 5h18l25 92H57.2L51.8 77H28.2L22.8 97H6Zm27.6-48L40 16l6.4 33H33.6Z'
+  'M5.2 97 34.2 3.8H46.6L76.4 97H59.4L52.8 74H27.4L21.4 97H5.2Zm28.8-52L40.4 12.8 46.8 45H34Z'
+
 const JOURNEY = [
-  { d: 'M3 88C20 83 44 69 77 55', stroke: '#8FBCF5' },
-  { d: 'M4 79.5C21 74.5 45 60.5 78 46.5', stroke: '#C8B8FF' },
-  { d: 'M5 71C22 66 46 52 79 38', stroke: '#FFC982' },
+  {
+    d: 'M2.6 90.2C26 84.2 51.2 71.6 77.6 60.8L78.8 54.2C52.2 65 27 77.6 3.8 83.6Z',
+    fill: '#8FBCF5',
+  },
+  {
+    d: 'M5.4 79C28.4 73.2 53.2 61.2 77.8 51.2L79 44.6C54.2 54.6 29.4 66.6 6.6 72.4Z',
+    fill: '#C8B8FF',
+  },
+  {
+    d: 'M8.2 67.8C31 62.2 55.2 50.8 78 41.4L79.2 34.8C56 44.2 32 55.6 9.4 61.2Z',
+    fill: '#FFC982',
+  },
 ] as const
 
-function MarkGeometry({ maskId }: { maskId: string }) {
+const COMPACT = [
+  { d: 'M16 86.4 69 75.2 70.2 68.6 17.2 79.8Z', fill: '#8FBCF5' },
+  { d: 'M18 70.2 71 59 72.2 52.4 19.2 63.6Z', fill: '#C8B8FF' },
+  { d: 'M20 54 73 42.8 74.2 36.2 21.2 47.4Z', fill: '#FFC982' },
+] as const
+
+function MarkGeometry({
+  maskId,
+  compact = false,
+}: {
+  maskId: string
+  compact?: boolean
+}) {
+  const bands = compact ? COMPACT : JOURNEY
+
   return (
     <>
       <defs>
         <mask id={maskId} maskUnits="userSpaceOnUse">
           <rect width="80" height="100" fill="#fff" />
-          {JOURNEY.map((path) => (
-            <path
-              key={path.d}
-              d={path.d}
-              stroke="#000"
-              strokeWidth="8.2"
-              strokeLinecap="round"
-            />
+          {bands.map((band) => (
+            <path key={band.fill} d={band.d} fill="#000" />
           ))}
         </mask>
       </defs>
       <path fill="currentColor" fillRule="evenodd" mask={`url(#${maskId})`} d={A_BODY} />
-      {JOURNEY.map((path) => (
-        <path
-          key={path.stroke}
-          d={path.d}
-          stroke={path.stroke}
-          strokeWidth="5.6"
-          strokeLinecap="round"
-        />
+      {bands.map((band) => (
+        <path key={band.fill} d={band.d} fill={band.fill} />
       ))}
     </>
   )
 }
 
-export function AuthomotiveMark({ className }: { className?: string }) {
+export function AuthomotiveMark({
+  className,
+  compact = false,
+}: {
+  className?: string
+  compact?: boolean
+}) {
   const maskId = `${useId().replace(/:/g, '')}-cut`
 
   return (
@@ -52,7 +70,7 @@ export function AuthomotiveMark({ className }: { className?: string }) {
       aria-hidden="true"
       focusable="false"
     >
-      <MarkGeometry maskId={maskId} />
+      <MarkGeometry maskId={maskId} compact={compact} />
     </svg>
   )
 }

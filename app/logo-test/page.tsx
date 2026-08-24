@@ -58,9 +58,9 @@ export default function LogoTestPage() {
             </figcaption>
           </figure>
           <figure className="flex flex-col items-start gap-2">
-            <AuthomotiveMark className="h-4 w-auto" />
+            <AuthomotiveMark compact className="h-4 w-auto" />
             <figcaption className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink/45">
-              16px
+              16px · simplified
             </figcaption>
           </figure>
         </div>
