@@ -39,6 +39,7 @@ export function IntelligencePreview() {
       id="reporting"
       aria-labelledby="reporting-heading"
       className="ri-band scroll-mt-24 overflow-x-clip border-b border-border"
+      data-motion-gate
     >
       <SignalRail step={4} />
       <div className="relative mx-auto max-w-[1280px] px-5 pb-8 pt-14 md:px-8 md:pb-9 md:pt-16 lg:pb-10 lg:pt-[4.5rem]">
@@ -69,6 +70,7 @@ export function SignalArchitecture() {
       id="measurement"
       aria-labelledby="measurement-heading"
       className="ma-band scroll-mt-24 overflow-x-clip border-b border-stage-line"
+      data-motion-gate
     >
       <SignalRail step={5} />
       <div className="relative mx-auto max-w-[1280px] px-5 py-14 md:px-8 md:py-16 lg:py-[4.5rem]">

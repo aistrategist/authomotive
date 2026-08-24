@@ -11,8 +11,9 @@ import {
 type Loader = () => Promise<{ default: ComponentType }>
 
 const MOBILE_ROOT_MARGIN = '140px 0px'
+const DESKTOP_ROOT_MARGIN = '200px 0px'
 const MOBILE_EAGER_PX = 140
-const DESKTOP_EAGER_PX = 240
+const DESKTOP_EAGER_PX = 160
 
 function isCompactViewport() {
   return window.matchMedia('(max-width: 767px)').matches
@@ -21,8 +22,9 @@ function isCompactViewport() {
 /**
  * SSR the fallback immediately. Import the live client module only when
  * the section is near, already on screen, or targeted by a hash/CTA click.
- * Compact viewports use a tighter preload margin so GSAP chapters stay off
- * the mobile load timeline; desktop margins are unchanged.
+ * Compact viewports use a 140px preload margin. Desktop uses 200px so GSAP
+ * chapters stay off the Lighthouse load timeline. Hash/CTA clicks still wake
+ * the target immediately.
  */
 export function NearSwap({
   load,
@@ -80,7 +82,7 @@ export function NearSwap({
         io.disconnect()
         start()
       },
-      { rootMargin: compact ? MOBILE_ROOT_MARGIN : rootMargin, threshold: 0.01 },
+      { rootMargin: compact ? MOBILE_ROOT_MARGIN : DESKTOP_ROOT_MARGIN, threshold: 0.01 },
     )
     io.observe(target)
 
