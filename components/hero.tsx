@@ -20,7 +20,7 @@ export function Hero() {
               {hero.supporting}
             </p>
             <div className="hero-enter hero-enter-3 mt-5">
-              <a href="#opportunity-review" className="btn btn-action">
+              <a href="#opportunity-review" data-review-cta="hero" className="btn btn-action">
                 {hero.primaryCta}
                 <span className="btn-arrow" aria-hidden="true">
                   →

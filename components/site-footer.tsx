@@ -31,6 +31,7 @@ export function SiteFooter() {
             ))}
             <a
               href="#opportunity-review"
+              data-review-cta="footer"
               className="inline-flex min-h-6 items-center rounded-sm text-sm font-medium text-stage-muted transition-colors hover:text-stage-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               Contact

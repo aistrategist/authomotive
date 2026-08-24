@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { submitOpportunityReview, type ReviewRequest } from '@/lib/submit-review'
+import { trackReviewSubmitSuccess } from '@/lib/track-review'
 import { FinalCtaView, type FinalCtaStatus } from '@/components/final-cta-view'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
@@ -112,6 +113,7 @@ export function FinalCta() {
     try {
       const result = await submitOpportunityReview(data)
       if (result.ok) {
+        trackReviewSubmitSuccess()
         setStatus('success')
         return
       }

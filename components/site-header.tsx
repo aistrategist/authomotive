@@ -272,6 +272,7 @@ export function SiteHeader() {
           ))}
           <a
             href="#opportunity-review"
+            data-review-cta="header"
             className="btn btn-action header-cta !min-h-[40px] shrink-0 !whitespace-nowrap !px-3.5 !text-[14px] xl:!px-4"
           >
             {cta.primary}
@@ -344,6 +345,7 @@ export function SiteHeader() {
               })}
               <a
                 href="#opportunity-review"
+                data-review-cta="mobile_nav"
                 onClick={closeMenu}
                 className={`btn btn-action-dark header-cta mt-6 !text-lg${
                   headerRef.current?.classList.contains('is-cta-rest') ? ' is-rest' : ''

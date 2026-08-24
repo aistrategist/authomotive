@@ -31,6 +31,7 @@ export default function NotFound() {
         </Link>
         <Link
           href="/#opportunity-review"
+          data-review-cta="404"
           className="editorial-link"
         >
           {cta.primary}
