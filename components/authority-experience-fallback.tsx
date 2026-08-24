@@ -144,7 +144,10 @@ export function AuthorityExperienceFallback() {
           className="mt-4 md:mt-5"
         >
           <div className="ae-instrument-stage" data-lens="shopper">
-            <div className="ae-browser min-h-[36rem] md:min-h-[44rem]">
+            {/* 48.667rem is the height the live theater settles at on
+                desktop. Matching it here keeps the chapter from growing
+                75px when the theater replaces this shell. */}
+            <div className="ae-browser min-h-[36rem] md:min-h-[48.667rem]">
               <span className="ae-frame-rule" aria-hidden="true" />
               <div className="ae-chrome" aria-hidden="true">
                 <div className="ae-chrome-tabs">

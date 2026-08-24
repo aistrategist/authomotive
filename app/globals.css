@@ -7607,14 +7607,11 @@ details.disclosure[open] > summary .disclosure-plus {
 
    content-visibility carries paint containment even while a chapter is on
    screen, so only chapters whose painted ink stays inside their own border
-   box are listed. Two are left out on purpose:
+   box are listed. One is left out on purpose:
 
-     #capabilities          g.cap-path-tip rides 43px above the section top.
-                            Its 250px of side bleed is already handled by
-                            overflow-x: clip, but the top edge is not.
-     #authority-experiences its live chapter is 74px taller than the
-                            fallback it replaces, so a skipped placeholder
-                            sends anchors below it 74px short.
+     #capabilities  g.cap-path-tip rides 43px above the section top. Its
+                    250px of side bleed is already handled by
+                    overflow-x: clip, but the top edge is not.
 
    #reporting is fine despite reporting a child past its bottom edge: that
    child sits in a closed <details>, which the UA already skips. The 1px
@@ -7622,11 +7619,17 @@ details.disclosure[open] > summary .disclosure-plus {
 
    Every chapter here measures the same height before and after its live
    module loads, and the fallbacks below are those measured content-box
-   heights (border excluded), stable from 1320px up. Document height,
-   scrollbar length and anchor landings are therefore unchanged. Below
-   1320px .mf-work can clear #engagement by a few px, so the whole block
-   starts there. Re-measure if this markup moves. */
+   heights (border excluded), stable from 1320px up. #authority-experiences
+   only qualifies because its SSR shell now carries the theater's own
+   48.667rem height; drop that and this rule sends later anchors 75px
+   short. Document height, scrollbar length and anchor landings are all
+   unchanged. Below 1320px .mf-work can clear #engagement by a few px, so
+   the whole block starts there. Re-measure if this markup moves. */
 @media (min-width: 1320px) {
+  .cv-home #authority-experiences {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1459px;
+  }
   .cv-home #reporting {
     content-visibility: auto;
     contain-intrinsic-size: auto 1391px;
