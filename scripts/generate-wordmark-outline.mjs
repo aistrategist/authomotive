@@ -1,32 +1,49 @@
 /**
- * Converts the AUTHOMOTIVE wordmark into vector outlines so the production logo
- * carries no font dependency.
+ * Outlines the AUTHOMOTIVE wordmark so the logos carry no font dependency.
  *
- * Glyphs come from the same Instrument Sans variable font that next/font serves to
- * the browser, instanced at wght 700 (AUTH) and wght 400 (OMOTIVE). Each run is
- * shaped separately, matching how a browser shapes the two <tspan> elements, so the
- * outlined result is positionally identical to the text version it replaces.
+ * Glyphs come from the same Instrument Sans variable font that next/font serves to the
+ * browser, instanced at wght 700 (AUTH) and wght 400 (OMOTIVE). Each weight run is
+ * shaped separately, matching how a browser shapes two <tspan> elements.
  *
- * Run with: node scripts/generate-wordmark-outline.mjs [--font path/to/InstrumentSans.ttf]
+ * Emits two things:
+ *   1. The icon + wordmark lockup as a single path (the current site header).
+ *   2. The wordmark-first logo as one path per letter, so AUTH can be coloured
+ *      letter-by-letter, at three spacing treatments.
  *
- * Writes public/authomotive-logo.svg and components/authomotive-wordmark-outline.ts.
- * Re-run only when the lockup metrics below change.
+ * Run with: npm run logo:outline  [-- --font path/to/InstrumentSans.ttf]
+ * Re-run whenever the metrics below change.
  */
 import { existsSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import * as fontkit from 'fontkit'
 
-/** Frozen lockup metrics. Keep in sync with components/authomotive-brand-svg.tsx. */
+const WORD = [
+  { text: 'AUTH', weight: 700 },
+  { text: 'OMOTIVE', weight: 400 },
+]
+
+/** Icon + wordmark lockup. Mirrors LOCKUP in components/authomotive-brand-svg.tsx. */
 const LOCKUP = {
   fontSize: 72,
   textX: 90,
   baselineY: 80,
+  authTracking: 0.014,
+  motoTracking: 0.024,
+  jointDx: 1,
   /** Left edge of the mark's ink, mirrored as the trailing margin. */
   trimMargin: 2.6,
-  runs: [
-    { text: 'AUTH', weight: 700, tracking: 0.014, leadIn: 0 },
-    { text: 'OMOTIVE', weight: 400, tracking: 0.024, leadIn: 1 },
-  ],
+}
+
+/**
+ * Wordmark-first logo. Trimmed to its own ink, so the consumer controls padding.
+ * `uniform` is the production candidate: weight carries the AUTH/OMOTIVE hierarchy and
+ * colour carries the four-letter sequence, so tracking has no hierarchy left to signal
+ * and an even rhythm reads as the most deliberate.
+ */
+const WORDMARK_TREATMENTS = {
+  graded: { authTracking: 0.014, motoTracking: 0.024, jointDx: 1 },
+  uniform: { authTracking: 0.024, motoTracking: 0.024, jointDx: 0 },
+  open: { authTracking: 0.034, motoTracking: 0.034, jointDx: 0 },
 }
 
 const MARK = {
@@ -36,6 +53,37 @@ const MARK = {
     ['#C8B8FF', 'M5.4 79C28.4 73.2 53.2 61.2 77.8 51.2L79 44.6C54.2 54.6 29.4 66.6 6.6 72.4Z'],
     ['#FFC982', 'M8.2 67.8C31 62.2 55.2 50.8 78 41.4L79.2 34.8C56 44.2 32 55.6 9.4 61.2Z'],
   ],
+}
+
+/** Wordmark-first palettes. Names are the CSS tokens in app/globals.css. */
+const PALETTES = {
+  // On light backgrounds. Deep stops of the same four hues: the tint-level brand
+  // colours sit at 1.5-2.0:1 against white, which would make AUTH read lighter than
+  // OMOTIVE and invert the intended hierarchy.
+  onLight: {
+    A: '#285f9e', // accent-deep
+    U: '#6c54b5', // proof-deep
+    T: '#e9893f', // action-strong
+    H: '#a45118', // action-deep
+    rest: '#061b20', // ink
+  },
+  // Reversed on Ink. The tint-level brand colours as specified — this is the
+  // environment they were designed for, at 9.0-11.8:1.
+  onInk: {
+    A: '#8fbcf5', // accent
+    U: '#c8b8ff', // proof
+    T: '#ffc982', // action
+    H: '#f8a85f', // action-hover
+    rest: '#fffcf7', // paper
+  },
+  // Exactly as briefed, on light. Kept for comparison only.
+  asBriefed: {
+    A: '#8fbcf5', // accent
+    U: '#c8b8ff', // proof
+    T: '#ffc982', // action
+    H: '#f8a85f', // action-hover
+    rest: '#061b20', // ink
+  },
 }
 
 const UPSTREAM_TTF = 'assets/fonts/InstrumentSans-VariableFont_wdth_wght.ttf'
@@ -80,8 +128,7 @@ function verifyAgainstShippedSubset(ttf, text) {
       }
       if (actual.length !== expected.length) continue
 
-      const match = actual.every((v, i) => v === expected[i])
-      if (!match) {
+      if (!actual.every((v, i) => v === expected[i])) {
         throw new Error(
           `${file} disagrees with ${UPSTREAM_TTF}.\n` +
             `  shipped:  ${actual}\n  upstream: ${expected}\n` +
@@ -95,6 +142,51 @@ function verifyAgainstShippedSubset(ttf, text) {
 }
 
 const round = (n) => Math.round(n * 100) / 100
+
+/**
+ * Place every glyph of the word. Returns absolute placements plus the ink bounding box,
+ * both in SVG user units, so callers can emit trimmed or absolute coordinates.
+ */
+function layoutWord(base, { fontSize, startX, baselineY, authTracking, motoTracking, jointDx }) {
+  const scale = fontSize / base.unitsPerEm
+  const tracking = [authTracking, motoTracking]
+  const placements = []
+  const box = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }
+  let pen = startX
+
+  WORD.forEach((run, runIndex) => {
+    const instance = base.getVariation({ wght: run.weight, wdth: 100 })
+    const layout = instance.layout(run.text)
+    const trackingPx = tracking[runIndex] * fontSize
+    if (runIndex > 0) pen += jointDx
+
+    layout.glyphs.forEach((glyph, i) => {
+      const pos = layout.positions[i]
+      const originX = pen + pos.xOffset * scale
+      const originBaseline = baselineY - pos.yOffset * scale
+      const g = glyph.bbox
+
+      placements.push({
+        char: run.text[i],
+        weight: run.weight,
+        glyph,
+        originX,
+        originBaseline,
+        inkLeft: originX + g.minX * scale,
+        inkRight: originX + g.maxX * scale,
+      })
+
+      box.minX = Math.min(box.minX, originX + g.minX * scale)
+      box.maxX = Math.max(box.maxX, originX + g.maxX * scale)
+      box.minY = Math.min(box.minY, originBaseline - g.maxY * scale)
+      box.maxY = Math.max(box.maxY, originBaseline - g.minY * scale)
+
+      pen += pos.xAdvance * scale + trackingPx
+    })
+  })
+
+  return { placements, box, advanceEnd: pen, scale }
+}
 
 /** Emit one glyph's contours, scaled to the lockup and flipped into SVG space. */
 function glyphToSvg(glyph, penX, scale, baselineY) {
@@ -129,67 +221,13 @@ function glyphToSvg(glyph, penX, scale, baselineY) {
   return out.join('')
 }
 
-const fontPath = resolveFont()
-const base = fontkit.openSync(fontPath)
-const scale = LOCKUP.fontSize / base.unitsPerEm
-const capHeight = base.capHeight * scale
-
-console.log(`font:  ${fontPath}`)
-console.log(`       upem ${base.unitsPerEm}  capHeight ${base.capHeight} (${round(capHeight)}u)`)
-
-const verified = verifyAgainstShippedSubset(base, LOCKUP.runs.map((r) => r.text).join(''))
-console.log(
-  verified
-    ? `       metrics match next/font subset ${verified}`
-    : '       no next/font cache to cross-check (run `npm run build` first)',
-)
-
-let pen = LOCKUP.textX
-const pieces = []
-const letters = []
-let inkLeft = Infinity
-let inkRight = -Infinity
-let inkTop = Infinity
-let inkBottom = -Infinity
-
-for (const run of LOCKUP.runs) {
-  const instance = base.getVariation({ wght: run.weight, wdth: 100 })
-  const layout = instance.layout(run.text)
-  const trackingPx = run.tracking * LOCKUP.fontSize
-  pen += run.leadIn
-
-  layout.glyphs.forEach((glyph, i) => {
-    const pos = layout.positions[i]
-    const originX = pen + pos.xOffset * scale
-    pieces.push(glyphToSvg(glyph, originX, scale, LOCKUP.baselineY - pos.yOffset * scale))
-
-    const box = glyph.bbox
-    letters.push({
-      char: run.text[i],
-      weight: run.weight,
-      x: round(originX + box.minX * scale),
-      right: round(originX + box.maxX * scale),
-    })
-    inkLeft = Math.min(inkLeft, originX + box.minX * scale)
-    inkRight = Math.max(inkRight, originX + box.maxX * scale)
-    inkTop = Math.min(inkTop, LOCKUP.baselineY - box.maxY * scale)
-    inkBottom = Math.max(inkBottom, LOCKUP.baselineY - box.minY * scale)
-
-    pen += pos.xAdvance * scale + trackingPx
-  })
-}
-
-const wordmarkPath = pieces.join('')
-const viewBoxWidth = Math.round(inkRight + LOCKUP.trimMargin)
-
 /**
- * Re-read the emitted path and confirm it agrees with the metrics it was built from.
+ * Re-read an emitted path and confirm it agrees with the metrics it was built from.
  * Guards against transform mistakes and against counters losing their reverse winding,
- * which would fill the bowls of O/E solid under the default nonzero fill rule.
+ * which would fill the bowls of O solid under the default nonzero fill rule.
  */
-function validate(d, expected) {
+function validate(d, expected, { requireCounter = true } = {}) {
   const contours = d.split('Z').filter((s) => s.trim())
-  const nums = (s) => s.match(/-?\d+(?:\.\d+)?/g)?.map(Number) ?? []
   let minX = Infinity
   let maxX = -Infinity
   let minY = Infinity
@@ -197,8 +235,7 @@ function validate(d, expected) {
   let negative = 0
 
   for (const contour of contours) {
-    const vals = nums(contour)
-    let area = 0
+    const vals = (contour.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number)
     const pts = []
     for (let i = 0; i + 1 < vals.length; i += 2) pts.push([vals[i], vals[i + 1]])
     for (const [x, y] of pts) {
@@ -207,6 +244,7 @@ function validate(d, expected) {
       minY = Math.min(minY, y)
       maxY = Math.max(maxY, y)
     }
+    let area = 0
     for (let i = 0; i < pts.length; i++) {
       const [x0, y0] = pts[i]
       const [x1, y1] = pts[(i + 1) % pts.length]
@@ -217,50 +255,119 @@ function validate(d, expected) {
 
   const problems = []
   const near = (a, b) => Math.abs(a - b) < 0.6
-  if (!near(minX, expected.minX)) problems.push(`minX ${minX} != ${expected.minX}`)
-  if (!near(maxX, expected.maxX)) problems.push(`maxX ${maxX} != ${expected.maxX}`)
-  if (!near(minY, expected.minY)) problems.push(`minY ${minY} != ${expected.minY}`)
-  if (!near(maxY, expected.maxY)) problems.push(`maxY ${maxY} != ${expected.maxY}`)
-  if (negative === 0) problems.push('no reverse-wound contours: counters would fill solid')
+  if (!near(minX, expected.minX)) problems.push(`minX ${minX} != ${round(expected.minX)}`)
+  if (!near(maxX, expected.maxX)) problems.push(`maxX ${maxX} != ${round(expected.maxX)}`)
+  if (!near(minY, expected.minY)) problems.push(`minY ${minY} != ${round(expected.minY)}`)
+  if (!near(maxY, expected.maxY)) problems.push(`maxY ${maxY} != ${round(expected.maxY)}`)
+  if (requireCounter && negative === 0) {
+    problems.push('no reverse-wound contours: counters would fill solid')
+  }
   if (problems.length) throw new Error(`Outline validation failed:\n  ${problems.join('\n  ')}`)
 
   return { contours: contours.length, counters: negative }
 }
 
-const stats = validate(wordmarkPath, {
-  minX: inkLeft,
-  maxX: inkRight,
-  minY: inkTop,
-  maxY: inkBottom,
-})
+const fontPath = resolveFont()
+const base = fontkit.openSync(fontPath)
+const capHeight = base.capHeight * (LOCKUP.fontSize / base.unitsPerEm)
 
-console.log(`\nadvance ends at   ${round(pen)}`)
-console.log(`ink x             ${round(inkLeft)} -> ${round(inkRight)}`)
-console.log(`ink y             ${round(inkTop)} -> ${round(inkBottom)}  (height ${round(inkBottom - inkTop)})`)
-console.log(`cap centre y      ${round(LOCKUP.baselineY - capHeight / 2)}`)
-console.log(`mark gap          ${round(inkLeft - 79.2)}  (${round((inkLeft - 79.2) / capHeight)} cap)`)
-console.log(`word width / cap  ${round((inkRight - inkLeft) / capHeight)}`)
-console.log(`viewBox width     ${viewBoxWidth}`)
-console.log(`path length       ${wordmarkPath.length} chars`)
-console.log(`contours          ${stats.contours} (${stats.counters} reverse-wound counters)`)
+console.log(`font:  ${fontPath}`)
+console.log(`       upem ${base.unitsPerEm}  capHeight ${base.capHeight} (${round(capHeight)}u)`)
+const verified = verifyAgainstShippedSubset(base, WORD.map((r) => r.text).join(''))
+console.log(
+  verified
+    ? `       metrics match next/font subset ${verified}`
+    : '       no next/font cache to cross-check (run `npm run build` first)',
+)
 
-console.log('\nletter ink positions and gaps:')
-letters.forEach((l, i) => {
-  const next = letters[i + 1]
-  const gap = next ? round(next.x - l.right) : null
-  console.log(
-    `  ${l.char} ${l.weight}  x ${l.x} -> ${l.right}` + (gap === null ? '' : `  gap ${gap}`),
-  )
-})
+// ---------------------------------------------------------------- icon + wordmark
 
-const maskPaths = MARK.bands
-  .map(([, d]) => `      <path fill="#000" d="${d}"/>`)
-  .join('\n')
-const bandPaths = MARK.bands
-  .map(([fill, d]) => `  <path fill="${fill}" d="${d}"/>`)
-  .join('\n')
+const lockup = layoutWord(base, { ...LOCKUP, startX: LOCKUP.textX })
+const lockupPath = lockup.placements
+  .map((p) => glyphToSvg(p.glyph, p.originX, lockup.scale, p.originBaseline))
+  .join('')
+const lockupWidth = Math.round(lockup.box.maxX + LOCKUP.trimMargin)
+const lockupStats = validate(lockupPath, lockup.box)
 
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewBoxWidth} 100" fill="none" color="#061B20" aria-hidden="true" focusable="false">
+console.log('\n== icon + wordmark lockup')
+console.log(`ink x             ${round(lockup.box.minX)} -> ${round(lockup.box.maxX)}`)
+console.log(`mark gap          ${round(lockup.box.minX - 79.2)} (${round((lockup.box.minX - 79.2) / capHeight)} cap)`)
+console.log(`viewBox           0 0 ${lockupWidth} 100`)
+console.log(`contours          ${lockupStats.contours} (${lockupStats.counters} counters)`)
+
+// ------------------------------------------------------------------ wordmark only
+
+const wordmarkSets = {}
+
+for (const [name, treatment] of Object.entries(WORDMARK_TREATMENTS)) {
+  const run = layoutWord(base, {
+    fontSize: LOCKUP.fontSize,
+    startX: 0,
+    baselineY: 0,
+    ...treatment,
+  })
+
+  // Trim to the ink box: shift so the leftmost ink is x=0 and the cap line is y=0.
+  const dx = -run.box.minX
+  const dy = run.box.minY
+  const width = round(run.box.maxX - run.box.minX)
+  const height = round(run.box.maxY - run.box.minY)
+
+  const glyphs = run.placements.map((p) => {
+    const g = p.glyph.bbox
+    const originX = p.originX + dx
+    const baseline = p.originBaseline - dy
+    return {
+      char: p.char,
+      weight: p.weight,
+      d: glyphToSvg(p.glyph, originX, run.scale, baseline),
+      box: {
+        minX: originX + g.minX * run.scale,
+        maxX: originX + g.maxX * run.scale,
+        minY: baseline - g.maxY * run.scale,
+        maxY: baseline - g.minY * run.scale,
+      },
+    }
+  })
+
+  // Each letter is validated on its own bounds. A/U/T/H have no closed counters in this
+  // typeface, so only the combined path is checked for reverse winding.
+  for (const glyph of glyphs) {
+    validate(glyph.d, glyph.box, { requireCounter: false })
+  }
+
+  // One path per letter for AUTH so it can be coloured letter by letter. OMOTIVE
+  // collapses into a single path since every character shares one fill.
+  const letters = glyphs.slice(0, 4).map(({ char, weight, d }) => ({ char, weight, d }))
+  const rest = {
+    char: 'OMOTIVE',
+    weight: 400,
+    d: glyphs.slice(4).map((g) => g.d).join(''),
+  }
+
+  const combined = letters.map((l) => l.d).join('') + rest.d
+  const stats = validate(combined, { minX: 0, maxX: width, minY: 0, maxY: height })
+
+  wordmarkSets[name] = { width, height, letters, rest }
+
+  const gaps = run.placements
+    .slice(0, -1)
+    .map((p, i) => round(run.placements[i + 1].inkLeft - p.inkRight))
+  console.log(`\n== wordmark "${name}"  auth ${treatment.authTracking}em / omotive ${treatment.motoTracking}em / joint +${treatment.jointDx}`)
+  console.log(`viewBox           0 0 ${width} ${height}`)
+  console.log(`width / cap       ${round(width / capHeight)}`)
+  console.log(`gaps              ${gaps.join(' ')}`)
+  console.log(`contours          ${stats.contours} (${stats.counters} counters)`)
+}
+
+// ------------------------------------------------------------------------- outputs
+
+const maskPaths = MARK.bands.map(([, d]) => `      <path fill="#000" d="${d}"/>`).join('\n')
+const bandPaths = MARK.bands.map(([fill, d]) => `  <path fill="${fill}" d="${d}"/>`).join('\n')
+
+writeFileSync(
+  'public/authomotive-logo.svg',
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${lockupWidth} 100" fill="none" color="#061B20" aria-hidden="true" focusable="false">
   <defs>
     <mask id="a-cut" maskUnits="userSpaceOnUse">
       <rect width="80" height="100" fill="#fff"/>
@@ -269,22 +376,78 @@ ${maskPaths}
   </defs>
   <path fill="currentColor" fill-rule="evenodd" mask="url(#a-cut)" d="${MARK.body}"/>
 ${bandPaths}
-  <path fill="currentColor" d="${wordmarkPath}"/>
+  <path fill="currentColor" d="${lockupPath}"/>
+</svg>
+`,
+)
+
+/** Wordmark-first asset: one <path> per coloured letter, plus OMOTIVE. */
+function wordmarkSvg(set, palette) {
+  const paths = set.letters
+    .map((l) => `  <path fill="${palette[l.char]}" d="${l.d}"/>`)
+    .join('\n')
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${set.width} ${set.height}" fill="none" aria-hidden="true" focusable="false">
+${paths}
+  <path fill="${palette.rest}" d="${set.rest.d}"/>
 </svg>
 `
+}
 
-writeFileSync('public/authomotive-logo.svg', svg)
+const PRODUCTION_TREATMENT = 'uniform'
+const production = wordmarkSets[PRODUCTION_TREATMENT]
 
-const module_ = `// Generated by scripts/generate-wordmark-outline.mjs - do not edit by hand.
-// AUTHOMOTIVE outlined from Instrument Sans (wght 700 / 400) at ${LOCKUP.fontSize}px,
-// origin x=${LOCKUP.textX}, baseline y=${LOCKUP.baselineY}.
-export const WORDMARK_VIEWBOX_WIDTH = ${viewBoxWidth}
+writeFileSync('public/authomotive-wordmark.svg', wordmarkSvg(production, PALETTES.onLight))
+writeFileSync(
+  'public/authomotive-wordmark-reversed.svg',
+  wordmarkSvg(production, PALETTES.onInk),
+)
+
+writeFileSync(
+  'components/authomotive-wordmark-outline.ts',
+  `// Generated by scripts/generate-wordmark-outline.mjs - do not edit by hand.
+// AUTHOMOTIVE outlined from Instrument Sans (wght 700 / 400) at ${LOCKUP.fontSize}px.
+
+/** Icon + wordmark lockup: single path, origin x=${LOCKUP.textX}, baseline y=${LOCKUP.baselineY}. */
+export const WORDMARK_VIEWBOX_WIDTH = ${lockupWidth}
 
 export const WORDMARK_PATH =
-  '${wordmarkPath}'
-`
+  '${lockupPath}'
 
-writeFileSync('components/authomotive-wordmark-outline.ts', module_)
+export type WordmarkTreatment = ${Object.keys(WORDMARK_TREATMENTS)
+    .map((k) => `'${k}'`)
+    .join(' | ')}
+
+export type WordmarkPalette = ${Object.keys(PALETTES)
+    .map((k) => `'${k}'`)
+    .join(' | ')}
+
+/** Keyed by letter for A/U/T/H, plus \`rest\` for OMOTIVE. */
+export const WORDMARK_PALETTES: Record<WordmarkPalette, Record<string, string>> =
+  ${JSON.stringify(PALETTES, null, 2).replace(/\n/g, '\n  ')}
+
+export type WordmarkLetter = { char: string; weight: number; d: string }
+
+export type WordmarkSet = {
+  width: number
+  height: number
+  /** A, U, T, H — one path each so they can be coloured individually. */
+  letters: WordmarkLetter[]
+  /** OMOTIVE as a single path; every character shares one fill. */
+  rest: WordmarkLetter
+}
+
+/** Wordmark-first logo, trimmed to its own ink box. */
+export const WORDMARK_SETS: Record<WordmarkTreatment, WordmarkSet> = ${JSON.stringify(
+    wordmarkSets,
+    null,
+    2,
+  )}
+
+export const WORDMARK_PRODUCTION_TREATMENT: WordmarkTreatment = '${PRODUCTION_TREATMENT}'
+`,
+)
 
 console.log('\nwrote public/authomotive-logo.svg')
+console.log('wrote public/authomotive-wordmark.svg')
+console.log('wrote public/authomotive-wordmark-reversed.svg')
 console.log('wrote components/authomotive-wordmark-outline.ts')

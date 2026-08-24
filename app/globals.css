@@ -300,7 +300,9 @@ html {
     flex: 1 1 auto;
     width: 100%;
     max-width: 22rem;
-    height: 3.15rem;
+    /* The wordmark is width-capped in this slot, rendering 34.2px tall, so the box is
+       sized to hug it rather than leave vertical slack inside the focus ring. */
+    height: 2.25rem;
   }
   .header-logo img {
     display: block;
@@ -309,8 +311,9 @@ html {
     object-fit: contain;
     object-position: left center;
   }
-  /* The lockup SVG carries preserveAspectRatio="xMinYMid meet", which reproduces the
-     raster's object-fit: contain / object-position: left center. */
+  /* The wordmark SVG carries preserveAspectRatio="xMinYMid meet", so it scales to fit
+     and stays left-aligned. It defines its own fills; the colour below is only a
+     fallback for any currentColor-based mark placed here. */
   .header-logo svg {
     display: block;
     width: 100%;

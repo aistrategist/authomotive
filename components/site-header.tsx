@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { AuthomotiveLogo } from '@/components/authomotive-brand-svg'
+import { AuthomotiveWordmark } from '@/components/authomotive-brand-svg'
 import { cta, navLinks, siteConfig } from '@/lib/site-data'
 import { HEADER_OFFSET } from '@/lib/scroll-to-id'
 
@@ -230,7 +230,7 @@ export function SiteHeader() {
           aria-label="Authomotive home"
           className="header-home header-logo min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
         >
-          <AuthomotiveLogo />
+          <AuthomotiveWordmark />
         </a>
 
         <nav aria-label="Primary" className="hidden items-center lg:flex lg:gap-4 xl:gap-6">
