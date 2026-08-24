@@ -64,7 +64,6 @@ function fitStrands(root: HTMLElement, svg: SVGSVGElement) {
   const h = root.clientHeight
   if (w < 8 || h < 8) return
 
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
   const box = root.getBoundingClientRect()
   const nodes = new Map<string, Point>()
   root.querySelectorAll<HTMLElement>('[data-node]').forEach((el) => {
@@ -76,13 +75,16 @@ function fitStrands(root: HTMLElement, svg: SVGSVGElement) {
       y: r.top + r.height / 2 - box.top,
     })
   })
-
-  svg.querySelectorAll<SVGPathElement>('[data-from]').forEach((path) => {
+  const next = [...svg.querySelectorAll<SVGPathElement>('[data-from]')].map((path) => {
     const from = nodes.get(path.dataset.from ?? '')
     const to = nodes.get(path.dataset.to ?? '')
-    if (!from || !to) return
-    path.setAttribute('d', strandPath(from, to))
+    return { path, d: from && to ? strandPath(from, to) : null }
   })
+
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
+  for (const { path, d } of next) {
+    if (d) path.setAttribute('d', d)
+  }
 }
 
 function neighborsOf(id: NodeId) {
